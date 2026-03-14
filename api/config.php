@@ -10,6 +10,14 @@ define('DB_USER', get_env_var('DB_USER', ''));
 define('DB_PASS', get_env_var('DB_PASS', ''));
 define('DB_NAME', get_env_var('DB_NAME', ''));
 
+// diagnostic: check if any DB keys exist
+if (empty(DB_HOST)) {
+    $keys = array_keys(array_merge($_ENV, $_SERVER));
+    $db_keys = array_filter($keys, function($k) { return strpos($k, 'DB_') === 0; });
+    $found = !empty($db_keys) ? implode(', ', $db_keys) : 'NONE';
+    die("Database Connection Error: DB_HOST is empty. Available DB keys: $found. Please check Vercel Environment Variables.");
+}
+
 // Site Configuration
 $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
