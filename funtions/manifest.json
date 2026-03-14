@@ -1,9 +1,9 @@
 {
-  "id": "/capstone-portal",
+  "id": "psu-mental-health-portal",
   "name": "PSU Mental Health Portal",
   "short_name": "MH Portal",
   "description": "PSU San Carlos Mental Health Pre-Assessment System",
-  "start_url": "http://capstoneeeeeee.great-site.net/login.php",
+  "start_url": "login.php",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4338ca",
@@ -29,5 +29,7 @@
     }
   ],
   "categories": ["health", "education"],
-  "lang": "en"
+  "lang": "en",
+  "dir": "ltr",
+  "prefer_related_applications": false
 }
