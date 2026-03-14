@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Chapter 1-3 Draft</title>
+<style>
+body { font-family: Arial, sans-serif; line-height: 1.5; margin: 48px; color: #111; }
+h1 { font-size: 24px; margin-top: 28px; }
+h2 { font-size: 20px; margin-top: 22px; }
+h3 { font-size: 16px; margin-top: 18px; }
+.section { margin-bottom: 14px; }
+</style>
+</head>
+<body>
+<h1>Chapter 1 — INTRODUCTION</h1>
+
+<h2>1.1 Project Context / Background of the Study</h2>
+<div class="section">
+<p>The rapid growth of digital platforms has reshaped how institutions deliver student services, especially in health, guidance, and counseling. As student populations increase and mental health concerns become more visible, manual and paper-based processes are no longer sufficient for timely support, accurate record-keeping, and confidential communication. In many guidance offices, students must still line up for appointments, fill out physical forms, or wait for counselor availability, which can lead to delays, lost records, and limited access to early intervention.</p>
+<p>Pangasinan State University – San Carlos Campus serves a diverse student population that requires accessible mental health support. The current system needed a secure and responsive platform where students can complete pre-assessment screenings, seek guidance, and communicate with counselors without unnecessary barriers. These needs are amplified by academic pressure, personal challenges, and the growing demand for discreet, student-centered mental wellness services.</p>
+<p>The Mental Health Pre-Assessment System was developed as a web-based solution to digitize core guidance processes, automate record handling, and extend access to support services. It introduces structured pre-assessment tools, counselor appointment scheduling, anonymous communication channels, AI-assisted support, and personal wellness tracking. By consolidating these functions into a single portal, the system improves efficiency, enhances confidentiality, and enables faster responses to student needs.</p>
+</div>
+
+<h2>1.2 Objectives of the Project</h2>
+<div class="section">
+<p><strong>General Objective:</strong> To design and develop a web-based Mental Health Pre-Assessment System for PSU San Carlos Campus that streamlines student wellness support and guidance office operations.</p>
+<p><strong>Specific Objectives:</strong></p>
+<ul>
+<li>To design and implement a digital screening framework for mental health pre-assessment and automated risk-scoring.</li>
+<li>To implement an accessible counseling appointment system with real-time status tracking for students.</li>
+<li>To establish secure, anonymous communication channels between students and counselors via encrypted quick notes.</li>
+<li>To equip counselors with dashboards for risk monitoring, student records, and case tracking.</li>
+<li>To implement secure user management and role-based access for students, counselors, and administrators.</li>
+<li>To integrate AI-assisted wellness tools, including supportive chat (Aria), a mood journal, and self-help resources.</li>
+<li>To ensure data privacy, confidentiality, and integrity of student records.</li>
+</ul>
+</div>
+
+<h2>1.3 Significance of the Project</h2>
+<div class="section">
+<p><strong>PSU San Carlos Campus:</strong> The system aligns with the institution's mandate to provide responsive and accessible guidance services, digitizing administrative workflows and enhancing the availability of student mental health data.</p>
+<p><strong>Administrators (Head Counselors):</strong> Administrators gain high-level oversight of counselor activity, institutional trends, and system audit logs, facilitating informed decision-making and resource allocation.</p>
+<p><strong>Counselors:</strong> Counselors benefit from automated risk monitoring and centralized case management, which decreases response times for high-priority interventions.</p>
+<p><strong>Students:</strong> Students gain a secure, private, and convenient platform for self-assessment, wellness tracking, and accessing guidance services without stigma or scheduling barriers.</p>
+<p><strong>Developers and Future Researchers:</strong> The project serves as a concrete case study for developing institution-based mental health systems using web technologies, AI support, and role-based access control.</p>
+</div>
+
+<h2>1.4 Purpose and Description of the System</h2>
+<div class="section">
+<p>The system aims to modernize guidance office services through a centralized, web-based mental health portal. It provides students with structured pre-assessment questionnaires that generate risk levels across depression, anxiety, and stress categories. The results help counselors identify students requiring priority intervention.</p>
+<p>Key features include:</p>
+<ul>
+<li><strong>Pre-Assessment Module:</strong> Students answer 15 mental health screening questions; scores are computed and categorized into risk levels.</li>
+<li><strong>Appointment Scheduling:</strong> Students can request counseling sessions, view statuses, and receive counselor responses.</li>
+<li><strong>Anonymous Quick Note:</strong> Students can send confidential messages to counselors without revealing identity in the conversation view.</li>
+<li><strong>AI Support Chat (Aria):</strong> Offers non-clinical, supportive guidance with safety rules and fallback to local responses.</li>
+<li><strong>Mood Journal:</strong> Students log daily emotional states and optional notes for self-reflection.</li>
+<li><strong>Mindfulness and Resource Library:</strong> Provides self-help content and emergency support links.</li>
+<li><strong>Counselor Dashboard:</strong> Displays high-risk cases and counseling workload indicators.</li>
+<li><strong>Admin Panel:</strong> Manages counselor accounts, reports, and system oversight.</li>
+</ul>
+<p>The system is designed to improve accessibility, confidentiality, and responsiveness in campus mental health services while maintaining structured data storage and secure access.</p>
+</div>
+
+<h2>1.5 Scope and Limitations</h2>
+<div class="section">
+<p><strong>Scope:</strong></p>
+<ul>
+<li>Accessible only to PSU San Carlos Campus users.</li>
+<li>Three user roles: Student, Counselor, and Administrator.</li>
+<li>Covers pre-assessment, appointments, anonymous notes, AI chat, mood tracking, and wellness resources.</li>
+<li>Stores and manages student records, assessment results, counselor notes, and activity logs.</li>
+</ul>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li>The system is a screening and support platform only; it does not replace professional diagnosis or therapy.</li>
+<li>Internet connectivity is required for full functionality.</li>
+<li>AI chat provides supportive guidance but does not provide clinical diagnosis or emergency intervention.</li>
+<li>Effectiveness depends on user participation and counselor responsiveness.</li>
+<li>External integrations (e.g., email, SMS, telehealth) are not included in the current version.</li>
+</ul>
+</div>
+
+<h2>1.6 Definition of Terms</h2>
+<div class="section">
+<ul>
+<li><strong>Mental Health Pre-Assessment:</strong> A structured questionnaire used to screen student wellbeing and generate risk levels.</li>
+<li><strong>Risk Level:</strong> Categorized output (Low, Moderate, High, Critical) based on assessment score averages.</li>
+<li><strong>Counselor:</strong> A registered guidance professional who monitors cases, responds to notes, and manages appointments.</li>
+<li><strong>Administrator (Head Counselor):</strong> User with highest privileges, managing counselors and system operations.</li>
+<li><strong>Anonymous Quick Note:</strong> A confidential messaging feature that hides student identity during counseling correspondence.</li>
+<li><strong>AI Support Chat (Aria):</strong> A conversational assistant that provides non-clinical guidance and supportive suggestions.</li>
+<li><strong>Mood Journal:</strong> A personal tool for logging emotions and optional reflections over time.</li>
+<li><strong>Role-Based Access Control:</strong> Security design limiting system functions based on user role.</li>
+<li><strong>Appointment Module:</strong> Feature for requesting and managing counseling sessions.</li>
+<li><strong>Notifications:</strong> Alerts sent to users regarding new messages, appointments, or updates.</li>
+</ul>
+</div>
+
+<h1>Chapter 2 — REVIEW OF RELATED LITERATURE AND SYSTEMS</h1>
+<p><em>RRL omitted here per your instruction; system-aligned sections only.</em></p>
+
+<h2>2.1 Technical Background</h2>
+<div class="section">
+<p>The Mental Health Pre-Assessment System is built using a traditional web stack that supports secure, reliable deployment in campus environments. The system’s architecture follows a client–server model where the browser handles the interface and PHP handles server-side processing. Data persistence is handled by MySQL.</p>
+<p>Key technologies used include:</p>
+<ul>
+<li><strong>PHP 7.4+:</strong> Server-side logic, authentication, role checks, form processing, and database interaction.</li>
+<li><strong>MySQL 5.7+:</strong> Storage for user records, assessments, appointments, counselor notes, and activity logs.</li>
+<li><strong>HTML/CSS/JavaScript:</strong> Interactive user interface.</li>
+<li><strong>Chart.js:</strong> Visualization of assessment trends and risk analytics.</li>
+<li><strong>XAMPP/Apache:</strong> Local development and deployment environment.</li>
+<li><strong>Google Gemini API (optional):</strong> AI support chat with local fallback if unavailable.</li>
+<li><strong>bcrypt + prepared statements:</strong> Security against brute force and SQL injection.</li>
+</ul>
+<p>This stack enables offline-friendly campus deployment, easy maintenance, and compatibility with existing institutional servers.</p>
+</div>
+
+<h2>2.2 Review of Related Systems</h2>
+<div class="section">
+<p>Existing digital guidance systems often focus only on scheduling or record management, leaving gaps in proactive mental health screening and anonymous engagement. Common limitations include:</p>
+<ul>
+<li>Lack of pre-assessment screening tools to identify student risk early.</li>
+<li>Limited confidential communication channels for students who are hesitant to seek help.</li>
+<li>Absence of integrated wellness tools such as mood tracking and mindfulness activities.</li>
+</ul>
+<p>In contrast, the proposed system integrates screening, anonymous messaging, and wellness support into a unified portal, enabling both early detection and ongoing guidance intervention.</p>
+</div>
+
+<h2>2.3 Synthesis</h2>
+<div class="section">
+<p>The review of existing systems shows that modern guidance platforms should go beyond scheduling and record storage. Effective systems must provide:</p>
+<ul>
+<li><strong>Early detection mechanisms</strong> through structured assessment tools.</li>
+<li><strong>Confidential communication</strong> to encourage students to seek help.</li>
+<li><strong>Accessible wellness resources</strong> for continuous support.</li>
+<li><strong>Actionable analytics</strong> for counselors and administrators.</li>
+</ul>
+<p>These insights guided the development of a system that combines student-facing wellness tools with counselor-focused monitoring and structured data management.</p>
+</div>
+
+<h2>2.4 Conceptual Framework</h2>
+<div class="section">
+<p>The conceptual framework centers on three main user groups: Students, Counselors, and Administrators. Students interact with the system through assessments, appointments, anonymous notes, AI chat, mood journaling, and wellness resources. Counselors access student records, risk data, appointments, and anonymous dialogues. Administrators oversee system management, counselor accounts, and institutional reports.</p>
+<p>All interactions pass through the web interface and are stored in a centralized database. The framework emphasizes secure access, confidentiality, and real-time availability of mental health data for decision-making.</p>
+</div>
+
+<h1>Chapter 3 — METHODOLOGY</h1>
+
+<h2>3.1 Methods</h2>
+<div class="section">
+<p>The study used a developmental-descriptive approach, focusing on the design, implementation, and evaluation of a functional web-based system. An iterative development model similar to Agile was applied, allowing incremental improvements based on testing and feedback during implementation.</p>
+</div>
+
+<h2>3.2 Research Locale and Participants</h2>
+<div class="section">
+<p>The system is intended for use within Pangasinan State University – San Carlos Campus, particularly under the Guidance or Counseling Office. The primary users include students (system users for assessments and support services), counselors (case handlers and wellness monitors), and administrators (system managers and overseers).</p>
+</div>
+
+<h2>3.3 Data Gathering Procedures</h2>
+<div class="section">
+<p>Information for system requirements was obtained through observation of existing guidance workflows, review of institutional processes and student support needs, analysis of system requirements based on typical guidance office operations, and iterative feedback during prototype testing.</p>
+</div>
+
+<h2>3.4 System Development Process</h2>
+<div class="section">
+<p>The development process followed four iterative phases:</p>
+<ul>
+<li><strong>Planning and Requirements Analysis:</strong> Identified key problems in current guidance processes and defined functional and non-functional requirements.</li>
+<li><strong>Design:</strong> Created a modular system layout for student, counselor, and admin roles and designed database structures for assessments, appointments, notes, and logs.</li>
+<li><strong>Implementation:</strong> Built the system using PHP, MySQL, HTML/CSS/JS, integrated risk scoring, appointment scheduling, anonymous messaging, AI chat support, and mood journal tools.</li>
+<li><strong>Testing and Refinement:</strong> System validation included functional testing, role-based access control (RBAC) verification, data integrity checks, and usability assessments to ensure alignment with institutional guidance workflows.</li>
+</ul>
+</div>
+
+<h2>3.5 System Architecture</h2>
+<div class="section">
+<p>The system uses a three-tier architecture:</p>
+<ul>
+<li><strong>Presentation Layer:</strong> Web interface for students, counselors, and administrators.</li>
+<li><strong>Application Layer:</strong> PHP logic for processing assessments, appointments, and notifications.</li>
+<li><strong>Data Layer:</strong> MySQL database storing all records and transactions.</li>
+</ul>
+<p>This architecture supports scalability, easier maintenance, and improved security.</p>
+</div>
+
+<h2>3.6 Functional Requirements</h2>
+<div class="section">
+<ul>
+<li>User registration and role-based authentication.</li>
+<li>Student mental health pre-assessment and risk scoring.</li>
+<li>Appointment requests and scheduling between students and counselors.</li>
+<li>Anonymous student messaging and counselor replies.</li>
+<li>AI-assisted guidance chat with fallback responses.</li>
+<li>Mood journaling and personal reflection logs.</li>
+<li>Counselor monitoring of student risk levels.</li>
+<li>Administrative management of counselors and system reports.</li>
+<li>Notifications for appointments and counselor updates.</li>
+<li>Activity logging for accountability.</li>
+</ul>
+</div>
+
+<h2>3.7 Non-Functional Requirements</h2>
+<div class="section">
+<ul>
+<li><strong>Security:</strong> bcrypt password hashing, session control, role restrictions, and input sanitization.</li>
+<li><strong>Reliability:</strong> Consistent database transactions and stable session handling.</li>
+<li><strong>Performance:</strong> Fast response time for assessment processing and dashboard metrics.</li>
+<li><strong>Usability:</strong> Intuitive interface for non-technical users.</li>
+<li><strong>Scalability:</strong> Database structure supports increasing student records and sessions.</li>
+<li><strong>Portability:</strong> Runs on standard PHP/MySQL stacks across Windows/Linux servers.</li>
+</ul>
+</div>
+
+<h2>3.8 Database Design</h2>
+<div class="section">
+<p>The database includes tables for users, assessment questions, student responses, assessment scores, appointments, counselor availability, anonymous notes and messages, mood logs, session logs and notifications, and AI pre-assessment transcripts. (ERD already provided separately.)</p>
+</div>
+
+<h2>3.9 Security and Privacy Measures</h2>
+<div class="section">
+<ul>
+<li>Encrypted password storage using bcrypt.</li>
+<li>Prepared statements for all database operations.</li>
+<li>Session-based authentication and role checks.</li>
+<li>Restricted data access by role.</li>
+<li>Confidentiality of anonymous notes and counseling records.</li>
+</ul>
+</div>
+
+<h2>3.10 Testing and Validation</h2>
+<div class="section">
+<p>System testing focused on functional testing of each module, role-based access validation, data integrity and consistency checks, usability walkthroughs for student and counselor workflows, and appointment scheduling conflict checks.</p>
+</div>
+
+<h2>3.11 Implementation Plan (Optional for Deployment Section)</h2>
+<div class="section">
+<ul>
+<li>Install system on campus server or XAMPP environment.</li>
+<li>Import database schema and test login credentials.</li>
+<li>Register counselors and admin accounts.</li>
+<li>Provide orientation to users.</li>
+<li>Conduct pilot testing and gather feedback.</li>
+<li>Deploy system campus-wide with ongoing support.</li>
+</ul>
+</div>
+
+</body>
+</html>
