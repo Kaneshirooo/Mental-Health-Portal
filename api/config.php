@@ -6,17 +6,10 @@ function get_env_var($name, $default = null) {
 
 // Database Configuration
 define('DB_HOST', get_env_var('DB_HOST', ''));
+define('DB_PORT', get_env_var('DB_PORT', '4000'));
 define('DB_USER', get_env_var('DB_USER', ''));
 define('DB_PASS', get_env_var('DB_PASS', ''));
-define('DB_NAME', get_env_var('DB_NAME', ''));
-
-// diagnostic: check if any DB keys exist
-if (empty(DB_HOST)) {
-    $keys = array_keys(array_merge($_ENV, $_SERVER));
-    $db_keys = array_filter($keys, function($k) { return strpos($k, 'DB_') === 0; });
-    $found = !empty($db_keys) ? implode(', ', $db_keys) : 'NONE';
-    die("Database Connection Error: DB_HOST is empty. Available DB keys: $found. Please check Vercel Environment Variables.");
-}
+define('DB_NAME', get_env_var('DB_NAME', 'test'));
 
 // Site Configuration
 $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
@@ -31,7 +24,7 @@ session_start();
 // Connect to Database
 // Disable exception mode so CREATE TABLE failures are non-fatal
 mysqli_report(MYSQLI_REPORT_OFF);
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
 
 if ($conn->connect_error) {
     $host_used = DB_HOST ?: '(empty)';
