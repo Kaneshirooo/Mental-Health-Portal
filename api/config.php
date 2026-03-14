@@ -1,13 +1,19 @@
 <?php
+// Helper to get environment variables reliably in Vercel
+function get_env_var($name, $default = null) {
+    return $_ENV[$name] ?? $_SERVER[$name] ?? getenv($name) ?? $default;
+}
+
 // Database Configuration
-define('DB_HOST', 'sql201.infinityfree.com');
-define('DB_USER', 'if0_41389002');
-define('DB_PASS', 'BdKw1sJ7FZwUjq');
-define('DB_NAME', 'if0_41389002_mental_health_db');
+define('DB_HOST', get_env_var('DB_HOST', ''));
+define('DB_USER', get_env_var('DB_USER', ''));
+define('DB_PASS', get_env_var('DB_PASS', ''));
+define('DB_NAME', get_env_var('DB_NAME', ''));
 
 // Site Configuration
-// Site Configuration
-define('SITE_URL', 'http://capstoneeeeeee.great-site.net');
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+define('SITE_URL', "$protocol://$host");
 define('SITE_TITLE', 'Mental Health Pre-Assessment System');
 
 // Session Configuration
