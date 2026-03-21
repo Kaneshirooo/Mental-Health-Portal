@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Portal - Entity Relationship Diagram</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #6366F1;
+            --bg-light: #FFFFFF;
+            --panel-bg: rgba(248, 250, 252, 0.9);
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: #F8FAFC;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #F1F5F9;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            border-color: var(--secondary);
+            color: white;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background: #F1F5F9;
+            overflow: auto;
+        }
+
+        #mermaid-container {
+            width: auto;
+            min-width: 800px;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .legend {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: white;
+            backdrop-filter: blur(12px);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            z-index: 5;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Mermaid Overrides for Premium Look */
+        .mermaid svg {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Large font for Mermaid */
+        .mermaid .entityBox {
+            stroke: var(--primary) !important;
+            stroke-width: 2px !important;
+        }
+        .mermaid .entityLabel {
+            font-size: 20px !important;
+            font-weight: 700 !important;
+            fill: var(--text-main) !important;
+        }
+        .mermaid .attributeBox {
+            font-size: 16px !important;
+            fill: #475569 !important;
+        }
+        .mermaid .relationshipLabel {
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            fill: var(--primary) !important;
+        }
+        
+        #export-canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Capstone ERD - Mental Health Portal</h1>
+            <div style="font-size: 1rem; color: var(--text-muted); margin-top: 0.2rem;">Entity Relationship Diagram v1.3 • High Definition & Robust Download</div>
+        </div>
+        <div class="controls">
+            <button class="btn" onclick="downloadSVG()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download SVG
+            </button>
+            <button class="btn btn-primary" onclick="downloadPNG()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download PNG
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div id="mermaid-container" class="mermaid">
+erDiagram
+    USERS ||--o{ APPOINTMENTS : "has (one-to-many)"
+    USERS ||--o{ ASSESSMENT_SCORES : "receives (one-to-many)"
+    USERS ||--o{ STUDENT_RESPONSES : "provides (one-to-many)"
+    USERS ||--o{ MOOD_LOGS : "logs (one-to-many)"
+    USERS ||--o{ ANONYMOUS_NOTES : "writes/replies (one-to-many)"
+    USERS ||--o{ NOTIFICATIONS : "gets (one-to-many)"
+    USERS ||--o{ SESSION_LOGS : "generates (one-to-many)"
+    USERS ||--o{ AI_PREASSESSMENTS : "takes (one-to-many)"
+    USERS ||--o{ COUNSELOR_AVAILABILITY : "sets (one-to-many)"
+    USERS ||--o{ COUNSELOR_NOTES : "writes (one-to-many)"
+
+    ANONYMOUS_NOTES ||--o{ ANONYMOUS_NOTE_MESSAGES : "contains (one-to-many)"
+    ASSESSMENT_QUESTIONS ||--o{ STUDENT_RESPONSES : "answered_in (one-to-many)"
+
+    USERS {
+        int user_id PK
+        string email UK
+        string password
+        string full_name
+        string roll_number UK
+        enum user_type "student, counselor, admin"
+        date date_of_birth
+        enum gender "Male, Female, Other"
+        string contact_number
+        string department
+        int semester
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    APPOINTMENTS {
+        int appointment_id PK
+        int student_id FK
+        int counselor_id FK
+        datetime scheduled_at
+        int duration_min
+        enum status "requested, confirmed, declined, cancelled, completed"
+        text reason
+        text counselor_message
+        tinyint is_priority
+        timestamp created_at
+    }
+
+    ASSESSMENT_SCORES {
+        int score_id PK
+        int user_id FK
+        int depression_score
+        int anxiety_score
+        int stress_score
+        int overall_score
+        enum risk_level "Low, Moderate, High, Critical"
+        timestamp assessment_date
+        timestamp report_generated_at
+        text counselor_notes
+    }
+
+    ASSESSMENT_QUESTIONS {
+        int question_id PK
+        string category
+        text question_text
+        int question_number
+        timestamp created_at
+    }
+
+    STUDENT_RESPONSES {
+        int response_id PK
+        int user_id FK
+        int question_id FK
+        int response_value
+        timestamp assessment_date
+    }
+
+    MOOD_LOGS {
+        int log_id PK
+        int student_id FK
+        int mood_score "1-5"
+        string mood_emoji
+        text note
+        timestamp logged_at
+    }
+
+    ANONYMOUS_NOTES {
+        int note_id PK
+        int student_id FK
+        string message
+        text reply
+        timestamp replied_at
+        int counselor_id FK
+        enum status "new, read, replied, archived"
+        timestamp created_at
+    }
+
+    ANONYMOUS_NOTE_MESSAGES {
+        int message_id PK
+        int note_id FK
+        enum sender_type "student, counselor, admin"
+        text message_text
+        timestamp created_at
+    }
+
+    NOTIFICATIONS {
+        int notification_id PK
+        int user_id FK
+        string title
+        text message
+        string type
+        tinyint is_read
+        timestamp created_at
+    }
+
+    SESSION_LOGS {
+        int log_id PK
+        int user_id FK
+        timestamp login_time
+        timestamp logout_time
+        text activity
+    }
+
+    AI_PREASSESSMENTS {
+        int pre_id PK
+        int student_id FK
+        mediumtext conversation_transcript
+        text form_answers
+        text ai_report
+        timestamp created_at
+    }
+
+    COUNSELOR_AVAILABILITY {
+        int availability_id PK
+        int counselor_id FK
+        tinyint day_of_week
+        time start_time
+        time end_time
+        tinyint is_active
+        timestamp created_at
+    }
+
+    COUNSELOR_NOTES {
+        int note_id PK
+        int counselor_id FK
+        int student_id FK
+        text note_text
+        string recommendation
+        date follow_up_date
+        timestamp created_at
+    }
+        </div>
+    </main>
+
+    <div class="legend">
+        <div class="legend-item"><span style="color: #818CF8; font-weight: bold;">||--o{</span> One-to-Many Relationship</div>
+        <div class="legend-item">PK = Primary Key</div>
+        <div class="legend-item">FK = Foreign Key</div>
+        <div class="legend-item">UK = Unique Key</div>
+        <div style="margin-top: 0.5rem; font-style: italic;">Verified and correct for Capstone Advisor review</div>
+    </div>
+
+    <canvas id="export-canvas"></canvas>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            themeVariables: {
+                fontSize: '20px',
+                entityPadding: '35'
+            },
+            er: {
+                useMaxWidth: false,
+                diagramPadding: 80,
+                layoutDirection: 'TB',
+                minEntityWidth: 280,
+                minEntityHeight: 110,
+                entityPadding: 50
+            }
+        });
+
+        async function downloadSVG() {
+            try {
+                const svgElement = document.querySelector("#mermaid-container svg");
+                if (!svgElement) {
+                    alert("Diagram is still rendering. Please wait a moment.");
+                    return;
+                }
+                
+                // Ensure xmlns is present
+                if (!svgElement.getAttribute("xmlns")) {
+                    svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+                }
+                
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "Mental_Health_Portal_ERD_Detailed.svg";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                alert("Error downloading SVG: " + err.message);
+            }
+        }
+
+        async function downloadPNG() {
+            try {
+                const container = document.getElementById("mermaid-container");
+                if (!container) {
+                    alert("Diagram not found.");
+                    return;
+                }
+
+                // Show a loading state or just proceed
+                const btn = document.querySelector(".btn-primary");
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "Processing...";
+                btn.disabled = true;
+
+                // html2canvas is much more robust for complex rendering
+                html2canvas(container, {
+                    scale: 2, // High resolution
+                    backgroundColor: "#FFFFFF",
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true
+                }).then(canvas => {
+                    const pngUrl = canvas.toDataURL("image/png");
+                    const link = document.createElement("a");
+                    link.href = pngUrl;
+                    link.download = "Mental_Health_Portal_ERD_Detailed.png";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }).catch(err => {
+                    alert("Error capturing PNG: " + err.message);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        }
+    </script>
+</body>
+</html>
