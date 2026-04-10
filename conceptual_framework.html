@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Conceptual Framework – Mental Health Web Portal | PSU San Carlos</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #e8edf2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 36px 20px 60px;
+    }
+    .print-btn {
+      margin-bottom: 24px;
+      padding: 10px 28px;
+      background: #1565c0;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: .5px;
+      transition: background .2s;
+    }
+    .print-btn:hover { background: #0d47a1; }
+
+    /* PAPER */
+    .paper {
+      width: 980px;
+      background: #fff;
+      padding: 52px 60px 60px;
+      box-shadow: 0 4px 32px rgba(0,0,0,.16);
+    }
+
+    /* TITLE */
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #1565c0;
+      margin-bottom: 5px;
+    }
+    h1 {
+      font-size: 21px;
+      font-weight: 700;
+      color: #0d1b2a;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #444;
+      margin-bottom: 32px;
+      max-width: 720px;
+      line-height: 1.65;
+    }
+
+    /* DIAGRAM WRAPPER */
+    .diagram-section {
+      border: 1.5px solid #cfd8e3;
+      border-radius: 10px;
+      padding: 28px 16px 20px;
+      margin-bottom: 28px;
+      background: #fafcff;
+      position: relative;
+    }
+    .diagram-section-title {
+      position: absolute;
+      top: -12px;
+      left: 24px;
+      background: #fff;
+      padding: 0 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #1565c0;
+      border: 1.5px solid #cfd8e3;
+      border-radius: 4px;
+    }
+    .diagram-section svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* IPO SECTION */
+    .ipo-section {
+      border: 1.5px solid #cfd8e3;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 26px;
+      position: relative;
+    }
+    .ipo-section-title {
+      position: absolute;
+      top: -12px;
+      left: 24px;
+      background: #fff;
+      padding: 0 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #2e7d32;
+      border: 1.5px solid #cfd8e3;
+      border-radius: 4px;
+    }
+    .ipo-header-row {
+      display: grid;
+      grid-template-columns: 1fr 42px 1fr 42px 1fr;
+    }
+    .ipo-col-head {
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .ipo-col-head.input   { background: #1565c0; }
+    .ipo-col-head.process { background: #2e7d32; }
+    .ipo-col-head.output  { background: #6a1b9a; }
+    .ipo-col-head.arrow   { background: #f0f4fa; }
+    .ipo-body-row {
+      display: grid;
+      grid-template-columns: 1fr 42px 1fr 42px 1fr;
+      align-items: stretch;
+    }
+    .ipo-col-body {
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ipo-col-body.input   { background: #f0f5ff; }
+    .ipo-col-body.process { background: #f4fdf4; }
+    .ipo-col-body.output  { background: #fdf6ff; }
+    .ipo-arrow-col {
+      background: #f0f4fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 10px 4px;
+    }
+    .ipo-arrow-col svg { width: 22px; height: 22px; }
+    .ipo-arrow-col .alabel {
+      font-size: 8px;
+      text-transform: uppercase;
+      color: #666;
+      letter-spacing: .3px;
+      text-align: center;
+    }
+    .ipo-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: #fff;
+      border-radius: 7px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 5px rgba(0,0,0,.07);
+      border-left: 3px solid transparent;
+    }
+    .ipo-col-body.input   .ipo-item { border-left-color: #1565c0; }
+    .ipo-col-body.process .ipo-item { border-left-color: #2e7d32; }
+    .ipo-col-body.output  .ipo-item { border-left-color: #6a1b9a; }
+    .ipo-item-icon {
+      width: 30px; height: 30px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+    }
+    .ipo-col-body.input   .ipo-item-icon { background: #e3eefa; }
+    .ipo-col-body.process .ipo-item-icon { background: #e8f5e9; }
+    .ipo-col-body.output  .ipo-item-icon { background: #f3e5f5; }
+    .ipo-item-text strong {
+      display: block; font-size: 11.5px; font-weight: 700;
+      color: #1a1a2e; margin-bottom: 2px;
+    }
+    .ipo-item-text span { font-size: 10.5px; color: #555; line-height: 1.45; }
+    .ipo-sub-label {
+      font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .9px; color: #2e7d32; padding-left: 2px; margin-top: 2px;
+    }
+    .ipo-sub-label.purple { color: #6a1b9a; }
+
+    /* FEEDBACK */
+    .feedback-banner {
+      margin-top: 24px;
+      border: 2px dashed #b0bec5;
+      border-radius: 8px;
+      padding: 13px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      background: #f9fbfd;
+    }
+    .fb-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+    .fb-text strong { display: block; font-size: 12px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+    .fb-text span { font-size: 11px; color: #555; line-height: 1.55; }
+
+    /* CAPTION */
+    .caption { margin-top: 22px; text-align: center; }
+    .caption strong { font-size: 13px; color: #1a1a2e; }
+    .caption p {
+      font-size: 11.5px; color: #555; margin-top: 4px;
+      max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.6;
+    }
+
+    /* LEGEND */
+    .legend { display: flex; justify-content: center; gap: 22px; margin-top: 16px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: #444; }
+    .legend-dot { width: 11px; height: 11px; border-radius: 3px; }
+
+    /* DIVIDER */
+    .section-divider {
+      text-align: center; font-size: 11px; font-weight: 700; color: #888;
+      letter-spacing: 1px; text-transform: uppercase;
+      margin: 0 0 30px 0;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-divider::before, .section-divider::after {
+      content: ''; flex: 1; height: 1px; background: #cfd8e3;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .print-btn { display: none; }
+      .paper { width: 100%; box-shadow: none; padding: 28px 36px; }
+      @page { margin: .6in; size: A4 landscape; }
+    }
+  </style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+
+<div class="paper">
+
+  <div class="section-label">Chapter 2 · Theoretical &amp; Conceptual Framework</div>
+  <h1>Conceptual Framework of the Study</h1>
+  <p class="subtitle">
+    This framework presents the <em>Mental Health Web Portal for Pangasinan State University San Carlos Campus</em>
+    through two complementary models: a <strong>System Map</strong> illustrating the actors and data flows,
+    and an <strong>Input–Process–Output (IPO)</strong> diagram showing how user inputs become actionable wellness outputs.
+  </p>
+
+  <!-- ════════════════════════════════════
+       SECTION A — SYSTEM MAP (Pure SVG)
+  ════════════════════════════════════ -->
+  <div class="diagram-section">
+    <div class="diagram-section-title">Figure 2.2 · System Map</div>
+
+    <!--
+      SVG coordinate plan (800 × 400):
+        Internet  : cx=400, cy=50  (cloud box, w=110 h=60 → top=20, bottom=80)
+        Student   : cx=80,  cy=195 (circle icon + label)
+        Faculty   : cx=80,  cy=308 (circle icon + label)
+        Web Portal: rect x=268 y=155 w=170 h=80 → cx=353, cy=195
+        Server    : rect x=468 y=155 w=150 h=80 → cx=543, cy=195
+        Database  : cx=715, cy=195 (cylinder-ish box)
+        Admin     : cx=400, cy=355 (circle icon + label)
+
+      Arrows:
+        Internet(400,80) → WebPortal(353,155): down-left diagonal
+        Student(145,195) → WebPortal(268,195): horizontal (bidirectional)
+        Faculty(145,295) → WebPortal(300,220): curved down-left
+        WebPortal(438,195) → Server(468,195): horizontal right
+        Server(618,195) → DB(670,195): horizontal right (bidirectional)
+        Admin(400,340) → WebPortal(380,235): up
+    -->
+
+    <svg viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+      <defs>
+        <!-- Arrow markers -->
+        <marker id="mArrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+          <path d="M1,1 L8,4.5 L1,8 Z" fill="#555"/>
+        </marker>
+        <marker id="mBlue"   markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+          <path d="M1,1 L8,4.5 L1,8 Z" fill="#1565c0"/>
+        </marker>
+        <marker id="mBlueR"  markerWidth="9" markerHeight="9" refX="2" refY="4.5" orient="auto">
+          <path d="M8,1 L1,4.5 L8,8 Z" fill="#1565c0"/>
+        </marker>
+        <marker id="mGreen"  markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+          <path d="M1,1 L8,4.5 L1,8 Z" fill="#2e7d32"/>
+        </marker>
+        <marker id="mGreenR" markerWidth="9" markerHeight="9" refX="2" refY="4.5" orient="auto">
+          <path d="M8,1 L1,4.5 L8,8 Z" fill="#2e7d32"/>
+        </marker>
+        <marker id="mPurple" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+          <path d="M1,1 L8,4.5 L1,8 Z" fill="#6a1b9a"/>
+        </marker>
+        <marker id="mOrange" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+          <path d="M1,1 L8,4.5 L1,8 Z" fill="#e65100"/>
+        </marker>
+        <marker id="mOrangeR" markerWidth="9" markerHeight="9" refX="2" refY="4.5" orient="auto">
+          <path d="M8,1 L1,4.5 L8,8 Z" fill="#e65100"/>
+        </marker>
+        <marker id="mGray"   markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+          <path d="M1,1 L8,4.5 L1,8 Z" fill="#546e7a"/>
+        </marker>
+        <marker id="mGrayR"  markerWidth="9" markerHeight="9" refX="2" refY="4.5" orient="auto">
+          <path d="M8,1 L1,4.5 L8,8 Z" fill="#546e7a"/>
+        </marker>
+        <marker id="mTeal"   markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+          <path d="M1,1 L8,4.5 L1,8 Z" fill="#0097a7"/>
+        </marker>
+      </defs>
+
+      <!-- ══════════════ ARROWS (drawn first so nodes sit on top) ══════════════ -->
+
+      <!-- Internet (400,78) → Web Portal top (353,155) -->
+      <line x1="395" y1="78" x2="355" y2="154"
+            stroke="#0097a7" stroke-width="2" marker-end="url(#mTeal)"/>
+      <text x="350" y="108" font-size="9" fill="#0097a7" text-anchor="middle"
+            transform="rotate(-30,350,108)">Internet Access</text>
+
+      <!-- Student → Web Portal (right arrow, goes from 145 to 268, both at y=195) -->
+      <line x1="146" y1="190" x2="267" y2="190"
+            stroke="#1565c0" stroke-width="2" marker-end="url(#mBlue)"/>
+      <text x="206" y="183" font-size="9" fill="#1565c0" text-anchor="middle">Submits Data</text>
+
+      <!-- Web Portal → Student (return, below) -->
+      <line x1="267" y1="202" x2="146" y2="202"
+            stroke="#1565c0" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#mBlueR)"/>
+      <text x="206" y="217" font-size="9" fill="#1565c0" text-anchor="middle">Results &amp; Notifications</text>
+
+      <!-- Faculty → Web Portal (curved up-right) -->
+      <path d="M 146,305 Q 220,305 268,220"
+            stroke="#2e7d32" stroke-width="2" fill="none" marker-end="url(#mGreen)"/>
+      <text x="195" y="298" font-size="9" fill="#2e7d32" text-anchor="middle">Report Students</text>
+
+      <!-- Admin (400,340) → Web Portal bottom (365,236) -->
+      <line x1="395" y1="337" x2="370" y2="237"
+            stroke="#6a1b9a" stroke-width="2" marker-end="url(#mPurple)"/>
+      <text x="412" y="295" font-size="9" fill="#6a1b9a" text-anchor="start">Manages Data</text>
+
+      <!-- Web Portal → Server (right) -->
+      <line x1="439" y1="188" x2="466" y2="188"
+            stroke="#e65100" stroke-width="2" marker-end="url(#mOrange)"/>
+
+      <!-- Server → Web Portal (return, below) -->
+      <line x1="466" y1="202" x2="439" y2="202"
+            stroke="#e65100" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#mOrangeR)"/>
+
+      <text x="452" y="180" font-size="8.5" fill="#e65100" text-anchor="middle">Output</text>
+      <text x="452" y="215" font-size="8.5" fill="#e65100" text-anchor="middle">Data</text>
+
+      <!-- Server → Database (right arrow) -->
+      <line x1="620" y1="188" x2="668" y2="188"
+            stroke="#546e7a" stroke-width="2" marker-end="url(#mGray)"/>
+
+      <!-- Database → Server (return, below) -->
+      <line x1="668" y1="202" x2="620" y2="202"
+            stroke="#546e7a" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#mGrayR)"/>
+
+      <text x="644" y="180" font-size="8.5" fill="#546e7a" text-anchor="middle">Read</text>
+      <text x="644" y="215" font-size="8.5" fill="#546e7a" text-anchor="middle">Write</text>
+
+      <!-- ══════════════ NODES ══════════════ -->
+
+      <!-- ────── INTERNET NODE (top center) ────── -->
+      <rect x="330" y="20" width="140" height="58" rx="8"
+            fill="#e0f7fa" stroke="#0097a7" stroke-width="1.8"/>
+      <text x="400" y="42" font-size="20" text-anchor="middle">☁️</text>
+      <text x="400" y="60" font-size="11" font-weight="bold" fill="#006064" text-anchor="middle">Internet</text>
+      <text x="400" y="73" font-size="9" fill="#00838f" text-anchor="middle">Secure HTTPS</text>
+
+      <!-- ────── STUDENT NODE (left) ────── -->
+      <circle cx="80" cy="170" r="34" fill="#e3eefa" stroke="#1565c0" stroke-width="2"/>
+      <text x="80" y="178" font-size="28" text-anchor="middle" dominant-baseline="middle">🧑‍🎓</text>
+      <text x="80" y="214" font-size="11" font-weight="bold" fill="#0d1b2a" text-anchor="middle">Student</text>
+      <text x="80" y="228" font-size="9" fill="#555" text-anchor="middle" width="100">Submits assessments</text>
+      <text x="80" y="239" font-size="9" fill="#555" text-anchor="middle">&amp; appointment requests</text>
+
+      <!-- ────── FACULTY NODE (lower left) ────── -->
+      <circle cx="80" cy="280" r="34" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+      <text x="80" y="288" font-size="26" text-anchor="middle" dominant-baseline="middle">👥</text>
+      <text x="80" y="324" font-size="11" font-weight="bold" fill="#0d1b2a" text-anchor="middle">Faculty</text>
+      <text x="80" y="337" font-size="9" fill="#555" text-anchor="middle">Reports students</text>
+      <text x="80" y="348" font-size="9" fill="#555" text-anchor="middle">via the web page</text>
+
+      <!-- ────── WEB PORTAL (center) ────── -->
+      <rect x="268" y="152" width="170" height="88" rx="10"
+            fill="#fff" stroke="#1565c0" stroke-width="2.5"
+            filter="drop-shadow(0 2px 8px rgba(21,101,192,.18))"/>
+      <!-- badge -->
+      <rect x="288" y="142" width="130" height="17" rx="8" fill="#1565c0"/>
+      <text x="353" y="154" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle" letter-spacing="0.5">MENTAL HEALTH PORTAL</text>
+      <!-- content -->
+      <text x="353" y="177" font-size="11" font-weight="bold" fill="#0d1b2a" text-anchor="middle">Web Page</text>
+      <text x="353" y="192" font-size="9" fill="#444" text-anchor="middle">PSU San Carlos Campus</text>
+      <line x1="280" y1="198" x2="428" y2="198" stroke="#e0e7ef" stroke-width="1"/>
+      <text x="353" y="212" font-size="9" fill="#1565c0" text-anchor="middle">Assessments · Scheduling</text>
+      <text x="353" y="225" font-size="9" fill="#1565c0" text-anchor="middle">AI Recommendations · Analytics</text>
+
+      <!-- ────── SERVER / SYSTEM (center-right) ────── -->
+      <rect x="468" y="152" width="150" height="88" rx="10"
+            fill="#fff3e0" stroke="#e65100" stroke-width="2"
+            filter="drop-shadow(0 2px 6px rgba(230,81,0,.12))"/>
+      <text x="543" y="178" font-size="11" font-weight="bold" fill="#bf360c" text-anchor="middle">Guidance System</text>
+      <text x="543" y="193" font-size="9.5" fill="#bf360c" text-anchor="middle">for Pangasinan State</text>
+      <text x="543" y="206" font-size="9.5" fill="#bf360c" text-anchor="middle">University San Carlos</text>
+      <line x1="480" y1="212" x2="606" y2="212" stroke="#ffccbc" stroke-width="1"/>
+      <text x="543" y="225" font-size="9" fill="#e65100" text-anchor="middle">🖥️ Web Server (Laravel)</text>
+      <text x="543" y="237" font-size="9" fill="#e65100" text-anchor="middle">Processes &amp; serves data</text>
+
+      <!-- ────── DATABASE (far right) ────── -->
+      <!-- Cylinder shape: top ellipse + rect + bottom ellipse -->
+      <rect x="671" y="158" width="100" height="74" fill="#eceff1" stroke="#546e7a" stroke-width="2"/>
+      <ellipse cx="721" cy="158" rx="50" ry="12" fill="#cfd8dc" stroke="#546e7a" stroke-width="2"/>
+      <ellipse cx="721" cy="232" rx="50" ry="12" fill="#b0bec5" stroke="#546e7a" stroke-width="2"/>
+      <text x="721" y="196" font-size="20" text-anchor="middle" dominant-baseline="middle">🗄️</text>
+      <text x="721" y="255" font-size="11" font-weight="bold" fill="#263238" text-anchor="middle">Database</text>
+      <text x="721" y="268" font-size="9" fill="#546e7a" text-anchor="middle">MySQL · Stores all</text>
+      <text x="721" y="279" font-size="9" fill="#546e7a" text-anchor="middle">records &amp; logs</text>
+      <!-- label below -->
+      <text x="721" y="296" font-size="9" fill="#78909c" text-anchor="middle" font-style="italic">Organizing Data</text>
+
+      <!-- ────── ADMIN NODE (bottom center) ────── -->
+      <circle cx="400" cy="360" r="34" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="2"/>
+      <text x="400" y="368" font-size="26" text-anchor="middle" dominant-baseline="middle">🛡️</text>
+      <text x="400" y="404" font-size="11" font-weight="bold" fill="#0d1b2a" text-anchor="middle">Administrator</text>
+      <text x="400" y="417" font-size="9" fill="#555" text-anchor="middle">Manages data through</text>
+
+    </svg>
+
+  </div><!-- /diagram-section -->
+
+  <!-- DIVIDER -->
+  <div class="section-divider">Input · Process · Output Model</div>
+
+  <!-- ════════════════════════════════════
+       SECTION B — IPO FRAMEWORK
+  ════════════════════════════════════ -->
+  <div class="ipo-section">
+    <div class="ipo-section-title">Figure 2.3 · IPO Framework</div>
+
+    <div class="ipo-header-row">
+      <div class="ipo-col-head input">Input</div>
+      <div class="ipo-col-head arrow"></div>
+      <div class="ipo-col-head process">Process</div>
+      <div class="ipo-col-head arrow"></div>
+      <div class="ipo-col-head output">Output</div>
+    </div>
+
+    <div class="ipo-body-row">
+
+      <!-- INPUT -->
+      <div class="ipo-col-body input">
+        <div class="ipo-item">
+          <div class="ipo-item-icon">🧑‍🎓</div>
+          <div class="ipo-item-text">
+            <strong>Student Information</strong>
+            <span>Name, student ID, year level, course, and department enrollment data submitted upon registration.</span>
+          </div>
+        </div>
+        <div class="ipo-item">
+          <div class="ipo-item-icon">📋</div>
+          <div class="ipo-item-text">
+            <strong>Screening Responses</strong>
+            <span>Answers to validated mental health screening questionnaires (PHQ-9, GAD-7, DASS-21) submitted by students through the portal.</span>
+          </div>
+        </div>
+        <div class="ipo-item">
+          <div class="ipo-item-icon">📝</div>
+          <div class="ipo-item-text">
+            <strong>Appointment Requests</strong>
+            <span>Preferred schedule, session type (online/in-person), and concerns submitted by students requesting counseling.</span>
+          </div>
+        </div>
+        <div class="ipo-item">
+          <div class="ipo-item-icon">🔑</div>
+          <div class="ipo-item-text">
+            <strong>User Credentials</strong>
+            <span>Role-based login credentials for students, guidance counselors, and system administrators.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARROW 1 -->
+      <div class="ipo-arrow-col">
+        <svg viewBox="0 0 22 22" fill="none">
+          <path d="M4 11 H18 M12 6 L18 11 L12 16" stroke="#1565c0" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="alabel">fed into</div>
+      </div>
+
+      <!-- PROCESS -->
+      <div class="ipo-col-body process">
+        <div class="ipo-item">
+          <div class="ipo-item-icon">📊</div>
+          <div class="ipo-item-text">
+            <strong>Automated Risk Scoring</strong>
+            <span>Questionnaire responses are automatically scored and classified (Minimal · Mild · Moderate · Severe) using validated clinical thresholds (PHQ-9, GAD-7, DASS-21).</span>
+          </div>
+        </div>
+        <div class="ipo-item">
+          <div class="ipo-item-icon">📅</div>
+          <div class="ipo-item-text">
+            <strong>Appointment Scheduling &amp; Tracking</strong>
+            <span>Counselors review, confirm, or reschedule student-submitted appointment requests. Students receive real-time status updates and tracking notifications.</span>
+          </div>
+        </div>
+        <div class="ipo-item">
+          <div class="ipo-item-icon">🔒</div>
+          <div class="ipo-item-text">
+            <strong>RBAC Security Enforcement</strong>
+            <span>Role-Based Access Control (RBAC) ensures that students, counselors, and administrators can only access features and data relevant to their assigned roles.</span>
+          </div>
+        </div>
+        <div class="ipo-item">
+          <div class="ipo-item-icon">🤖</div>
+          <div class="ipo-item-text">
+            <strong>AI Chatbot &amp; Mood Tracking</strong>
+            <span>The Gemini-powered AI chatbot provides personalized coping strategies and mental wellness support. Daily mood entries are tracked and visualized over time.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARROW 2 -->
+      <div class="ipo-arrow-col">
+        <svg viewBox="0 0 22 22" fill="none">
+          <path d="M4 11 H18 M12 6 L18 11 L12 16" stroke="#2e7d32" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="alabel">produces</div>
+      </div>
+
+      <!-- OUTPUT -->
+      <div class="ipo-col-body output">
+        <div class="ipo-item">
+          <div class="ipo-item-icon">📋</div>
+          <div class="ipo-item-text">
+            <strong>Risk Assessment Results</strong>
+            <span>A detailed result showing the student's mental health severity level based on submitted screening responses, displayed on their personal dashboard.</span>
+          </div>
+        </div>
+        <div class="ipo-item">
+          <div class="ipo-item-icon">📆</div>
+          <div class="ipo-item-text">
+            <strong>Appointment Confirmations &amp; Updates</strong>
+            <span>Students and counselors receive real-time confirmations, reschedule notices, and session updates for booked counseling appointments.</span>
+          </div>
+        </div>
+        <div class="ipo-item">
+          <div class="ipo-item-icon">🔐</div>
+          <div class="ipo-item-text">
+            <strong>Secure System Access</strong>
+            <span>Role-specific access grants each user type (Student, Counselor, Admin) a protected, personalized view of the system with appropriate permissions.</span>
+          </div>
+        </div>
+        <div class="ipo-item">
+          <div class="ipo-item-icon">🤖</div>
+          <div class="ipo-item-text">
+            <strong>AI-Assisted Mental Health Support</strong>
+            <span>Personalized coping strategies, wellness resources, and mental health recommendations generated by the Gemini AI model based on the student's risk profile.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /ipo-section -->
+
+  <!-- FEEDBACK LOOP -->
+  <div class="feedback-banner">
+    <div class="fb-icon">🔁</div>
+    <div class="fb-text">
+      <strong>Feedback Loop — Continuous Improvement Cycle</strong>
+      <span>
+        Counselors review generated reports and appointment outcomes, updating student records and care plans within the portal.
+        These updates re-enter the system as new inputs, continuously refining the data that drives AI recommendations
+        and progress monitoring — creating a cyclical, evidence-based support process aligned with the principles of
+        continuous quality improvement in academic mental health services.
+      </span>
+    </div>
+  </div>
+
+  <!-- CAPTION -->
+  <div class="caption">
+    <strong>Figure 2.2 &amp; 2.3. Conceptual Framework of the Mental Health Web Portal</strong>
+    <p>
+      The System Map illustrates the network of actors and data flows within the portal, while the Input–Process–Output
+      model shows how student-provided data is transformed through authentication, AI-driven assessment scoring,
+      scheduling, and analytics into actionable outputs supporting individual student wellness and institutional
+      mental health governance at Pangasinan State University San Carlos Campus.
+    </p>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#1565c0;"></div>Student Interactions
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#2e7d32;"></div>Counselor / Faculty
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#6a1b9a;"></div>Administrative Actions
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#e65100;"></div>Server Processing
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#546e7a;"></div>Database Operations
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#b0bec5; border:2px dashed #888;"></div>Feedback Loop
+    </div>
+  </div>
+
+</div><!-- /paper -->
+</body>
+</html>

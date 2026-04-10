@@ -1,0 +1,15 @@
+--- PERFORMANCE & SYSTEM DIAGNOSTIC ---
+User Count: 5
+DB Count Query Time: 29.33ms
+Users Table Indexes:
+- PRIMARY on column user_id (Unique: Yes)
+- email on column email (Unique: Yes)
+- roll_number on column roll_number (Unique: Yes)
+Users migration record already exists.
+Testing SMTP Connection (this may take a few seconds)...
+Mail Driver: smtp
+Mail Host: smtp.gmail.com
+Mail Config Check Time: 7.96ms
+Session Driver: file
+Active Session Files: 8
+--- DIAGNOSTIC COMPLETE ---

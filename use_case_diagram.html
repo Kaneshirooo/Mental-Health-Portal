@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UML Use Case Diagram | PSU Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --border: #000000;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { padding: 0 !important; }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .diagram-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        /* Actor Styling */
+        .actor {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 120px;
+            z-index: 10;
+            background: white;
+        }
+
+        .actor-icon {
+            width: 50px;
+            height: 90px;
+        }
+
+        .actor-label {
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        /* System Boundary Box */
+        .system-boundary {
+            border: 2px solid var(--border);
+            padding: 2rem 4rem;
+            flex: 1;
+            margin: 0 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            min-width: 400px;
+            position: relative;
+        }
+
+        .system-title {
+            position: absolute;
+            top: -12px;
+            background: white;
+            padding: 0 1rem;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        /* Use Case Ovals */
+        .use-case {
+            width: 260px;
+            padding: 10px 15px;
+            border: 1.5px solid var(--border);
+            border-radius: 50%; /* Oval shape */
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: white;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* SVG Lines Layer */
+        .lines-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        h2 { margin-top: 3rem; font-size: 1.2rem; font-weight: 800; border-top: 2px solid #eee; padding-top: 1rem; width: 100%; text-align: center; }
+
+        .btn-print {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #000;
+            color: #fff;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header style="text-align: center; margin-bottom: 1rem;">
+        <h1 style="font-size: 1.5rem; font-weight: 800;">USE CASE DIAGRAM</h1>
+    </header>
+
+    <div class="diagram-container" id="diagram">
+        <!-- SVG for lines -->
+        <svg class="lines-svg" id="svg-lines"></svg>
+
+        <!-- Left Actor: Student -->
+        <div class="actor" id="student-actor">
+            <svg class="actor-icon" viewBox="0 0 100 150">
+                <!-- Stick Figure -->
+                <circle cx="50" cy="25" r="15" fill="none" stroke="black" stroke-width="4"/>
+                <line x1="50" y1="40" x2="50" y2="100" stroke="black" stroke-width="4"/>
+                <line x1="50" y1="60" x2="20" y2="40" stroke="black" stroke-width="4"/>
+                <line x1="50" y1="60" x2="80" y2="40" stroke="black" stroke-width="4"/>
+                <line x1="50" y1="100" x2="20" y2="140" stroke="black" stroke-width="4"/>
+                <line x1="50" y1="100" x2="80" y2="140" stroke="black" stroke-width="4"/>
+            </svg>
+            <span class="actor-label">Student</span>
+        </div>
+
+        <!-- System Boundary Center -->
+        <div class="system-boundary" id="system-box">
+            <div class="system-title">PSU PORTAL - MENTAL HEALTH SYSTEM</div>
+            
+            <div class="use-case" id="uc1">Login</div>
+            <div class="use-case" id="uc2">Create Account</div>
+            <div class="use-case" id="uc3">View Dashboard</div>
+            <div class="use-case" id="uc4">Talk to Aria (AI Chat)</div>
+            <div class="use-case" id="uc5">Mood Journaling</div>
+            <div class="use-case" id="uc6">Take Pre-Assessment</div>
+            <div class="use-case" id="uc7">Request Appointment</div>
+            <div class="use-case" id="uc8">Quick Note Portal</div>
+            <div class="use-case" id="uc9">Mindfulness Corner</div>
+            <div class="use-case" id="uc10">Review Records</div>
+            <div class="use-case" id="uc11">Manage Availability</div>
+            <div class="use-case" id="uc12">Manage Appointments</div>
+            <div class="use-case" id="uc13">Manage Users</div>
+            <div class="use-case" id="uc14">System Reports</div>
+            <div class="use-case" id="uc15">Logout</div>
+        </div>
+
+        <!-- Right Actors: Counselor & Admin -->
+        <div style="display: flex; flex-direction: column; gap: 100px;">
+            <div class="actor" id="counselor-actor">
+                <svg class="actor-icon" viewBox="0 0 100 150">
+                    <circle cx="50" cy="25" r="15" fill="none" stroke="black" stroke-width="4"/>
+                    <line x1="50" y1="40" x2="50" y2="100" stroke="black" stroke-width="4"/>
+                    <line x1="50" y1="60" x2="20" y2="40" stroke="black" stroke-width="4"/>
+                    <line x1="50" y1="60" x2="80" y2="40" stroke="black" stroke-width="4"/>
+                    <line x1="50" y1="100" x2="20" y2="140" stroke="black" stroke-width="4"/>
+                    <line x1="50" y1="100" x2="80" y2="140" stroke="black" stroke-width="4"/>
+                </svg>
+                <span class="actor-label">Counselor</span>
+            </div>
+            
+            <div class="actor" id="admin-actor">
+                <svg class="actor-icon" viewBox="0 0 100 150">
+                    <circle cx="50" cy="25" r="15" fill="none" stroke="black" stroke-width="4"/>
+                    <line x1="50" y1="40" x2="50" y2="100" stroke="black" stroke-width="4"/>
+                    <line x1="50" y1="60" x2="20" y2="40" stroke="black" stroke-width="4"/>
+                    <line x1="50" y1="60" x2="80" y2="40" stroke="black" stroke-width="4"/>
+                    <line x1="50" y1="100" x2="20" y2="140" stroke="black" stroke-width="4"/>
+                    <line x1="50" y1="100" x2="80" y2="140" stroke="black" stroke-width="4"/>
+                </svg>
+                <span class="actor-label">Admin</span>
+            </div>
+        </div>
+    </div>
+
+    <h2>Figure 3.2: Use Case Diagram for PSU Portal Actors</h2>
+
+    <button class="btn-print no-print" onclick="window.print()">Download / Print PDF</button>
+
+    <script>
+        function drawLines() {
+            const svg = document.getElementById('svg-lines');
+            const diagram = document.getElementById('diagram').getBoundingClientRect();
+            svg.innerHTML = ''; // Clear existing
+
+            const student = document.getElementById('student-actor').getBoundingClientRect();
+            const counselor = document.getElementById('counselor-actor').getBoundingClientRect();
+            const admin = document.getElementById('admin-actor').getBoundingClientRect();
+
+            const studentX = student.right - diagram.left;
+            const studentY = student.top + (student.height / 2) - diagram.top - 20;
+
+            const counselorX = counselor.left - diagram.left;
+            const counselorY = counselor.top + (counselor.height / 2) - diagram.top - 20;
+
+            const adminX = admin.left - diagram.left;
+            const adminY = admin.top + (admin.height / 2) - diagram.top - 20;
+
+            function addLine(x, y, targetId) {
+                const target = document.getElementById(targetId).getBoundingClientRect();
+                const targetX = (x < target.left - diagram.left) ? (target.left - diagram.left) : (target.right - diagram.left);
+                const targetY = target.top + (target.height / 2) - diagram.top;
+
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", x);
+                line.setAttribute("y1", y);
+                line.setAttribute("x2", targetX);
+                line.setAttribute("y2", targetY);
+                line.setAttribute("stroke", "black");
+                line.setAttribute("stroke-width", "1");
+                svg.appendChild(line);
+            }
+
+            // Student Use Cases (UC1 to UC9, and Logout)
+            ['uc1', 'uc2', 'uc3', 'uc4', 'uc5', 'uc6', 'uc7', 'uc8', 'uc9', 'uc15'].forEach(id => addLine(studentX, studentY, id));
+
+            // Counselor Use Cases
+            ['uc1', 'uc3', 'uc10', 'uc11', 'uc12', 'uc15'].forEach(id => addLine(counselorX, counselorY, id));
+
+            // Admin Use Cases
+            ['uc1', 'uc13', 'uc14', 'uc15'].forEach(id => addLine(adminX, adminY, id));
+            
+            // Inheritance Line (Inheritance from Admin to Counselor)
+            const arrowLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            arrowLine.setAttribute("x1", adminX + 20);
+            arrowLine.setAttribute("y1", adminY - 20);
+            arrowLine.setAttribute("x2", counselorX + 20);
+            arrowLine.setAttribute("y2", counselorY + 40);
+            arrowLine.setAttribute("stroke", "black");
+            arrowLine.setAttribute("stroke-width", "1.5");
+            arrowLine.setAttribute("stroke-dasharray", "4");
+            svg.appendChild(arrowLine);
+        }
+
+        window.onload = drawLines;
+        window.onresize = drawLines;
+    </script>
+</body>
+</html>

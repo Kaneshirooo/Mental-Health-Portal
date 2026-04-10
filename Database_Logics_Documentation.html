@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Logic & Roles Documentation | PSU Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --accent: #8b5cf6;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --code-bg: #1e293b;
+            --success: #10b981;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .card { border: 1px solid #ddd !important; background: white !important; box-shadow: none !important; break-inside: avoid; }
+            h1, h2, h3 { color: #312e81 !important; }
+            code { background: #f3f4f6 !important; color: #1f2937 !important; border: 1px solid #e5e7eb !important; }
+            .container { max-width: 100% !important; margin: 0 !important; }
+            .mermaid-svg { max-width: 100% !important; height: auto !important; }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        header { text-align: center; margin-bottom: 4rem; }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle { color: var(--text-muted); font-size: 1.1rem; }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--text);
+            border-left: 4px solid var(--accent);
+            padding-left: 1rem;
+        }
+
+        p { margin-bottom: 1rem; color: var(--text-muted); }
+
+        .mermaid-container {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow: auto;
+            border: 1px solid var(--border);
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #e2e8f0;
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .highlight-php { color: #818cf8; }
+        .highlight-type { color: #f472b6; }
+        .highlight-func { color: #34d399; }
+
+        .btn-print {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 0.5rem; z-index: 100;
+        }
+
+        .btn-print:hover { transform: translateY(-5px); box-shadow: 0 8px 30px var(--primary-glow); }
+
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); }
+        th { color: var(--text); font-weight: 600; }
+        td { color: var(--text-muted); }
+
+        .alert {
+            padding: 1rem; border-radius: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            margin: 1.5rem 0;
+        }
+
+        .alert-title { font-weight: 700; color: var(--success); margin-bottom: 0.25rem; }
+
+        footer { text-align: center; margin-top: 4rem; color: var(--text-muted); font-size: 0.9rem; padding-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+            <h1>Database Architecture Guide</h1>
+            <p class="subtitle">Documentation for PSU Portal Mental Health System</p>
+        </header>
+
+        <section class="card">
+            <h2>Part 1: The Unified ERD Diagram</h2>
+            <p>This high-fidelity diagram represents the reconciled schema between the legacy SQL database and the current Laravel migration system.</p>
+            <div class="mermaid-container">
+                <pre class="mermaid">
+erDiagram
+    users ||--o{ appointments : "student/counselor"
+    users ||--o{ ai_preassessments : "student"
+    users ||--o{ counselor_availability : "counselor"
+    users ||--o{ student_responses : "responses"
+    users ||--o{ assessment_scores : "results"
+    users ||--o{ mood_logs : "mood tracking"
+    users ||--o{ anonymous_notes : "anonymous portal"
+    users ||--o{ counselor_notes : "case notes"
+    users ||--o{ chat_history : "messages"
+    users ||--o{ notifications : "alerts"
+    users ||--o{ session_logs : "security logs"
+    users ||--o{ otp_tokens : "security codes"
+    
+    assessment_questions ||--o{ student_responses : "questions"
+    anonymous_notes ||--o{ anonymous_note_messages : "thread"
+
+    users {
+        bigint user_id PK
+        string email
+        string full_name
+        string roll_number
+        enum user_type "student|counselor|admin"
+        timestamp created_at
+    }
+
+    appointments {
+        bigint appointment_id PK
+        bigint student_id FK
+        bigint counselor_id FK
+        datetime scheduled_at
+        enum status "requested|confirmed|declined|cancelled|completed"
+    }
+                </pre>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Part 2: Database Reconciliation Log</h2>
+            <p>Earlier, we performed a <strong>Normalization</strong> process to align the legacy <code>mental_health_db</code> with modern Laravel standards.</p>
+            <ul>
+                <li><strong>Consistent Piling:</strong> Converted camelCase legacy columns to snake_case.</li>
+                <li><strong>UUID vs BigInt:</strong> Standardized on <code>bigint</code> for primary keys in transactional tables for performance.</li>
+                <li><strong>Soft Deletes:</strong> Added support for deleted timestamps to allow data recovery.</li>
+                <li><strong>Role Management:</strong> Migrated from loose strings to Enums for <code>user_type</code>.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Part 3: Determining Relationships</h2>
+            <p>To identify how any two tables in this project are linked, follow this hierarchy:</p>
+
+            <h3>1. The Migration File (Physical)</h3>
+            <p>Foreign keys are established here. If a table has a <code>foreignId</code>, it physically depends on the parent table.</p>
+            <pre><code><span class="highlight-func">$table</span>->foreignId(<span class="highlight-type">'student_id'</span>)->constrained(<span class="highlight-type">'users'</span>, <span class="highlight-type">'user_id'</span>);</code></pre>
+            
+            <h3>2. The Eloquent Model (Logical)</h3>
+            <p>Laravel models use these methods to fetch related data automatically:</p>
+            <table>
+                <thead>
+                    <tr><th>Method</th><th>Usage</th><th>Project Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>belongsTo()</code></td><td>N:1 Relationship</td><td>Appointment &rarr; User</td></tr>
+                    <tr><td><code>hasMany()</code></td><td>1:N Relationship</td><td>User &rarr; MoodLogs</td></tr>
+                    <tr><td><code>hasOne()</code></td><td>1:1 Relationship</td><td>User &rarr; Latest Score</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card">
+            <h2>Part 4: Roles & Permissions (Spatie Logic)</h2>
+            <p>You asked about <code>model_has_roles</code> and <code>model_has_permissions</code>. These implement Advanced Access Control.</p>
+            
+            <ul>
+                <li><strong>Flexible Membership:</strong> One user can hold multiple roles simultaneously.</li>
+                <li><strong>Polymorphic Linking:</strong> The <code>model_type</code> column allows roles to be assigned to Users, Admins, or even Teams.</li>
+                <li><strong>Granular Override:</strong> Permissions can be granted to an individual user even if their role doesn't normally have it.</li>
+            </ul>
+
+            <div class="alert">
+                <div class="alert-title">Implementation Note</div>
+                While your project currently uses a <code>user_type</code> column for simplicity, the Spatie tables provide the infrastructure for a future-proof permission system as the portal grows.
+            </div>
+        </section>
+
+        <footer>
+            Prepared by Antigravity for PSU Portal &copy; 2024
+        </footer>
+    </div>
+
+    <button class="btn-print no-print" onclick="window.print()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        Download as Master PDF
+    </button>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#6366f1',
+                lineColor: '#94a3b8',
+                entityBkg: '#1e293b',
+                entityBorder: '#475569'
+            }
+        });
+    </script>
+</body>
+</html>

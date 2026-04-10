@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 1 DFD | PSU Portal: Mental Health System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        header { width: 100%; padding: 0.6rem 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #f0f0f0; border-bottom: 1px solid #000; }
+        header h1 { font-size: 0.95rem; font-weight: bold; }
+        header p  { font-size: 0.72rem; color: #555; }
+        .actions { display: flex; gap: 0.6rem; }
+        .btn { padding: 0.35rem 0.8rem; font-size: 0.78rem; font-weight: bold; cursor: pointer; border: 1px solid #000; background: #fff; }
+        .btn:hover { background: #e8e8e8; }
+        main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1rem; }
+        .diagram-caption { margin-top: 0.8rem; font-size: 0.9rem; font-weight: bold; }
+        @media print { header .actions { display: none; } }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <h1>Level 1 Process Diagram — Data Flow Diagram</h1>
+        <p>PSU Portal: Decomposed Internal Modules</p>
+    </div>
+    <div class="actions">
+        <button class="btn" id="exportPNG">Export PNG</button>
+        <button class="btn" onclick="window.print()">Print / PDF</button>
+    </div>
+</header>
+<main>
+<!-- ══════════════════════════════════════════════════════════════════
+     CANVAS: 1500 × 1000
+
+     COLUMN LAYOUT:
+       Left entity col:   x=10..150
+       Process col:       x=165..815  (3 processes, 190px each, 30px gap)
+       Data store col:    x=830..1340 (open-ended, no right border)
+       Right entity col:  x=1355..1490
+
+     PROCESS ROW 1:  y=110..220   P1.0(cx=255) P2.0(cx=480) P3.0(cx=710)
+     GAP ZONE:       y=220..640   (420px — routing lanes every 70px)
+     PROCESS ROW 2:  y=640..750   P4.0(cx=255) P5.0(cx=480) P6.0(cx=710)
+
+     ROUTING LANES (all strictly horizontal in gap zone):
+       Lane A  y=290  Student → P2.0   PHQ-9/GAD-7 Responses
+       Lane B  y=360  P2.0 → Student   Scoring Report + AI Rec
+       Lane C  y=430  Student → P3.0   Appointment Request
+       Lane D  y=500  Counselor → P3.0  Availability Schedule  (via x=6 left corridor)
+       Lane E  y=570  (reserved for Admin right-side routing)
+
+     TOP BYPASS LANE: y=80  Admin → P1.0  User Access Control
+     RIGHT BYPASS: x=1495  Admin (top) → P6.0 (bottom)
+══════════════════════════════════════════════════════════════════ -->
+<svg id="dfd" xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1500 1000" width="1500" height="1000"
+     style="border:1px solid #bbb; background:#fff;">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0,9 3.5,0 7" fill="#000"/>
+    </marker>
+  </defs>
+
+  <!-- ═══════════════ HELPER MACRO: all labels 11px with white bg ═══════════════ -->
+
+  <!-- ════════════ EXTERNAL ENTITIES ════════════ -->
+
+  <!-- STUDENT / CLIENT (top-left) -->
+  <rect x="10" y="130" width="140" height="90" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="80" y="165">STUDENT /</text>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="80" y="182">CLIENT</text>
+
+  <!-- SYSTEM ADMIN (top-right) -->
+  <rect x="1355" y="130" width="140" height="90" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="1425" y="165">SYSTEM</text>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="1425" y="182">ADMIN</text>
+
+  <!-- COUNSELOR (bottom-left) -->
+  <rect x="10" y="790" width="140" height="90" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="80" y="825">COUNSELOR /</text>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="80" y="842">PROVIDER</text>
+
+  <!-- STUDENT duplicate (bottom-left, for row-2 processes) -->
+  <rect x="13" y="643" width="140" height="90" fill="#fff" stroke="#000" stroke-width="0.7" stroke-dasharray="4,2"/>
+  <rect x="10" y="640" width="140" height="90" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="80" y="675">STUDENT /</text>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="80" y="692">CLIENT</text>
+
+  <!-- ADMIN duplicate (bottom-right, for P6.0) -->
+  <rect x="1358" y="643" width="140" height="90" fill="#fff" stroke="#000" stroke-width="0.7" stroke-dasharray="4,2"/>
+  <rect x="1355" y="640" width="140" height="90" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="1425" y="675">SYSTEM</text>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="1425" y="692">ADMIN</text>
+
+  <!-- ════════════ PROCESS ROW 1 (y=110..220) ════════════ -->
+
+  <!-- P1.0 Login & Registration  x=165..355 -->
+  <rect x="165" y="110" width="190" height="110" fill="#fff" stroke="#000" stroke-width="1"/>
+  <line x1="165" y1="135" x2="355" y2="135" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="260" y="127">1.0</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="260" y="153">LOGIN &amp;</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="260" y="169">REGISTRATION</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="260" y="185">MODULE</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="260" y="201">PROCESS</text>
+
+  <!-- P2.0 AI Pre-Assessment  x=385..575 -->
+  <rect x="385" y="110" width="190" height="110" fill="#fff" stroke="#000" stroke-width="1"/>
+  <line x1="385" y1="135" x2="575" y2="135" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="480" y="127">2.0</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="480" y="153">AI</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="480" y="169">PRE-ASSESSMENT</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="480" y="185">MODULE</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="480" y="201">PROCESS</text>
+
+  <!-- P3.0 Appointment Handling  x=605..795 -->
+  <rect x="605" y="110" width="190" height="110" fill="#fff" stroke="#000" stroke-width="1"/>
+  <line x1="605" y1="135" x2="795" y2="135" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="700" y="127">3.0</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="700" y="153">APPOINTMENT</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="700" y="169">HANDLING</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="700" y="185">MODULE</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="700" y="201">PROCESS</text>
+
+  <!-- ════════════ DATA STORES ROW 1 ════════════ -->
+  <!-- D1 User Profiles  y=118..158 -->
+  <line x1="830" y1="118" x2="830" y2="158" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="118" x2="1340" y2="118" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="158" x2="1340" y2="158" stroke="#000" stroke-width="1"/>
+  <line x1="866" y1="118" x2="866" y2="158" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="848" y="143">D1</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="start" x="875" y="143">USER PROFILES</text>
+
+  <!-- D2 Assessment Data  y=172..212 -->
+  <line x1="830" y1="172" x2="830" y2="212" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="172" x2="1340" y2="172" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="212" x2="1340" y2="212" stroke="#000" stroke-width="1"/>
+  <line x1="866" y1="172" x2="866" y2="212" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="848" y="197">D2</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="start" x="875" y="197">ASSESSMENT DATA</text>
+
+  <!-- D3 Appointments  y=226..266 -->
+  <line x1="830" y1="226" x2="830" y2="266" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="226" x2="1340" y2="226" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="266" x2="1340" y2="266" stroke="#000" stroke-width="1"/>
+  <line x1="866" y1="226" x2="866" y2="266" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="848" y="251">D3</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="start" x="875" y="251">APPOINTMENTS</text>
+
+  <!-- ════════════ PROCESS ROW 2 (y=640..750) ════════════ -->
+
+  <!-- P4.0 Messaging & Notes  x=165..355 -->
+  <rect x="165" y="640" width="190" height="110" fill="#fff" stroke="#000" stroke-width="1"/>
+  <line x1="165" y1="665" x2="355" y2="665" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="260" y="657">4.0</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="260" y="683">MESSAGING &amp;</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="260" y="699">NOTES</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="260" y="715">MODULE</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="260" y="731">PROCESS</text>
+
+  <!-- P5.0 Mood Tracking  x=385..575 -->
+  <rect x="385" y="640" width="190" height="110" fill="#fff" stroke="#000" stroke-width="1"/>
+  <line x1="385" y1="665" x2="575" y2="665" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="480" y="657">5.0</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="480" y="683">MOOD</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="480" y="699">TRACKING</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="480" y="715">MODULE</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="480" y="731">PROCESS</text>
+
+  <!-- P6.0 Analytics & Reports  x=605..795 -->
+  <rect x="605" y="640" width="190" height="110" fill="#fff" stroke="#000" stroke-width="1"/>
+  <line x1="605" y1="665" x2="795" y2="665" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" x="700" y="657">6.0</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="700" y="683">ANALYTICS &amp;</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="700" y="699">REPORTS</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="700" y="715">MODULE</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="700" y="731">PROCESS</text>
+
+  <!-- ════════════ DATA STORES ROW 2 ════════════ -->
+  <!-- D4 Messages & Notes  y=648..688 -->
+  <line x1="830" y1="648" x2="830" y2="688" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="648" x2="1340" y2="648" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="688" x2="1340" y2="688" stroke="#000" stroke-width="1"/>
+  <line x1="866" y1="648" x2="866" y2="688" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="848" y="673">D4</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="start" x="875" y="673">MESSAGES &amp; NOTES</text>
+
+  <!-- D5 Mood Journal  y=702..742 -->
+  <line x1="830" y1="702" x2="830" y2="742" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="702" x2="1340" y2="702" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="742" x2="1340" y2="742" stroke="#000" stroke-width="1"/>
+  <line x1="866" y1="702" x2="866" y2="742" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="848" y="727">D5</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="start" x="875" y="727">MOOD JOURNAL</text>
+
+  <!-- D6 Analytics Logs  y=756..796 -->
+  <line x1="830" y1="756" x2="830" y2="796" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="756" x2="1340" y2="756" stroke="#000" stroke-width="1"/>
+  <line x1="830" y1="796" x2="1340" y2="796" stroke="#000" stroke-width="1"/>
+  <line x1="866" y1="756" x2="866" y2="796" stroke="#000" stroke-width="1"/>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle" x="848" y="781">D6</text>
+  <text font-family="Arial" font-size="11" font-weight="bold" text-anchor="start" x="875" y="781">ANALYTICS LOGS</text>
+
+  <!-- ════════════════════════════════════════════
+       FLOW ARROWS
+       All labels: font-size 11, white bg rect behind them
+  ════════════════════════════════════════════ -->
+
+  <!-- ── ROW 1 DIRECT CONNECTIONS ── -->
+
+  <!-- Student → P1.0: Login Credentials (direct horizontal y=175) -->
+  <line x1="150" y1="175" x2="165" y2="175" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="94" y="158" width="75" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="131" y="170">Credentials</text>
+
+  <!-- P1.0 → D1: Save User Profile -->
+  <line x1="355" y1="158" x2="830" y2="138" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="490" y="138" width="130" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="555" y="150">Save User Profile</text>
+
+  <!-- D1 → P1.0: Retrieve Profile -->
+  <line x1="830" y1="150" x2="355" y2="172" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="470" y="160" width="126" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="533" y="172">Retrieve Profile</text>
+
+  <!-- Admin → P1.0: User Access Control (TOP BYPASS y=80) -->
+  <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+            points="1425,130  1425,80  260,80  260,110"/>
+  <rect x="724" y="65" width="160" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="804" y="77">User Access Control</text>
+
+  <!-- P2.0 → D2: Assessment Result -->
+  <line x1="575" y1="185" x2="830" y2="195" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="634" y="178" width="136" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="702" y="190">Assessment Result</text>
+
+  <!-- P3.0 → D3: Booking Record -->
+  <line x1="795" y1="195" x2="830" y2="245" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="756" y="208" width="100" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="806" y="220">Booking Record</text>
+
+  <!-- ── GAP ZONE ROUTING LANES ── -->
+  <!--
+    LANE A y=290: Student → P2.0  (PHQ-9/GAD-7)
+    LANE B y=360: P2.0 → Student  (Scoring Report)
+    LANE C y=430: Student → P3.0  (Appointment Request)
+    LANE D y=500: Counselor → P3.0 (Availability) via left corridor x=6
+    LANE E y=570: P3.0 → Counselor (Booking Info) via left corridor x=6 [not needed, P3→D3 is enough]
+  -->
+
+  <!-- LANE A: Student → P2.0  PHQ-9/GAD-7 Responses -->
+  <!-- Student bottom (80,220) → down to y=290 → right to x=480 → up to P2.0 bottom (480,220) -->
+  <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+            points="80,220  80,290  480,290  480,220"/>
+  <rect x="168" y="275" width="210" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="273" y="287">PHQ-9 / GAD-7 Responses</text>
+
+  <!-- LANE B: P2.0 → Student  Scoring Report + AI Recommendation -->
+  <!-- P2.0 bottom (480,220) → down to y=360 → left to x=80 → up to Student bottom (80,220) -->
+  <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+            points="480,220  480,360  80,360  80,220"/>
+  <rect x="148" y="344" width="242" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="269" y="356">Score Report &amp; AI Recommendation</text>
+
+  <!-- LANE C: Student → P3.0  Appointment Request -->
+  <!-- Student bottom (80,220) → down to y=430 → right to x=700 → up to P3.0 bottom (700,220) -->
+  <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+            points="80,220  80,430  700,430  700,220"/>
+  <rect x="280" y="414" width="168" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="364" y="426">Appointment Request</text>
+
+  <!-- LANE D: Counselor → P3.0  Availability Schedule -->
+  <!-- via left corridor x=6: Counselor top (80,790) → left to x=6 → up to y=500 → right to x=700 → up to P3.0 bottom -->
+  <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+            points="80,790  6,790  6,500  700,500  700,220"/>
+  <rect x="240" y="484" width="186" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="333" y="496">Availability Schedule</text>
+
+  <!-- ── ROW 2 DIRECT CONNECTIONS ── -->
+
+  <!-- Student (dup) → P4.0: Anonymous Note (direct horizontal y=675) -->
+  <line x1="150" y1="675" x2="165" y2="675" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="60" y="658" width="108" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="114" y="670">Anonymous Note</text>
+
+  <!-- Counselor → P4.0: Clinical Notes (L-shape) -->
+  <!-- Counselor (x=150, y=835) → right to x=180 → up to y=710 → right to P4.0 left x=165... -->
+  <!-- Simpler: Counselor top (80,790) → up to y=755 → right to P4.0 left bottom corner (165,750) -->
+  <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+            points="150,820  165,820  165,750"/>
+  <rect x="100" y="810" width="102" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="151" y="822">Clinical Notes</text>
+
+  <!-- P4.0 → D4: Message Log -->
+  <line x1="355" y1="675" x2="830" y2="668" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="500" y="659" width="94" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="547" y="671">Message Log</text>
+
+  <!-- Student (dup) → P5.0: Daily Mood Entry (horizontal y=695) -->
+  <line x1="150" y1="695" x2="385" y2="695" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="191" y="678" width="142" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="262" y="690">Daily Mood Entry</text>
+
+  <!-- P5.0 → D5: Mood Record -->
+  <line x1="575" y1="710" x2="830" y2="722" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="644" y="706" width="90" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="689" y="718">Mood Record</text>
+
+  <!-- Admin (dup) → P6.0: Report Request (direct horizontal y=680) -->
+  <line x1="1355" y1="680" x2="795" y2="680" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="1010" y="664" width="118" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="1069" y="676">Report Request</text>
+
+  <!-- P6.0 → Admin (dup): Statistical Reports (horizontal y=700) -->
+  <line x1="795" y1="700" x2="1355" y2="700" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="988" y="703" width="168" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="1072" y="715">Statistical PDF Reports</text>
+
+  <!-- P6.0 → D6: Analytics Data -->
+  <line x1="795" y1="720" x2="830" y2="776" stroke="#000" stroke-width="1" marker-end="url(#arr)"/>
+  <rect x="768" y="738" width="100" height="14" fill="#fff"/>
+  <text font-family="Arial" font-size="11" text-anchor="middle" x="818" y="750">Analytics Data</text>
+
+  <!-- ════════════ LEGEND ════════════ -->
+  <rect x="10" y="930" width="700" height="48" fill="#f9f9f9" stroke="#ccc" stroke-width="0.8"/>
+  <text font-family="Arial" font-size="10" font-weight="bold" x="18" y="948">NOTE:</text>
+  <text font-family="Arial" font-size="10" x="58" y="948">Dashed box = repeated external entity (standard DFD notation).</text>
+  <text font-family="Arial" font-size="10" x="18" y="964">P1.0–P6.0 = System processes.  D1–D6 = Data stores (open-ended rectangle = Yourdon notation).</text>
+  <text font-family="Arial" font-size="10" x="18" y="972">All arrows show data flows between actors and processes.</text>
+
+</svg>
+<div class="diagram-caption">Figure 3.5.2: Level 1 Data Flow Diagram (Process Decomposition)</div>
+</main>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+    document.getElementById('exportPNG').addEventListener('click', () => {
+        const svg = document.getElementById('dfd');
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const canvas = document.createElement('canvas');
+        canvas.width = 3000; canvas.height = 2000;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(2, 2);
+        const img = new Image();
+        const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        img.onload = () => {
+            ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 1500, 1000);
+            ctx.drawImage(img, 0, 0);
+            URL.revokeObjectURL(url);
+            const link = document.createElement('a');
+            link.download = 'dfd_level1.png';
+            link.href = canvas.toDataURL('image/png'); link.click();
+        };
+        img.src = url;
+    });
+</script>
+</body>
+</html>

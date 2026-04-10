@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 0 DFD | PSU Portal: Mental Health System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        header { width: 100%; padding: 0.6rem 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #f0f0f0; border-bottom: 1px solid #000; }
+        header h1 { font-size: 0.95rem; font-weight: bold; }
+        header p  { font-size: 0.72rem; color: #555; }
+        .actions { display: flex; gap: 0.6rem; }
+        .btn { padding: 0.35rem 0.8rem; font-size: 0.78rem; font-weight: bold; cursor: pointer; border: 1px solid #000; background: #fff; }
+        .btn:hover { background: #e8e8e8; }
+        main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1rem; }
+        .diagram-caption { margin-top: 0.8rem; font-size: 0.9rem; font-weight: bold; font-family: Arial, sans-serif; }
+        @media print { header .actions { display: none; } }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <h1>Level 0 Context Diagram — Data Flow Diagram</h1>
+        <p>PSU Portal: Mental Health Management System</p>
+    </div>
+    <div class="actions">
+        <button class="btn" id="exportPNG">Export PNG</button>
+        <button class="btn" onclick="window.print()">Print / PDF</button>
+    </div>
+</header>
+<main>
+<!--
+    CLEAN ORTHOGONAL LAYOUT (1000 × 700)
+
+    Process 0 center:    x=390..610  y=290..410  (cx=500, cy=350)
+    Student (left):      x=40..200   y=140..230  (cx=120, cy=185)
+    Admin   (right):     x=800..960  y=140..230  (cx=880, cy=185)
+    Counselor (bot-L):   x=40..200   y=480..570  (cx=120, cy=525)
+    School Mgt (bot-R):  x=800..960  y=480..570  (cx=880, cy=525)
+
+    Flow routing:
+    - Student ↔ Process:  horizontal midpoint lane y=185, then vertical to process
+    - Admin   ↔ Process:  horizontal midpoint lane y=185, then vertical to process
+    - Counselor ↔ Process: horizontal midpoint lane y=525, then vertical to process
+    - School  ↔ Process:  horizontal midpoint lane y=525, then vertical to process
+
+    Each entity-to-process pair gets its own horizontal track y-offset ±15px
+-->
+<svg id="dfd" xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1000 700" width="1000" height="700"
+     style="border:1px solid #bbb; background:#fff;">
+    <defs>
+        <marker id="arr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+            <polygon points="0 0,9 3.5,0 7" fill="#000"/>
+        </marker>
+        <style>
+            text { font-family: Arial, sans-serif; }
+        </style>
+    </defs>
+
+    <!-- ══════════════ ENTITIES ══════════════ -->
+
+    <!-- STUDENT / CLIENT  (left, y=140–230) -->
+    <rect x="40" y="140" width="160" height="80" fill="#fff" stroke="#000" stroke-width="1.2"/>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="120" y="174">STUDENT /</text>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="120" y="190">CLIENT</text>
+
+    <!-- SYSTEM ADMIN  (right, y=140–230) -->
+    <rect x="800" y="140" width="160" height="80" fill="#fff" stroke="#000" stroke-width="1.2"/>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="880" y="174">SYSTEM</text>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="880" y="190">ADMIN</text>
+
+    <!-- COUNSELOR / PROVIDER  (bot-left, y=480–560) -->
+    <rect x="40" y="480" width="160" height="80" fill="#fff" stroke="#000" stroke-width="1.2"/>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="120" y="514">COUNSELOR /</text>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="120" y="530">PROVIDER</text>
+
+    <!-- SCHOOL MANAGEMENT  (bot-right, y=480–560) -->
+    <rect x="800" y="480" width="160" height="80" fill="#fff" stroke="#000" stroke-width="1.2"/>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="880" y="514">SCHOOL</text>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="880" y="530">MANAGEMENT</text>
+
+    <!-- ══════════════ PROCESS 0 ══════════════ -->
+    <!-- Outer rect -->
+    <rect x="370" y="280" width="260" height="140" fill="#fff" stroke="#000" stroke-width="1.5"/>
+    <!-- Header divider -->
+    <line x1="370" y1="310" x2="630" y2="310" stroke="#000" stroke-width="1.5"/>
+    <text font-size="16" font-weight="bold" text-anchor="middle" x="500" y="302">0</text>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="500" y="333">MENTAL HEALTH</text>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="500" y="351">PORTAL MANAGEMENT</text>
+    <text font-size="12" font-weight="bold" text-anchor="middle" x="500" y="369">SYSTEM</text>
+
+    <!-- ══════════════ STUDENT ↔ PROCESS: Orthogonal L-shaped routes ══════════════ -->
+    <!--
+        Student right edge: x=200
+        Process left edge:  x=370
+        Horizontal midpoint: x=285 (midway between 200 and 370)
+
+        Outgoing (Student→Process) lines exit Student at x=200, go right to x=285,
+        then turn down/up to process entry point at x=370.
+
+        We space Student entries vertically at process-left edge:  y=295,310,325
+        And process exits (return flows) at:                       y=340,355
+    -->
+
+    <!-- [S→P1] Student Profile -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="200,158  285,158  285,295  370,295"/>
+    <text font-size="10" text-anchor="middle" x="242" y="151">Student Profile</text>
+
+    <!-- [S→P2] PHQ-9 / GAD-7 Data -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="200,172  300,172  300,313  370,313"/>
+    <text font-size="10" text-anchor="middle" x="250" y="165">PHQ-9 / GAD-7 Data</text>
+
+    <!-- [S→P3] Appointment Request -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="200,186  315,186  315,330  370,330"/>
+    <text font-size="10" text-anchor="middle" x="258" y="179">Appointment Request</text>
+
+    <!-- [P→S1] Scoring Report (Process → Student) -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="370,348  310,348  310,205  200,205"/>
+    <text font-size="10" text-anchor="middle" x="255" y="220">Scoring Report</text>
+
+    <!-- [P→S2] AI Recommendation -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="370,363  295,363  295,218  200,218"/>
+    <text font-size="10" text-anchor="middle" x="248" y="233">AI Recommendation</text>
+
+    <!-- ══════════════ ADMIN ↔ PROCESS ══════════════ -->
+    <!--
+        Admin left edge:    x=800
+        Process right edge: x=630
+        Horizontal midpoint: x=715
+    -->
+
+    <!-- [A→P1] User Access Control -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="800,158  715,158  715,295  630,295"/>
+    <text font-size="10" text-anchor="middle" x="758" y="151">User Access Control</text>
+
+    <!-- [A→P2] Security Overrides -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="800,175  700,175  700,313  630,313"/>
+    <text font-size="10" text-anchor="middle" x="750" y="168">Security Overrides</text>
+
+    <!-- [P→A1] Security Logs -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="630,348  690,348  690,205  800,205"/>
+    <text font-size="10" text-anchor="middle" x="745" y="220">Security Logs</text>
+
+    <!-- [P→A2] Analytics Data -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="630,363  705,363  705,218  800,218"/>
+    <text font-size="10" text-anchor="middle" x="753" y="233">Analytics Data</text>
+
+    <!-- ══════════════ COUNSELOR ↔ PROCESS ══════════════ -->
+    <!--
+        Counselor right edge: x=200
+        Process left edge:    x=370
+        Vertical midpoint y between 420 and 480: y=450
+    -->
+
+    <!-- [C→P1] Availability Data -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="200,497  285,497  285,398  370,398"/>
+    <text font-size="10" text-anchor="middle" x="242" y="490">Availability Data</text>
+
+    <!-- [C→P2] Clinical Case Notes -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="200,513  300,513  300,409  370,409"/>
+    <text font-size="10" text-anchor="middle" x="250" y="506">Clinical Case Notes</text>
+
+    <!-- [P→C1] History Retrieval -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="370,382  310,382  310,528  200,528"/>
+    <text font-size="10" text-anchor="middle" x="255" y="543">History Retrieval</text>
+
+    <!-- [P→C2] Patient Risk Profiles -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="370,395  295,395  295,543  200,543"/>
+    <text font-size="10" text-anchor="middle" x="248" y="558">Patient Risk Profiles</text>
+
+    <!-- ══════════════ SCHOOL MGT ↔ PROCESS ══════════════ -->
+
+    <!-- [SM→P1] Data Request -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="800,497  715,497  715,398  630,398"/>
+    <text font-size="10" text-anchor="middle" x="758" y="490">Data Request</text>
+
+    <!-- [SM→P2] System Audit Request -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="800,513  700,513  700,409  630,409"/>
+    <text font-size="10" text-anchor="middle" x="750" y="506">System Audit Request</text>
+
+    <!-- [P→SM1] Statistical PDF Reports -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="630,382  690,382  690,528  800,528"/>
+    <text font-size="10" text-anchor="middle" x="745" y="543">Statistical PDF Reports</text>
+
+    <!-- [P→SM2] Enrollment Analytics -->
+    <polyline fill="none" stroke="#000" stroke-width="1" marker-end="url(#arr)"
+              points="630,395  705,395  705,543  800,543"/>
+    <text font-size="10" text-anchor="middle" x="753" y="558">Enrollment Analytics</text>
+
+</svg>
+<div class="diagram-caption">Figure 3.5.1: Level 0 Data Flow Diagram (Context Diagram)</div>
+</main>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+    document.getElementById('exportPNG').addEventListener('click', () => {
+        const svg = document.getElementById('dfd');
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const canvas = document.createElement('canvas');
+        canvas.width = 2000; canvas.height = 1400;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(2, 2);
+        const img = new Image();
+        const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        img.onload = () => {
+            ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 1000, 700);
+            ctx.drawImage(img, 0, 0);
+            URL.revokeObjectURL(url);
+            const link = document.createElement('a');
+            link.download = 'dfd_level0.png';
+            link.href = canvas.toDataURL('image/png'); link.click();
+        };
+        img.src = url;
+    });
+</script>
+</body>
+</html>

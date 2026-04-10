@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counselor Use Case Diagram | PSU Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #ffffff; color: #000; min-height: 100vh; display: flex; flex-direction: column; }
+        header { padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #f0f0f0; border-bottom: 1px solid #000; }
+        header h1 { font-size: 1rem; font-weight: bold; font-family: Arial, sans-serif; }
+        .actions { display: flex; gap: 0.75rem; }
+        .btn { padding: 0.4rem 0.9rem; font-size: 0.8rem; font-weight: bold; cursor: pointer; border: 1px solid #000; background: #fff; color: #000; font-family: Arial, sans-serif; }
+        .btn:hover { background: #e0e0e0; }
+        main { flex: 1; padding: 2rem 3rem; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .diagram-wrapper { display: flex; align-items: center; width: 100%; max-width: 1100px; margin-top: 1rem; position: relative; gap: 0; }
+        .actor { display: flex; flex-direction: column; align-items: center; width: 100px; flex-shrink: 0; z-index: 10; }
+        .actor-icon { width: 48px; height: 88px; }
+        .actor-label { font-weight: bold; font-size: 0.68rem; text-transform: uppercase; font-family: Arial, sans-serif; text-align: center; margin-top: 6px; }
+        .system-boundary { border: 1px solid #000; flex: 1; margin: 0 2rem; padding: 2.5rem 2rem 2rem 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 30px; position: relative; background: #fff; }
+        .system-title { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); font-weight: bold; font-size: 0.8rem; font-family: Arial, sans-serif; text-transform: uppercase; white-space: nowrap; }
+        .uc { border: 1px solid #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.68rem; font-weight: bold; font-family: Arial, sans-serif; background: #fff; z-index: 10; padding: 8px 12px; min-height: 52px; }
+        #svg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+        .link-line    { stroke: #000; stroke-width: 1; fill: none; }
+        .include-line { stroke: #000; stroke-width: 1; fill: none; stroke-dasharray: 5 3; marker-end: url(#arrowhead); }
+        .rel-label    { font-size: 8px; font-style: italic; fill: #000; font-family: Arial, sans-serif; text-anchor: middle; }
+        .caption { margin-top: 2rem; font-weight: bold; font-size: 0.9rem; font-family: Arial, sans-serif; color: #000; }
+        @media print { header .actions { display: none; } body { background: #fff; } main { padding: 1rem 2rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div><h1>Counselor / Professional — Use Case Diagram</h1></div>
+        <div class="actions">
+            <button class="btn" id="exportPNG">Export PNG</button>
+            <button class="btn" id="printBtn">Print / Save PDF</button>
+        </div>
+    </header>
+
+    <main id="capture-area">
+        <svg id="svg-layer">
+            <defs>
+                <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#000" />
+                </marker>
+            </defs>
+        </svg>
+
+        <div class="diagram-wrapper">
+            <div class="actor" id="counselor-actor">
+                <svg class="actor-icon" viewBox="0 0 100 150">
+                    <circle cx="50" cy="22" r="14" fill="none" stroke="#000" stroke-width="3"/>
+                    <line x1="50" y1="36" x2="50" y2="95"  stroke="#000" stroke-width="3"/>
+                    <line x1="50" y1="55" x2="18" y2="38"  stroke="#000" stroke-width="3"/>
+                    <line x1="50" y1="55" x2="82" y2="38"  stroke="#000" stroke-width="3"/>
+                    <line x1="50" y1="95" x2="18" y2="140" stroke="#000" stroke-width="3"/>
+                    <line x1="50" y1="95" x2="82" y2="140" stroke="#000" stroke-width="3"/>
+                </svg>
+                <span class="actor-label">Counselor / Professional</span>
+            </div>
+
+            <div class="system-boundary" id="system-box">
+                <div class="system-title">PSU Portal: Mental Health System</div>
+                <div class="uc" id="uc1">Login &amp; Manage Session</div>
+                <div class="uc" id="uc2">Set Availability Schedule</div>
+                <div class="uc" id="uc3">Manage Student Bookings</div>
+                <div class="uc" id="uc4">Review Student Assessment History</div>
+                <div class="uc" id="uc5">Clinical Notes Documentation</div>
+                <div class="uc" id="uc6">Reply to Anonymous Notes</div>
+                <div class="uc" id="uc7">Review Student Risk Profiles</div>
+                <div class="uc" id="uc_sub1">Health Record Index</div>
+                <div class="uc" id="uc_sub2">Booking Verification</div>
+            </div>
+        </div>
+
+        <p class="caption">Figure 3.2.2: Counselor Use Case Diagram</p>
+    </main>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        function drawDiagram() {
+            const svg  = document.getElementById('svg-layer');
+            const defs = svg.querySelector('defs');
+            svg.innerHTML = ''; svg.appendChild(defs);
+            const area = document.getElementById('capture-area').getBoundingClientRect();
+
+            function r(id) {
+                const el = document.getElementById(id).getBoundingClientRect();
+                return { top: el.top-area.top, left: el.left-area.left, right: el.right-area.left,
+                         bottom: el.bottom-area.top, cx: (el.left+el.right)/2-area.left, cy: (el.top+el.bottom)/2-area.top };
+            }
+            function line(cls, x1, y1, x2, y2) {
+                const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                l.setAttribute("x1",x1); l.setAttribute("y1",y1); l.setAttribute("x2",x2); l.setAttribute("y2",y2);
+                l.setAttribute("class", cls); svg.appendChild(l);
+            }
+            function lbl(x, y, text) {
+                const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                const w = text.length*4; bg.setAttribute("x",x-w/2-1); bg.setAttribute("y",y-8);
+                bg.setAttribute("width",w+2); bg.setAttribute("height",10); bg.setAttribute("fill","#fff"); svg.appendChild(bg);
+                const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                t.setAttribute("x",x); t.setAttribute("y",y); t.setAttribute("class","rel-label"); t.textContent=text; svg.appendChild(t);
+            }
+
+            const actor = r('counselor-actor');
+            const ax = actor.right, ay = actor.cy - 15;
+
+            ['uc1','uc2','uc3','uc4','uc5','uc6','uc7'].forEach(id => {
+                const uc = r(id);
+                line('link-line', ax, ay, uc.left, uc.cy);
+            });
+
+            [
+                { from:'uc4', to:'uc_sub1', lbl:'<<include>>' },
+                { from:'uc7', to:'uc_sub1', lbl:'<<include>>' },
+                { from:'uc3', to:'uc_sub2', lbl:'<<include>>' }
+            ].forEach(c => {
+                const f = r(c.from), t = r(c.to);
+                line('include-line', f.right, f.cy, t.left, t.cy);
+                lbl((f.right+t.left)/2, (f.cy+t.cy)/2-4, c.lbl);
+            });
+        }
+
+        window.onload = () => { drawDiagram(); setTimeout(drawDiagram, 200); };
+        window.onresize = drawDiagram;
+
+        document.getElementById('printBtn').addEventListener('click', () => window.print());
+        document.getElementById('exportPNG').addEventListener('click', () => {
+            html2canvas(document.getElementById('capture-area'), { backgroundColor: '#ffffff', scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'counselor_use_case.png';
+                link.href = canvas.toDataURL('image/png'); link.click();
+            });
+        });
+    </script>
+</body>
+</html>
