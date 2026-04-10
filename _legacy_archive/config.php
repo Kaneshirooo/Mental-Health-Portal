@@ -9,9 +9,9 @@ define('DB_NAME', 'mental_health_db');
 define('SITE_URL', 'http://localhost/Capstone');
 define('SITE_TITLE', 'Mental Health Pre-Assessment System');
 
-// Google OAuth 2.0
-define('GOOGLE_CLIENT_ID', '201508499705-jccvnfqp99fi005dqp14q7pme3r6pft1.apps.googleusercontent.com');
-define('GOOGLE_CLIENT_SECRET', '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');
+// Google OAuth 2.0 (Redacted for security. Use .env instead)
+define('GOOGLE_CLIENT_ID', 'REDACTED_GOOGLE_CLIENT_ID');
+define('GOOGLE_CLIENT_SECRET', 'REDACTED_GOOGLE_CLIENT_SECRET');
 define('GOOGLE_REDIRECT_URI', SITE_URL . '/oauth_callback.php');
 
 // Session Configuration
@@ -43,10 +43,10 @@ function verifyCSRFToken($token)
     return true;
 }
 
-// SMTP Configuration (Gmail)
+// SMTP Configuration (Gmail) (Redacted for security. Use .env instead)
 define('SMTP_HOST', 'smtp.gmail.com');
-define('SMTP_USER', 'psumentalhealthportal@gmail.com');
-define('SMTP_PASS', 'ylpb rzox qjap bpkj');
+define('SMTP_USER', 'REDACTED_EMAIL');
+define('SMTP_PASS', 'REDACTED_APP_PASSWORD');
 define('SMTP_PORT', 587);
 define('SMTP_FROM', 'psumentalhealthportal@gmail.com');
 define('SMTP_NAME', 'Mental Health Portal');
