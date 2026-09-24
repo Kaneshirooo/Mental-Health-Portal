@@ -41,11 +41,15 @@ class DashboardController extends Controller
             ->get();
 
         // Pending Feedback (Completed sessions without survey)
-        $pending_feedback = Appointment::where('student_id', $user->user_id)
-            ->where('status', \App\Enums\AppointmentStatus::COMPLETED)
-            ->whereDoesntHave('survey')
-            ->with('counselor')
-            ->get();
+        try {
+            $pending_feedback = Appointment::where('student_id', $user->user_id)
+                ->where('status', \App\Enums\AppointmentStatus::COMPLETED)
+                ->whereDoesntHave('survey')
+                ->with('counselor')
+                ->get();
+        } catch (\Exception $e) {
+            $pending_feedback = collect();
+        }
 
         // Chart Data (Last 10 assessments)
         $history = AssessmentScore::where('user_id', $user->user_id)
