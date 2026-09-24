@@ -154,25 +154,17 @@ class LoginController extends Controller
             ]);
         }
 
-        // Success - Generate OTP for Google Login
-        $otp = rand(100000, 999999);
-        
-        session(['temp_user' => [
-            'user_id' => $user->user_id,
-            'email' => $user->email,
-            'otp_code' => $otp,
-            'otp_expiry' => Carbon::now()->addMinutes(10),
-            'activity' => 'Google OAuth login',
-        ]]);
+        // Google already verified the user's identity — log in directly (no OTP needed)
+        Auth::login($user, true);
 
-        try {
-            $this->sendOtpEmail($user->email, $otp);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Google Login OTP Mail Error: " . $e->getMessage());
-            return redirect()->route('login')->withErrors(['email' => 'Failed to send verification email for Google account.']);
-        }
+        // Record session log
+        SessionLog::create([
+            'user_id'    => $user->user_id,
+            'login_time' => Carbon::now(),
+            'activity'   => 'Google OAuth login',
+        ]);
 
-        return redirect()->route('verify.otp');
+        return $this->redirectUserByRole($user);
     }
 
     protected function sendOtpEmail($email, $code)
