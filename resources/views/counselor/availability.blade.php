@@ -7,225 +7,260 @@
         ['id' => 3, 'name' => 'Wednesday'],
         ['id' => 4, 'name' => 'Thursday'],
         ['id' => 5, 'name' => 'Friday'],
-        ['id' => 6, 'name' => 'Saturday'],
-        ['id' => 0, 'name' => 'Sunday'],
     ];
-    $finalDays = isset($days) && is_array($days) && count($days) === 7 ? $days : $fallbackDays;
+    $finalDays = $fallbackDays;
 @endphp
 
 @push('styles')
 <style>
-    .slot-row {
-        display: grid;
-        grid-template-columns: 1fr 120px 120px auto;
-        gap: 1.5rem;
-        align-items: end;
-        padding: 1.5rem;
-        background: var(--surface-2);
-        border-radius: var(--radius);
-        margin-bottom: 1rem;
-        transition: var(--transition);
-        border: 1px solid var(--border);
-    }
-    .slot-row:hover { background: var(--surface-solid); border-color: var(--border-hover); box-shadow: var(--shadow-sm); }
-    
-    .add-slot-btn {
-        width: 100%;
+    .schedule-stripe {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        padding: 1rem 1.5rem;
         background: var(--surface-solid);
-        border: 2px dashed var(--border);
-        color: var(--primary);
-        border-radius: var(--radius-sm);
-        padding: 1rem;
-        font-size: 0.85rem;
-        font-weight: 600;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        margin-bottom: 0.85rem;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.25s ease;
+    }
+    .schedule-stripe:hover {
+        border-color: var(--primary-light);
+        transform: translateX(4px);
+    }
+    
+    .day-indicator {
+        font-size: 0.7rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: #ffffff;
+        background: var(--primary);
+        padding: 0.4rem 0.85rem;
+        border-radius: 10px;
+        min-width: 90px;
+        text-align: center;
+        letter-spacing: 0.05em;
+        box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .time-val {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        color: var(--text);
+        font-size: 1rem;
+    }
+
+    /* Slot Editor Card */
+    .slot-card {
+        background: var(--surface-2);
+        border: 1.5px solid var(--border);
+        border-radius: 20px;
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+        display: grid;
+        grid-template-columns: 1fr 140px 140px auto;
+        gap: 1.25rem;
+        align-items: end;
+        transition: all 0.25s ease;
+    }
+    .slot-card:hover {
+        border-color: var(--primary-light);
+    }
+
+    .day-selector {
+        display: flex;
+        gap: 0.35rem;
+        background: var(--surface-solid);
+        padding: 0.4rem;
+        border-radius: 14px;
+        border: 1.5px solid var(--border);
+    }
+
+    .day-opt {
+        flex: 1;
+        background: transparent;
+        border: none;
+        padding: 0.5rem 0;
+        font-size: 0.75rem;
+        font-weight: 900;
+        border-radius: 10px;
         cursor: pointer;
-        transition: var(--transition);
-        margin-top: 0.75rem;
+        color: var(--text-dim);
+        transition: all 0.2s ease;
+    }
+    .day-opt.active {
+        background: var(--primary) !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 10px var(--primary-glow);
+    }
+
+    .field-label {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 0.6rem;
+        letter-spacing: 0.08em;
+    }
+
+    .time-input {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border-radius: 12px;
+        border: 1.5px solid var(--border);
+        background: var(--surface-solid);
+        color: var(--text);
+        font-weight: 800;
+        font-size: 0.9rem;
+        outline: none;
+        transition: all 0.2s ease;
+    }
+    .time-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .btn-trash {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 1.5px solid rgba(239, 68, 68, 0.2);
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
+        font-size: 1.15rem;
+        transition: all 0.2s ease;
     }
-    .add-slot-btn:hover { border-color: var(--primary); background: #f0fdfa; transform: translateY(-1px); }
-    
-    .day-chip {
-        background: #f0fdf4;
-        color: #166534;
-        padding: 0.35rem 0.85rem;
-        border-radius: 99px;
-        font-weight: 700;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        border: 1px solid rgba(22, 163, 74, 0.2);
+    .btn-trash:hover {
+        background: #ef4444;
+        color: #ffffff;
+        border-color: #ef4444;
     }
 
-    .schedule-item {
+    .btn-add {
+        width: 100%;
+        background: var(--surface-2);
+        color: var(--primary);
+        border: 2px dashed var(--primary-light);
+        padding: 1.1rem;
+        border-radius: 20px;
+        font-weight: 900;
+        font-size: 0.9rem;
+        cursor: pointer;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 1rem;
-        background: var(--surface-solid);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        margin-bottom: 0.5rem;
-        transition: var(--transition);
+        justify-content: center;
+        gap: 0.6rem;
+        transition: all 0.25s ease;
     }
-    .schedule-item:hover { transform: translateX(3px); border-color: var(--border-hover); }
-
-    .availability-input {
-        width: 100%;
-        padding: 0.65rem 0.85rem;
-        border-radius: 10px;
-        border: 2px solid #cbd5e1;
-        font-weight: 700;
-        font-size: 0.88rem;
-        font-family: inherit;
-        background-color: #ffffff !important;
-        color: #0f172a !important;
-        transition: var(--transition-fast);
-        color-scheme: light;
-        cursor: pointer;
-        min-height: 45px;
-        line-height: normal;
-    }
-    .availability-input:focus {
+    .btn-add:hover {
+        background: var(--primary-glow);
         border-color: var(--primary);
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.1);
-    }
-    .dark-mode .availability-input {
-        background-color: #1e293b !important;
-        color: #f1f5f9 !important;
-        border-color: rgba(255, 255, 255, 0.1);
-        color-scheme: dark;
-    }
-    .availability-input option {
-        background-color: #ffffff !important;
-        color: #0f172a !important;
-    }
-    .dark-mode .availability-input option {
-        background-color: #1e293b !important;
-        color: #f1f5f9 !important;
-    }
-
-    .day-btn {
-        flex: 1;
-        padding: 0.5rem 0.25rem;
-        background: var(--surface-solid);
-        border: 2px solid var(--border);
-        border-radius: 8px;
-        font-weight: 700;
-        font-size: 0.7rem;
-        color: var(--text-muted);
-        cursor: pointer;
-        transition: var(--transition-fast);
-        text-align: center;
-        text-transform: uppercase;
-        letter-spacing: 0.02em;
-    }
-    .day-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-glow); }
-    .day-btn.active {
-        background: var(--primary) !important;
-        color: white !important;
-        border-color: var(--primary) !important;
-        box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
-    }
-    .day-picker-container {
-        display: flex;
-        gap: 0.25rem;
-        width: 100%;
     }
 </style>
 @endpush
 
 @section('content')
-<main class="main-content">
-<div class="container" style="max-width: 1000px; padding-top: 1.5rem; padding-bottom: 3rem;">
-    <div style="margin-bottom: 2rem;">
-        <div style="font-weight: 600; color: var(--primary); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;">Clinical Profile</div>
-        <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Manage Availability</h1>
-        <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 400;">Define your active clinical hours for student discovery and booking.</p>
-    </div>
+<main style="min-height: 100vh; padding: 2rem 0 5rem;">
+<div class="container" style="max-width: 1180px; margin: 0 auto; padding: 0 1.5rem;">
+    
+    <header class="staggered" style="margin-bottom: 3.5rem;">
+        <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ph-bold ph-clock" style="font-size: 1.1rem;"></i> Schedule Configuration
+        </div>
+        <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); margin: 0; letter-spacing: -0.04em;">Availability Management</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Configure your weekly clinical service windows and student appointment slots.</p>
+    </header>
 
-    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; align-items: start;">
-        <!-- Current Schedule -->
-        <div>
-            <h2 style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.15rem; margin-bottom: 1.5rem; color: var(--text);">Active Hours</h2>
+    <div style="display: grid; grid-template-columns: 360px 1fr; gap: 2.5rem;" class="staggered">
+        
+        <!-- Active Schedule Sidebar -->
+        <aside id="activeScheduleAside">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <h2 style="font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.3rem; margin: 0; color: var(--text);">Active Schedule</h2>
+                <span style="font-size: 0.72rem; font-weight: 900; background: var(--primary-glow); color: var(--primary); padding: 0.3rem 0.75rem; border-radius: 100px; text-transform: uppercase;">
+                    {{ count($slots) }} Windows
+                </span>
+            </div>
+            
             @if(count($slots) == 0)
-                <div style="padding: 2.5rem; background: var(--surface-2); border-radius: var(--radius); text-align: center; border: 1px dashed var(--border);">
-                    <div style="font-size: 2rem; margin-bottom: 1rem;">⏳</div>
-                    <p style="font-weight: 600; color: var(--text-muted); font-size: 0.85rem;">No active hours defined yet.</p>
+                <div style="padding: 4rem 2rem; background: var(--surface-solid); border: 2px dashed var(--border); border-radius: 24px; text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.3;">📅</div>
+                    <p style="font-weight: 800; color: var(--text-dim); margin: 0;">No service windows set.</p>
                 </div>
             @else
-                <div class="current-slots">
-                    @php $dayMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']; @endphp
-                    @foreach($slots as $s)
-                    <div class="schedule-item">
-                        <span class="day-chip">{{ $dayMap[$s->day_of_week] }}</span>
-                        <span style="font-weight: 600; color: var(--text); font-size: 0.88rem;">
-                            {{ \Carbon\Carbon::parse($s->start_time)->format('g:i A') }} - {{ \Carbon\Carbon::parse($s->end_time)->format('g:i A') }}
-                        </span>
-                    </div>
-                    @endforeach
+                @foreach(collect($slots)->sortBy('day_of_week') as $s)
+                <div class="schedule-stripe">
+                    <div class="day-indicator">{{ ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][$s->day_of_week] }}</div>
+                    <div class="time-val">{{ \Carbon\Carbon::parse($s->start_time)->format('g:i A') }} - {{ \Carbon\Carbon::parse($s->end_time)->format('g:i A') }}</div>
                 </div>
+                @endforeach
             @endif
+        </aside>
 
-            <div style="margin-top: 1.5rem; padding: 1.25rem; background: #f0fdfa; border-radius: var(--radius-sm); border: 1px solid rgba(13, 148, 136, 0.1);">
-                <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.35rem; font-size: 0.8rem;">Clinical Tip</div>
-                <p style="font-size: 0.78rem; color: var(--primary-dark); line-height: 1.5; font-weight: 400;">Consistency in your availability helps students build trust and ensures a stable support structure.</p>
+        <!-- Slot Editor Panel -->
+        <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.75rem; box-shadow: var(--shadow-lg);">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                <div style="width: 44px; height: 44px; border-radius: 14px; background: var(--primary-glow); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                    <i class="ph-bold ph-sliders-horizontal"></i>
+                </div>
+                <div>
+                    <h2 style="font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.5rem; color: var(--text); margin: 0;">Refine Windows</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-top: 0.2rem;">Add or adjust individual clinical service hours.</p>
+                </div>
             </div>
-        </div>
-
-        <!-- Edit Form -->
-        <div class="card" style="padding: 1.5rem; border-radius: var(--radius);">
-            <h2 style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--text);">Modify Schedule</h2>
-            <form method="POST" action="{{ route('counselor.availability') }}" id="availForm">
+            
+            <form method="POST" action="{{ route('counselor.availability') }}">
                 @csrf
                 <div id="slotsContainer">
                     @foreach($slots as $idx => $s)
-                    <div class="slot-row" id="slot-{{ $idx }}">
-                        <div class="form-group" style="margin:0;">
-                            <label style="font-weight: 800; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.75rem; display: block;">Day of Week Selection</label>
+                    <div class="slot-card" id="slot-{{ $idx }}">
+                        <div>
+                            <label class="field-label">Institutional Day</label>
                             <input type="hidden" name="slots[{{ $idx }}][day]" value="{{ $s->day_of_week }}" id="hidden-day-{{ $idx }}">
-                            <div class="day-picker-container" id="picker-{{ $idx }}">
+                            <div class="day-selector" id="picker-{{ $idx }}">
                                 @foreach($finalDays as $d)
-                                    <button type="button" class="day-btn {{ $s->day_of_week == $d['id'] ? 'active' : '' }}" 
-                                            onclick="selectDay({{ $idx }}, {{ $d['id'] }}, this)"
-                                            title="{{ $d['name'] }}">
-                                        {{ substr($d['name'], 0, 1) }}
-                                    </button>
+                                <button type="button" class="day-opt {{ $s->day_of_week == $d['id'] ? 'active' : '' }}" onclick="selectDay({{ $idx }}, {{ $d['id'] }}, this)">{{ substr($d['name'], 0, 1) }}</button>
                                 @endforeach
                             </div>
                         </div>
-                        <div class="form-group" style="margin:0">
-                            <label style="font-weight: 800; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem; display: block;">Starting Time</label>
-                            <input type="time" name="slots[{{ $idx }}][start]" value="{{ \Carbon\Carbon::parse($s->start_time)->format('H:i') }}" class="availability-input" required>
+                        <div>
+                            <label class="field-label">Start Time</label>
+                            <input type="time" name="slots[{{ $idx }}][start]" value="{{ \Carbon\Carbon::parse($s->start_time)->format('H:i') }}" class="time-input" required>
                         </div>
-                        <div class="form-group" style="margin:0">
-                            <label style="font-weight: 800; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem; display: block;">Ending Time</label>
-                            <input type="time" name="slots[{{ $idx }}][end]" value="{{ \Carbon\Carbon::parse($s->end_time)->format('H:i') }}" class="availability-input" required>
+                        <div>
+                            <label class="field-label">End Time</label>
+                            <input type="time" name="slots[{{ $idx }}][end]" value="{{ \Carbon\Carbon::parse($s->end_time)->format('H:i') }}" class="time-input" required>
                         </div>
-                        <button type="button" onclick="removeSlot('slot-{{ $idx }}')" style="background: #fff1f2; color: #e11d48; border: none; width: 32px; height: 32px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">✕</button>
+                        <button type="button" class="btn-trash" onclick="removeSlot('slot-{{ $idx }}')"><i class="ph-bold ph-trash"></i></button>
                     </div>
                     @endforeach
                 </div>
 
-                <button type="button" class="add-slot-btn" onclick="addSlot()">+ Add Another Slot</button>
+                <button type="button" class="btn-add" onclick="addSlot()">
+                    <i class="ph-bold ph-plus-circle" style="font-size: 1.25rem;"></i> Add Service Window
+                </button>
 
-                <div style="margin-top: 2rem; display: flex; gap: 0.75rem;">
-                    <button type="submit" class="btn-primary" style="flex: 2; padding: 0.85rem; border-radius: var(--radius-sm); font-weight: 600; background: var(--primary); border: none; color: white; cursor: pointer; font-size: 0.9rem;">Commit Changes</button>
-                    <a href="{{ route('counselor.dashboard') }}" class="btn-secondary" style="flex: 1; padding: 0.85rem; border-radius: var(--radius-sm); font-weight: 700; border: 1.5px solid var(--border); text-align: center; text-decoration: none; color: var(--text-muted); background: var(--surface-solid); font-size: 0.9rem;">Cancel</a>
+                <div style="margin-top: 3rem; display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;">
+                    <button type="submit" class="btn-primary" id="saveAvailabilityBtn" style="padding: 1.1rem; border-radius: 16px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase;">
+                        Commit Changes
+                    </button>
+                    <a href="{{ route('counselor.dashboard') }}" class="btn-secondary" style="padding: 1.1rem; border-radius: 16px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                        Cancel
+                    </a>
                 </div>
             </form>
         </div>
+
     </div>
 </div>
+</main>
 
-<footer class="footer">
-    <p>© {{ date('Y') }} PSU Mental Health Portal</p>
-</footer>
-
+@push('scripts')
 <script>
 const dayNames = @json($finalDays);
 let slotIndex = {{ count($slots) }};
@@ -234,57 +269,85 @@ function addSlot() {
     const idx = slotIndex++;
     const container = document.getElementById('slotsContainer');
     const div = document.createElement('div');
-    div.className = 'slot-row';
+    div.className = 'slot-card';
     div.id = 'slot-' + idx;
-
-    const dayPicker = dayNames.map(d => `
-        <button type="button" class="day-btn ${d.id === 1 ? 'active' : ''}" 
-                onclick="selectDay(${idx}, ${d.id}, this)"
-                title="${d.name}">
-            ${d.name.substring(0, 1)}
-        </button>
-    `).join('');
-
+    
     div.innerHTML = `
-        <div class="form-group" style="margin:0;">
-            <label style="font-weight: 800; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.75rem; display: block;">Day of Week Selection</label>
+        <div>
+            <label class="field-label">Institutional Day</label>
             <input type="hidden" name="slots[${idx}][day]" value="${dayNames[0].id}" id="hidden-day-${idx}">
-            <div class="day-picker-container" id="picker-${idx}">
-                ${dayPicker}
+            <div class="day-selector" id="picker-${idx}">
+                ${dayNames.map(d => `<button type="button" class="day-opt ${d.id === 1 ? 'active' : ''}" onclick="selectDay(${idx}, ${d.id}, this)">${d.name.charAt(0)}</button>`).join('')}
             </div>
         </div>
-        <div class="form-group" style="margin:0">
-            <label style="font-weight: 800; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem; display: block;">From</label>
-            <input type="time" name="slots[${idx}][start]" value="08:00" class="availability-input" required>
+        <div>
+            <label class="field-label">Start Time</label>
+            <input type="time" name="slots[${idx}][start]" value="08:00" class="time-input" required>
         </div>
-        <div class="form-group" style="margin:0">
-            <label style="font-weight: 800; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem; display: block;">To</label>
-            <input type="time" name="slots[${idx}][end]" value="12:00" class="availability-input" required>
+        <div>
+            <label class="field-label">End Time</label>
+            <input type="time" name="slots[${idx}][end]" value="17:00" class="time-input" required>
         </div>
-        <button type="button" onclick="removeSlot('slot-${idx}')" style="background: #fff1f2; color: #e11d48; border: none; width: 32px; height: 32px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; margin-bottom: 0.5rem;">✕</button>
+        <button type="button" class="btn-trash" onclick="removeSlot('slot-${idx}')"><i class="ph-bold ph-trash"></i></button>
     `;
     container.appendChild(div);
-    div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (window.gsap) {
+        gsap.from(div, { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" });
+    }
 }
 
 function selectDay(idx, dayId, btn) {
-    const hidden = document.getElementById('hidden-day-' + idx);
-    if (hidden) hidden.value = dayId;
-    const container = document.getElementById('picker-' + idx);
-    if (container) {
-        container.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
+    document.getElementById('hidden-day-' + idx).value = dayId;
+    btn.parentElement.querySelectorAll('.day-opt').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 }
 
 function removeSlot(id) {
     const el = document.getElementById(id);
-    if (el) el.remove();
+    if (window.gsap) {
+        gsap.to(el, { opacity: 0, height: 0, marginBottom: 0, duration: 0.3, onComplete: () => el.remove() });
+    } else {
+        el.remove();
+    }
 }
 
-window.addEventListener('DOMContentLoaded', function() {
-    if (document.querySelectorAll('.slot-row').length === 0) addSlot();
+$(document).ready(function() {
+    const form = $('form[action*="availability"]');
+    const btn = $('#saveAvailabilityBtn');
+
+    form.on('submit', function(e) {
+        e.preventDefault();
+        
+        btn.prop('disabled', true).html('<i class="ph ph-circle-notch animate-spin"></i> Synchronizing...');
+        
+        App.ajax({
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: async (res) => {
+                App.toast({
+                    type: 'success',
+                    title: 'Database Updated',
+                    message: res.message || 'Your clinical availability has been successfully synchronized.'
+                });
+                
+                // Update sidebar without reload
+                try {
+                    await AjaxHelpers.refreshSection(window.location.href, '#activeScheduleAside');
+                } catch (err) {
+                    console.error("Failed to refresh schedule preview", err);
+                }
+            },
+            complete: () => {
+                btn.prop('disabled', false).html('Commit Changes');
+            }
+        });
+    });
+
+    if (window.gsap) {
+        gsap.from('.staggered', { y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'expo.out', clearProps: 'all' });
+    }
 });
 </script>
-</main>
+@endpush
 @endsection
+

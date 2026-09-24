@@ -11,11 +11,16 @@ use App\Models\CounselorNote;
 use App\Models\AssessmentScore;
 use App\Models\AnonymousNote;
 use App\Models\AnonymousNoteMessage;
+use App\Services\OpenRouterService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    public function __construct(
+        protected readonly OpenRouterService $openRouter
+    ) {}
+
     public function index(Request $request)
     {
         $counselor = Auth::user();
@@ -47,19 +52,41 @@ class DashboardController extends Controller
 
         // 1. High-risk students (Critical first, then High)
         $priority_queue = User::where('user_type', 'student')
-            ->with('latestAssessment')
+            ->with(['latestAssessment', 'assessmentScores' => function($q) {
+                $q->orderBy('assessment_date', 'desc')->limit(2);
+            }])
             ->whereHas('assessmentScores', function($query) {
                 $query->whereIn('risk_level', ['High', 'Critical'])
-                    ->where('assessment_date', function($sub) {
+                    ->where('assessment_date', '=', function($sub) {
                         $sub->select(DB::raw('MAX(assessment_date)'))
                             ->from('assessment_scores')
                             ->whereColumn('user_id', 'users.user_id');
                     });
             })
             ->get()
-            ->sortByDesc(fn($u) => $u->latest_assessment->overall_score ?? 0)
+            ->map(function($user) {
+                $scores = $user->assessmentScores;
+                $user->clinical_shift = 'Stable';
+                $user->shift_direction = 'none';
+                
+                if ($scores->count() >= 2) {
+                    $latest = $scores[0]->overall_score;
+                    $previous = $scores[1]->overall_score;
+                    
+                    // Note: Higher score usually means higher distress in DASS-21
+                    if ($latest > $previous + 3) {
+                        $user->clinical_shift = 'Declining';
+                        $user->shift_direction = 'down';
+                    } elseif ($latest < $previous - 3) {
+                        $user->clinical_shift = 'Improving';
+                        $user->shift_direction = 'up';
+                    }
+                }
+                return $user;
+            })
+            ->sortByDesc(fn($u) => $u->latestAssessment->overall_score ?? 0)
             ->sortBy(function($u) {
-                $level = $u->latest_assessment->risk_level ?? '';
+                $level = $u->latestAssessment->risk_level ?? '';
                 if ($level === 'Critical') return 0;
                 if ($level === 'High') return 1;
                 return 2;
@@ -79,10 +106,9 @@ class DashboardController extends Controller
 
         $stats = [
             'total_students' => User::where('user_type', 'student')->count(),
-            'low_risk' => $latestAssessmentsCount->get('Low', 0),
-            'moderate_risk' => $latestAssessmentsCount->get('Moderate', 0),
-            'high_risk' => $latestAssessmentsCount->get('High', 0),
-            'critical_risk' => $latestAssessmentsCount->get('Critical', 0),
+            'pending_triages' => Appointment::where('counselor_id', $counselor->user_id)->where('status', 'requested')->count(),
+            'critical_vector' => $latestAssessmentsCount->get('High', 0) + $latestAssessmentsCount->get('Critical', 0),
+            'active_dialogues' => AnonymousNote::whereIn('status', ['new', 'read', 'replied'])->count(),
         ];
 
         // 3. Anonymous Notes (Status: new, read, replied)
@@ -106,17 +132,37 @@ class DashboardController extends Controller
     public function suggestReply(Request $request)
     {
         $request->validate(['note_text' => 'required|string']);
-        
-        $gemini = app(\App\Services\GeminiService::class);
-        $prompt = "Act as a clinical psychologist. A student sent this anonymous note: \"{$request->note_text}\".\n"
-                . "Provide a professional, empathetic, and concise clinical response (max 100 words) that a counselor could send back.\n"
-                . "Focus on validation and recommending a session if appropriate. Do not use placeholders.";
-                
-        $suggestion = $gemini->generateResponse([], $prompt);
-        
+
+        $noteText = $request->note_text;
+
+        $prompt = "You are a professional mental health counselor at a university. A student sent this anonymous message:\n\n"
+            . "\"{$noteText}\"\n\n"
+            . "Write a warm, professional, and supportive reply (max 80 words). "
+            . "Acknowledge their concern, offer brief reassurance, and invite them to schedule a private session if needed. "
+            . "Do not use clinical jargon. Be human and empathetic.";
+
+        $messages = [
+            ['role' => 'user', 'parts' => [['text' => $prompt]]]
+        ];
+
+        $suggestion = $this->openRouter->generateResponse($messages);
+
         return response()->json([
             'success' => true,
             'suggestion' => $suggestion ?: 'I understand your concern. Would you like to schedule a private session to discuss this further?'
+        ]);
+    }
+
+    public function toggleEmergencyStatus()
+    {
+        $user = Auth::user();
+        $user->is_emergency_available = !$user->is_emergency_available;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'is_available' => $user->is_emergency_available,
+            'message' => $user->is_emergency_available ? 'Emergency Status: Available' : 'Emergency Status: Unavailable'
         ]);
     }
 }

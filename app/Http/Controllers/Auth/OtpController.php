@@ -40,7 +40,10 @@ class OtpController extends Controller
             return back()->withErrors(['otp_code' => 'Verification code has expired. Please request a new one.']);
         }
 
-        if ($request->otp_code == $tempUser['otp_code']) {
+        $enteredOtp = str_pad(preg_replace('/\D+/', '', (string) $request->input('otp_code')), 6, '0', STR_PAD_LEFT);
+        $sessionOtp = str_pad(preg_replace('/\D+/', '', (string) ($tempUser['otp_code'] ?? '')), 6, '0', STR_PAD_LEFT);
+
+        if (hash_equals($sessionOtp, $enteredOtp)) {
             // Success - Finalize Login
             $user = User::findOrFail($tempUser['user_id']);
             Auth::login($user);
@@ -55,8 +58,22 @@ class OtpController extends Controller
                 'activity' => $tempUser['activity'] ?? 'OTP Verified login',
             ]);
 
+            // Clean up any unanswered pending calls from offline periods
+            $userRole = strtolower((string) ($user->user_type->value ?? $user->user_type));
+            if (in_array($userRole, ['counselor', 'admin'], true)) {
+                \App\Models\EmergencyCall::cleanupStaleCalls(0);
+            }
+
             return $this->redirectUserByRole($user);
         }
+
+        \Illuminate\Support\Facades\Log::warning('OTP mismatch during verification', [
+            'user_id' => $tempUser['user_id'] ?? null,
+            'entered_length' => strlen($enteredOtp),
+            'session_length' => strlen($sessionOtp),
+            'entered_suffix' => substr($enteredOtp, -2),
+            'session_suffix' => substr($sessionOtp, -2),
+        ]);
 
         return back()->withErrors(['otp_code' => 'Incorrect verification code. Please try again.']);
     }
@@ -109,10 +126,6 @@ class OtpController extends Controller
 
     protected function redirectUserByRole($user)
     {
-        return match ($user->user_type->value ?? $user->user_type) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'counselor' => redirect()->route('counselor.dashboard'),
-            default => redirect()->route('student.dashboard'),
-        };
+        return redirect()->route($user->dashboardRoute());
     }
 }

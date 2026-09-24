@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->web(append: [
+            \App\Http\Middleware\UpdateLastSeen::class,
+        ]);
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
@@ -19,6 +22,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         // Redirect to login when CSRF token expires (419 Page Expired)
         $exceptions->render(function (TokenMismatchException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'error' => 'Your session has expired. Please refresh the page.',
+                ], 419);
+            }
+
             return redirect()->route('login')->withErrors([
                 'email' => 'Your session has expired. Please log in again.',
             ]);

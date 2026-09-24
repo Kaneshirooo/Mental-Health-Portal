@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Enums\UserRole;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class RegistrationController extends Controller
@@ -19,7 +21,7 @@ class RegistrationController extends Controller
     {
         $request->validate([
             'full_name' => 'required|string|max:255',
-            'student_id' => 'required|string|max:50',
+            'student_id' => 'required|string|max:50|unique:users,roll_number',
             'email' => [
                 'required',
                 'string',
@@ -39,24 +41,37 @@ class RegistrationController extends Controller
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|string',
             'department' => 'nullable|string|max:255',
+            'course' => 'nullable|string|max:255',
+            'semester' => 'nullable|string|max:100',
         ], [
+            'student_id.unique' => 'This Student ID / Faculty ID is already registered.',
             'password.regex' => 'Password must contain at least one uppercase letter and one special character.',
         ]);
 
-        $user = User::create([
-            'full_name' => $request->full_name,
-            'roll_number' => $request->student_id,
-            'email' => strtolower($request->email),
-            'password' => Hash::make($request->password),
-            'user_type' => 'student',
-            'contact_number' => $request->contact_number,
-            'date_of_birth' => $request->date_of_birth,
-            'gender' => $request->gender,
-            'department' => $request->department,
-        ]);
+        try {
+            DB::beginTransaction();
+            $user = User::create([
+                'full_name' => $request->full_name,
+                'roll_number' => $request->student_id,
+                'email' => strtolower(trim($request->email)),
+                'password' => Hash::make($request->password),
+                'user_type' => UserRole::STUDENT,
+                'contact_number' => $request->contact_number,
+                'date_of_birth' => $request->date_of_birth,
+                'gender' => $request->gender,
+                'department' => $request->department,
+                'course' => $request->course,
+                'semester' => $request->semester,
+            ]);
+            DB::commit();
 
-        Auth::login($user);
+            Auth::login($user);
+            return redirect()->route('student.dashboard')->with('success', 'Welcome to the Mental Health Portal!');
 
-        return redirect()->route('student.dashboard')->with('success', 'Welcome to the Mental Health Portal!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Illuminate\Support\Facades\Log::error("Registration Error: " . $e->getMessage());
+            return back()->withInput()->withErrors(['email' => 'An unexpected error occurred during registration. Please try again.']);
+        }
     }
 }

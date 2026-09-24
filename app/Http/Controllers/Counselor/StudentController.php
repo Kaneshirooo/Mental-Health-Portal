@@ -7,16 +7,18 @@ use App\Models\User;
 use App\Models\AssessmentScore;
 use App\Models\MoodLog;
 use App\Models\CounselorNote;
-use App\Services\GeminiService;
+use App\Models\EmergencyCall;
+use App\Services\OpenRouterService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Carbon\Carbon;
 
 class StudentController extends Controller
 {
     public function __construct(
-        protected readonly GeminiService $gemini
+        protected readonly OpenRouterService $openRouter
     ) {}
 
     /**
@@ -24,11 +26,18 @@ class StudentController extends Controller
      */
     public function index(Request $request): View
     {
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+        $course = $request->course;
+        $semester = $request->semester;
+        $filter = $request->filter;
+        $search = $request->search;
+
         $query = User::where('user_type', 'student')
             ->with('latestAssessment')
             ->orderBy('full_name');
 
-        if ($search = $request->search) {
+        if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('full_name', 'like', "%$search%")
                   ->orWhere('email', 'like', "%$search%")
@@ -36,15 +45,65 @@ class StudentController extends Controller
             });
         }
 
-        if ($filter = $request->filter) {
+        if ($filter) {
             $query->whereHas('latestAssessment', function($q) use ($filter) {
                 $q->where('risk_level', $filter);
             });
         }
 
+        if ($course) {
+            $query->where('course', $course);
+        }
+
+        if ($semester) {
+            $query->where('semester', $semester);
+        }
+
+        if ($start_date && $end_date) {
+            $query->whereHas('assessmentScores', function($q) use ($start_date, $end_date) {
+                $q->whereBetween('assessment_date', [
+                    Carbon::parse($start_date)->startOfDay(), 
+                    Carbon::parse($end_date)->endOfDay()
+                ]);
+            });
+        }
+
         $students = $query->get();
 
-        return view('counselor.students.index', compact('students', 'search', 'filter'));
+        // Get unique courses and semesters for filters
+        $courses = User::where('user_type', 'student')->whereNotNull('course')->distinct()->pluck('course');
+        $semesters = User::where('user_type', 'student')->whereNotNull('semester')->distinct()->pluck('semester');
+
+        // Analytics Data
+        $risk_distribution = $students->groupBy(fn($s) => $s->latestAssessment->risk_level ?? 'Uncategorized')
+            ->map(fn($group) => $group->count());
+            
+        $course_distribution = $students->groupBy('course')
+            ->map(fn($group) => $group->count());
+
+        // High Risk per Course (considering ANY assessment in the range if provided)
+        $high_risk_query = User::where('user_type', 'student')
+            ->whereHas('assessmentScores', function($q) use ($start_date, $end_date) {
+                if ($start_date && $end_date) {
+                    $q->whereBetween('assessment_date', [
+                        Carbon::parse($start_date)->startOfDay(), 
+                        Carbon::parse($end_date)->endOfDay()
+                    ]);
+                }
+                $q->whereIn('risk_level', ['High', 'Critical']);
+            });
+        
+        if ($course) $high_risk_query->where('course', $course);
+        if ($semester) $high_risk_query->where('semester', $semester);
+
+        $high_risk_by_course = $high_risk_query->get()
+            ->groupBy('course')
+            ->map(fn($group) => $group->count());
+
+        return view('counselor.students.index', compact(
+            'students', 'search', 'filter', 'course', 'semester', 'start_date', 'end_date',
+            'courses', 'semesters', 'risk_distribution', 'course_distribution', 'high_risk_by_course'
+        ));
     }
 
     /**
@@ -52,7 +111,7 @@ class StudentController extends Controller
      */
     public function show(User $student): View
     {
-        if ($student->user_type !== 'student') {
+        if (!$student->isStudent()) {
             abort(404);
         }
 
@@ -64,11 +123,21 @@ class StudentController extends Controller
             ->latest('created_at')
             ->get();
 
+        $sessions = \App\Models\AiPreassessment::where('student_id', $student->user_id)
+            ->latest('created_at')
+            ->get();
+
+        $emergencyCalls = EmergencyCall::where('student_id', $student->user_id)
+            ->where('counselor_id', auth()->id())
+            ->whereIn('status', ['active', 'ended'])
+            ->latest('created_at')
+            ->get();
+
         // Chart data mapping
         $chart_labels = $assessments->map(fn($r) => $r->assessment_date->format('M d'));
         $chart_scores = $assessments->pluck('overall_score');
 
-        return view('counselor.students.show', compact('student', 'assessments', 'notes', 'chart_labels', 'chart_scores'));
+        return view('counselor.students.show', compact('student', 'assessments', 'notes', 'sessions', 'chart_labels', 'chart_scores', 'emergencyCalls'));
     }
 
     /**
@@ -82,13 +151,26 @@ class StudentController extends Controller
             'follow_up_date' => 'nullable|date',
         ]);
 
-        CounselorNote::create([
+        $note = CounselorNote::create([
             'counselor_id' => auth()->id(),
             'student_id' => $student->user_id,
             'note_text' => $request->note_text,
             'recommendation' => $request->recommendation,
             'follow_up_date' => $request->follow_up_date,
         ]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Clinical note archived successfully.',
+                'note' => [
+                    'date' => $note->created_at->format('M d, Y'),
+                    'text' => e($note->note_text),
+                    'recommendation' => e($note->recommendation),
+                    'follow_up' => $note->follow_up_date ? $note->follow_up_date->format('M d, Y') : null
+                ]
+            ]);
+        }
 
         return back()->with('success', 'Clinical note archived successfully.');
     }
@@ -98,7 +180,7 @@ class StudentController extends Controller
      */
     public function aiSummary(Request $request, User $student): JsonResponse
     {
-        if ($student->user_type !== 'student') {
+        if (!$student->isStudent()) {
             return response()->json(['success' => false, 'error' => 'Invalid student.']);
         }
 
@@ -118,8 +200,12 @@ class StudentController extends Controller
             ->get();
 
         $prompt = $this->buildClinicalPrompt($student, $assessments, $moods, $pastNotes);
-        // lint-id: efc96ed3-824c-4566-a9d9-d056adc28a08
-        $summary = $this->gemini->generateResponse([], $prompt);
+        
+        $messages = [
+            ['role' => 'user', 'content' => $prompt]
+        ];
+        
+        $summary = $this->openRouter->generateResponse($messages);
 
         if ($summary) {
             return response()->json(['success' => true, 'summary' => nl2br(e($summary))]);
@@ -165,7 +251,7 @@ class StudentController extends Controller
      */
     public function export(User $student): View
     {
-        if ($student->user_type !== 'student') {
+        if (!$student->isStudent()) {
             abort(404);
         }
 
@@ -193,5 +279,21 @@ class StudentController extends Controller
             'chart_labels', 
             'chart_scores'
         ));
+    }
+
+    /**
+     * Display a specific AI session summary.
+     */
+    public function showSession(User $student, $pre_id): View
+    {
+        if (!$student->isStudent()) {
+            abort(404);
+        }
+
+        $session = \App\Models\AiPreassessment::where('pre_id', $pre_id)
+            ->where('student_id', $student->user_id)
+            ->firstOrFail();
+
+        return view('counselor.students.session_show', compact('student', 'session'));
     }
 }

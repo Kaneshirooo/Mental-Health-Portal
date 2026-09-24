@@ -4,16 +4,16 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\MoodLog;
-use App\Services\GeminiService;
+use App\Services\OpenRouterService;
 use Illuminate\Http\Request;
 
 class MindfulnessController extends Controller
 {
-    protected $gemini;
+    protected $openRouter;
 
-    public function __construct(GeminiService $gemini)
+    public function __construct(OpenRouterService $openRouter)
     {
-        $this->gemini = $gemini;
+        $this->openRouter = $openRouter;
     }
 
     public function index()
@@ -43,7 +43,7 @@ class MindfulnessController extends Controller
         $messages = [
             ['role' => 'user', 'parts' => [['text' => "I am $context"]]]
         ];
-        $script = $this->gemini->generateResponse($messages, $systemInstruction);
+        $script = $this->openRouter->generateResponse($messages, $systemInstruction);
 
         if (!$script) {
             return response()->json(['success' => false, 'error' => 'The Zen garden is being watered. Please try again in a moment.']);
@@ -76,7 +76,7 @@ class MindfulnessController extends Controller
         ];
         $cacheKey = "recommendation_auth_" . auth()->id() . "_mood_" . $mood->id;
         $recommendation = \Illuminate\Support\Facades\Cache::remember($cacheKey, now()->addHour(), function() use ($messages, $systemInstruction) {
-            return $this->gemini->generateResponse($messages, $systemInstruction);
+            return $this->openRouter->generateResponse($messages, $systemInstruction);
         });
 
         if (!$recommendation) {

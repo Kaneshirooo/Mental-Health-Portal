@@ -10,14 +10,22 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use App\Models\LoginAttempt;
 use App\Models\SessionLog;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Laravel\Socialite\Two\InvalidStateException;
+use Laravel\Socialite\Two\GoogleProvider;
 
 class LoginController extends Controller
 {
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return $this->redirectUserByRole(Auth::user());
+            $user = Auth::user();
+            $userRole = strtolower((string) ($user->user_type->value ?? $user->user_type));
+            if (in_array($userRole, ['counselor', 'admin'], true)) {
+                \App\Models\EmergencyCall::cleanupStaleCalls(0);
+            }
+            return $this->redirectUserByRole($user);
         }
         return view('auth.login');
     }
@@ -99,28 +107,51 @@ class LoginController extends Controller
 
     public function redirectToGoogle()
     {
+        if (!$this->hasGoogleOauthConfig()) {
+            return redirect()
+                ->route('login')
+                ->withErrors(['email' => 'Google sign-in is not configured yet. Please contact administrator.']);
+        }
+
         return Socialite::driver('google')
+            ->stateless()
+            ->redirectUrl(route('auth.google.callback'))
+            ->with(['prompt' => 'select_account'])
             ->redirect();
     }
 
     public function handleGoogleCallback()
     {
+        if (!$this->hasGoogleOauthConfig()) {
+            return redirect()
+                ->route('login')
+                ->withErrors(['email' => 'Google sign-in is not configured yet. Please contact administrator.']);
+        }
+
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')
+                ->stateless()
+                ->redirectUrl(route('auth.google.callback'))
+                ->user();
         } catch (\Exception $e) {
-            return redirect()->route('login')->withErrors(['email' => 'Google authentication failed.']);
+            \Illuminate\Support\Facades\Log::error('Google OAuth callback failed: ' . $e->getMessage());
+            return redirect()->route('login')->withErrors(['email' => 'Google authentication failed. Please try again.']);
         }
 
         $googleEmail = strtolower(trim($googleUser->getEmail()));
 
-        $googleEmail = strtolower(trim($googleUser->getEmail()));
-
-        // Domain restriction removed
-
         $user = User::where('email', $googleEmail)->first();
 
         if (!$user) {
-            return redirect()->route('login')->withErrors(['email' => 'Your Google account (' . $googleEmail . ') is not registered in the system. Please contact your counselor or administrator.']);
+            // Auto-registration for Google/Institutional Users
+            $user = User::create([
+                'full_name' => $googleUser->getName() ?? 'Google User',
+                'email' => $googleEmail,
+                'password' => Hash::make(Str::random(24)),
+                'user_type' => 'student',
+                'roll_number' => 'G-' . substr(md5($googleEmail . time()), 0, 8), // Unique roll number
+                'email_verified_at' => now(),
+            ]);
         }
 
         // Success - Generate OTP for Google Login
@@ -171,12 +202,14 @@ class LoginController extends Controller
         return true; // Filter removed per user request
     }
 
+    protected function hasGoogleOauthConfig(): bool
+    {
+        return filled(config('services.google.client_id'))
+            && filled(config('services.google.client_secret'));
+    }
+
     protected function redirectUserByRole($user)
     {
-        return match ($user->user_type->value ?? $user->user_type) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'counselor' => redirect()->route('counselor.dashboard'),
-            default => redirect()->route('student.dashboard'),
-        };
+        return redirect()->route($user->dashboardRoute());
     }
 }

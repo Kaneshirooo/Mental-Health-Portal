@@ -17,6 +17,8 @@ class MoodLog extends Model
         'mood_score',
         'mood_emoji',
         'note',
+        'sentiment_score',
+        'sentiment_label',
         'logged_at',
     ];
 
@@ -27,5 +29,10 @@ class MoodLog extends Model
     public function student() // Added this method
     {
         return $this->belongsTo(User::class, 'student_id', 'user_id');
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'log_id';
     }
 }

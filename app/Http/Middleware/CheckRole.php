@@ -15,7 +15,14 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!$request->user() || !in_array($request->user()->user_type->value, $roles)) {
+        $user = $request->user();
+        if (!$user) {
+            return redirect('login');
+        }
+
+        $userRole = ($user->user_type instanceof \App\Enums\UserRole) ? $user->user_type->value : $user->user_type;
+
+        if (!in_array($userRole, $roles)) {
             abort(403, 'Unauthorized access.');
         }
 

@@ -9,9 +9,6 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        // Mark all as read on page visit
-        Notification::where('user_id', auth()->id())->update(['is_read' => 1]);
-
         $notifications = Notification::where('user_id', auth()->id())
             ->latest('created_at')
             ->limit(50)
@@ -27,6 +24,23 @@ class NotificationController extends Controller
             ->count();
 
         return response()->json(['count' => $count]);
+    }
+
+    public function markAsRead(Notification $notification)
+    {
+        if ($notification->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $notification->update(['is_read' => 1]);
+        return response()->json(['success' => true]);
+    }
+
+    public function markAllAsRead()
+    {
+        Notification::where('user_id', auth()->id())
+            ->where('is_read', 0)
+            ->update(['is_read' => 1]);
+        return response()->json(['success' => true]);
     }
 
     public function clearAll()

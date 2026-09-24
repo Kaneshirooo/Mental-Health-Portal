@@ -36,6 +36,58 @@
         })();
     </script>
 
+    <style>
+        /* Toast Notification System */
+        #clinical-toast-container {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            pointer-events: none;
+        }
+        .clinical-toast {
+            pointer-events: auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 1.25rem 1.75rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 320px;
+            max-width: 450px;
+            opacity: 0;
+            transform: translateX(40px);
+        }
+        .dark-mode .clinical-toast {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(255,255,255,0.1);
+            color: #f8fafc;
+        }
+        .toast-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .toast-success .toast-icon { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .toast-error .toast-icon { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .toast-info .toast-icon { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        
+        .toast-content { flex: 1; }
+        .toast-title { font-weight: 850; font-family: 'Outfit', sans-serif; font-size: 1rem; margin-bottom: 0.1rem; }
+        .toast-message { font-size: 0.85rem; font-weight: 500; opacity: 0.8; line-height: 1.4; }
+    </style>
+
     @stack('styles')
 </head>
 
@@ -44,6 +96,8 @@
     <div class="spatial-bg"
         style="position:fixed; inset:0; z-index:-1; pointer-events:none; background: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.05) 0%, transparent 50%); opacity: 0.6;">
     </div>
+
+    <div id="clinical-toast-container"></div>
 
     @auth
         @include('layouts.navigation')
@@ -60,8 +114,11 @@
         @yield('content')
     @endauth
 
+    @stack('modals')
+
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('js/ajax-helpers.js') }}"></script>
 
     <script>
         // GSAP Reveal Logic
@@ -78,30 +135,8 @@
                 clearProps: "all"
             });
 
-            // Magnetic Button Effect (Premium)
-            const magneticElements = document.querySelectorAll('.btn-primary, .sidebar-link');
-            magneticElements.forEach(el => {
-                el.addEventListener('mousemove', (e) => {
-                    const rect = el.getBoundingClientRect();
-                    const x = e.clientX - rect.left - rect.width / 2;
-                    const y = e.clientY - rect.top - rect.height / 2;
-                    gsap.to(el, {
-                        x: x * 0.3,
-                        y: y * 0.3,
-                        duration: 0.4,
-                        ease: "power2.out"
-                    });
-                });
-                el.addEventListener('mouseleave', () => {
-                    gsap.to(el, {
-                        x: 0,
-                        y: 0,
-                        duration: 0.6,
-                        ease: "elastic.out(1, 0.3)"
-                    });
-                });
-            });
         });
+
 
         // Theme Toggle Logic
         document.addEventListener('DOMContentLoaded', () => {
@@ -135,18 +170,88 @@
             if (modal) modal.style.display = 'none';
         }
         function performLogout() {
-            // Get the fresh CSRF token from the meta tag
-            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const btn = event?.target || document.querySelector('#signOutModal .btn-primary');
             const form = document.getElementById('logoutForm');
-            if (form && token) {
-                // Update the token input in the hidden form before submission
-                const tokenInput = form.querySelector('input[name="_token"]');
-                if (tokenInput) tokenInput.value = token;
-                form.submit();
-            } else if (form) {
-                form.submit();
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            if (form) {
+                if (btn && btn.tagName === 'BUTTON') {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="ph ph-circle-notch animate-spin"></i> Signing Out...';
+                    btn.style.opacity = '0.7';
+                    btn.style.cursor = 'not-allowed';
+                }
+                
+                if (token) {
+                    const tokenInput = form.querySelector('input[name="_token"]');
+                    if (tokenInput) tokenInput.value = token;
+                }
+                
+                // Add a small delay for visual feedback before submission
+                setTimeout(() => form.submit(), 400);
             }
         }
+
+        /**
+         * Global App AJAX & Interface Utility
+         */
+        const App = {
+            toast: function({ type = 'success', title = '', message = '' }) {
+                const container = document.getElementById('clinical-toast-container');
+                const toast = document.createElement('div');
+                toast.className = `clinical-toast toast-${type}`;
+                
+                const icons = {
+                    success: 'ph-check-circle',
+                    error: 'ph-warning-circle',
+                    info: 'ph-info'
+                };
+                
+                toast.innerHTML = `
+                    <div class="toast-icon"><i class="ph-bold ${icons[type] || icons.info}"></i></div>
+                    <div class="toast-content">
+                        <div class="toast-title">${title}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                `;
+                
+                container.appendChild(toast);
+                
+                // GSAP Entrance
+                gsap.to(toast, { x: 0, opacity: 1, duration: 0.8, ease: "expo.out" });
+                
+                // Auto removal
+                setTimeout(() => {
+                    gsap.to(toast, { 
+                        x: 100, opacity: 0, scale: 0.9, duration: 0.6, ease: "expo.in",
+                        onComplete: () => toast.remove() 
+                    });
+                }, 5000);
+            },
+
+            ajax: function(options) {
+                const defaults = {
+                    type: 'POST',
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    error: (xhr) => {
+                        const msg = xhr.responseJSON?.message || 'A system transition error occurred.';
+                        App.toast({ type: 'error', title: 'Action Failed', message: msg });
+                    }
+                };
+                return $.ajax({ ...defaults, ...options });
+            }
+        };
+
+        // Blade fallback for session flash messages
+        @if(session('success'))
+            App.toast({ type: 'success', title: 'Process Complete', message: "{{ session('success') }}" });
+        @endif
+        @if(session('error'))
+            App.toast({ type: 'error', title: 'System Warning', message: "{{ session('error') }}" });
+        @endif
     </script>
 
     @stack('scripts')

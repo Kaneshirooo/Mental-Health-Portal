@@ -21,5 +21,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        User::factory()->create([
+            'full_name' => 'Head Counselor',
+            'email' => 'aquinorenz69@gmail.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('headconselor'),
+            'user_type' => \App\Enums\UserRole::ADMIN,
+        ]);
     }
 }

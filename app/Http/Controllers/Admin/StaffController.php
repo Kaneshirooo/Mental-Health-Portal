@@ -37,28 +37,52 @@ class StaffController extends Controller
             'department' => 'nullable|string|max:255',
         ]);
 
-        User::create([
-            'full_name' => $request->full_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'user_type' => 'counselor',
+        $user = User::create([
+            'full_name'  => $request->full_name,
+            'email'      => $request->email,
+            'password'   => Hash::make($request->password),
+            'user_type'  => 'counselor',
             'department' => $request->department,
         ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success'   => true,
+                'message'   => 'Counselor "' . $request->full_name . '" added successfully.',
+                'counselor' => [
+                    'user_id'            => $user->user_id,
+                    'full_name'          => $user->full_name,
+                    'email'              => $user->email,
+                    'department'         => $user->department,
+                    'appointments_count' => 0,
+                ],
+            ]);
+        }
 
         return back()->with('success', 'Counselor "' . $request->full_name . '" added successfully.');
     }
 
-    public function destroy(User $staff)
+    public function destroy(Request $request, User $staff)
     {
         if ($staff->user_type !== 'counselor') {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'error' => 'Only counselor accounts can be removed from this page.'], 403);
+            }
             return back()->with('error', 'Only counselor accounts can be removed from this page.');
         }
 
         if ($staff->user_id === auth()->id()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'error' => 'You cannot remove your own account.'], 403);
+            }
             return back()->with('error', 'You cannot remove your own account.');
         }
 
         $staff->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Counselor removed successfully.']);
+        }
 
         return back()->with('success', 'Counselor removed successfully.');
     }

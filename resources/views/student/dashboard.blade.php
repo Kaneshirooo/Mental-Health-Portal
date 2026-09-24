@@ -49,9 +49,9 @@
     }
     .quick-action-premium:hover { 
         background: var(--surface-2);
-        border-color: var(--primary);
-        transform: translateY(-6px);
-        box-shadow: var(--shadow-lg);
+        border-color: var(--border);
+        transform: none;
+        box-shadow: var(--shadow-sm);
     }
     .quick-icon-box {
         width: 56px;
@@ -63,9 +63,9 @@
         font-size: 1.5rem;
         margin-bottom: 1.25rem;
         background: var(--surface-2);
-        transition: var(--transition);
+        transition: none;
     }
-    .quick-action-premium:hover .quick-icon-box { background: var(--primary); color: white; transform: rotate(10deg) scale(1.1); }
+    .quick-action-premium:hover .quick-icon-box { background: var(--surface-2); color: inherit; transform: none; }
 
     .chart-container-premium {
         background: var(--surface-solid);
@@ -104,6 +104,30 @@
         </div>
     </div>
 
+    <!-- Pending Feedback Alert -->
+    @if($pending_feedback->isNotEmpty())
+        <div class="staggered" style="margin-bottom: 2rem;">
+            @foreach($pending_feedback as $pf)
+                <div style="background: var(--surface-solid); border: 2px solid #6366f1; border-radius: var(--radius); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 1.25rem;">
+                        <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(99, 102, 241, 0.1); color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            <i class="ph-bold ph-star"></i>
+                        </div>
+                        <div>
+                            <h3 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--text); margin-bottom: 0.25rem;">Feedback Required</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-dim); font-weight: 500;">Please share your thoughts on your recent session with <b>{{ $pf->counselor->full_name }}</b>.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <a href="{{ route('student.survey.show', $pf->appointment_id) }}" class="btn-primary" style="background: #6366f1; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                            Provide Feedback <i class="ph-bold ph-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endif
+
     <!-- Daily Tip Banner (Premium Glass) -->
     <div class="wellness-banner staggered">
         <div style="max-width: 800px; position: relative; z-index: 1;">
@@ -120,8 +144,13 @@
     <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 2.5rem;">
         <div class="stat-card-premium staggered">
             <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.1em;">Identity</div>
-            <div style="font-size: 1.15rem; font-weight: 800; color: var(--text); margin-bottom: 0.25rem;">{{ $user->roll_number }}</div>
-            <div style="font-size: 0.85rem; color: var(--primary); font-weight: 700;">{{ $user->department }}</div>
+            <div style="font-size: 1.15rem; font-weight: 800; color: var(--text); margin-bottom: 0.25rem;">{{ $user->full_name }}</div>
+            <div style="font-size: 0.85rem; color: var(--primary); font-weight: 700;">
+                @if($user->roll_number)
+                    {{ $user->roll_number }} • 
+                @endif
+                {{ $user->course ?? $user->department ?? 'Student' }}
+            </div>
         </div>
         <div class="stat-card-premium staggered">
             <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.1em;">Engagement</div>
@@ -173,6 +202,9 @@
                 <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem; margin: 0; color: var(--text); letter-spacing: -0.02em;">Wellness Index Trend</h2>
                 <a href="{{ route('student.reports.index') }}" class="btn-link">View Detailed Analysis →</a>
             </div>
+            <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.5rem; font-weight: 500; line-height: 1.5;">
+                This chart tracks your overall mental wellness based on your clinical assessments. The index is computed by inverting your total distress percentage (100% minus distress), where a higher percentage indicates better emotional health and resilience.
+            </p>
             <div style="flex: 1; position: relative;">
                 <canvas id="trendChart"></canvas>
             </div>
@@ -184,6 +216,9 @@
                 <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem; margin: 0; color: var(--text); letter-spacing: -0.02em;">Emotional Vector Summary</h2>
                 <a href="{{ route('student.mood') }}" class="btn-link" style="color: #f59e0b;">Analyze Logs →</a>
             </div>
+            <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.5rem; font-weight: 500; line-height: 1.5;">
+                A visualization of your daily emotional fluctuations. This maps your self-reported mood levels (on a scale of 1-5) from your journal entries to help you identify emotional patterns over time.
+            </p>
             <div style="flex: 1; position: relative;">
                 <canvas id="moodChart"></canvas>
             </div>
@@ -225,7 +260,8 @@
 <script>
 Chart.defaults.font.family = "'Inter', sans-serif";
 Chart.defaults.font.weight = '600';
-Chart.defaults.color = '{{ Auth::user()->theme === "dark" ? "#9ca3af" : "#64748b" }}';
+const isDark = document.documentElement.classList.contains('dark-mode');
+Chart.defaults.color = isDark ? "#9ca3af" : "#64748b";
 Chart.defaults.borderColor = 'rgba(0,0,0,0.05)';
 
 @if(count($chart_scores) > 0)

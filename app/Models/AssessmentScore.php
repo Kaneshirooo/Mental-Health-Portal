@@ -20,6 +20,8 @@ class AssessmentScore extends Model
         'stress_score',
         'overall_score',
         'risk_level',
+        'ai_analysis',
+        'ai_summary',
         'assessment_date',
         'report_generated_at',
         'counselor_notes',

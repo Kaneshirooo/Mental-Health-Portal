@@ -55,6 +55,13 @@ class AvailabilityController extends Controller
             }
         });
 
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Your service windows have been updated successfully.'
+            ]);
+        }
+
         return redirect()->route('counselor.availability')
             ->with('success', 'Availability updated successfully.');
     }

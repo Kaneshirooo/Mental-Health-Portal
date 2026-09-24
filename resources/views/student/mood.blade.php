@@ -176,7 +176,10 @@
                     <textarea name="note" placeholder="What's on your mind today?" style="width: 100%; padding: 1.25rem; border-radius: var(--radius-sm); border: 1.5px solid var(--border); font-family: inherit; font-size: 0.95rem; height: 120px; resize: none; background: var(--surface-2); transition: var(--transition); line-height: 1.6; color: var(--text);"></textarea>
                 </div>
 
-                <button type="submit" id="moodSubmitBtn" style="width: 100%; background: var(--primary); color: white; border: none; padding: 0.85rem; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2); transition: var(--transition); font-size: 0.9rem;">Log Mood →</button>
+                <button type="submit" id="moodSubmitBtn" style="width: 100%; background: var(--primary); color: white; border: none; padding: 0.85rem; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2); transition: var(--transition); font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span id="btnText">Log Mood →</span>
+                    <div id="btnLoader" style="display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                </button>
             </form>
         </div>
 
@@ -194,24 +197,41 @@
 
             <div class="timeline-container" id="timelineContainer">
                 @foreach ($history as $entry)
-                <div class="timeline-entry">
+                <div class="timeline-entry" id="entry-{{ $entry->log_id }}">
                     <div class="entry-card">
                         <div class="entry-header">
                             <span style="font-weight: 600; font-size: 0.9rem; color: var(--text);">{{ $entry->logged_at->format('F d, Y') }}</span>
                             <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                <span style="font-size: 1.5rem;">{{ $entry->mood_emoji }}</span>
+                                @if($entry->sentiment_label)
+                                    @php
+                                        $labelColors = [
+                                            'Positive' => ['bg' => 'rgba(16, 185, 129, 0.1)', 'color' => '#10b981'],
+                                            'Grateful' => ['bg' => 'rgba(16, 185, 129, 0.1)', 'color' => '#059669'],
+                                            'Neutral' => ['bg' => 'rgba(100, 116, 139, 0.1)', 'color' => '#64748b'],
+                                            'Anxious' => ['bg' => 'rgba(99, 102, 241, 0.1)', 'color' => '#6366f1'],
+                                            'Overwhelmed' => ['bg' => 'rgba(139, 92, 246, 0.1)', 'color' => '#8b5cf6'],
+                                            'Sad' => ['bg' => 'rgba(59, 130, 246, 0.1)', 'color' => '#3b82f6'],
+                                            'Frustrated' => ['bg' => 'rgba(239, 68, 68, 0.1)', 'color' => '#ef4444'],
+                                        ];
+                                        $lc = $labelColors[$entry->sentiment_label] ?? ['bg' => 'var(--surface-2)', 'color' => 'var(--text-dim)'];
+                                    @endphp
+                                    <span class="sentiment-badge-{{ $entry->log_id }}" style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: {{ $lc['bg'] }}; color: {{ $lc['color'] }}; padding: 0.25rem 0.6rem; border-radius: 6px; border: 1px solid {{ $lc['color'] }}30;">
+                                        {{ $entry->sentiment_label }}
+                                    </span>
+                                @endif
+                                <span class="entry-emoji-{{ $entry->log_id }}" style="font-size: 1.5rem;">{{ $entry->mood_emoji }}</span>
                                 <span style="font-size: 0.72rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; background: var(--surface-2); padding: 0.3rem 0.75rem; border-radius: var(--radius-sm); letter-spacing: 0.04em;">
                                     {{ $entry->logged_at->format('g:i A') }}
                                 </span>
+                                <button onclick="openEditModal({{ $entry->log_id }}, {{ $entry->mood_score }}, {{ json_encode($entry->note) }})"
+                                        style="background: none; border: 1px solid var(--border); border-radius: 8px; padding: 0.3rem 0.65rem; cursor: pointer; color: var(--text-dim); font-size: 0.72rem; font-weight: 600; transition: var(--transition);" title="Edit entry">
+                                    ✏️ Edit
+                                </button>
                             </div>
                         </div>
-                        @if ($entry->note)
-                            <p style="color: var(--text); line-height: 1.6; font-size: 0.9rem; font-weight: 400; padding-left: 0.75rem; border-left: 3px solid var(--primary-light);">
-                                {{ $entry->note }}
-                            </p>
-                        @else
-                            <p style="color: var(--text-dim); font-style: italic; font-weight: 400; font-size: 0.88rem;">No notes added.</p>
-                        @endif
+                        <p class="entry-note-{{ $entry->log_id }}" style="color: var(--text); line-height: 1.6; font-size: 0.9rem; font-weight: 400; padding-left: 0.75rem; border-left: 3px solid var(--primary-light); {{ $entry->note ? '' : 'color: var(--text-dim); font-style: italic; font-weight: 400;' }}">
+                            {{ $entry->note ?: 'No notes added.' }}
+                        </p>
                     </div>
                 </div>
                 @endforeach
@@ -223,10 +243,113 @@
 <footer class="footer">
     <p>© {{ date('Y') }} PSU Mental Health Portal</p>
 </footer>
+
+{{-- Edit Mood Modal --}}
+<div id="editMoodModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.65); backdrop-filter:blur(10px); align-items:center; justify-content:center;" onclick="closeEditModal(event)">
+    <div style="background:var(--surface-solid); border:1px solid var(--border); border-radius:var(--radius-lg); padding:2.5rem; max-width:460px; width:90%; box-shadow:var(--shadow-lg); position:relative;" onclick="event.stopPropagation()">
+        <h3 style="font-family:'Outfit',sans-serif; font-size:1.15rem; font-weight:700; color:var(--text); margin-bottom:1.75rem;">✏️ Edit Mood Entry</h3>
+        <input type="hidden" id="editLogId">
+
+        <div style="margin-bottom:1.5rem;">
+            <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.75rem;">Mood</label>
+            <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:0.5rem;" id="editMoodSelector">
+                @foreach([1=>'😢',2=>'😕',3=>'😐',4=>'🙂',5=>'😊'] as $s => $em)
+                <div class="edit-mood-opt" data-score="{{ $s }}"
+                     onclick="selectEditMood({{ $s }}, this)"
+                     style="background:var(--surface-2); border:2px solid transparent; border-radius:var(--radius-sm); padding:0.85rem 0.5rem; text-align:center; cursor:pointer; transition:var(--transition);">
+                    <div style="font-size:1.6rem;">{{ $em }}</div>
+                    <div style="font-size:0.6rem; font-weight:600; color:var(--text-dim); text-transform:uppercase; margin-top:0.3rem;">{{ $s }}</div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div style="margin-bottom:1.75rem;">
+            <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.75rem;">Note (Optional)</label>
+            <textarea id="editNote" rows="4" placeholder="Update your note…"
+                      style="width:100%; padding:1rem; border-radius:var(--radius-sm); border:1.5px solid var(--border); font-family:inherit; font-size:0.95rem; resize:none; background:var(--surface-2); color:var(--text); line-height:1.6;"></textarea>
+        </div>
+
+        <div style="display:flex; gap:0.75rem;">
+            <button onclick="closeEditModal()" style="flex:1; background:var(--surface-2); border:none; padding:0.8rem; border-radius:var(--radius-sm); font-weight:600; font-size:0.9rem; color:var(--text-muted); cursor:pointer;">Cancel</button>
+            <button onclick="submitEditMood()" id="editSaveBtn" style="flex:2; background:var(--primary); border:none; padding:0.8rem; border-radius:var(--radius-sm); font-weight:700; font-size:0.9rem; color:white; cursor:pointer; box-shadow:0 4px 12px rgba(13,148,136,0.2);">Save Changes</button>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
 <script>
+let editMoodScore = null;
+
+function openEditModal(logId, score, note) {
+    document.getElementById('editLogId').value = logId;
+    document.getElementById('editNote').value = note || '';
+    editMoodScore = score;
+    document.querySelectorAll('.edit-mood-opt').forEach(opt => {
+        const s = parseInt(opt.dataset.score);
+        opt.style.borderColor = s === score ? 'var(--primary)' : 'transparent';
+        opt.style.background  = s === score ? 'var(--surface-solid)' : 'var(--surface-2)';
+    });
+    document.getElementById('editMoodModal').style.display = 'flex';
+}
+
+function selectEditMood(score, el) {
+    editMoodScore = score;
+    document.querySelectorAll('.edit-mood-opt').forEach(opt => {
+        opt.style.borderColor = 'transparent';
+        opt.style.background  = 'var(--surface-2)';
+    });
+    el.style.borderColor = 'var(--primary)';
+    el.style.background  = 'var(--surface-solid)';
+}
+
+function closeEditModal(e) {
+    if (e && e.target !== document.getElementById('editMoodModal')) return;
+    document.getElementById('editMoodModal').style.display = 'none';
+}
+
+async function submitEditMood() {
+    const logId = document.getElementById('editLogId').value;
+    const note  = document.getElementById('editNote').value;
+    const btn   = document.getElementById('editSaveBtn');
+    if (!editMoodScore) { showMoodAlert('Please select a mood.', false); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    const fd = new FormData();
+    fd.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+    fd.append('_method', 'PATCH');
+    fd.append('mood_score', editMoodScore);
+    fd.append('note', note);
+
+    try {
+        const res  = await fetch(`/student/mood/${logId}`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: fd
+        });
+        const data = await res.json();
+        if (data.success) {
+            // Update the card in-place
+            const noteEl  = document.querySelector(`.entry-note-${logId}`);
+            const emojiEl = document.querySelector(`.entry-emoji-${logId}`);
+            if (noteEl)  noteEl.textContent  = data.note || 'No notes added.';
+            if (emojiEl) emojiEl.textContent = data.emoji;
+            document.getElementById('editMoodModal').style.display = 'none';
+            showMoodAlert('✅ Entry updated!', true);
+        } else {
+            showMoodAlert('❌ ' + (data.message || 'Update failed.'), false);
+        }
+    } catch(err) {
+        showMoodAlert('❌ Connection error.', false);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Changes';
+    }
+}
+
 function selectMood(score, el) {
     document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
     el.classList.add('selected');
@@ -242,9 +365,13 @@ document.getElementById('moodForm').addEventListener('submit', async function(e)
         return;
     }
     const btn = document.getElementById('moodSubmitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnLoader = document.getElementById('btnLoader');
     const note = document.querySelector('textarea[name="note"]').value;
+
     btn.disabled = true;
-    btn.textContent = 'Saving…';
+    btnText.textContent = 'Logging...';
+    btnLoader.style.display = 'block';
 
     const fd = new FormData(this);
 
@@ -262,6 +389,22 @@ document.getElementById('moodForm').addEventListener('submit', async function(e)
             
             // Prepend new timeline entry
             const container = document.getElementById('timelineContainer');
+            
+            let sentimentHtml = '';
+            if (data.sentiment_label) {
+                const colors = {
+                    'Positive': {bg: 'rgba(16, 185, 129, 0.1)', color: '#10b981'},
+                    'Grateful': {bg: 'rgba(16, 185, 129, 0.1)', color: '#059669'},
+                    'Neutral': {bg: 'rgba(100, 116, 139, 0.1)', color: '#64748b'},
+                    'Anxious': {bg: 'rgba(99, 102, 241, 0.1)', color: '#6366f1'},
+                    'Overwhelmed': {bg: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6'},
+                    'Sad': {bg: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6'},
+                    'Frustrated': {bg: 'rgba(239, 68, 68, 0.1)', color: '#ef4444'},
+                };
+                const c = colors[data.sentiment_label] || {bg: 'var(--surface-2)', color: 'var(--text-dim)'};
+                sentimentHtml = `<span style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: ${c.bg}; color: ${c.color}; padding: 0.25rem 0.6rem; border-radius: 6px; border: 1px solid ${c.color}30; margin-right: 0.75rem;">${data.sentiment_label}</span>`;
+            }
+
             const noteHtml = data.note
                 ? `<p style="color:var(--text);line-height:1.6;font-size:0.9rem;font-weight:400;padding-left:0.75rem;border-left:3px solid var(--primary-light);">${data.note}</p>`
                 : `<p style="color:var(--text-dim);font-style:italic;font-weight:400;font-size:0.88rem;">No notes added.</p>`;
@@ -276,11 +419,16 @@ document.getElementById('moodForm').addEventListener('submit', async function(e)
                     <div class="entry-header">
                         <span style="font-weight:600;font-size:0.9rem;color:var(--text);">${data.date}</span>
                         <div style="display:flex;align-items:center;gap:0.75rem;">
-                            <span style="font-size:1.5rem;">${data.emoji}</span>
+                            ${sentimentHtml}
+                            <span class="entry-emoji-${data.log_id}" style="font-size:1.5rem;">${data.emoji}</span>
                             <span style="font-size:0.72rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;background:var(--surface-2);padding:0.3rem 0.75rem;border-radius:var(--radius-sm);">${data.time}</span>
+                            <button onclick="openEditModal(${data.log_id}, 0, '')"
+                                    style="background:none;border:1px solid var(--border);border-radius:8px;padding:0.3rem 0.65rem;cursor:pointer;color:var(--text-dim);font-size:0.72rem;font-weight:600;" title="Edit entry">
+                                ✏️ Edit
+                            </button>
                         </div>
                     </div>
-                    ${noteHtml}
+                    <p class="entry-note-${data.log_id}" style="color:var(--text);line-height:1.6;font-size:0.9rem;font-weight:400;padding-left:0.75rem;border-left:3px solid var(--primary-light);">${data.note || 'No notes added.'}</p>
                 </div>`;
             container.insertBefore(entry, container.firstChild);
             requestAnimationFrame(() => {
@@ -302,7 +450,8 @@ document.getElementById('moodForm').addEventListener('submit', async function(e)
         showMoodAlert('❌ Connection error. Please try again.', false);
     } finally {
         btn.disabled = false;
-        btn.textContent = 'Log Mood →';
+        btnText.textContent = 'Log Mood →';
+        btnLoader.style.display = 'none';
     }
 });
 

@@ -1,15 +1,17 @@
 @extends('layouts.app')
 
 @push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
 <style>
     .chat-layout {
-        max-width: 1200px;
+        max-width: 1300px;
         margin: 0 auto;
-        padding: 1.5rem 2rem 3rem;
+        padding: 2rem 2.5rem 4rem;
         display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 2rem;
+        grid-template-columns: 320px 1fr;
+        gap: 2.5rem;
         align-items: start;
+        perspective: 1000px;
     }
 
     /* Aria Identity Panel */
@@ -29,23 +31,83 @@
     }
 
     .aria-avatar {
-        width: 80px;
-        height: 80px;
-        background: var(--primary-glow);
-        border-radius: var(--radius);
-        display: flex;
+        width: 120px;
+        height: 120px;
+        border-radius: 35px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        border: 4px solid white;
+        box-shadow: 0 20px 40px rgba(13, 148, 136, 0.2);
+        position: relative;
+        z-index: 1;
+        cursor: pointer;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .aria-avatar:hover { transform: scale(1.05) rotate(2deg); }
+
+    .aria-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Lightbox Styles */
+    .aria-lightbox {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.9);
+        backdrop-filter: blur(15px);
+        z-index: 10000;
         align-items: center;
         justify-content: center;
-        font-size: 2.5rem;
-        margin-bottom: 1.25rem;
-        border: 2px solid var(--surface-solid);
-        box-shadow: 0 8px 20px rgba(13, 148, 136, 0.1);
-        animation: pulse-aria 4s infinite;
+        padding: 2rem;
+        cursor: zoom-out;
+    }
+    .aria-lightbox.open { display: flex; }
+    .lightbox-content {
+        max-width: 90vw;
+        max-height: 90vh;
+        border-radius: 40px;
+        box-shadow: 0 30px 100px rgba(0,0,0,0.5);
+        border: 2px solid rgba(255,255,255,0.1);
+        transform: scale(0.9);
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .aria-lightbox.open .lightbox-content { transform: scale(1); opacity: 1; }
+
+    .aria-avatar::before {
+        content: '';
+        position: absolute;
+        inset: -10px;
+        background: var(--primary-glow);
+        border-radius: 40px;
+        z-index: -1;
+        filter: blur(20px);
+        opacity: 0.6;
+        animation: aura-pulse 3s infinite ease-in-out;
+    }
+
+    @keyframes aura-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.4; filter: blur(20px); }
+        50%       { transform: scale(1.15); opacity: 0.7; filter: blur(30px); }
     }
 
     @keyframes pulse-aria {
         0%, 100% { transform: scale(1); box-shadow: 0 8px 20px rgba(13, 148, 136, 0.1); }
         50%       { transform: scale(1.03); box-shadow: 0 12px 28px rgba(13, 148, 136, 0.15); }
+    }
+
+    .aria-avatar.speaking {
+        animation: aria-speak-pulse 0.4s infinite ease-in-out;
+        border-color: #10b981;
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+    }
+
+    @keyframes aria-speak-pulse {
+        0%, 100% { transform: scale(1.05); }
+        50% { transform: scale(1.1) rotate(2deg); }
     }
 
     .online-badge {
@@ -79,11 +141,15 @@
     .crisis-box {
         margin-top: 1.5rem;
         width: 100%;
-        padding: 1.25rem;
-        background: #fef2f2;
-        border-radius: var(--radius-sm);
-        border: 1px solid #fee2e2;
+        padding: 1.5rem;
+        background: rgba(239, 68, 68, 0.05);
+        border-radius: 20px;
+        border: 2px solid rgba(239, 68, 68, 0.2);
         text-align: left;
+    }
+    .dark-mode .crisis-box {
+        background: rgba(239, 68, 68, 0.1) !important;
+        border-color: rgba(239, 68, 68, 0.3) !important;
     }
 
     /* Main Chat Interface */
@@ -122,7 +188,7 @@
         display: flex;
         gap: 1.25rem;
         max-width: 88%;
-        animation: fade-up 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        opacity: 1;
     }
 
     @keyframes fade-up {
@@ -132,27 +198,67 @@
 
     .stream-row.user-row { align-self: flex-end; flex-direction: row-reverse; }
 
+    @keyframes dot-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.4; }
+        50%       { transform: scale(1.3); opacity: 1; }
+    }
+
     .msg-bubble {
-        padding: 1rem 1.5rem;
-        border-radius: var(--radius);
-        font-size: 0.95rem;
-        line-height: 1.65;
-        font-weight: 400;
-        box-shadow: var(--shadow-sm);
+        padding: 1.25rem 2rem;
+        border-radius: 24px;
+        font-size: 1rem;
+        line-height: 1.8;
+        font-weight: 500;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
     }
 
     .aria-row .msg-bubble {
-        background: var(--surface);
+        background: var(--surface-2);
         color: var(--text);
-        border: 1px solid var(--border);
+        border: 2px solid var(--border);
         border-bottom-left-radius: 4px;
+        min-width: 60px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+    }
+    .dark-mode .aria-row .msg-bubble {
+        background: #1e293b !important;
+        color: #ffffff !important;
+        border-color: #334155 !important;
     }
 
     .user-row .msg-bubble {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         color: white;
         border-bottom-right-radius: 4px;
-        box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
+        box-shadow: 0 12px 35px rgba(16, 185, 129, 0.25);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Markdown High-Contrast Overrides */
+    .msg-bubble h1, .msg-bubble h2, .msg-bubble h3 { 
+        font-size: 1.25rem; 
+        font-weight: 900;
+        margin: 1.5rem 0 0.75rem; 
+        color: #10b981;
+        font-family: 'Outfit', sans-serif;
+    }
+    .dark-mode .msg-bubble h1, .dark-mode .msg-bubble h2, .dark-mode .msg-bubble h3 {
+        color: #10b981 !important;
+    }
+    .msg-bubble strong { font-weight: 900; color: inherit; } /* Use bubble color */
+    .msg-bubble code {
+        background: rgba(16, 185, 129, 0.1);
+        padding: 0.25rem 0.6rem;
+        border-radius: 8px;
+        font-family: 'Inter', monospace;
+        font-size: 0.9rem;
+        color: #10b981;
+        font-weight: 700;
+    }
+    .dark-mode .msg-bubble code {
+        background: rgba(255,255,255,0.05) !important;
+        color: #10b981 !important;
     }
 
     .chat-actions {
@@ -176,19 +282,24 @@
     .msg-input {
         flex: 1;
         background: var(--surface-2);
-        border: 2px solid transparent;
-        border-radius: var(--radius-sm);
-        padding: 0.85rem 1.25rem;
+        border: 2.5px solid var(--border);
+        border-radius: 20px;
+        padding: 1.25rem 1.75rem;
         font-family: inherit;
-        font-size: 0.95rem;
+        font-size: 1rem;
         color: var(--text);
         resize: none;
-        max-height: 130px;
+        max-height: 150px;
         transition: var(--transition);
         line-height: 1.6;
-        font-weight: 400;
+        font-weight: 500;
     }
-    .msg-input:focus { outline: none; background: var(--surface-solid); border-color: var(--primary-light); box-shadow: 0 0 0 3px var(--primary-glow); }
+    .dark-mode .msg-input {
+        background: #0f172a !important;
+        border-color: #334155 !important;
+        color: white !important;
+    }
+    .msg-input:focus { outline: none; background: var(--surface-solid); border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15); }
 
     .send-btn {
         width: 48px; height: 48px;
@@ -257,13 +368,15 @@
 <div class="chat-layout">
 
     <!-- Aria Identity Panel -->
-    <div class="aria-panel">
-        <div class="aria-avatar">✨</div>
-        <div class="online-badge"><span></span> Aria Online</div>
-        <h2 style="font-family:'Outfit',sans-serif; font-weight:700; color:var(--text); font-size:1.15rem; margin-bottom:0.5rem;">Meet Aria</h2>
-        <p style="color:var(--text-dim); font-size:0.98rem; line-height:1.75; margin-bottom:0.5rem;">Your confidential AI mental health companion. Share how you feel — Aria is here to listen and guide you.</p>
+    <div class="aria-panel" style="background: var(--surface-solid); border: 2px solid var(--border); border-radius: 32px; box-shadow: var(--shadow-lg);">
+        <div class="aria-avatar" onclick="openAriaLightbox()">
+            <img src="{{ asset('images/aria-avatar.png') }}" alt="Aria Wellness Assistant">
+        </div>
+        <div class="online-badge" style="background: rgba(16,185,129,0.1); color: #10b981; border-color: rgba(16,185,129,0.2);"><span></span> Aria Online</div>
+        <h2 style="font-family:'Outfit',sans-serif; font-weight:900; color:var(--text); font-size:1.5rem; margin-bottom:0.75rem; letter-spacing:-0.02em;">Meet Aria</h2>
+        <p style="color:var(--text-dim); font-size:1rem; line-height:1.75; margin-bottom:1.5rem; font-weight:500;">Your confidential AI mental health companion. Share how you feel — Aria is here to listen and guide you.</p>
 
-        <div class="stat-block">
+        <div class="stat-block" style="border: 2px solid var(--border); border-radius: 20px;">
             <div class="stat-row">
                 <span class="stat-lbl">Conversation</span>
                 <span class="stat-val" id="exchangeCount">{{ $chat_history->count() }} messages</span>
@@ -274,7 +387,24 @@
             </div>
             <div class="stat-row">
                 <span class="stat-lbl">Status</span>
-                <span class="stat-val" style="color:#059669;">Active</span>
+                <span class="stat-val" style="color:#10b981;">Active</span>
+            </div>
+        </div>
+
+        <div class="stat-block" style="margin-top: 1.25rem; border: 2px solid var(--border); border-radius: 20px; text-align:left;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+                <div class="stat-lbl">Conversations</div>
+                <button onclick="startNewConversation()" style="border:none; background:#10b981; color:white; border-radius:12px; padding:0.45rem 0.85rem; font-size:0.75rem; font-weight:800; cursor:pointer; box-shadow: 0 4px 10px rgba(16,185,129,0.2);">+ NEW</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:0.6rem; max-height:200px; overflow:auto; padding-right: 0.25rem;">
+                @forelse($conversations as $conv)
+                    <a href="{{ route('student.chat', ['conversation' => $conv->conversation_id]) }}"
+                       style="display:block; text-decoration:none; padding:0.75rem; border-radius:14px; border:2px solid {{ (int)$activeConversationId === (int)$conv->conversation_id ? '#10b981' : 'var(--border)' }}; background: {{ (int)$activeConversationId === (int)$conv->conversation_id ? 'rgba(16,185,129,0.1)' : 'var(--surface-2)' }}; color:var(--text); font-size:0.85rem; font-weight:700; transition: var(--transition);">
+                        {{ \Illuminate\Support\Str::limit($conv->title, 32) }}
+                    </a>
+                @empty
+                    <div style="font-size:0.85rem; color:var(--text-dim); font-weight:600; text-align:center; padding: 1rem 0;">No history yet</div>
+                @endforelse
             </div>
         </div>
 
@@ -291,16 +421,20 @@
     <div style="display:flex; flex-direction:column; gap:1.75rem;">
 
         <div class="chat-interface">
-            <div class="chat-topbar">
+            <div class="chat-topbar" role="banner">
                 <div style="display:flex; align-items:center; gap:0.75rem;">
-                    <div style="width:10px; height:10px; background:#10b981; border-radius:50%; box-shadow:0 0 8px #10b981;"></div>
+                    <div style="width:10px; height:10px; background:#059669; border-radius:50%; box-shadow:0 0 8px #10b981;"></div>
                     <span style="font-weight:800; font-size:0.95rem; color:var(--text);">Aria is Ready</span>
                 </div>
-                <div id="exchangeTag" style="font-weight:800; font-size:0.8rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; background:#f1f5f9; padding:0.4rem 0.9rem; border-radius:8px;">{{ floor($chat_history->count() / 2) }} Exchanges</div>
+                <div id="exchangeTag" style="font-weight:900; font-size:0.8rem; color:white; text-transform:uppercase; letter-spacing:0.12em; background:#10b981; padding:0.45rem 1.25rem; border-radius:10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);">{{ floor($chat_history->count() / 2) }} EXCHANGES</div>
             </div>
 
-            <div class="message-stream" id="chatMessages">
-                @if($chat_history->count() === 0)
+            <div class="message-stream" id="chatMessages" role="log" aria-live="polite" aria-label="Conversation history">
+                @php
+                    $visibleHistory = $chat_history->filter(fn($c) => !str_starts_with($c->message, '[System:'));
+                @endphp
+
+                @if($visibleHistory->count() === 0)
                 <!-- Welcome screen -->
                 <div id="chatWelcome" style="padding:5rem 1.5rem; text-align:center;">
                     <div style="font-size:4rem; margin-bottom:2rem; animation:pulse-aria 4s infinite;">🕯️</div>
@@ -314,25 +448,34 @@
                     </div>
                 </div>
                 @else
-                    @foreach($chat_history as $chat)
+                    @foreach($visibleHistory as $chat)
                         <div class="stream-row {{ $chat->sender === 'user' ? 'user-row' : 'aria-row' }}">
-                            <div style="width:40px;height:40px;border-radius:12px;background:{{ $chat->sender === 'user' ? 'var(--primary-glow)' : '#f1f5f9' }};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;color:{{ $chat->sender === 'user' ? 'var(--primary)' : 'var(--text-dim)' }};font-size:0.85rem;">
-                                {{ $chat->sender === 'user' ? strtoupper(substr(auth()->user()->full_name, 0, 1)) : '✨' }}
+                            <div style="width:40px;height:40px;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);">
+                                @if($chat->sender === 'user')
+                                    <div style="width:100%;height:100%;background:var(--primary-glow);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--primary);font-size:0.85rem;">
+                                        {{ strtoupper(substr(auth()->user()->full_name, 0, 1)) }}
+                                    </div>
+                                @else
+                                    <img src="{{ asset('images/aria-avatar.png') }}" style="width:100%;height:100%;object-fit:cover;">
+                                @endif
                             </div>
-                            <div class="msg-bubble">{!! nl2br(e($chat->message)) !!}</div>
+                            <div class="msg-bubble @if($chat->sender === 'aria') aria-msg-bubble @endif" data-raw="{{ $chat->message }}">
+                                <!-- Rendered via JS on load for consistency -->
+                                {!! nl2br(e($chat->message)) !!}
+                            </div>
                         </div>
                     @endforeach
                 @endif
 
                 <!-- Typing indicator -->
-                <div id="typingIndicator" style="display:none; align-items:center; gap:1rem; animation:fade-up 0.4s ease-out;">
-                    <div style="width:38px; height:38px; border-radius:12px; background:var(--primary-glow); display:flex; align-items:center; justify-content:center;">✨</div>
-                    <div style="background:#f8fafc; padding:1.25rem 1.75rem; border-radius:20px; border-bottom-left-radius:4px; border:1px solid var(--border);">
-                        <div style="display:flex; gap:5px;">
-                            <div style="width:7px;height:7px;background:var(--primary);border-radius:50%;animation:bounce-aria 1.4s infinite;"></div>
-                            <div style="width:7px;height:7px;background:var(--primary);border-radius:50%;animation:bounce-aria 1.4s infinite 0.2s;"></div>
-                            <div style="width:7px;height:7px;background:var(--primary);border-radius:50%;animation:bounce-aria 1.4s infinite 0.4s;"></div>
-                        </div>
+                <div id="typingIndicator" style="display:none; align-items:center; gap:1.25rem; padding: 0.5rem 0; margin-bottom: 1.25rem;">
+                    <div style="width:40px;height:40px;border-radius:12px;overflow:hidden;flex-shrink:0;border:1px solid var(--border);">
+                        <img src="{{ asset('images/aria-avatar.png') }}" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <div class="typing-aura" style="display:flex; gap:6px; background:white; padding: 1rem 1.5rem; border-radius:20px; border:1px solid rgba(13, 148, 136, 0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.02);">
+                        <span class="dot" style="width:8px; height:8px; background:var(--primary); border-radius:50%; opacity:0.4; animation: dot-pulse 1.4s infinite ease-in-out;"></span>
+                        <span class="dot" style="width:8px; height:8px; background:var(--primary); border-radius:50%; opacity:0.4; animation: dot-pulse 1.4s infinite ease-in-out 0.2s;"></span>
+                        <span class="dot" style="width:8px; height:8px; background:var(--primary); border-radius:50%; opacity:0.4; animation: dot-pulse 1.4s infinite ease-in-out 0.4s;"></span>
                     </div>
                 </div>
             </div>
@@ -359,11 +502,11 @@
             </div>
 
             <div class="chat-input-bar">
-                <button id="micBtn" onclick="toggleVoice()" title="Hold to speak" style="width:60px;height:60px;border-radius:20px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:#f1f5f9;color:var(--text-dim);transition:var(--transition);flex-shrink:0;">🎤</button>
-                <button id="handsFreeBtn" onclick="toggleHandsFree()" title="Toggle Hands-free mode" style="width:60px;height:60px;border-radius:20px;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:white;color:var(--text-dim);transition:var(--transition);flex-shrink:0;">🙌</button>
-                <textarea id="chatInput" class="msg-input" placeholder="Type or tap 🎤 to speak…" rows="1" onkeydown="handleKey(event)" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-                <button id="ttsToggle" onclick="toggleTTS()" title="Toggle Aria voice" style="width:60px;height:60px;border-radius:20px;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:var(--surface-solid);color:var(--primary);transition:var(--transition);flex-shrink:0;">🔊</button>
-                <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+                <button id="micBtn" onclick="toggleVoice()" title="Hold to speak" aria-label="Toggle voice input" style="width:60px;height:60px;border-radius:20px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:#f1f5f9;color:var(--text-dim);transition:var(--transition);flex-shrink:0;">🎤</button>
+                <button id="handsFreeBtn" onclick="toggleHandsFree()" title="Toggle Hands-free mode" aria-label="Toggle hands-free mode" style="width:60px;height:60px;border-radius:20px;border:2.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:var(--surface-solid);color:var(--text-dim);transition:var(--transition);flex-shrink:0;">🙌</button>
+                <textarea id="chatInput" class="msg-input" placeholder="Type or tap 🎤 to speak…" rows="1" onkeydown="handleKey(event)" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" aria-label="Type your message"></textarea>
+                <button id="ttsToggle" onclick="toggleTTS()" title="Toggle Aria voice" aria-label="Toggle text to speech" style="width:60px;height:60px;border-radius:20px;border:2.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:var(--surface-solid);color:#10b981;transition:var(--transition);flex-shrink:0;">🔊</button>
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Send message">➤</button>
             </div>
         </div>
 
@@ -434,17 +577,113 @@
             <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
             <h3 style="font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:800; color:var(--primary-dark); margin-bottom:1rem;">Report Generated</h3>
             <p style="color:var(--text-dim); font-weight:600; margin-bottom:2rem;">Your wellness summary has been saved and shared with your counselor. You can view it in your reports history.</p>
-            <button onclick="location.reload()" style="background:var(--primary); color:white; border:none; padding:1rem 2rem; border-radius:50px; font-weight:800; cursor:pointer;">Main Chat</button>
+            <div style="display:flex; gap:1rem; justify-content:center;">
+                <button onclick="window.location.href='{{ route('student.reports.index') }}'" style="background:var(--primary); color:white; border:none; padding:1rem 2rem; border-radius:50px; font-weight:800; cursor:pointer;">View in Vault</button>
+                <button onclick="closeReportModal()" style="background:white; border:2px solid var(--border); color:var(--text-dim); padding:1rem 2rem; border-radius:50px; font-weight:800; cursor:pointer;">Continue Chatting</button>
+            </div>
         </div>
+    </div>
+</div>
+
+<!-- End Conversation Confirmation Modal -->
+<div class="report-overlay" id="endConversationModal">
+    <div class="report-modal" style="max-width: 450px; text-align: center; padding: 3.5rem 2.5rem;">
+        <div style="width: 80px; height: 80px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.5rem;">
+            <i class="ph ph-door-open"></i>
+        </div>
+        <h3 style="font-family:'Outfit',sans-serif; font-weight:900; font-size:1.75rem; margin-bottom:0.75rem; color: var(--text); letter-spacing: -0.02em;">Archive Session?</h3>
+        <p style="color:var(--text-dim); font-size:1rem; margin-bottom:2.5rem; font-weight: 500; line-height: 1.6;">Are you sure you want to end this session? Aria will start a fresh conversation for your next check-in.</p>
+        <div style="display:flex; gap:1.25rem;">
+            <button onclick="closeEndConversationModal()" style="flex:1; background:var(--surface-2); border:1.5px solid var(--border); padding:1rem; border-radius:16px; font-weight:800; cursor:pointer; color: var(--text); font-size: 0.9rem;">CANCEL</button>
+            <button onclick="confirmEndConversation()" style="flex:2; border:none; padding:1rem; border-radius:16px; font-weight:900; cursor:pointer; background:#ef4444; color:white; font-size: 0.9rem; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);">CONFIRM END</button>
+        </div>
+    </div>
+</div>
+
+<!-- Aria Avatar Lightbox -->
+<div id="ariaLightbox" class="aria-lightbox" onclick="closeAriaLightbox()">
+    <img src="{{ asset('images/aria-avatar.png') }}" class="lightbox-content" alt="Full Avatar">
+    <div style="position: absolute; top: 2rem; right: 2rem; color: white; font-size: 2rem; cursor: pointer;">
+        <i class="ph ph-x"></i>
     </div>
 </div>
 
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial Layout Entrance
+    gsap.from('.aria-panel', { x: -50, opacity: 0, duration: 1.2, ease: "expo.out", delay: 0.2 });
+    gsap.from('.chat-interface', { y: 30, opacity: 0, duration: 1.2, ease: "expo.out", delay: 0.4 });
+    
+    // Render history messages via Marked for consistency
+    document.querySelectorAll('.msg-bubble[data-raw]').forEach(el => {
+        el.innerHTML = marked.parse(el.getAttribute('data-raw'));
+    });
+
+    scrollToBottom();
+
+    // Magnetic Input Effect
+    const input = document.querySelector('.msg-input');
+    if (input) {
+        input.addEventListener('focus', () => {
+            gsap.to('.chat-input-bar', { 
+                borderColor: 'var(--primary-light)', 
+                boxShadow: '0 0 30px rgba(13, 148, 136, 0.15)',
+                duration: 0.4 
+            });
+        });
+        input.addEventListener('blur', () => {
+            gsap.to('.chat-input-bar', { 
+                borderColor: 'var(--border)', 
+                boxShadow: 'none',
+                duration: 0.4 
+            });
+        });
+    }
+
+    // Magnetic Buttons (Starters & Primary Actions)
+    const interactives = document.querySelectorAll('.starter-tag, .send-btn, #reportBtn');
+    interactives.forEach(el => {
+        el.addEventListener('mousemove', (e) => {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            gsap.to(el, { x: x * 0.3, y: y * 0.3, scale: 1.05, duration: 0.4, ease: "power2.out" });
+        });
+        el.addEventListener('mouseleave', () => {
+            gsap.to(el, { x: 0, y: 0, scale: 1, duration: 0.6, ease: "elastic.out(1, 0.3)" });
+        });
+    });
+});
 let isWaiting = false;
 const userInitial = "{{ strtoupper(substr(auth()->user()->full_name, 0, 1)) }}";
+let activeConversationId = {{ $activeConversationId ? (int) $activeConversationId : 'null' }};
+const debugRunId = 'initial';
+function debugLog(hypothesisId, location, message, data = {}) {
+    // #region agent log
+    fetch('http://127.0.0.1:7562/ingest/38cc8233-db14-4f39-87ee-19f5a468ae9e',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a97deb'},body:JSON.stringify({sessionId:'a97deb',runId:debugRunId,hypothesisId,location,message,data,timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
+}
+
+// Reliable message counter – avoids parseInt on localised strings
+let messageCount = {{ $chat_history->count() }};
+
+function updateCounters() {
+    messageCount += 2; // user + aria
+    document.getElementById('exchangeCount').textContent = messageCount + ' messages';
+    const exchanges = Math.floor(messageCount / 2);
+    document.getElementById('exchangeTag').textContent = exchanges + ' Exchanges';
+    // Enable report button once ≥ 2 full exchanges (4 messages)
+    if (messageCount >= 4) {
+        const btn = document.getElementById('reportBtn');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+    }
+}
 
 // ── Text-to-Speech (Aria speaks back) ──
 let ttsEnabled = true;
@@ -453,7 +692,11 @@ let ariaVoice = null;
 
 function loadVoices() {
     const voices = window.speechSynthesis.getVoices();
-    ariaVoice = voices.find(v => /female|zira|samantha|victoria|karen|moira|fiona/i.test(v.name))
+    // Strictly prioritize pleasant, natural female voices
+    ariaVoice = voices.find(v => v.name.includes('Google') && v.name.includes('Female'))
+             || voices.find(v => v.name.includes('Google') && v.name.includes('UK English Female'))
+             || voices.find(v => v.name.includes('Natural') && v.name.includes('Female'))
+             || voices.find(v => /samantha|zira|victoria|karen|moira|fiona|tessa/i.test(v.name))
              || voices.find(v => v.lang.startsWith('en') && !v.name.toLowerCase().includes('male'))
              || voices[0] || null;
 }
@@ -469,12 +712,52 @@ function speakAria(text) {
         return;
     }
     speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(text.replace(/<[^>]*>/g, ''));
-    utt.rate  = 0.92;
-    utt.pitch = 1.1;
-    if (ariaVoice) utt.voice = ariaVoice;
-    utt.onend = () => { if (handsFreeEnabled) setTimeout(toggleVoice, 500); };
-    speechSynthesis.speak(utt);
+
+    // Custom 'Aria' Vocal Inflection Engine
+    // Splits text into natural phrases to apply unique 'lilting' pitch shifts
+    const phrases = text.replace(/<[^>]*>/g, '').split(/(?<=[.!?])\s+/);
+    let phraseIndex = 0;
+
+    function speakNextPhrase() {
+        if (phraseIndex >= phrases.length) {
+            document.querySelectorAll('.aria-avatar').forEach(el => el.classList.remove('speaking'));
+            if (handsFreeEnabled) setTimeout(toggleVoice, 500);
+            return;
+        }
+
+        const phrase = phrases[phraseIndex].trim();
+        if (!phrase) { phraseIndex++; speakNextPhrase(); return; }
+
+        const utt = new SpeechSynthesisUtterance(phrase);
+        
+        // Aria's Signature: Playful, rhythmic, and high-pitched
+        // We vary the pitch slightly per phrase to sound 'custom' and alive
+        const basePitch = 1.6;
+        const pitchShift = (phraseIndex % 2 === 0) ? 0.05 : -0.05;
+        
+        utt.pitch = basePitch + pitchShift;
+        utt.rate = 0.96;
+        utt.volume = 1.0;
+
+        if (ariaVoice) utt.voice = ariaVoice;
+
+        utt.onstart = () => {
+            document.querySelectorAll('.aria-avatar').forEach(el => el.classList.add('speaking'));
+        };
+
+        utt.onend = () => {
+            phraseIndex++;
+            speakNextPhrase();
+        };
+
+        utt.onerror = () => {
+            document.querySelectorAll('.aria-avatar').forEach(el => el.classList.remove('speaking'));
+        };
+
+        speechSynthesis.speak(utt);
+    }
+
+    speakNextPhrase();
 }
 
 function toggleTTS() {
@@ -508,6 +791,10 @@ if (SpeechRecognition) {
     recognition.continuous = false;
 
     recognition.onstart = () => {
+        debugLog('H1', 'student/chat.blade.php:recognition.onstart', 'Speech recognition started', {
+            lang: recognition.lang,
+            continuous: recognition.continuous
+        });
         finalTranscript = '';
         document.getElementById('voiceOverlay').style.display = 'flex';
         document.getElementById('interimText').textContent = '';
@@ -524,10 +811,20 @@ if (SpeechRecognition) {
             else interim += e.results[i][0].transcript;
         }
         document.getElementById('interimText').textContent = interim || finalTranscript;
+        debugLog('H2', 'student/chat.blade.php:recognition.onresult', 'Speech recognition result', {
+            interimLength: interim.length,
+            finalLength: finalTranscript.trim().length
+        });
     };
 
     recognition.onend = () => {
         const msg = finalTranscript.trim();
+        debugLog('H2', 'student/chat.blade.php:recognition.onend', 'Speech recognition ended', {
+            hasMessage: !!msg,
+            messageLength: msg.length,
+            handsFreeEnabled,
+            recognizing
+        });
         if (msg) {
             document.getElementById('chatInput').value = msg;
             sendMessage();
@@ -536,15 +833,34 @@ if (SpeechRecognition) {
         }
         closeVoiceOverlay();
     };
+    recognition.onerror = (event) => {
+        debugLog('H1', 'student/chat.blade.php:recognition.onerror', 'Speech recognition error', {
+            error: event.error || 'unknown',
+            message: event.message || ''
+        });
+    };
 }
 
 async function toggleVoice() {
-    if (!SpeechRecognition) return alert('Speech Recognition is NOT available in this browser.');
+    if (!SpeechRecognition) {
+        debugLog('H1', 'student/chat.blade.php:toggleVoice', 'Speech recognition unavailable', {
+            userAgent: navigator.userAgent
+        });
+        return alert('Speech Recognition is NOT available in this browser.');
+    }
     if (recognizing) { recognition.stop(); return; }
     try {
         recognizing = true;
+        debugLog('H1', 'student/chat.blade.php:toggleVoice', 'Attempting recognition.start', {
+            recognizing
+        });
         recognition.start();
-    } catch (err) { recognizing = false; }
+    } catch (err) {
+        recognizing = false;
+        debugLog('H1', 'student/chat.blade.php:toggleVoice.catch', 'Failed to start recognition', {
+            error: err?.message || String(err)
+        });
+    }
 }
 
 function stopVoice() { 
@@ -563,30 +879,78 @@ function closeVoiceOverlay() {
 }
 
 function scrollToBottom() {
-    const stream = document.getElementById('chatMessages');
-    stream.scrollTop = stream.scrollHeight;
+    setTimeout(() => {
+        const stream = document.getElementById('chatMessages');
+        if (stream) {
+            stream.scrollTo({
+                top: stream.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    }, 100);
 }
 
-function appendMessage(role, content) {
+function appendMessage(role, content, isNew = false) {
     const welcome = document.getElementById('chatWelcome');
     if(welcome) welcome.style.display = 'none';
     const stream = document.getElementById('chatMessages');
     const row = document.createElement('div');
     row.className = 'stream-row ' + (role === 'user' ? 'user-row' : 'aria-row');
+    
+    const avatarHtml = role === 'user' 
+        ? `<div style="width:100%;height:100%;background:var(--primary-glow);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--primary);font-size:0.85rem;">${userInitial}</div>`
+        : `<img src="{{ asset('images/aria-avatar.png') }}" style="width:100%;height:100%;object-fit:cover;">`;
+
     row.innerHTML = `
-        <div style="width:40px;height:40px;border-radius:12px;background:${role==='user'?'var(--primary-glow)':'#f1f5f9'};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;color:${role==='user'?'var(--primary)':'var(--text-dim)'};font-size:0.85rem;">
-            ${role === 'user' ? userInitial : '✨'}
+        <div class="avatar-box" style="width:40px;height:40px;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);">
+            ${avatarHtml}
         </div>
-        <div class="msg-bubble">${content.replace(/\n/g,'<br>')}</div>
+        <div class="msg-bubble ${role==='aria'?'aria-msg-bubble':''}"></div>
     `;
+    
+    const bubble = row.querySelector('.msg-bubble');
     stream.insertBefore(row, document.getElementById('typingIndicator'));
-    scrollToBottom();
+
+    // Markdown Parser Options
+    marked.setOptions({ gfm: true, breaks: true });
+
+    // GSAP Animation for Row Entry
+    gsap.from(row, {
+        y: 30,
+        opacity: 0,
+        x: role === 'user' ? 20 : -20,
+        duration: 0.6,
+        ease: "back.out(1.7)"
+    });
+
+    if (role === 'aria' && isNew) {
+        let i = 0;
+        const rawContent = content;
+        const interval = setInterval(() => {
+            if (i < rawContent.length) {
+                bubble.innerHTML = marked.parse(rawContent.substring(0, i + 3));
+                i += 3;
+                scrollToBottom();
+            } else {
+                clearInterval(interval);
+                bubble.innerHTML = marked.parse(rawContent);
+                scrollToBottom();
+            }
+        }, 15);
+    } else {
+        bubble.innerHTML = role === 'user' ? content : marked.parse(content);
+        scrollToBottom();
+    }
 }
 
 async function sendMessage(textOverride) {
     const input = document.getElementById('chatInput');
     const msg = textOverride || input.value.trim();
     if (!msg || isWaiting) return;
+    debugLog('H3', 'student/chat.blade.php:sendMessage', 'Sending chat message', {
+        messageLength: msg.length,
+        fromVoice: !textOverride
+    });
 
     input.value = '';
     input.style.height = 'auto';
@@ -604,34 +968,111 @@ async function sendMessage(textOverride) {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"
             },
-            body: JSON.stringify({ message: msg })
+            body: JSON.stringify({ message: msg, conversation_id: activeConversationId })
         });
 
-        const data = await response.json();
         document.getElementById('typingIndicator').style.display = 'none';
-        
-        if (data.success) {
-            appendMessage('aria', data.message);
-            speakAria(data.message);
-            
-            // Update counts
-            const currentCount = parseInt(document.getElementById('exchangeCount').textContent) + 2;
-            document.getElementById('exchangeCount').textContent = currentCount + ' messages';
-            const exchanges = Math.floor(currentCount / 2);
-            document.getElementById('exchangeTag').textContent = exchanges + ' Exchanges';
-            
-            if (exchanges >= 2) {
-                const btn = document.getElementById('reportBtn');
-                btn.disabled = false;
-                btn.style.opacity = '1';
+
+        if (!response.ok) {
+            debugLog('H3', 'student/chat.blade.php:sendMessage.response', 'Chat response non-OK', {
+                status: response.status
+            });
+            // Server returned 4xx / 5xx – show a friendly fallback
+            const errText = response.status === 422
+                ? "Your message couldn't be sent. Please keep it under 1 000 characters."
+                : "Aria is taking a moment to respond. Please try again shortly.";
+            appendMessage('aria', errText);
+        } else {
+            const data = await response.json();
+            debugLog('H3', 'student/chat.blade.php:sendMessage.response', 'Chat response OK', {
+                success: !!data.success,
+                responseLength: (data.message || '').length
+            });
+            if (data.success && data.message) {
+                if (data.conversation_id) {
+                    activeConversationId = data.conversation_id;
+                }
+                appendMessage('aria', data.message, true); // true for typing effect
+                speakAria(data.message);
+                updateCounters();
+            } else {
+                appendMessage('aria', "I didn't quite catch that. Could you say it again?");
             }
         }
     } catch (e) {
+        debugLog('H3', 'student/chat.blade.php:sendMessage.catch', 'Chat request failed', {
+            error: e?.message || String(e)
+        });
         document.getElementById('typingIndicator').style.display = 'none';
-        appendMessage('aria', "I'm having trouble connecting. Please try again.");
+        appendMessage('aria', "I'm having trouble connecting. Please check your connection and try again.");
     } finally {
         isWaiting = false;
         document.getElementById('sendBtn').disabled = false;
+    }
+}
+
+async function startNewConversation() {
+    try {
+        const response = await fetch("{{ route('student.chat.new') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({})
+        });
+        const data = await response.json();
+        if (data.success && data.conversation_id) {
+            activeConversationId = data.conversation_id;
+            // Update URL without reload
+            const newUrl = "{{ route('student.chat') }}" + '?conversation=' + data.conversation_id;
+            history.pushState(null, '', newUrl);
+            
+            // Clear UI
+            const stream = document.getElementById('chatMessages');
+            stream.innerHTML = `
+                <div id="chatWelcome" style="padding:5rem 1.5rem; text-align:center;">
+                    <div style="font-size:4rem; margin-bottom:2rem; animation:pulse-aria 4s infinite;">🕯️</div>
+                    <h3 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800; color:var(--primary-dark); margin-bottom:1rem;">Hi {{ explode(' ', auth()->user()->full_name)[0] }}, I'm Aria.</h3>
+                    <p style="color:var(--text-dim); font-size:1.05rem; font-weight:600; max-width:460px; margin:0 auto 3rem; line-height:1.8;">How are you feeling today? You can type freely or choose a topic to start.</p>
+                    <div style="display:flex; flex-wrap:wrap; gap:0.75rem; justify-content:center;">
+                        <button class="starter-tag" onclick="sendStarter(this)">I feel stressed</button>
+                        <button class="starter-tag" onclick="sendStarter(this)">I can't sleep</button>
+                        <button class="starter-tag" onclick="sendStarter(this)">I'm anxious about school</button>
+                        <button class="starter-tag" onclick="sendStarter(this)">I feel lonely</button>
+                    </div>
+                </div>
+            `;
+            
+            // Re-append typing indicator which was just cleared
+            const ti = document.createElement('div');
+            ti.id = 'typingIndicator';
+            ti.style.display = 'none';
+            ti.style.alignItems = 'center';
+            ti.style.gap = '1.25rem';
+            ti.style.padding = '0.5rem 0';
+            ti.style.marginBottom = '1.25rem';
+            ti.innerHTML = `
+                <div style="width:40px;height:40px;border-radius:12px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;color:var(--text-dim);font-size:0.85rem;">✨</div>
+                <div class="typing-aura" style="display:flex; gap:6px; background:white; padding: 1rem 1.5rem; border-radius:20px; border:1px solid rgba(13, 148, 136, 0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.02);">
+                    <span class="dot" style="width:8px; height:8px; background:var(--primary); border-radius:50%; opacity:0.4; animation: dot-pulse 1.4s infinite ease-in-out;"></span>
+                    <span class="dot" style="width:8px; height:8px; background:var(--primary); border-radius:50%; opacity:0.4; animation: dot-pulse 1.4s infinite ease-in-out 0.2s;"></span>
+                    <span class="dot" style="width:8px; height:8px; background:var(--primary); border-radius:50%; opacity:0.4; animation: dot-pulse 1.4s infinite ease-in-out 0.4s;"></span>
+                </div>
+            `;
+            stream.appendChild(ti);
+            
+            // Reset counters
+            messageCount = 0;
+            document.getElementById('exchangeCount').textContent = '0 messages';
+            document.getElementById('exchangeTag').textContent = '0 EXCHANGES';
+            document.getElementById('reportBtn').disabled = true;
+            document.getElementById('reportBtn').style.opacity = '0.4';
+            
+            App.toast({ type: 'success', title: 'New Conversation', message: 'Aria is ready for a fresh start.' });
+        }
+    } catch (e) {
+        App.toast({ type: 'error', title: 'Error', message: 'Could not start a new conversation right now.' });
     }
 }
 
@@ -643,10 +1084,16 @@ function sendStarter(btn) { sendMessage(btn.textContent); }
 
 // ── Conversation Lifecycle ──
 function endConversation() {
-    if (confirm("Are you sure you want to end this conversation? Your current progress will be reset.")) {
-        // Redirect to reload the page, which triggers history deletion in Controller::index
-        window.location.href = "{{ route('student.chat') }}";
-    }
+    document.getElementById('endConversationModal').classList.add('open');
+}
+
+function closeEndConversationModal() {
+    document.getElementById('endConversationModal').classList.remove('open');
+}
+
+function confirmEndConversation() {
+    closeEndConversationModal();
+    startNewConversation();
 }
 
 // ── Report Modal ──
@@ -660,16 +1107,27 @@ function closeReportModal() {
 
 async function submitReport() {
     const btn = document.getElementById('submitReportBtn');
-    btn.textContent = 'Generating...';
+    const originalBtnText = 'Generate & Save Report';
+    btn.textContent = 'Generating…';
     btn.disabled = true;
 
-    // Collect transcript
+    // Collect transcript – skip typing indicator and any row without a bubble
     const messages = [];
     document.querySelectorAll('.stream-row').forEach(row => {
+        const bubble = row.querySelector('.msg-bubble');
+        if (!bubble) return; // skip non-message rows (typing indicator, etc.)
+        const txt = (bubble.textContent || '').trim();
+        if (!txt) return; // skip empty
         const role = row.classList.contains('user-row') ? 'Student' : 'Aria';
-        const txt = row.querySelector('.msg-bubble').textContent;
         messages.push(role + ': ' + txt);
     });
+
+    if (messages.length < 2) {
+        btn.textContent = originalBtnText;
+        btn.disabled = false;
+        alert('Please have at least a short conversation with Aria before generating a report.');
+        return;
+    }
 
     const form = {
         mood_now: document.getElementById('rp_mood').value,
@@ -688,16 +1146,31 @@ async function submitReport() {
             body: JSON.stringify({ transcript: messages.join('\n\n'), form: form })
         });
 
+        if (!response.ok) {
+            throw new Error('Server returned ' + response.status);
+        }
+
         const data = await response.json();
         if (data.success) {
             document.getElementById('reportFormSection').style.display = 'none';
             document.getElementById('reportResultSection').style.display = 'block';
+        } else {
+            throw new Error(data.message || 'Report generation failed.');
         }
     } catch(e) {
-        btn.textContent = 'Generate & Save Report';
+        console.error('Report error:', e);
+        btn.textContent = originalBtnText;
         btn.disabled = false;
-        alert('Could not generate report.');
+        alert('Could not generate report. Please try again in a moment.');
     }
+}
+
+// ── Lightbox Logic ──
+function openAriaLightbox() {
+    document.getElementById('ariaLightbox').classList.add('open');
+}
+function closeAriaLightbox() {
+    document.getElementById('ariaLightbox').classList.remove('open');
 }
 
 // Reveal initial messages if any

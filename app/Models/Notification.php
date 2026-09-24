@@ -13,6 +13,16 @@ class Notification extends Model
     protected $primaryKey = 'notification_id';
     public $timestamps = false;
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (!$model->created_at) {
+                $model->created_at = now();
+            }
+        });
+    }
+
     protected $fillable = [
         'user_id',
         'title',

@@ -40,13 +40,20 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        // Pending Feedback (Completed sessions without survey)
+        $pending_feedback = Appointment::where('student_id', $user->user_id)
+            ->where('status', \App\Enums\AppointmentStatus::COMPLETED)
+            ->whereDoesntHave('survey')
+            ->with('counselor')
+            ->get();
+
         // Chart Data (Last 10 assessments)
         $history = AssessmentScore::where('user_id', $user->user_id)
             ->orderBy('assessment_date', 'asc')
             ->limit(10)
             ->get();
             
-        $chart_labels = $history->map(fn($r) => $r->assessment_date->format('M d'));
+        $chart_labels = $history->map(fn($r) => $r->assessment_date->format('M d, Y'));
         $chart_scores = $history->pluck('overall_score');
 
         // Mood Data (Last 14)
@@ -55,7 +62,7 @@ class DashboardController extends Controller
             ->limit(14)
             ->get();
             
-        $mood_labels = $mood_history->map(fn($m) => $m->logged_at->format('M d'));
+        $mood_labels = $mood_history->map(fn($m) => $m->logged_at->format('M d, Y'));
         $mood_data = $mood_history->pluck('mood_score');
 
         // Fetch Daily Quote from ZenQuotes (Cached for 24 hours)
@@ -84,7 +91,8 @@ class DashboardController extends Controller
             'mood_labels',
             'mood_data',
             'tip',
-            'history'
+            'history',
+            'pending_feedback'
         ));
     }
 }

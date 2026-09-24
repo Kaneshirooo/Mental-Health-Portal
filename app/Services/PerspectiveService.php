@@ -12,7 +12,7 @@ class PerspectiveService
 
     public function __construct()
     {
-        $this->apiKey = config('services.perspective.key') ?? env('GEMINI_API_KEY');
+        $this->apiKey = config('services.perspective.key');
         $this->apiUrl = 'https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze';
     }
 

@@ -9,69 +9,91 @@
     </div>
 
     <!-- Aria Recommendation -->
-    <div id="ariaRecCard" class="hidden glass-card p-8 mb-12 flex items-center gap-8 border-l-4 border-l-blue-500 animate-fade-in">
-        <div class="w-16 h-16 bg-blue-600/20 border border-blue-500/20 rounded-3xl flex items-center justify-center text-3xl">🪄</div>
+    <div id="ariaRecCard" class="hidden glass-card p-8 mb-12 flex items-center gap-8 border-l-4 border-l-emerald-500 animate-fade-in" style="background: var(--surface-solid); border: 2px solid var(--border); border-left: 6px solid #10b981; border-radius: 32px; box-shadow: var(--shadow-lg);">
+        <div class="w-16 h-16 bg-emerald-600/10 border border-emerald-500/20 rounded-3xl flex items-center justify-center text-3xl">✨</div>
         <div class="flex-1">
-            <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-2">Aria's Insight</h3>
-            <p id="ariaRecText" class="text-gray-300 font-medium italic"></p>
+            <h3 style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: #10b981; margin-bottom: 0.4rem;">Aria's Insight</h3>
+            <p id="ariaRecText" style="color: var(--text-dim); font-weight: 600; font-style: italic; line-height: 1.6;"></p>
         </div>
     </div>
 
-    <!-- Breathing Exercise -->
-    <div class="glass-card p-12 mb-12 text-center relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-blue-600/5 to-transparent"></div>
+    <!-- Breathing Exercise (Premium Clinical Protocol) -->
+    <div class="glass-card p-12 mb-12 text-center relative overflow-hidden" style="background: var(--surface-solid); border: 2px solid var(--border); border-radius: 48px; box-shadow: var(--shadow-lg);">
+        <div class="absolute inset-0 bg-gradient-to-b from-emerald-600/5 to-transparent"></div>
         
-        <h2 class="text-2xl font-bold text-white mb-2 relative z-10">4-7-8 Breathing Technique</h2>
-        <p class="text-gray-500 mb-12 relative z-10">Neutralize stress and recalibrate your nervous system.</p>
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -0.02em;">4-7-8 Respiratory Protocol</h2>
+        <p style="color: var(--text-muted); font-weight: 600; font-size: 1rem; margin-bottom: 3rem;">Neutralize stress by recalibrating your autonomic nervous system.</p>
 
         <div class="flex justify-center mb-12 relative">
-            <div id="circle" class="w-40 h-40 border-8 border-blue-600/20 rounded-full flex flex-col items-center justify-center transition-all duration-[4s] bg-white/5 backdrop-blur-3xl shadow-2xl">
-                <span id="statusLabel" class="text-2xl font-black text-blue-500 italic uppercase">Ready</span>
+            <div id="circle" class="w-48 h-48 border-[6px] border-emerald-500/10 rounded-full flex flex-col items-center justify-center transition-all duration-[4s] bg-white/5 backdrop-blur-3xl shadow-2xl" style="border: 4px solid var(--border);">
+                <span id="statusLabel" style="font-size: 1.8rem; font-weight: 900; color: #10b981; font-style: italic; text-transform: uppercase; letter-spacing: 0.05em;">Ready</span>
             </div>
         </div>
 
-        <p id="instruction" class="text-xl font-bold text-gray-400 h-8 mb-12 italic">Prepare to enter the zone of stillness.</p>
+        <p id="instruction" style="font-size: 1.2rem; font-weight: 800; color: var(--text-dim); height: 2rem; margin-bottom: 3.5rem; font-style: italic;">Enter the zone of stillness.</p>
         
-        <button id="startBtn" onclick="toggleBreathing()" class="bg-white/10 hover:bg-white/20 text-white font-black px-12 py-5 rounded-[2rem] border border-white/10 transition-all uppercase tracking-widest text-xs relative z-10 active:scale-95 shadow-xl">
+        <button id="startBtn" onclick="toggleBreathing()" class="btn-primary" style="padding: 1.25rem 3.5rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8rem; background: #10b981; color: white; border: none; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);">
             Initialize Session
         </button>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <!-- Grounding -->
-        <div class="glass-card p-10 group hover:border-blue-500/30 transition-all">
+        <!-- Grounding (Interactive Protocol) -->
+        <div class="glass-card p-10 group hover:border-emerald-500/30 transition-all" style="background: var(--surface-solid); border: 2px solid var(--border); border-radius: 40px; box-shadow: var(--shadow-lg);">
             <div class="flex justify-between items-start mb-8">
-                <div class="w-12 h-12 bg-indigo-600/20 rounded-2xl flex items-center justify-center text-2xl">⚓</div>
-                <span class="text-[9px] font-black uppercase tracking-widest text-indigo-400 bg-indigo-400/10 px-4 py-1.5 rounded-full">Cognitive Grounding</span>
+                <div class="w-14 h-14 bg-emerald-600/10 rounded-2xl flex items-center justify-center text-3xl">⚓</div>
+                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-500 bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20">Tactical Grounding</span>
             </div>
-            <h3 class="text-xl font-bold mb-3">5-4-3-2-1 Protocol</h3>
-            <p class="text-gray-500 text-sm leading-relaxed mb-10">Anchor yourself in the present moment through sensory verification.</p>
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem;">5-4-3-2-1 Sensory Protocol</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-bottom: 2rem;">Anchor your neurological state through physical verification.</p>
             
-            <div id="groundingSteps" class="bg-white/5 border border-white/10 rounded-3xl p-8 mb-8 min-h-[160px] flex flex-col items-center justify-center text-center italic transition-all">
-                <div id="groundingContent" class="text-gray-400 font-medium">Ready to begin tactical grounding?</div>
+            <div id="groundingSteps" class="bg-white/5 border border-white/10 rounded-[2rem] p-8 mb-8 min-h-[220px] flex flex-col items-center justify-center text-center transition-all bg-emerald-50/10" style="border: 2px dashed var(--border);">
+                <div id="groundingContent" style="color: var(--text-dim); font-weight: 700; font-style: italic; font-size: 1.1rem;">Initialize grounding protocol to stabilize awareness...</div>
+                <div id="groundingInputs" style="display:none; width: 100%; margin-top: 1.5rem;">
+                    <input type="text" id="groundingField" placeholder="Record what you sense..." style="width: 100%; padding: 1rem 1.5rem; border-radius: 16px; border: 1.5px solid var(--border); font-weight: 600; font-size: 0.95rem; background: white; color: var(--text); outline: none;">
+                </div>
             </div>
             
-            <button onclick="nextGroundingStep()" id="groundingBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-indigo-600/20 uppercase tracking-widest text-[9px]">
+            <button onclick="nextGroundingStep()" id="groundingBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-5 rounded-2xl transition-all shadow-xl shadow-emerald-600/20 uppercase tracking-widest text-[10px]">
                 Activate Protocol
             </button>
         </div>
 
-        <!-- Body Scan -->
-        <div class="glass-card p-10 group hover:border-blue-500/30 transition-all">
+        <!-- Daily Affirmations -->
+        <div class="glass-card p-10 group hover:border-amber-500/30 transition-all" style="background: var(--surface-solid); border: 2px solid var(--border); border-radius: 40px; box-shadow: var(--shadow-lg);">
             <div class="flex justify-between items-start mb-8">
-                <div class="w-12 h-12 bg-blue-600/20 rounded-2xl flex items-center justify-center text-2xl">🧘</div>
-                <span class="text-[9px] font-black uppercase tracking-widest text-blue-400 bg-blue-400/10 px-4 py-1.5 rounded-full">Somatic Release</span>
+                <div class="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center text-3xl">🌟</div>
+                <span class="text-[10px] font-black uppercase tracking-widest text-amber-600 bg-amber-500/10 px-4 py-2 rounded-full border border-amber-500/20">Daily Affirmation</span>
             </div>
-            <h3 class="text-xl font-bold mb-3">Full Body Scan</h3>
-            <p class="text-gray-500 text-sm leading-relaxed mb-10">Strategically release tension from your physical biological frame.</p>
-            
-            <div id="bodyScanSteps" class="bg-white/5 border border-white/10 rounded-3xl p-8 mb-8 min-h-[160px] flex flex-col items-center justify-center text-center italic transition-all">
-                <div id="bodyScanContent" class="text-gray-400 font-medium">Ready for biological recalibration?</div>
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem;">Words of Strength</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-bottom: 2rem;">A reminder to be kind to yourself. Read it slowly.</p>
+
+            <div id="affirmationBox" style="border: 2px solid rgba(245,158,11,0.25); background: rgba(245,158,11,0.04); border-radius: 2rem; padding: 2rem 2.25rem; margin-bottom: 1.5rem; min-height: 160px; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; transition: all 0.4s ease;">
+                <div id="affirmationGlow" style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(245,158,11,0.08),transparent 70%);pointer-events:none;"></div>
+                <p id="affirmationText" style="font-family:'Outfit',sans-serif; font-size:1.15rem; font-weight:800; color:var(--text); line-height:1.7; letter-spacing:-0.01em; position:relative; z-index:1;">Tap below to receive your affirmation.</p>
             </div>
-            
-            <button onclick="nextBodyScanStep()" id="bodyScanBtn" class="w-full border border-white/10 hover:bg-white/5 text-white font-black py-4 rounded-2xl transition-all uppercase tracking-widest text-[9px]">
-                Start guide
-            </button>
+
+            <div id="affirmationDots" style="display:flex;justify-content:center;gap:6px;margin-bottom:1.5rem;">
+            </div>
+
+            <div style="display:flex;gap:0.75rem;">
+                <button onclick="nextAffirmation()" id="affirmationBtn" class="font-black py-5 rounded-2xl transition-all uppercase tracking-widest text-[10px]" style="flex:1;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(245,158,11,0.25);">
+                    ✨ New Affirmation
+                </button>
+                <button onclick="holdThisThought()" id="holdBtn" title="Hold this thought" style="width:56px;height:56px;border-radius:18px;border:2px solid rgba(245,158,11,0.3);background:rgba(245,158,11,0.05);cursor:pointer;font-size:1.3rem;flex-shrink:0;transition:all 0.3s ease;" aria-label="Hold this thought">
+                    🫁
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Affirmation Focus Overlay -->
+    <div id="affirmationFocus" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:2rem;" onclick="closeFocus()">
+        <div style="max-width:600px;text-align:center;" onclick="event.stopPropagation()">
+            <div style="font-size:3rem;margin-bottom:1.5rem;">🌟</div>
+            <p id="focusText" style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;color:white;line-height:1.5;letter-spacing:-0.02em;margin-bottom:2rem;"></p>
+            <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:600;">Breathe in. Read it again. Let it settle.</p>
+            <button onclick="closeFocus()" style="margin-top:2.5rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:0.85rem 2.5rem;border-radius:50px;font-weight:800;font-size:0.85rem;cursor:pointer;">I've got this ✓</button>
         </div>
     </div>
 
@@ -281,49 +303,174 @@ h1.text-white, h2.text-white {
         }
     }
 
+    /** Interactive Tactical Grounding **/
     let groundingStep = 0;
+    let itemSubStep = 0;
     const gSteps = [
-        { icon: '👀', t: '5 Things You See', c: '#0ea5e9' },
-        { icon: '🖐️', t: '4 Things You Feel', c: '#10b981' },
-        { icon: '👂', t: '3 Things You Hear', c: '#f59e0b' },
-        { icon: '👃', t: '2 Things You Smell', c: '#6366f1' },
-        { icon: '👅', t: '1 Thing You Taste', c: '#f43f5e' }
+        { icon: '👀', t: 'Things You See', c: '#10b981', placeholder: 'Record an item you see...', count: 5 },
+        { icon: '🖐️', t: 'Things You Feel', c: '#0d9488', placeholder: 'Record an item you feel...', count: 4 },
+        { icon: '👂', t: 'Things You Hear', c: '#14b8a6', placeholder: 'Record an item you hear...', count: 3 },
+        { icon: '👃', t: 'Things You Smell', c: '#0f766e', placeholder: 'Record an item you smell...', count: 2 },
+        { icon: '👅', t: 'Thing You Taste', c: '#115e59', placeholder: 'Record an item you taste...', count: 1 }
     ];
 
     function nextGroundingStep() {
         const content = document.getElementById('groundingContent');
         const btn = document.getElementById('groundingBtn');
+        const inputs = document.getElementById('groundingInputs');
+        const field = document.getElementById('groundingField');
         if (!content || !btn) return;
 
-        if(groundingStep >= gSteps.length) {
-            groundingStep = 0;
-            content.textContent = 'Grounding complete. System normalized.';
-            btn.textContent = 'Restart Sequence';
+        // Initialize protocol
+        if (groundingStep === 0 && itemSubStep === 0 && inputs.style.display === 'none') {
+            gsap.to(content, { opacity: 0, y: -20, duration: 0.3, onComplete: () => {
+                inputs.style.display = 'block';
+                content.style.opacity = '1';
+                content.style.fontSize = '0.9rem';
+                gsap.from(inputs, { y: 10, opacity: 0, duration: 0.4 });
+                updateGroundingUI();
+            }});
             return;
         }
+
+        // Validate current input
+        if (field.value.trim() === '') {
+            gsap.to(field, { x: 10, duration: 0.1, yoyo: true, repeat: 3 });
+            return;
+        }
+
+        // Add item chip effect (visual only)
         const s = gSteps[groundingStep];
-        content.innerHTML = `<div class="text-4xl mb-4 py-2">${s.icon}</div><div class="text-[10px] font-black uppercase tracking-[0.2em] mb-2" style="color: ${s.c}">${s.t}</div>`;
-        groundingStep++;
-        btn.textContent = `Progress Sequence (${groundingStep}/5)`;
-    }
-
-    let bodyStep = 0;
-    const bSteps = ['Feet & Toes', 'Legs & Knees', 'Torso & Back', 'Shoulders & Neck', 'Face & Mind'];
-    function nextBodyScanStep() {
-        const realContent = document.getElementById('bodyScanContent');
-        const btn = document.getElementById('bodyScanBtn');
-        if (!realContent || !btn) return;
-
-        if(bodyStep >= bSteps.length) {
-            bodyStep = 0;
-            realContent.textContent = 'Somatic Release Cycle Complete.';
-            btn.textContent = 'Restart Guide';
-            return;
+        itemSubStep++;
+        
+        if (itemSubStep >= s.count) {
+            itemSubStep = 0;
+            groundingStep++;
+            
+            if (groundingStep >= gSteps.length) {
+                // Finalize
+                gsap.to(inputs, { opacity: 0, y: 10, duration: 0.3, onComplete: () => {
+                    inputs.style.display = 'none';
+                    content.innerHTML = `<div class="text-6xl mb-4">✨</div><div style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">System Calibrated</div><div class="text-sm text-gray-500 mt-2">Awareness normalized. Heart rate stabilized.</div>`;
+                    gsap.from(content, { scale: 0.9, opacity: 0, duration: 0.6, ease: "back.out(1.7)" });
+                    btn.textContent = 'Restart Sensory Protocol';
+                    groundingStep = 0;
+                    itemSubStep = 0;
+                }});
+                return;
+            }
         }
-        realContent.innerHTML = `<div class="text-2xl font-black italic uppercase text-blue-400 mb-2">${bSteps[bodyStep]}</div><div class="text-xs font-bold text-gray-500">Scan this region and release all potential energy.</div>`;
-        bodyStep++;
-        btn.textContent = `Next Region (${bodyStep}/5)`;
+
+        field.value = '';
+        updateGroundingUI();
+        gsap.from(field, { scale: 0.98, duration: 0.3, ease: "expo.out" });
     }
+
+    function updateGroundingUI() {
+        const content = document.getElementById('groundingContent');
+        const btn = document.getElementById('groundingBtn');
+        const field = document.getElementById('groundingField');
+        
+        if (groundingStep >= gSteps.length) return;
+
+        const s = gSteps[groundingStep];
+        const remaining = s.count - itemSubStep;
+        
+        content.innerHTML = `
+            <div class="text-5xl mb-4">${s.icon}</div>
+            <div class="text-[11px] font-black uppercase tracking-[0.2em] mb-1" style="color: ${s.c}">${s.count} ${s.t}</div>
+            <div class="flex justify-center gap-1 mb-4">
+                ${Array.from({length: s.count}).map((_, i) => 
+                    `<div style="width: 20px; height: 4px; border-radius: 2px; background: ${i < itemSubStep ? s.c : 'var(--border)'}; transition: all 0.4s;"></div>`
+                ).join('')}
+            </div>
+        `;
+        
+        field.placeholder = s.placeholder;
+        field.focus();
+        btn.textContent = `Verify Item (${itemSubStep + 1}/${s.count})`;
+        
+        gsap.from(content, { y: 20, opacity: 0, duration: 0.5, ease: "back.out(1.7)" });
+    }
+
+    /** Daily Affirmations **/
+    const affirmations = [
+        "I am allowed to take up space and ask for help.",
+        "My feelings are valid, even when I can't explain them.",
+        "I don't have to have it all figured out right now.",
+        "Progress, no matter how small, is still moving forward.",
+        "I am more than my grades, my productivity, or my setbacks.",
+        "Rest is not a reward — it is a right.",
+        "I am doing the best I can with what I have today.",
+        "My worth is not measured by how much I accomplish.",
+        "Being kind to myself is not weakness — it is wisdom.",
+        "It's okay to not be okay. The sun rises anyway.",
+        "I have survived every difficult day so far. That is real strength.",
+        "I deserve support, connection, and peace.",
+    ];
+    let affirmationIndex = -1;
+
+    function buildDots() {
+        const container = document.getElementById('affirmationDots');
+        if (!container) return;
+        container.innerHTML = affirmations.map((_, i) =>
+            `<div class="aff-dot" data-i="${i}" style="width:7px;height:7px;border-radius:50%;background:rgba(245,158,11,0.25);transition:all 0.3s ease;cursor:pointer;" onclick="goToAffirmation(${i})"></div>`
+        ).join('');
+    }
+
+    function updateDots() {
+        document.querySelectorAll('.aff-dot').forEach((d, i) => {
+            d.style.background = i === affirmationIndex
+                ? '#f59e0b'
+                : 'rgba(245,158,11,0.25)';
+            d.style.transform = i === affirmationIndex ? 'scale(1.4)' : 'scale(1)';
+        });
+    }
+
+    function goToAffirmation(index) {
+        affirmationIndex = index;
+        renderAffirmation();
+    }
+
+    function nextAffirmation() {
+        affirmationIndex = (affirmationIndex + 1) % affirmations.length;
+        renderAffirmation();
+    }
+
+    function renderAffirmation() {
+        const text = document.getElementById('affirmationText');
+        const box  = document.getElementById('affirmationBox');
+        if (!text || !box) return;
+
+        gsap.to(text, { opacity: 0, y: -12, scale: 0.96, duration: 0.22, onComplete: () => {
+            text.textContent = affirmations[affirmationIndex];
+            gsap.to(text, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.4)' });
+        }});
+
+        // Pulse the glow
+        gsap.fromTo('#affirmationGlow', { opacity: 0 }, { opacity: 1, duration: 0.6, yoyo: true, repeat: 1 });
+        gsap.to(box, { borderColor: 'rgba(245,158,11,0.5)', duration: 0.3, yoyo: true, repeat: 1 });
+
+        updateDots();
+    }
+
+    function holdThisThought() {
+        const current = affirmations[affirmationIndex];
+        if (!current) { nextAffirmation(); return; }
+        const focus = document.getElementById('affirmationFocus');
+        const focusText = document.getElementById('focusText');
+        if (!focus || !focusText) return;
+        focusText.textContent = current;
+        focus.style.display = 'flex';
+        gsap.from('#affirmationFocus > div', { y: 30, opacity: 0, scale: 0.92, duration: 0.5, ease: 'back.out(1.4)' });
+    }
+
+    function closeFocus() {
+        const focus = document.getElementById('affirmationFocus');
+        if (focus) gsap.to(focus, { opacity: 0, duration: 0.3, onComplete: () => { focus.style.display = 'none'; focus.style.opacity = 1; } });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { buildDots(); nextAffirmation(); });
 
     document.addEventListener('DOMContentLoaded', async () => {
         try {

@@ -39,23 +39,44 @@ class UserController extends Controller
             'user_type' => 'required|in:student,counselor,admin',
         ]);
 
-        User::create([
+        $user = User::create([
             'full_name' => $request->full_name,
-            'email' => strtolower($request->email),
-            'password' => Hash::make($request->password),
+            'email'     => strtolower($request->email),
+            'password'  => Hash::make($request->password),
             'user_type' => $request->user_type,
         ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User created successfully!',
+                'user'    => [
+                    'user_id'    => $user->user_id,
+                    'full_name'  => $user->full_name,
+                    'email'      => $user->email,
+                    'user_type'  => $user->user_type->value ?? (string) $user->user_type,
+                    'created_at' => $user->created_at->format('F d, Y'),
+                ],
+            ]);
+        }
 
         return back()->with('success', 'User created successfully!');
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
         if ($user->user_id === auth()->id()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'You cannot delete your own account.'], 403);
+            }
             return back()->with('error', 'You cannot delete your own account.');
         }
 
         $user->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'User deleted successfully!']);
+        }
 
         return back()->with('success', 'User deleted successfully!');
     }

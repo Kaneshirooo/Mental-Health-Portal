@@ -39,6 +39,11 @@ class Appointment extends Model
         return $this->belongsTo(User::class, 'counselor_id', 'user_id');
     }
 
+    public function survey()
+    {
+        return $this->hasOne(SatisfactionSurvey::class, 'appointment_id', 'appointment_id');
+    }
+
     public function isHighPriority(): bool
     {
         return $this->is_priority || $this->status === AppointmentStatus::REQUESTED;

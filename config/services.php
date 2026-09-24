@@ -46,4 +46,13 @@ return [
         ],
     ],
 
+    'perspective' => [
+        'key' => env('PERSPECTIVE_API_KEY', env('GEMINI_API_KEY')),
+    ],
+
+    'openrouter' => [
+        'key' => env('OPENROUTER_API_KEY'),
+        'model' => env('OPENROUTER_MODEL', 'openai/gpt-4o'),
+    ],
+
 ];

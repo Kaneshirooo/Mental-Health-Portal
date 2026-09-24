@@ -13,14 +13,19 @@ class ClinicalAlertService
     /**
      * Trigger a proactive alert for low mood logs.
      */
-    public function triggerMoodAlert(User $student, int $score, string $emoji, ?string $note): void
+    public function triggerMoodAlert(User $student, int $score, string $emoji, ?string $note, ?string $sentimentLabel = null): void
     {
-        if ($score > 2) {
+        if ($score > 2 && !$sentimentLabel) {
             return;
         }
 
-        $alertTitle = "Mood Alert: " . ($score === 1 ? "Critical" : "Concerning");
-        $alertMsg = "{$student->full_name} just logged a {$emoji} mood score ({$score}/5). " . 
+        // Higher priority if AI detects strong negative sentiment
+        $isHighRiskSentiment = in_array($sentimentLabel, ['Sad', 'Anxious', 'Frustrated', 'Overwhelmed']);
+        
+        $alertTitle = "Mood Alert: " . ($score === 1 || $isHighRiskSentiment ? "Critical" : "Concerning");
+        $sentimentContext = $sentimentLabel ? " [AI Sentiment: {$sentimentLabel}]" : "";
+        
+        $alertMsg = "{$student->full_name} just logged a {$emoji} mood score ({$score}/5).{$sentimentContext} " . 
                      ($note ? "Note: \"{$note}\"" : "No note was provided.");
 
         // Find assigned counselors via confirmed appointments

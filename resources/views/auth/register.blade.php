@@ -215,9 +215,9 @@
         <!-- ── Left Hero ── -->
         <div class="register-hero">
             <div class="hero-content">
-                <div class="hero-badge staggered">Identity Verification Required</div>
+                <div class="hero-badge staggered">Account Verification Required</div>
                 <h1 class="hero-title staggered">Join the <span>Circle of Support.</span></h1>
-                <p class="hero-text staggered">Create your institutional account to access specialized mental health resources, professional counseling, and wellness tracking.</p>
+                <p class="hero-text staggered">Create your account to access specialized mental health resources, professional counseling, and wellness tracking.</p>
                 
                 <div class="stat-grid staggered">
                     <div class="stat-item">
@@ -269,8 +269,8 @@
 
                 <div class="input-row">
                     <div class="input-group staggered">
-                        <label for="email">Institutional Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="id@psu.edu.ph">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="your@email.com">
                     </div>
                     <div class="input-group staggered">
                         <label for="contact_number">Mobile Number</label>
@@ -292,6 +292,31 @@
                             <option value="Female" {{ old('gender') === 'Female' ? 'selected' : '' }}>Female</option>
                             <option value="Non-binary" {{ old('gender') === 'Non-binary' ? 'selected' : '' }}>Non-binary</option>
                             <option value="Prefer not to say" {{ old('gender') === 'Prefer not to say' ? 'selected' : '' }}>Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="section-label staggered">Academic Context</div>
+                <div class="input-row">
+                    <div class="input-group staggered">
+                        <label for="course">Academic Course</label>
+                        <select id="course" name="course" required>
+                            <option value="">Select Course</option>
+                            <option value="BS Information Technology" {{ old('course') === 'BS Information Technology' ? 'selected' : '' }}>BS Information Technology</option>
+                            <option value="BS Computer Science" {{ old('course') === 'BS Computer Science' ? 'selected' : '' }}>BS Computer Science</option>
+                            <option value="BS Business Administration" {{ old('course') === 'BS Business Administration' ? 'selected' : '' }}>BS Business Administration</option>
+                            <option value="BS Psychology" {{ old('course') === 'BS Psychology' ? 'selected' : '' }}>BS Psychology</option>
+                            <option value="BS Education" {{ old('course') === 'BS Education' ? 'selected' : '' }}>BS Education</option>
+                            <option value="Other" {{ old('course') === 'Other' ? 'selected' : '' }}>Other</option>
+                        </select>
+                    </div>
+                    <div class="input-group staggered">
+                        <label for="semester">Current Semester</label>
+                        <select id="semester" name="semester" required>
+                            <option value="">Select Semester</option>
+                            <option value="1st Semester" {{ old('semester') === '1st Semester' ? 'selected' : '' }}>1st Semester</option>
+                            <option value="2nd Semester" {{ old('semester') === '2nd Semester' ? 'selected' : '' }}>2nd Semester</option>
+                            <option value="Midyear" {{ old('semester') === 'Midyear' ? 'selected' : '' }}>Midyear</option>
                         </select>
                     </div>
                 </div>

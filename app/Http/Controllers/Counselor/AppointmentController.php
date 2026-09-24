@@ -45,6 +45,7 @@ class AppointmentController extends Controller
             // Find an alternative counselor
             $replacement = User::whereIn('user_type', ['counselor', 'admin'])
                 ->where('user_id', '!=', $counselor->user_id)
+                ->where('is_emergency_available', true)
                 ->whereDoesntHave('counselorAppointments', function ($query) use ($scheduledAt, $endTime) {
                     $query->whereIn('status', ['requested', 'confirmed'])
                         ->where(function ($q) use ($scheduledAt, $endTime) {
@@ -72,7 +73,7 @@ class AppointmentController extends Controller
                 Notification::create([
                     'user_id' => $replacement->user_id,
                     'title' => 'Emergency Reassignment ⚠️',
-                    'message' => "You have been reassigned an emergency session with {$appointment->student->full_name} on {$scheduledAt->format('F d, g:i A')}.",
+                    'message' => "You have been reassigned an emergency session with " . ($appointment->student?->full_name ?? 'a student') . " on {$scheduledAt->format('F d, g:i A')}.",
                     'type' => 'appointment',
                 ]);
 
@@ -105,9 +106,11 @@ class AppointmentController extends Controller
     {
         $request->validate([
             'appointment_id' => 'required|exists:appointments,appointment_id',
-            'appt_action' => 'required|in:confirm,decline,cancel,complete,reschedule',
+            'appt_action' => 'required|in:confirm,decline,cancel,complete,reschedule,edit',
             'counselor_message' => 'nullable|string|max:1000',
             'scheduled_at' => 'nullable|date|after:now',
+            'reason' => 'nullable|string|max:500',
+            'duration_min' => 'nullable|integer|min:15|max:120',
         ]);
 
         $appointment = Appointment::where('appointment_id', $request->appointment_id)
@@ -121,7 +124,7 @@ class AppointmentController extends Controller
             $appointment->update([
                 'scheduled_at' => $request->scheduled_at,
                 'counselor_message' => $msg,
-                'status' => 'confirmed' // Rescheduling confirmed appointments stays confirmed
+                'status' => 'confirmed'
             ]);
             
             Notification::create([
@@ -131,7 +134,16 @@ class AppointmentController extends Controller
                 'type' => 'appointment',
             ]);
 
-            return response()->json(['success' => true, 'newStatus' => 'confirmed']);
+            return response()->json(['success' => true]);
+        }
+
+        if ($action === 'edit') {
+            $appointment->update([
+                'reason' => $request->reason ?? $appointment->reason,
+                'duration_min' => $request->duration_min ?? $appointment->duration_min,
+                'counselor_message' => $msg ?? $appointment->counselor_message,
+            ]);
+            return response()->json(['success' => true]);
         }
 
         $statuses = [
@@ -151,7 +163,7 @@ class AppointmentController extends Controller
             'confirmed' => ['Appointment Confirmed ✅', 'Your session with ' . auth()->user()->full_name . ' on ' . $appointment->scheduled_at->format('F d, Y \a\t g:i A') . ' has been confirmed.'],
             'declined' => ['Appointment Declined', 'Your session request for ' . $appointment->scheduled_at->format('F d, Y \a\t g:i A') . ' was declined.'],
             'cancelled' => ['Appointment Cancelled', 'Your session on ' . $appointment->scheduled_at->format('F d, Y \a\t g:i A') . ' has been cancelled.'],
-            'completed' => ['Session Completed 🎓', 'Your counseling session on ' . $appointment->scheduled_at->format('F d, Y \a\t g:i A') . ' has been marked complete.'],
+            'completed' => ['Session Completed 🎓', 'Your counseling session has been marked complete. Please share your feedback here: ' . route('student.survey.show', $appointment->appointment_id)],
         ];
 
         Notification::create([

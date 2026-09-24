@@ -162,24 +162,10 @@
     <form id="otpVerifyForm" method="POST" action="{{ route('verify.otp') }}">
         @csrf
         <div class="otp-input-group">
-            <input type="text" name="otp_code" class="otp-input" placeholder="000000" maxlength="6" required autofocus autocomplete="one-time-code">
+            <input type="text" name="otp_code" class="otp-input" placeholder="000000" maxlength="6" required autofocus autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}">
         </div>
-        <button type="button" onclick="submitOtpForm()" class="btn-verify">Verify & Sign In</button>
+        <button type="submit" class="btn-verify">Verify & Sign In</button>
     </form>
-
-    <script>
-        function submitOtpForm() {
-            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const form = document.getElementById('otpVerifyForm');
-            if (form && token) {
-                const tokenInput = form.querySelector('input[name="_token"]');
-                if (tokenInput) tokenInput.value = token;
-                form.submit();
-            } else if (form) {
-                form.submit();
-            }
-        }
-    </script>
 
     <div class="resend-link">
         Didn't receive the code? <a href="{{ route('resend.otp') }}">Resend Code</a>
