@@ -198,10 +198,28 @@
     .privacy-notice { text-align: center; margin-top: 2rem; font-size: 0.75rem; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
 
     @media (max-width: 1024px) {
-        .register-card { flex-direction: column; min-height: auto; border-radius: 0; }
-        .register-hero { padding: 4rem 2rem; }
-        .register-form-area { padding: 4rem 2rem; max-height: none; }
-        .input-row { grid-template-cols: 1fr; }
+        .register-card { flex-direction: column; min-height: auto; border-radius: var(--radius-lg); }
+        .register-hero { padding: 3rem 2rem; }
+        .register-form-area { padding: 3.5rem 2.5rem; max-height: none; }
+        .input-row { grid-template-cols: 1fr; gap: 1rem; }
+    }
+    @media (max-width: 640px) {
+        body { padding: 0.75rem; align-items: flex-start; }
+        .register-container { width: 100%; }
+        .register-card { border-radius: 20px; }
+        .register-hero { padding: 1.75rem 1.25rem; }
+        .hero-badge { margin-bottom: 1rem; padding: 0.4rem 0.8rem; font-size: 0.65rem; }
+        .hero-title { font-size: 1.6rem; margin-bottom: 0.75rem; }
+        .hero-text { font-size: 0.88rem; margin-bottom: 1.5rem; line-height: 1.5; }
+        .stat-grid { display: flex; gap: 1.5rem; padding-top: 1.5rem; }
+        .stat-item h3 { font-size: 1.6rem; }
+        .register-form-area { padding: 1.75rem 1.25rem; }
+        .form-header { margin-bottom: 1.75rem; }
+        .form-title { font-size: 1.85rem; }
+        .section-label { margin: 1.75rem 0 1rem; font-size: 0.7rem; }
+        .input-group label { font-size: 0.75rem; }
+        input, select { padding: 0.9rem 1rem; font-size: 0.9rem; border-radius: 12px; }
+        .btn-register { padding: 1rem; font-size: 0.95rem; border-radius: 14px; margin-top: 1.5rem; }
     }
 
     /* Custom Scrollbar */

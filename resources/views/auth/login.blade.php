@@ -10,9 +10,10 @@
         align-items: center;
         justify-content: center;
         min-height: 100vh;
-        padding: 1rem;
-
-        overflow: hidden;
+        padding: 1.5rem 1rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
     }
 
     .login-container {
@@ -237,9 +238,29 @@
     }
 
     @media (max-width: 1024px) {
-        .login-card { flex-direction: column; min-height: auto; border-radius: 0; }
-        .login-hero { padding: 4rem 2rem; }
-        .login-form-area { padding: 4rem 2rem; }
+        .login-card { flex-direction: column; min-height: auto; border-radius: var(--radius-lg); }
+        .login-hero { padding: 3rem 2rem; }
+        .login-form-area { padding: 3.5rem 2.5rem; }
+    }
+    @media (max-width: 640px) {
+        body { padding: 0.75rem; align-items: flex-start; }
+        .login-container { width: 100%; }
+        .login-card { border-radius: 20px; }
+        .login-hero { padding: 1.75rem 1.25rem; }
+        .hero-logo { width: 44px; height: 44px; margin-bottom: 1.25rem; border-radius: 12px; }
+        .hero-title { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .hero-text { font-size: 0.88rem; line-height: 1.5; }
+        .portal-features { display: none; }
+        .login-form-area { padding: 1.75rem 1.25rem; }
+        .form-header { margin-bottom: 1.75rem; }
+        .form-title { font-size: 1.85rem; }
+        .form-subtitle { font-size: 0.95rem; }
+        .input-group { margin-bottom: 1.25rem; }
+        .input-group input { padding: 1rem 1.15rem; font-size: 0.95rem; }
+        .btn-sign-in { padding: 1rem; font-size: 0.95rem; margin-top: 0.5rem; }
+        .or-divider { margin: 1.75rem 0; }
+        .btn-google { padding: 0.95rem; font-size: 0.92rem; }
+        .signup-prompt { margin-top: 2rem; font-size: 0.9rem; }
     }
 </style>
 

@@ -116,11 +116,37 @@
 
     @stack('modals')
 
+    <!-- Global Scroll-To-Top Floating Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top" title="Scroll to top">
+        <i class="ph-bold ph-caret-up"></i>
+    </button>
+
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/ajax-helpers.js') }}"></script>
 
     <script>
+        // Global Scroll-To-Top Button Controller
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollBtn = document.getElementById('scrollTopBtn');
+            if (scrollBtn) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 280) {
+                        scrollBtn.classList.add('visible');
+                    } else {
+                        scrollBtn.classList.remove('visible');
+                    }
+                }, { passive: true });
+
+                scrollBtn.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
+
         // GSAP Reveal Logic
         document.addEventListener('DOMContentLoaded', () => {
             gsap.registerPlugin(ScrollTrigger);
