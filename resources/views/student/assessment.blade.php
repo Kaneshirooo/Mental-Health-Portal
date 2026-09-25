@@ -143,7 +143,73 @@
     .choice-card.selected .val  { color: var(--primary); transform: scale(1.08); }
     .choice-card.selected .label { color: var(--primary); }
 
-    /* Mobile / Phone / Tablet: Floating bottom bar for Next & Submit Assessment */
+    /* Fixed bottom floating action bar for Next & Submit Assessment (All screens) */
+    .assessment-nav-bar {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 10000 !important;
+        margin-top: 0 !important;
+        padding: 0.85rem 1.5rem calc(0.85rem + env(safe-area-inset-bottom, 0px)) 1.5rem !important;
+        background: var(--surface-solid) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-top: 2px solid var(--primary) !important;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25) !important;
+        border-radius: 20px 20px 0 0 !important;
+    }
+    .nav-bar-inner {
+        max-width: 900px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+    }
+    .nav-bar-info {
+        text-align: center;
+    }
+    .btn-nav-back {
+        background: var(--surface-solid);
+        border: 1.5px solid var(--border);
+        padding: 0.75rem 1.75rem;
+        border-radius: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: var(--transition);
+        font-size: 0.9rem;
+    }
+    .btn-nav-next {
+        background: var(--primary);
+        border: none;
+        padding: 0.75rem 2.25rem;
+        border-radius: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        color: white;
+        box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
+        transition: var(--transition);
+        font-size: 0.92rem;
+    }
+    .btn-nav-submit {
+        background: #059669;
+        border: none;
+        padding: 0.8rem 2.5rem;
+        border-radius: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        color: white;
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+        transition: var(--transition);
+        font-size: 0.95rem;
+    }
+    .container {
+        padding-bottom: 10rem !important;
+    }
+
     @media (max-width: 1024px) {
         .choice-matrix {
             grid-template-columns: repeat(2, 1fr) !important;
@@ -159,28 +225,17 @@
             left: 0;
         }
         .assessment-nav-bar {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            z-index: 10000 !important;
-            margin-top: 0 !important;
-            border-radius: 20px 20px 0 0 !important;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.25) !important;
-            padding: 0.85rem 1rem calc(0.85rem + env(safe-area-inset-bottom, 0px)) 1rem !important;
-            background: var(--surface-solid) !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
-            border-top: 2px solid var(--primary) !important;
-            gap: 0.5rem !important;
+            padding: 0.75rem 0.85rem calc(0.75rem + env(safe-area-inset-bottom, 0px)) 0.85rem !important;
         }
-        .assessment-nav-bar button {
-            padding: 0.7rem 1.1rem !important;
-            font-size: 0.85rem !important;
+        .btn-nav-back {
+            padding: 0.65rem 1rem !important;
+            font-size: 0.82rem !important;
             border-radius: 12px !important;
         }
-        .container[style*="padding-bottom"] {
-            padding-bottom: 8rem !important;
+        .btn-nav-next, .btn-nav-submit {
+            padding: 0.7rem 1.25rem !important;
+            font-size: 0.85rem !important;
+            border-radius: 12px !important;
         }
     }
 
@@ -317,28 +372,28 @@
                 </div>
 
                 {{-- Navigation bar --}}
-                <div class="assessment-nav-bar" style="margin-top: 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--surface-2); padding: 1.5rem 2rem; border-radius: var(--radius); border: 1px solid var(--border);">
-                    @if($stepIdx > 0)
-                        <button type="button" onclick="goStep({{ $stepIdx - 1 }})"
-                                style="background: var(--surface-solid); border: 1px solid var(--border); padding: 0.75rem 1.75rem; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; color: var(--text-muted); transition: var(--transition); font-size: 0.9rem;">← Back</button>
-                    @else
-                        <div style="width: 120px;"></div>
-                    @endif
+                {{-- Floating Navigation bar --}}
+                <div class="assessment-nav-bar">
+                    <div class="nav-bar-inner">
+                        @if($stepIdx > 0)
+                            <button type="button" class="btn-nav-back" onclick="goStep({{ $stepIdx - 1 }})">← Back</button>
+                        @else
+                            <div style="width: 100px;"></div>
+                        @endif
 
-                    <div style="text-align: center;">
-                        <div style="font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;">Section {{ $stepIdx + 1 }}</div>
-                        <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em;">
-                            {{ $category }} <span style="font-style: italic; font-weight: 500; text-transform: none;">({{ $tagalogCategories[$category] ?? '' }})</span>
+                        <div class="nav-bar-info">
+                            <div style="font-size: 0.95rem; font-weight: 800; color: var(--primary); margin-bottom: 0.15rem;">Section {{ $stepIdx + 1 }} of {{ count($categories) }}</div>
+                            <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em;">
+                                {{ $category }} <span style="font-style: italic; font-weight: 500; text-transform: none;">({{ $tagalogCategories[$category] ?? '' }})</span>
+                            </div>
                         </div>
-                    </div>
 
-                    @if($stepIdx < count($categories) - 1)
-                        <button type="button" onclick="goStep({{ $stepIdx + 1 }})"
-                                style="background: var(--primary); border: none; padding: 0.75rem 2rem; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; color: white; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2); transition: var(--transition); font-size: 0.9rem;">Next →</button>
-                    @else
-                        <button type="button" onclick="confirmSubmit()"
-                                style="background: #059669; border: none; padding: 0.75rem 2rem; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); transition: var(--transition); font-size: 0.9rem;">Submit Assessment</button>
-                    @endif
+                        @if($stepIdx < count($categories) - 1)
+                            <button type="button" class="btn-nav-next" onclick="goStep({{ $stepIdx + 1 }})">Next →</button>
+                        @else
+                            <button type="button" class="btn-nav-submit" onclick="confirmSubmit()">Submit Assessment</button>
+                        @endif
+                    </div>
                 </div>
 
             </div>
