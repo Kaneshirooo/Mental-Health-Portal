@@ -12,16 +12,31 @@
         gap: 2.5rem;
         align-items: start;
         perspective: 1000px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
-    @media (max-width: 900px) {
+    /* Override main-content padding on mobile so chat fills screen */
+    @media (max-width: 1024px) {
+        .main-content {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .chat-layout {
+            padding: 0.75rem 0.75rem 4rem !important;
+        }
+    }
+
+    @media (max-width: 1024px) {
         .chat-layout {
             display: flex !important;
             flex-direction: column !important;
-            padding: 1.25rem 1.25rem 4rem !important;
+            padding: 0.75rem 0.75rem 4rem !important;
             gap: 1.25rem !important;
             align-items: stretch !important;
-            margin: 0 auto !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
         }
         .aria-panel {
             position: static !important;
