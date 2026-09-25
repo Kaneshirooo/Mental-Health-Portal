@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('roll_number', 50)->nullable()->unique();
             $table->enum('user_type', ['student', 'counselor', 'admin'])->default('student');
             $table->date('date_of_birth')->nullable();
-            $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
+            $table->enum('gender', ['Male', 'Female', 'Non-binary', 'Prefer not to say', 'Other'])->nullable();
             $table->string('contact_number', 15)->nullable();
             $table->string('department', 100)->nullable();
             $table->rememberToken();
