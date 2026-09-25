@@ -23,6 +23,10 @@
     .delete-confirm.show { display:flex; }
     .filter-row { display:flex; gap:.75rem; margin-bottom:1.25rem; flex-wrap:wrap; }
     .filter-row input { flex:1; min-width:180px; }
+    @keyframes slideUpFade {
+        from { opacity: 0; transform: translateY(20px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
 </style>
 @endpush
 
@@ -113,7 +117,7 @@
 
 <!-- Add Staff Modal -->
 <div id="addStaffModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.65); backdrop-filter:blur(12px); align-items:center; justify-content:center;">
-    <div class="staggered-row" style="background:var(--surface-solid); border: 1px solid var(--border); border-radius:32px; padding:2.5rem; max-width:500px; width:92%; position:relative; box-shadow:var(--shadow-lg);">
+    <div style="background:var(--surface-solid); border: 1px solid var(--border); border-radius:32px; padding:2.5rem; max-width:500px; width:92%; position:relative; box-shadow:var(--shadow-lg); animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
         <button onclick="document.getElementById('addStaffModal').style.display='none'" style="position:absolute; top:1.5rem; right:1.5rem; background:var(--surface-2); border:none; width:40px; height:40px; border-radius:12px; cursor:pointer; color:var(--text); display:flex; align-items:center; justify-content:center; transition:var(--transition);" onmouseover="this.style.background='var(--primary-glow)';this.style.color='var(--primary)'" onmouseout="this.style.background='var(--surface-2)';this.style.color='var(--text)'">
             <i class="ph ph-x" style="font-size:1.25rem;"></i>
         </button>
