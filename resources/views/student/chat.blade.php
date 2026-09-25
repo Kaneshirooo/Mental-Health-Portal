@@ -17,31 +17,65 @@
     @media (max-width: 900px) {
         .chat-layout {
             grid-template-columns: 1fr !important;
-            padding: 1rem 1rem 3rem !important;
-            gap: 1.5rem !important;
+            padding: 0.75rem 0.75rem 3rem !important;
+            gap: 1rem !important;
         }
         .aria-panel {
             position: static !important;
-            padding: 1.25rem !important;
+            padding: 1.25rem 1rem !important;
+            border-radius: 24px !important;
         }
         .aria-avatar {
-            width: 80px !important;
-            height: 80px !important;
-            margin-bottom: 0.75rem !important;
+            width: 70px !important;
+            height: 70px !important;
+            margin-bottom: 0.5rem !important;
+            border-radius: 20px !important;
         }
         .chat-interface {
-            height: 600px !important;
+            height: 560px !important;
+            border-radius: 24px !important;
         }
         .stream-row {
             max-width: 96% !important;
         }
-        .chat-topbar, .chat-input-bar, .chat-actions {
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
+        .chat-topbar {
+            padding: 0.75rem 1rem !important;
+        }
+        .chat-actions {
+            padding: 0.6rem 0.75rem !important;
+            flex-direction: column !important;
+            gap: 0.5rem !important;
+            align-items: stretch !important;
+        }
+        .chat-actions > div:first-child {
+            width: 100% !important;
+            display: flex !important;
+            gap: 0.5rem !important;
+        }
+        .chat-actions button {
+            flex: 1 !important;
+            padding: 0.6rem 0.5rem !important;
+            font-size: 0.72rem !important;
+            border-radius: 12px !important;
+            white-space: nowrap !important;
+        }
+        .chat-actions > div:last-child {
+            justify-content: center !important;
+            font-size: 0.78rem !important;
+        }
+        .chat-input-bar {
+            padding: 0.75rem 0.75rem !important;
+            gap: 0.4rem !important;
+        }
+        .msg-input {
+            padding: 0.75rem 1rem !important;
+            font-size: 0.9rem !important;
+            border-radius: 16px !important;
         }
         .msg-bubble {
-            padding: 0.85rem 1.25rem !important;
-            font-size: 0.92rem !important;
+            padding: 0.85rem 1.15rem !important;
+            font-size: 0.9rem !important;
+            border-radius: 18px !important;
         }
     }
 

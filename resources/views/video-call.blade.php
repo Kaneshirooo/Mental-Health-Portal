@@ -429,6 +429,7 @@
         if (waitingTimerInt) clearInterval(waitingTimerInt);
 
         createPeerConnection();
+        ensureLocalTracksAdded();
         
         if (IS_STUDENT) {
             try {
@@ -447,23 +448,40 @@
         initSpeechRecognition();
     }
 
+    function ensureLocalTracksAdded() {
+        if (!peerConnection || !localStream) return;
+        const senders = peerConnection.getSenders();
+        localStream.getTracks().forEach(track => {
+            const alreadyAdded = senders.some(s => s.track === track);
+            if (!alreadyAdded) {
+                peerConnection.addTrack(track, localStream);
+            }
+        });
+    }
+
     function createPeerConnection() {
         if (peerConnection) return;
         peerConnection = new RTCPeerConnection(RTC_CONFIG);
         
-        if (localStream) {
-            localStream.getTracks().forEach(track => {
-                peerConnection.addTrack(track, localStream);
-            });
-        }
+        ensureLocalTracksAdded();
 
         peerConnection.ontrack = (e) => {
-            console.log("Remote WebRTC track received:", e.track.kind);
+            console.log("Remote WebRTC track received:", e.track.kind, e.streams);
             const remoteVideo = document.getElementById('remoteVideo');
             if (remoteVideo) {
-                remoteVideo.srcObject = e.streams[0];
+                if (e.streams && e.streams[0]) {
+                    remoteVideo.srcObject = e.streams[0];
+                } else {
+                    let stream = remoteVideo.srcObject;
+                    if (!stream) {
+                        stream = new MediaStream();
+                        remoteVideo.srcObject = stream;
+                    }
+                    stream.addTrack(e.track);
+                }
                 remoteVideo.muted = false; // Ensure remote audio is UNMUTED
                 remoteVideo.volume = 1.0;
+                remoteVideo.setAttribute('playsinline', 'true');
                 remoteVideo.play().catch(err => console.log("Remote play error:", err));
             }
             const overlay = document.getElementById('remoteOverlay');
@@ -505,6 +523,7 @@
         }
 
         createPeerConnection();
+        ensureLocalTracksAdded();
 
         if (payload.signal_type === 'peer_joined') {
             if (IS_STUDENT) {
@@ -512,6 +531,7 @@
                     await startCallFlow();
                 } else if (peerConnection) {
                     try {
+                        ensureLocalTracksAdded();
                         const offer = await peerConnection.createOffer();
                         await peerConnection.setLocalDescription(offer);
                         sendSignal({ signal_type: 'offer', sdp: offer.sdp });
@@ -525,6 +545,7 @@
 
         if (payload.signal_type === 'offer' && !IS_STUDENT) {
             try {
+                ensureLocalTracksAdded();
                 await peerConnection.setRemoteDescription(new RTCSessionDescription({ type: 'offer', sdp: payload.sdp }));
                 await flushPendingIceCandidates();
                 const answer = await peerConnection.createAnswer();

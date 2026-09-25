@@ -158,6 +158,24 @@
         .assessment-header {
             left: 0;
         }
+        .assessment-nav-bar {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 9999 !important;
+            margin-top: 0 !important;
+            border-radius: 20px 20px 0 0 !important;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.2) !important;
+            padding: 0.85rem 1rem !important;
+            background: var(--surface-solid) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border-top: 2px solid var(--primary) !important;
+        }
+        .container[style*="padding-bottom"] {
+            padding-bottom: 7rem !important;
+        }
     }
 
     @keyframes toastIn {
@@ -293,7 +311,7 @@
                 </div>
 
                 {{-- Navigation bar --}}
-                <div style="margin-top: 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--surface-2); padding: 1.5rem 2rem; border-radius: var(--radius); border: 1px solid var(--border);">
+                <div class="assessment-nav-bar" style="margin-top: 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--surface-2); padding: 1.5rem 2rem; border-radius: var(--radius); border: 1px solid var(--border);">
                     @if($stepIdx > 0)
                         <button type="button" onclick="goStep({{ $stepIdx - 1 }})"
                                 style="background: var(--surface-solid); border: 1px solid var(--border); padding: 0.75rem 1.75rem; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; color: var(--text-muted); transition: var(--transition); font-size: 0.9rem;">← Back</button>
