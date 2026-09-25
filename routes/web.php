@@ -157,3 +157,4 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/staff/{staff}', [\App\Http\Controllers\Admin\StaffController::class, 'destroy'])->name('staff.destroy');
     });
 });
+Route::get('/debug-log', function() { return response(file_exists(storage_path('logs/laravel.log')) ? substr(file_get_contents(storage_path('logs/laravel.log')), -5000) : 'No log file', 200, ['Content-Type' => 'text/plain']); });
