@@ -973,7 +973,7 @@ textarea:focus,
 @media (max-width: 1024px) {
     .main-content {
         margin-left: 0;
-        padding: 5rem 1.25rem 2rem;
+        padding: 5rem 1.25rem 2rem; /* 5rem top to clear the 56px mobile nav + 1rem gap */
     }
 }
 
@@ -1261,7 +1261,11 @@ textarea:focus,
 
 @media (max-width: 1024px) {
     .sidebar {
-        transform: translateX(-100%);
+        transform: translateX(-110%);
+        z-index: 1001; /* above overlay (999) and mobile-nav (999) */
+        margin: 0;
+        border-radius: 0 24px 24px 0;
+        height: 100vh;
     }
 
     .sidebar.open {

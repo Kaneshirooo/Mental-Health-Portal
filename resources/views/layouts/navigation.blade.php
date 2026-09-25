@@ -5,7 +5,7 @@
     $currentRoute = Route::currentRouteName();
 @endphp
 
-<aside class="sidebar glass" style="margin: 1rem; height: calc(100vh - 2rem); border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: var(--shadow-lg); left: 0; top: 0; position: fixed;">
+<aside class="sidebar glass" id="sidebar" style="margin: 1rem; height: calc(100vh - 2rem); border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: var(--shadow-lg); left: 0; top: 0; position: fixed;">
     <div class="sidebar-header" style="padding: 1.5rem 1.25rem;">
         <div class="sidebar-brand" style="display: flex; align-items: center;">
         <div class="sidebar-logo-container" style="position: relative; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center;" onmouseover="this.style.transform='scale(1.05) rotate(-1deg)'" onmouseout="this.style.transform='scale(1) rotate(0)'">
@@ -157,6 +157,50 @@
         </div>
     </div>
 </aside>
+
+<!-- Mobile Top Navigation Bar -->
+<div class="mobile-nav" id="mobileNav">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" onclick="toggleSidebar()">
+        <i class="ph ph-list" id="navToggleIcon"></i>
+    </button>
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <img src="{{ asset('logo/system_logo.jpg') }}" alt="PSU Logo" style="width:28px; height:28px; border-radius:8px; object-fit:cover;">
+        <span style="font-family:'Outfit',sans-serif; font-weight:800; font-size:0.95rem; color:var(--text);">PSU <span style="color:var(--primary);">Portal</span></span>
+    </div>
+    <a href="{{ route('emergency') }}" style="background:#dc2626; color:white; padding:0.4rem 0.75rem; border-radius:10px; font-size:0.72rem; font-weight:800; text-decoration:none; display:flex; align-items:center; gap:0.3rem;">
+        <i class="ph-bold ph-warning-octagon"></i> SOS
+    </a>
+</div>
+
+<!-- Mobile Sidebar Overlay -->
+<div id="sidebarOverlay" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); z-index:999;" onclick="closeSidebar()"></div>
+
+<script>
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const icon    = document.getElementById('navToggleIcon');
+    const isOpen  = sidebar.classList.toggle('open');
+    overlay.style.display = isOpen ? 'block' : 'none';
+    icon.className = isOpen ? 'ph ph-x' : 'ph ph-list';
+}
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const icon    = document.getElementById('navToggleIcon');
+    sidebar.classList.remove('open');
+    overlay.style.display = 'none';
+    icon.className = 'ph ph-list';
+}
+// Close sidebar when a nav link is clicked on mobile
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.innerWidth <= 1024) {
+        document.querySelectorAll('.sidebar-link, .btn-emergency').forEach(link => {
+            link.addEventListener('click', closeSidebar);
+        });
+    }
+});
+</script>
 
 <!-- Sign Out Confirmation Modal -->
 <div id="signOutModal" class="signout-modal-overlay" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.45); backdrop-filter:blur(12px); align-items:center; justify-content:center;">

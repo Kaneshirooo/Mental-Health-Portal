@@ -48,6 +48,7 @@ class AppointmentController extends Controller
             ->get();
 
         $assignedId = null;
+        $hasAvailableCounselors = $counselors->isNotEmpty();
 
         foreach ($counselors as $c) {
             // Check for overlapping appointments
@@ -72,13 +73,23 @@ class AppointmentController extends Controller
         }
 
         if (!$assignedId) {
+            // If counselors exist for this day/time but all are booked → real conflict
+            // If no counselors have this slot in their availability → availability gap
+            $isRealConflict = $hasAvailableCounselors;
+
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
-                    'success' => false,
-                    'error'   => 'No counselor is available at that time. conflict — please choose another slot.',
+                    'success'  => false,
+                    'conflict' => $isRealConflict,
+                    'error'    => $isRealConflict
+                        ? 'That time slot is fully booked. Please choose a different date or time.'
+                        : 'No counselor has availability configured for that day and time. Please choose a different slot.',
                 ], 422);
             }
-            return back()->with('error', 'No counselor is available at that time. Please choose another slot.')->with('booking_conflict', true);
+            return back()->with('error', $isRealConflict
+                ? 'That time slot is fully booked. Please choose another slot.'
+                : 'No counselor has availability for that time. Please choose a different slot.'
+            );
         }
 
         $appointment = Appointment::create([

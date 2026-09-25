@@ -17,6 +17,22 @@
         padding: 0 2.5rem;
         border-bottom: 1px solid var(--border);
     }
+    @media (max-width: 1024px) {
+        /* On mobile, sidebar is hidden; header spans full width */
+        .assessment-header {
+            left: 0;
+            padding: 0 1.25rem;
+            height: 56px;
+        }
+        .assessment-header .progress-indicator {
+            gap: 0.75rem;
+        }
+        .step-node {
+            width: 32px;
+            height: 32px;
+            font-size: 0.75rem;
+        }
+    }
     .progress-indicator {
         display: flex;
         gap: 1.5rem;
@@ -116,6 +132,23 @@
     }
     .choice-card.selected .val  { color: var(--primary); transform: scale(1.08); }
     .choice-card.selected .label { color: var(--primary); }
+
+    /* Mobile: 2-column choice grid */
+    @media (max-width: 640px) {
+        .choice-matrix {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+        .choice-card {
+            padding: 1rem 0.75rem;
+        }
+        .container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+        .assessment-header {
+            left: 0;
+        }
+    }
 
     @keyframes toastIn {
         from { opacity:0; transform:translateX(-50%) translateY(-12px); }
@@ -394,7 +427,7 @@ function doSubmit() {
 
     const btn = document.querySelector('button[onclick="doSubmit()"]');
     btn.disabled = true;
-    btn.textContent = 'Submitting…';
+    btn.textContent = 'Submitting\u2026';
 
     const form = document.getElementById('assessmentForm');
     const fd   = new FormData(form);
@@ -407,32 +440,46 @@ function doSubmit() {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         }
     })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success) {
-            App.toast({ type: 'success', title: 'Submitted', message: data.message });
+    .then(r => {
+        // If server redirects (non-JSON), treat as success
+        const ct = r.headers.get('content-type') || '';
+        if (!ct.includes('application/json')) {
+            App.toast({ type: 'success', title: 'Submitted', message: 'Assessment completed!' });
             closeConfirmModal();
-            setTimeout(() => { window.location.href = data.redirect_url; }, 600);
-        } else {
-            App.toast({ type: 'error', title: 'Error', message: data.message || 'Submission failed.' });
-            btn.disabled = false;
-            btn.textContent = 'Yes, Submit →';
-            formSubmitting = false;
-            closeConfirmModal();
+            setTimeout(() => { window.location.href = r.url || '{{ route("student.dashboard") }}'; }, 600);
+            return;
         }
+        return r.json().then(data => {
+            if (data.success) {
+                App.toast({ type: 'success', title: 'Submitted', message: data.message });
+                closeConfirmModal();
+                setTimeout(() => { window.location.href = data.redirect_url; }, 600);
+            } else {
+                App.toast({ type: 'error', title: 'Error', message: data.message || 'Submission failed.' });
+                btn.disabled = false;
+                btn.textContent = 'Yes, Submit \u2192';
+                formSubmitting = false;
+                closeConfirmModal();
+            }
+        });
     })
     .catch(() => {
         App.toast({ type: 'error', title: 'Error', message: 'Failed to connect.' });
         btn.disabled = false;
-        btn.textContent = 'Yes, Submit →';
+        btn.textContent = 'Yes, Submit \u2192';
         formSubmitting = false;
         closeConfirmModal();
     });
 }
 
 // Close modal on backdrop click
-document.getElementById('confirmModal').addEventListener('click', function(e) {
-    if (e.target === this) closeConfirmModal();
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmModal = document.getElementById('confirmModal');
+    if (confirmModal) {
+        confirmModal.addEventListener('click', function(e) {
+            if (e.target === this) closeConfirmModal();
+        });
+    }
 });
 
 function initObserver() {

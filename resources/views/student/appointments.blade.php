@@ -60,8 +60,32 @@
     .conflict-popup-overlay {
         position: fixed; inset: 0; z-index: 9999;
         background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(6px);
+        display: none;
         align-items: center; justify-content: center;
         padding: 1rem;
+    }
+    .conflict-popup-overlay.is-open {
+        display: flex;
+    }
+
+    @media (max-width: 768px) {
+        /* Stack the 2-column grid on mobile */
+        .appt-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+        }
+        /* Choice cards: 2 per row on phones */
+        .choice-matrix {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+        /* Calendar days shrink nicely */
+        .calendar-day {
+            font-size: 0.78rem !important;
+        }
+        /* Time slots grid narrower */
+        .time-slots-grid {
+            grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)) !important;
+        }
     }
     .conflict-popup-box {
         background: var(--surface-solid); border-radius: 24px; padding: 2.5rem; max-width: 400px; width: 100%;
@@ -207,7 +231,7 @@
         <p style="font-size:0.95rem; opacity:0.85; font-weight:400; max-width:400px;">Schedule a session with a guidance counselor. All appointments are confidential.</p>
     </div>
 
-    <div style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:3rem; align-items:start;">
+    <div class="appt-grid" style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:3rem; align-items:start;">
 
         <!-- Left: Booking Form -->
         <div>
@@ -331,12 +355,12 @@
 
 @push('modals')
 <!-- Conflict Modal -->
-<div id="conflictModal" class="conflict-popup-overlay" style="display: none;">
+<div id="conflictModal" class="conflict-popup-overlay">
     <div class="conflict-popup-box">
         <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-        <h3 style="font-family:'Outfit',sans-serif; font-size:1.35rem; font-weight:800; color:#dc2626; margin-bottom:0.75rem;">Schedule conflict</h3>
-        <p id="conflictMsg" style="color:var(--text-dim); font-size:0.95rem; line-height:1.5; font-weight:600; margin-bottom:1.5rem;">The date and time you selected conflicts with another appointment. No counselor is available at that slot. Please choose a different date or time.</p>
-        <button type="button" style="width:100%; padding:1rem; border-radius:14px; border:none; background:var(--primary); color:white; font-weight:800; cursor:pointer;" onclick="document.getElementById('conflictModal').style.display='none'">Choose another time</button>
+        <h3 style="font-family:'Outfit',sans-serif; font-size:1.35rem; font-weight:800; color:#dc2626; margin-bottom:0.75rem;">Schedule Conflict</h3>
+        <p id="conflictMsg" style="color:var(--text-dim); font-size:0.95rem; line-height:1.5; font-weight:600; margin-bottom:1.5rem;">The date and time you selected conflicts with an existing appointment. No counselor is available at that slot. Please choose a different date or time.</p>
+        <button type="button" style="width:100%; padding:1rem; border-radius:14px; border:none; background:var(--primary); color:white; font-weight:800; cursor:pointer;" onclick="document.getElementById('conflictModal').classList.remove('is-open')">Choose another time</button>
     </div>
 </div>
 @endpush
@@ -502,25 +526,36 @@
                 selectedTime = null;
                 updateInput();
                 renderCalendar();
-                document.getElementById('bookModal').style.display = 'none';
                 
                 // Inject card directly
                 const container = document.getElementById('appointmentsListContainer');
                 if (container && data.appointment) {
                     // Check if UI is showing "No appointments" state and clear it
-                    const emptyState = container.querySelector('div[style*="text-align: center"]');
+                    const emptyState = container.querySelector('div[style*="border: 2px dashed"]');
                     if (emptyState) emptyState.remove();
 
+                    // Build a list wrapper if it doesn't exist yet
+                    let listWrapper = container.querySelector('.appt-list-wrapper');
+                    if (!listWrapper) {
+                        listWrapper = document.createElement('div');
+                        listWrapper.className = 'appt-list-wrapper';
+                        listWrapper.style.cssText = 'display:flex; flex-direction:column; gap:1rem;';
+                        container.appendChild(listWrapper);
+                    }
+
                     const card = AjaxHelpers.buildAppointmentCard(data.appointment);
-                    container.prepend(card);
+                    listWrapper.prepend(card);
                     AjaxHelpers.flashRow(card);
                     if (window.gsap) gsap.from(card, { x: -20, opacity: 0, duration: 0.5, ease: 'expo.out' });
                 }
             } else {
-                if (data.error && data.error.includes('conflict')) {
-                    document.getElementById('conflictModal').style.display = 'flex';
+                // Only show the conflict modal for ACTUAL scheduling conflicts
+                // (server explicitly flags this with conflict:true)
+                if (data.conflict === true) {
+                    const modal = document.getElementById('conflictModal');
+                    if (modal) modal.classList.add('is-open');
                 } else {
-                    App.toast({ type: 'error', title: 'Booking Failed', message: data.error || data.message });
+                    App.toast({ type: 'error', title: 'Booking Failed', message: data.error || data.message || 'Unable to book. Please try another time.' });
                 }
             }
         } catch (err) {
