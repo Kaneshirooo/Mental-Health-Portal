@@ -64,13 +64,27 @@
             font-size: 0.78rem !important;
         }
         .chat-input-bar {
-            padding: 0.75rem 0.75rem !important;
-            gap: 0.4rem !important;
+            padding: 0.6rem 0.5rem !important;
+            gap: 0.35rem !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        .chat-input-bar button {
+            width: 42px !important;
+            height: 42px !important;
+            font-size: 1.1rem !important;
+            border-radius: 12px !important;
+            flex-shrink: 0 !important;
+            padding: 0 !important;
         }
         .msg-input {
-            padding: 0.75rem 1rem !important;
-            font-size: 0.9rem !important;
-            border-radius: 16px !important;
+            padding: 0.65rem 0.85rem !important;
+            font-size: 0.88rem !important;
+            border-radius: 14px !important;
+            min-height: 42px !important;
+            max-height: 100px !important;
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
         }
         .msg-bubble {
             padding: 0.85rem 1.15rem !important;

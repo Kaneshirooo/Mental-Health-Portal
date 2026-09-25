@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="video-call-page" style="height: calc(100vh - 8rem); display: flex; flex-direction: column; gap: 1.5rem;">
+<div class="video-call-page" style="height: calc(100vh - 8rem); display: flex; flex-direction: column; gap: 1.5rem; max-width: 100vw; overflow-x: hidden;">
     
     <!-- Header / Clinical Status -->
     <div class="clinical-header glass" style="padding: 1.25rem 2rem; border-radius: 24px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--glass-border);">
@@ -110,7 +110,7 @@
 </div>
 
 <!-- Sidebar Chat -->
-<div id="callChatSidebar" style="position: fixed; top: 0; right: -400px; width: 400px; height: 100vh; background: var(--surface-solid); border-left: 1px solid var(--border); z-index: 10000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;">
+<div id="callChatSidebar">
     <div style="padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
         <h3 style="font-family: 'Outfit', sans-serif; font-weight: 800; margin: 0;">Session Chat</h3>
         <button onclick="toggleChat()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-dim);"><i class="ph ph-x"></i></button>
@@ -192,18 +192,43 @@
     }
     .control-btn {
         width: 44px !important;
-        height: 44px !important;
-        border-radius: 14px !important;
-    }
     #callChatSidebar {
-        width: 100% !important;
-        right: -100% !important;
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 400px;
+        max-width: 100vw;
+        height: 100vh;
+        background: var(--surface-solid);
+        border-left: 1px solid var(--border);
+        z-index: 10000;
+        transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.3);
     }
-    #liveSubtitlesOverlay {
-        bottom: 5rem !important;
-        max-width: 92% !important;
+    #callChatSidebar.open {
+        right: 0 !important;
     }
-}
+    @media (max-width: 900px) {
+        .video-call-page {
+            height: calc(100vh - 5rem) !important;
+            gap: 0.75rem !important;
+            overflow-x: hidden !important;
+        }
+        #callChatSidebar {
+            width: 100% !important;
+            max-width: 100vw !important;
+            right: -100% !important;
+        }
+        #callChatSidebar.open {
+            right: 0 !important;
+        }
+        #liveSubtitlesOverlay {
+            bottom: 5rem !important;
+            max-width: 92% !important;
+        }
+    }
 </style>
 
 @push('scripts')
@@ -880,7 +905,7 @@
 
         // Increment unread count if message comes from remote user while chat sidebar is closed
         const sidebar = document.getElementById('callChatSidebar');
-        const isClosed = sidebar && sidebar.style.right !== '0px';
+        const isClosed = sidebar && !sidebar.classList.contains('open');
         if (!isMe && isClosed && !m._tempId) {
             unreadChatCount++;
             updateUnreadBadge();
@@ -1253,8 +1278,9 @@
 
     function toggleChat() {
         const sidebar = document.getElementById('callChatSidebar');
-        const opening = sidebar.style.right !== '0px';
-        sidebar.style.right = opening ? '0px' : '-400px';
+        if (!sidebar) return;
+        const opening = !sidebar.classList.contains('open');
+        sidebar.classList.toggle('open');
         if (opening) {
             unreadChatCount = 0;
             updateUnreadBadge();

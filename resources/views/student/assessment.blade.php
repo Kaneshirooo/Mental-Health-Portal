@@ -143,8 +143,8 @@
     .choice-card.selected .val  { color: var(--primary); transform: scale(1.08); }
     .choice-card.selected .label { color: var(--primary); }
 
-    /* Mobile: 2-column choice grid */
-    @media (max-width: 640px) {
+    /* Mobile / Phone / Tablet: Floating bottom bar for Next & Submit Assessment */
+    @media (max-width: 1024px) {
         .choice-matrix {
             grid-template-columns: repeat(2, 1fr) !important;
         }
@@ -163,18 +163,24 @@
             bottom: 0 !important;
             left: 0 !important;
             right: 0 !important;
-            z-index: 9999 !important;
+            z-index: 10000 !important;
             margin-top: 0 !important;
             border-radius: 20px 20px 0 0 !important;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.2) !important;
-            padding: 0.85rem 1rem !important;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.25) !important;
+            padding: 0.85rem 1rem calc(0.85rem + env(safe-area-inset-bottom, 0px)) 1rem !important;
             background: var(--surface-solid) !important;
             backdrop-filter: blur(20px) !important;
             -webkit-backdrop-filter: blur(20px) !important;
             border-top: 2px solid var(--primary) !important;
+            gap: 0.5rem !important;
+        }
+        .assessment-nav-bar button {
+            padding: 0.7rem 1.1rem !important;
+            font-size: 0.85rem !important;
+            border-radius: 12px !important;
         }
         .container[style*="padding-bottom"] {
-            padding-bottom: 7rem !important;
+            padding-bottom: 8rem !important;
         }
     }
 
