@@ -67,14 +67,24 @@ class LoginController extends Controller
                 'activity'   => 'Standard login',
             ]]);
 
+            // Explicitly flush session to disk NOW before the terminating callback fires
+            session()->save();
+
             LoginAttempt::where('ip_address', $ip)->delete();
 
-            // Send OTP email directly (synchronous — most reliable across all environments)
-            try {
-                $this->sendOtpEmail($user->email, $otp);
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('OTP Mail Send Error: ' . $e->getMessage());
-            }
+            // Send OTP email AFTER the redirect response is delivered to the browser.
+            // app()->terminating() fires after $response->send() + fastcgi_finish_request(),
+            // so the user sees the verify page instantly with no SMTP delay.
+            $emailToSend = $user->email;
+            $otpToSend   = $otp;
+            $controller  = $this;
+            app()->terminating(function () use ($controller, $emailToSend, $otpToSend) {
+                try {
+                    $controller->sendOtpEmail($emailToSend, $otpToSend);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('OTP Mail Error: ' . $e->getMessage());
+                }
+            });
 
             return redirect()->route('verify.otp');
         }
