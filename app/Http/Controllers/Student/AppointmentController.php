@@ -51,20 +51,16 @@ class AppointmentController extends Controller
         $hasAvailableCounselors = $counselors->isNotEmpty();
 
         foreach ($counselors as $c) {
-            // Check for overlapping appointments
+            // Check for overlapping appointments using DB-agnostic Collection logic
             $conflict = Appointment::where('counselor_id', $c->user_id)
                 ->whereIn('status', ['requested', 'confirmed'])
-                ->where(function($query) use ($scheduledAt, $endTime) {
-                    $query->where(function($q) use ($scheduledAt, $endTime) {
-                        $q->where('scheduled_at', '>=', $scheduledAt->format('Y-m-d H:i:s'))
-                          ->where('scheduled_at', '<', $endTime->format('Y-m-d H:i:s'));
-                    })
-                    ->orWhere(function($q) use ($scheduledAt, $endTime) {
-                        $q->whereRaw('DATE_ADD(scheduled_at, INTERVAL duration_min MINUTE) > ?', [$scheduledAt->format('Y-m-d H:i:s')])
-                          ->where('scheduled_at', '<', $scheduledAt->format('Y-m-d H:i:s'));
-                    });
-                })
-                ->exists();
+                ->whereDate('scheduled_at', $scheduledAt->toDateString())
+                ->get()
+                ->contains(function ($appt) use ($scheduledAt, $endTime) {
+                    $apptStart = \Carbon\Carbon::parse($appt->scheduled_at);
+                    $apptEnd = $apptStart->copy()->addMinutes($appt->duration_min);
+                    return ($apptStart < $endTime && $apptEnd > $scheduledAt);
+                });
 
             if (!$conflict) {
                 $assignedId = $c->user_id;

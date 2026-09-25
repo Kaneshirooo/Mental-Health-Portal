@@ -42,18 +42,23 @@ class AppointmentController extends Controller
             $scheduledAt = $appointment->scheduled_at;
             $endTime = (clone $scheduledAt)->addMinutes($appointment->duration_min);
 
-            // Find an alternative counselor
+            // Find an alternative counselor using DB-agnostic Collection logic
             $replacement = User::whereIn('user_type', ['counselor', 'admin'])
                 ->where('user_id', '!=', $counselor->user_id)
                 ->where('is_emergency_available', true)
-                ->whereDoesntHave('counselorAppointments', function ($query) use ($scheduledAt, $endTime) {
-                    $query->whereIn('status', ['requested', 'confirmed'])
-                        ->where(function ($q) use ($scheduledAt, $endTime) {
-                            $q->whereBetween('scheduled_at', [$scheduledAt, $endTime])
-                                ->orWhereRaw('DATE_ADD(scheduled_at, INTERVAL duration_min MINUTE) > ? AND scheduled_at < ?', [$scheduledAt, $endTime]);
-                        });
-                })
-                ->first();
+                ->with(['counselorAppointments' => function($q) use ($scheduledAt) {
+                    $q->whereIn('status', ['requested', 'confirmed'])
+                      ->whereDate('scheduled_at', $scheduledAt->toDateString());
+                }])
+                ->get()
+                ->first(function ($u) use ($scheduledAt, $endTime) {
+                    $hasConflict = $u->counselorAppointments->contains(function($appt) use ($scheduledAt, $endTime) {
+                        $apptStart = \Carbon\Carbon::parse($appt->scheduled_at);
+                        $apptEnd = $apptStart->copy()->addMinutes($appt->duration_min);
+                        return ($apptStart < $endTime && $apptEnd > $scheduledAt);
+                    });
+                    return !$hasConflict;
+                });
 
             if ($replacement) {
                 $appointment->update([
