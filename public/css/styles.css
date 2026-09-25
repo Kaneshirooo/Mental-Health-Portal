@@ -1359,8 +1359,83 @@ textarea:focus,
         box-shadow: var(--shadow-lg);
     }
 
-    .mobile-nav {
-        display: flex;
+    .mobile-nav, .mobile-header {
+        display: flex !important;
+        background: var(--glass-bg) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-bottom: 1px solid var(--border) !important;
+    }
+}
+
+/* ── Mobile Touch & Layout Optimizations (< 768px) ── */
+@media (max-width: 768px) {
+    /* Responsive Grid Stacking */
+    .grid, [class*="grid-cols-"] {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    /* Dashboard Banners & Cards */
+    .dashboard-header {
+        padding: 1.5rem 1.25rem !important;
+        border-radius: 20px !important;
+    }
+    .dashboard-header h1 {
+        font-size: 1.35rem !important;
+    }
+    .dashboard-header p {
+        font-size: 0.88rem !important;
+    }
+
+    .card, .glass-card, .feature-card {
+        padding: 1.25rem 1rem !important;
+        border-radius: 18px !important;
+    }
+
+    /* Form Rows & Inputs Touch Accessibility */
+    .form-row, .input-row {
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="date"],
+    select,
+    textarea,
+    .form-input {
+        font-size: 16px !important; /* Prevents auto-zoom on mobile safari/chrome */
+        min-height: 48px !important;
+        border-radius: 14px !important;
+    }
+
+    /* Touch-Friendly Action Buttons */
+    .btn-primary, .btn-secondary, .btn-success, .btn-danger {
+        min-height: 46px !important;
+        padding: 0.75rem 1.25rem !important;
+        font-size: 0.92rem !important;
+        border-radius: 14px !important;
+        justify-content: center !important;
+    }
+
+    /* Table Scrollability & Card View Fallback */
+    .table-wrapper, .table-container {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        border-radius: 16px !important;
+    }
+    .table th, .table td {
+        padding: 0.75rem 0.85rem !important;
+        white-space: nowrap !important;
+        font-size: 0.82rem !important;
+    }
+
+    /* Page Titles & Headers */
+    .page-header h1 {
+        font-size: 1.5rem !important;
     }
 }
 
