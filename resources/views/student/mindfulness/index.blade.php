@@ -1,34 +1,37 @@
 @extends('layouts.app')
 
+@push('styles')
 <style>
 @media (max-width: 768px) {
     .mindfulness-container {
-        padding: 1rem !important;
+        padding: 0.75rem !important;
     }
     .mindfulness-title {
-        font-size: 2.75rem !important;
+        font-size: 2.25rem !important;
         margin-bottom: 0.5rem !important;
     }
     .glass-card {
-        padding: 1.25rem !important;
-        border-radius: 24px !important;
-        margin-bottom: 1.5rem !important;
+        padding: 1rem !important;
+        border-radius: 20px !important;
+        margin-bottom: 1.25rem !important;
     }
     #circle {
-        width: 140px !important;
-        height: 140px !important;
+        width: 130px !important;
+        height: 130px !important;
     }
     #statusLabel {
-        font-size: 1.25rem !important;
+        font-size: 1.1rem !important;
     }
     #instruction {
-        font-size: 0.95rem !important;
-        margin-bottom: 1.5rem !important;
+        font-size: 0.9rem !important;
+        margin-bottom: 1.25rem !important;
         height: auto !important;
     }
 }
 </style>
+@endpush
 
+@section('content')
 <div class="p-8 max-w-5xl mx-auto mindfulness-container">
     <!-- Header -->
     <div class="text-center mb-16">

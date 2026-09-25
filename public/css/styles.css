@@ -1338,6 +1338,14 @@ textarea:focus,
 }
 
 @media (max-width: 1024px) {
+    .main-content {
+        margin-left: 0 !important;
+        padding: 4.25rem 0.85rem 4rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
     .sidebar {
         transform: translateX(-110%);
         z-index: 1001; /* above overlay (999) and mobile-nav (999) */
