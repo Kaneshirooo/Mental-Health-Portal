@@ -90,62 +90,69 @@
         }
         .chat-actions {
             padding: 0.75rem 1rem !important;
-            flex-direction: row !important;
-            gap: 0.6rem !important;
-            align-items: center !important;
-            justify-content: space-between !important;
+            flex-direction: column !important;
+            gap: 0.75rem !important;
+            align-items: stretch !important;
         }
         .chat-actions > div:first-child {
             display: flex !important;
             gap: 0.5rem !important;
-            flex: 1 !important;
+            width: 100% !important;
         }
         .chat-actions button {
             flex: 1 !important;
-            padding: 0.65rem 0.6rem !important;
-            font-size: 0.75rem !important;
-            border-radius: 14px !important;
-            white-space: nowrap !important;
+            padding: 0.75rem 0.5rem !important;
+            font-size: 0.72rem !important;
+            border-radius: 12px !important;
+            white-space: normal !important;
+            text-align: center !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
         .chat-actions > div:last-child {
-            font-size: 0.78rem !important;
-            white-space: nowrap !important;
+            font-size: 0.8rem !important;
+            text-align: center !important;
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
         }
         #handsFreeBtn, #ttsToggle {
             display: none !important;
         }
         .chat-input-bar {
-            padding: 0.65rem 0.75rem !important;
-            gap: 0.5rem !important;
+            padding: 0.65rem 0.65rem !important;
+            gap: 0.4rem !important;
             display: flex !important;
             align-items: center !important;
-            width: calc(100% - 1.5rem) !important;
-            margin: 0.5rem 0.75rem 0.85rem !important;
+            width: calc(100% - 1rem) !important;
+            margin: 0.5rem 0.5rem 0.75rem !important;
             border-radius: 20px !important;
             border: 1.5px solid var(--border) !important;
             background: var(--surface-solid) !important;
             box-shadow: 0 4px 16px rgba(0,0,0,0.04) !important;
+            box-sizing: border-box !important;
         }
         .chat-input-bar #micBtn,
         .chat-input-bar #sendBtn {
-            width: 44px !important;
-            height: 44px !important;
-            font-size: 1.15rem !important;
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 1.1rem !important;
             border-radius: 14px !important;
             flex-shrink: 0 !important;
             padding: 0 !important;
         }
         .msg-input {
-            padding: 0.75rem 1rem !important;
-            font-size: 0.95rem !important;
+            padding: 0.65rem 0.75rem !important;
+            font-size: 0.9rem !important;
             border-radius: 16px !important;
-            min-height: 44px !important;
-            max-height: 110px !important;
+            min-height: 40px !important;
+            max-height: 100px !important;
             flex: 1 1 auto !important;
             width: 100% !important;
             min-width: 0 !important;
         }
-        .msg-bubble {
+    }    .msg-bubble {
             padding: 0.9rem 1.2rem !important;
             font-size: 0.92rem !important;
             border-radius: 20px !important;
