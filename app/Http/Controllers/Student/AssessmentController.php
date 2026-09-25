@@ -74,10 +74,20 @@ class AssessmentController extends Controller
             $overallScore = round(($depressionScore + $anxietyScore + $stressScore) / 3);
             $riskLevel = $this->calculateRiskLevel($depressionScore, $anxietyScore, $stressScore);
 
+            // Create the assessment record immediately with placeholder text
+            $score = AssessmentScore::create([
+                'user_id' => $userId,
+                'depression_score' => $depressionScore,
+                'anxiety_score' => $anxietyScore,
+                'stress_score' => $stressScore,
+                'overall_score' => $overallScore,
+                'risk_level' => $riskLevel,
+                'ai_analysis' => "Clinical summary pending...",
+                'ai_summary' => "Processing clinical insight...",
+                'assessment_date' => now(),
+            ]);
+
             // -- NEW: AI CLINICAL ANALYSIS (JUSTIFYING CAPSTONE TITLE) --
-            $aiAnalysis = "Clinical summary pending...";
-            $aiSummary = "Processing clinical insight...";
-            
             // Fetch historical data for Longitudinal Analysis
             $history = AssessmentScore::where('user_id', $userId)
                 ->latest('assessment_date')
@@ -90,43 +100,39 @@ class AssessmentController extends Controller
                 ]);
             $historyJson = $history->isNotEmpty() ? json_encode($history) : "No previous assessments.";
 
-            try {
-                $prompt = "As a professional clinical AI, analyze these DASS-21 and PHQ-9 derived scores for a student. 
-                           Current Data:
-                           Depression Score: {$depressionScore} (0-27), 
-                           Anxiety Score: {$anxietyScore} (0-21), 
-                           Stress Score: {$stressScore} (0-21). 
-                           Risk Level: {$riskLevel}. 
-
-                           Historical Comparison: {$historyJson}
-                           
-                           You MUST provide the following sections in this EXACT order:
-                           1. ### Supportive Recommendation
-                              (A 1-sentence supportive recommendation for the student)
-                           2. ### Empathetic Summary
-                              (A 2-sentence empathetic summary of their current mental state, highlighting any 'Clinical Shifts' e.g. if wellness is declining or improving).
-                           3. ### Professional Clinical Insight
-                              (A professional clinical insight for a counselor to read (concise)).
-                           
-                           Ensure the Supportive Recommendation is at the very top.";
-                
-                $aiAnalysis = $ai->generateSingleTurn($prompt);
-                $aiSummary = "AI analysis successfully generated based on clinical data.";
-            } catch (\Exception $ae) {
-                \Illuminate\Support\Facades\Log::error("AI Analysis Failed: " . $ae->getMessage());
-            }
-
-            $score = AssessmentScore::create([
-                'user_id' => $userId,
-                'depression_score' => $depressionScore,
-                'anxiety_score' => $anxietyScore,
-                'stress_score' => $stressScore,
-                'overall_score' => $overallScore,
-                'risk_level' => $riskLevel,
-                'ai_analysis' => $aiAnalysis,
-                'ai_summary' => $aiSummary,
-                'assessment_date' => now(),
-            ]);
+            // Defer the slow AI API call until after the response is sent to the user.
+            // This prevents the "hanging" waiting time on submit.
+            app()->terminating(function () use ($score, $depressionScore, $anxietyScore, $stressScore, $riskLevel, $historyJson, $ai) {
+                try {
+                    $prompt = "As a professional clinical AI, analyze these DASS-21 and PHQ-9 derived scores for a student. 
+                               Current Data:
+                               Depression Score: {$depressionScore} (0-27), 
+                               Anxiety Score: {$anxietyScore} (0-21), 
+                               Stress Score: {$stressScore} (0-21). 
+                               Risk Level: {$riskLevel}. 
+    
+                               Historical Comparison: {$historyJson}
+                               
+                               You MUST provide the following sections in this EXACT order:
+                               1. ### Supportive Recommendation
+                                  (A 1-sentence supportive recommendation for the student)
+                               2. ### Empathetic Summary
+                                  (A 2-sentence empathetic summary of their current mental state, highlighting any 'Clinical Shifts' e.g. if wellness is declining or improving).
+                               3. ### Professional Clinical Insight
+                                  (A professional clinical insight for a counselor to read (concise)).
+                               
+                               Ensure the Supportive Recommendation is at the very top.";
+                    
+                    $aiAnalysis = $ai->generateSingleTurn($prompt);
+                    
+                    $score->update([
+                        'ai_analysis' => $aiAnalysis,
+                        'ai_summary' => "AI analysis successfully generated based on clinical data."
+                    ]);
+                } catch (\Exception $ae) {
+                    \Illuminate\Support\Facades\Log::error("AI Analysis Failed: " . $ae->getMessage());
+                }
+            });
 
             // Log activity (following legacy logActivity function)
             SessionLog::create([
