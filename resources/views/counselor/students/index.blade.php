@@ -186,7 +186,8 @@
                         $s_name = $student->full_name ?? 'Anonymous Node';
                         $initial = strtoupper(substr($s_name, 0, 1));
                     @endphp
-                    <tr class="student-row staggered-row"
+                    <tr class="student-row"
+                        style="opacity: 1;"
                         data-name="{{ strtolower($s_name) }}"
                         data-email="{{ strtolower($student->email ?? '') }}"
                         data-roll="{{ strtolower($student->roll_number ?? '') }}">
@@ -354,7 +355,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (window.gsap) {
         gsap.from('.staggered', { y: 35, opacity: 0, duration: 0.9, stagger: 0.12, ease: "expo.out", clearProps: "all" });
-        gsap.from('.staggered-row', { x: -20, opacity: 0, duration: 0.6, stagger: 0.04, ease: "expo.out", delay: 0.3, clearProps: "all" });
+        // Only animate rows that are within the viewport to avoid invisible off-screen rows
+        const rows = document.querySelectorAll('.student-row');
+        rows.forEach((row, i) => {
+            const rect = row.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+                gsap.from(row, { x: -20, opacity: 0, duration: 0.5, delay: 0.3 + i * 0.04, ease: "expo.out", clearProps: "all" });
+            }
+        });
     }
 
     // Risk Distribution Chart

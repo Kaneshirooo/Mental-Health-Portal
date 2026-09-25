@@ -83,6 +83,9 @@
             <a href="{{ route('admin.staff.index') }}" class="sidebar-link {{ request()->routeIs('admin.staff.*') ? 'active' : '' }}">
                 <div class="link-icon"><i class="ph ph-headset"></i></div> <span>Manage Counselors</span>
             </a>
+            <a href="{{ route('counselor.students.index') }}" class="sidebar-link {{ request()->routeIs('counselor.students.*') ? 'active' : '' }}">
+                <div class="link-icon"><i class="ph ph-users"></i></div> <span>Student Records</span>
+            </a>
             <a href="{{ route('counselor.appointments.index') }}" class="sidebar-link no-magnetic {{ request()->routeIs('counselor.appointments.*') ? 'active' : '' }}">
                 <div class="link-icon"><i class="ph ph-calendar-blank"></i></div> <span>My Appointments</span>
             </a>
