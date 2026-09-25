@@ -58,22 +58,28 @@ class LoginController extends Controller
         if ($user && Hash::check($credentials['password'], $user->password)) {
             // Success - Generate OTP
             $otp = rand(100000, 999999);
-            
+            $userEmail = $user->email;
+
             session(['temp_user' => [
                 'user_id' => $user->user_id,
-                'email' => $user->email,
-                'otp_code' => $otp,
+                'email'   => $userEmail,
+                'otp_code'   => $otp,
                 'otp_expiry' => Carbon::now()->addMinutes(10),
-                'activity' => 'Standard login',
+                'activity'   => 'Standard login',
             ]]);
 
-            try {
-                $this->sendOtpEmail($user->email, $otp);
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error("Login OTP Mail Error: " . $e->getMessage());
-                return back()->withErrors(['email' => 'Failed to send verification email. Please check your mail configuration or try again later.']);
-            }
             LoginAttempt::where('ip_address', $ip)->delete(); // Clear attempts
+
+            // Send email AFTER the redirect response is delivered to the browser
+            // This prevents 504 Gateway Timeout from slow SMTP connections
+            $controller = $this;
+            app()->terminating(function () use ($controller, $userEmail, $otp) {
+                try {
+                    $controller->sendOtpEmail($userEmail, $otp);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Login OTP Mail Error: " . $e->getMessage());
+                }
+            });
 
             return redirect()->route('verify.otp');
         }

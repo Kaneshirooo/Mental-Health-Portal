@@ -92,10 +92,14 @@ class OtpController extends Controller
         Session::put('temp_user', $tempUser);
 
         try {
-            $this->sendOtpEmail($tempUser['email'], $otp);
+            $emailToSend = $tempUser['email'];
+            $otpToSend = $otp;
+            $controller = $this;
+            app()->terminating(function () use ($controller, $emailToSend, $otpToSend) {
+                $controller->sendOtpEmail($emailToSend, $otpToSend);
+            });
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("OTP Resend Mail Error: " . $e->getMessage());
-            return back()->withErrors(['otp_code' => 'Failed to resend verification email.']);
         }
 
         return back()->with('success', 'A new verification code has been sent to your email.');
