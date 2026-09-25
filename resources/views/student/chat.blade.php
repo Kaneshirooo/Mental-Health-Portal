@@ -29,7 +29,13 @@
             display: block !important;
         }
         .chat-layout {
-            padding: 0.75rem 0.75rem 4rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            padding: 1rem 0 4rem !important;
+            gap: 1.25rem !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 auto !important;
             box-sizing: border-box !important;
             width: 100% !important;
             max-width: 100% !important;
@@ -40,24 +46,13 @@
             overflow-x: hidden !important;
             display: block !important;
         }
-    }
-
-    @media (max-width: 1024px) {
-        .chat-layout {
-            display: flex !important;
-            flex-direction: column !important;
-            padding: 0.75rem 0.75rem 4rem !important;
-            gap: 1.25rem !important;
-            align-items: stretch !important;
-            margin: 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
-        }
         .aria-panel {
             position: static !important;
-            padding: 1.25rem 1.25rem !important;
+            padding: 1.5rem !important;
             border-radius: 24px !important;
-            width: 100% !important;
+            width: 90% !important;
+            max-width: 450px !important;
+            margin: 0 auto !important;
             box-shadow: 0 10px 30px rgba(0,0,0,0.04) !important;
         }
         .aria-panel .aria-avatar {
@@ -85,6 +80,9 @@
             height: calc(100vh - 250px) !important;
             min-height: 500px !important;
             max-height: 720px !important;
+            width: 90% !important;
+            max-width: 450px !important;
+            margin: 0 auto !important;
             border-radius: 28px !important;
             display: flex !important;
             flex-direction: column !important;
