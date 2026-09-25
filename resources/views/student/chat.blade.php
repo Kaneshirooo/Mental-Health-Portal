@@ -21,8 +21,8 @@
         .main-content {
             padding-left: 0 !important;
             padding-right: 0 !important;
-            width: 100vw !important;
-            max-width: 100vw !important;
+            width: 100% !important;
+            max-width: 100% !important;
             margin-left: 0 !important;
             margin-right: 0 !important;
             box-sizing: border-box !important;
@@ -34,15 +34,15 @@
             padding: 1rem 0 4rem !important;
             gap: 1.25rem !important;
             align-items: center !important;
-            justify-content: center !important;
+            justify-content: flex-start !important;
             margin: 0 auto !important;
             box-sizing: border-box !important;
             width: 100% !important;
             max-width: 100% !important;
         }
         body {
-            width: 100vw !important;
-            max-width: 100vw !important;
+            width: 100% !important;
+            max-width: 100% !important;
             overflow-x: hidden !important;
             display: block !important;
         }
@@ -773,8 +773,12 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // Initial Layout Entrance
-    gsap.from('.aria-panel', { x: -50, opacity: 0, duration: 1.2, ease: "expo.out", delay: 0.2 });
-    gsap.from('.chat-interface', { y: 30, opacity: 0, duration: 1.2, ease: "expo.out", delay: 0.4 });
+    if (window.innerWidth > 1024) {
+        gsap.from('.aria-panel', { x: -50, opacity: 0, duration: 1.2, ease: "expo.out", delay: 0.2, clearProps: "all" });
+    } else {
+        gsap.from('.aria-panel', { y: 20, opacity: 0, duration: 1, ease: "expo.out", delay: 0.2, clearProps: "all" });
+    }
+    gsap.from('.chat-interface', { y: 30, opacity: 0, duration: 1.2, ease: "expo.out", delay: 0.4, clearProps: "all" });
     
     // Render history messages via Marked for consistency
     document.querySelectorAll('.msg-bubble[data-raw]').forEach(el => {
