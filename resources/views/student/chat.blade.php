@@ -21,9 +21,24 @@
         .main-content {
             padding-left: 0 !important;
             padding-right: 0 !important;
+            width: 100vw !important;
+            max-width: 100vw !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            box-sizing: border-box !important;
+            display: block !important;
         }
         .chat-layout {
             padding: 0.75rem 0.75rem 4rem !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        body {
+            width: 100vw !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+            display: block !important;
         }
     }
 
