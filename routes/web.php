@@ -156,3 +156,14 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/staff/{staff}', [\App\Http\Controllers\Admin\StaffController::class, 'destroy'])->name('staff.destroy');
     });
 });
+
+// Temporary Route for Database Migration & Seeding on production (Render)
+Route::get('/run-migrations', function () {
+    try {
+        // Force the migration to run in production
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--force' => true, '--seed' => true]);
+        return "<h1>Success!</h1><p>Database has been completely rebuilt and seeded!</p><br><p>Output:</p><pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+    } catch (\Exception $e) {
+        return "<h1>Error:</h1><p>" . $e->getMessage() . "</p>";
+    }
+});
