@@ -28,6 +28,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/verify-otp', [\App\Http\Controllers\Auth\OtpController::class, 'showVerifyForm'])->name('verify.otp');
 Route::post('/verify-otp', [\App\Http\Controllers\Auth\OtpController::class, 'verify']);
 Route::get('/resend-otp', [\App\Http\Controllers\Auth\OtpController::class, 'resend'])->name('resend.otp');
+Route::post('/send-otp-background', [\App\Http\Controllers\Auth\OtpController::class, 'sendBackground'])->name('otp.send.background');
 
 // Google OAuth
 Route::get('/auth/google', [LoginController::class, 'redirectToGoogle'])->name('auth.google');
@@ -155,15 +156,4 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/staff', [\App\Http\Controllers\Admin\StaffController::class, 'store'])->name('staff.store');
         Route::delete('/staff/{staff}', [\App\Http\Controllers\Admin\StaffController::class, 'destroy'])->name('staff.destroy');
     });
-});
-
-// Temporary Route for Database Migration & Seeding on production (Render)
-Route::get('/run-migrations', function () {
-    try {
-        // Force the migration to run in production
-        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--force' => true, '--seed' => true]);
-        return "<h1>Success!</h1><p>Database has been completely rebuilt and seeded!</p><br><p>Output:</p><pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
-    } catch (\Exception $e) {
-        return "<h1>Error:</h1><p>" . $e->getMessage() . "</p>";
-    }
 });
