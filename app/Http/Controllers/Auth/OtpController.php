@@ -140,10 +140,33 @@ class OtpController extends Controller
             </div>
         ";
 
-        Mail::html($body, function ($message) use ($email) {
-            $message->to($email)
-                ->subject('Your Verification Code — Mental Health Portal');
-        });
+        $password = config('mail.mailers.smtp.password', env('MAIL_PASSWORD'));
+        
+        // Render Free Tier blocks outbound SMTP (port 25, 465, 587).
+        // If we detect a Resend API key, use their HTTP API (port 443) instead of Laravel's SMTP Mail facade.
+        if (str_starts_with((string) $password, 're_')) {
+            $fromAddress = config('mail.from.address', env('MAIL_FROM_ADDRESS'));
+            $fromName = config('mail.from.name', env('MAIL_FROM_NAME', 'Mental Health Portal'));
+            
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
+                'Authorization' => 'Bearer ' . $password,
+                'Content-Type' => 'application/json',
+            ])->post('https://api.resend.com/emails', [
+                'from' => $fromName . ' <' . $fromAddress . '>',
+                'to' => [$email],
+                'subject' => 'Your Verification Code — Mental Health Portal',
+                'html' => $body,
+            ]);
+            
+            if (!$response->successful()) {
+                \Illuminate\Support\Facades\Log::error('Resend API HTTP Error: ' . $response->body());
+            }
+        } else {
+            \Illuminate\Support\Facades\Mail::html($body, function ($message) use ($email) {
+                $message->to($email)
+                    ->subject('Your Verification Code — Mental Health Portal');
+            });
+        }
     }
 
     protected function redirectUserByRole($user)

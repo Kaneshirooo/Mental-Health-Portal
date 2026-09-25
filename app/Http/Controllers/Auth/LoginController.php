@@ -180,6 +180,7 @@ class LoginController extends Controller
 
     protected function sendOtpEmail($email, $code)
     {
+        $year = date('Y');
         $body = "
             <div style='font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;'>
                 <h2 style='color: #0d9488; margin-bottom: 16px;'>Security Verification</h2>
@@ -190,14 +191,37 @@ class LoginController extends Controller
                 </div>
                 <p style='font-size: 14px; color: #64748b; margin-top: 24px;'>This code will expire in 10 minutes. If you didn't request this code, please ignore this email.</p>
                 <hr style='border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;'>
-                <p style='font-size: 12px; color: #94a3b8;'>© " . date('Y') . " PSU Mental Health Portal. All rights reserved.</p>
+                <p style='font-size: 12px; color: #94a3b8;'>© $year PSU Mental Health Portal. All rights reserved.</p>
             </div>
         ";
 
-        \Illuminate\Support\Facades\Mail::html($body, function ($message) use ($email) {
-            $message->to($email)
-                ->subject('Your Verification Code — Mental Health Portal');
-        });
+        $password = config('mail.mailers.smtp.password', env('MAIL_PASSWORD'));
+        
+        // Render Free Tier blocks outbound SMTP (port 25, 465, 587).
+        // If we detect a Resend API key, use their HTTP API (port 443) instead of Laravel's SMTP Mail facade.
+        if (str_starts_with((string) $password, 're_')) {
+            $fromAddress = config('mail.from.address', env('MAIL_FROM_ADDRESS'));
+            $fromName = config('mail.from.name', env('MAIL_FROM_NAME', 'Mental Health Portal'));
+            
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
+                'Authorization' => 'Bearer ' . $password,
+                'Content-Type' => 'application/json',
+            ])->post('https://api.resend.com/emails', [
+                'from' => $fromName . ' <' . $fromAddress . '>',
+                'to' => [$email],
+                'subject' => 'Your Verification Code — Mental Health Portal',
+                'html' => $body,
+            ]);
+            
+            if (!$response->successful()) {
+                \Illuminate\Support\Facades\Log::error('Resend API HTTP Error: ' . $response->body());
+            }
+        } else {
+            \Illuminate\Support\Facades\Mail::html($body, function ($message) use ($email) {
+                $message->to($email)
+                    ->subject('Your Verification Code — Mental Health Portal');
+            });
+        }
     }
 
     protected function isInstitutionalEmail(string $email): bool
