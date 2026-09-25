@@ -69,7 +69,13 @@ class LoginController extends Controller
 
             LoginAttempt::where('ip_address', $ip)->delete();
 
-            // Redirect immediately — OTP email is sent when the verify page loads
+            // Send OTP email directly (synchronous — most reliable across all environments)
+            try {
+                $this->sendOtpEmail($user->email, $otp);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('OTP Mail Send Error: ' . $e->getMessage());
+            }
+
             return redirect()->route('verify.otp');
         }
 

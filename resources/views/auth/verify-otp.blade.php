@@ -172,21 +172,4 @@
     </div>
 </div>
 
-<script>
-    // Fire OTP email in the background immediately when this page loads
-    // This way the user sees the page instantly and the email arrives shortly after
-    document.addEventListener('DOMContentLoaded', function () {
-        fetch('{{ route('otp.send.background') }}', {
-            method: 'POST',
-            credentials: 'same-origin', // REQUIRED: sends session cookie so server can read temp_user
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-        }).catch(function () {
-            // Silently fail — user can click Resend Code if needed
-        });
-    });
-</script>
 @endsection
