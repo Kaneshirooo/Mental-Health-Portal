@@ -16,14 +16,21 @@
 
     @media (max-width: 900px) {
         .chat-layout {
-            grid-template-columns: 1fr !important;
+            display: flex !important;
+            flex-direction: column !important;
             padding: 0.75rem 0.75rem 3rem !important;
             gap: 1rem !important;
         }
+        .chat-main-wrapper {
+            order: 1 !important;
+            width: 100% !important;
+        }
         .aria-panel {
+            order: 2 !important;
             position: static !important;
             padding: 1.25rem 1rem !important;
             border-radius: 24px !important;
+            width: 100% !important;
         }
         .aria-avatar {
             width: 70px !important;
@@ -497,7 +504,7 @@
     </div>
 
     <!-- Main Chat -->
-    <div style="display:flex; flex-direction:column; gap:1.75rem;">
+    <div class="chat-main-wrapper" style="display:flex; flex-direction:column; gap:1.75rem;">
 
         <div class="chat-interface">
             <div class="chat-topbar" role="banner">

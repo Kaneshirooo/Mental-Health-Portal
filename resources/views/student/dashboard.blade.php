@@ -124,9 +124,27 @@
             border-radius: 18px !important;
         }
         .chart-container-premium {
-            height: 340px !important;
+            height: auto !important;
+            min-height: 400px !important;
             padding: 1.25rem !important;
             border-radius: 20px !important;
+        }
+        .chart-header-flex {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.4rem !important;
+            margin-bottom: 1rem !important;
+            padding-bottom: 0.75rem !important;
+        }
+        .chart-header-flex h2 {
+            font-size: 1.1rem !important;
+        }
+        .chart-header-flex a {
+            font-size: 0.82rem !important;
+        }
+        .chart-canvas-wrapper {
+            height: 240px !important;
+            min-height: 220px !important;
         }
         div[style*="grid-template-columns: 1fr 1fr"] {
             grid-template-columns: 1fr !important;
@@ -260,28 +278,28 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem;">
         <!-- Trend Chart -->
         <div class="chart-container-premium staggered">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.25rem;">
+            <div class="chart-header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
                 <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem; margin: 0; color: var(--text); letter-spacing: -0.02em;">Wellness Index Trend</h2>
                 <a href="{{ route('student.reports.index') }}" class="btn-link">View Detailed Analysis →</a>
             </div>
-            <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.5rem; font-weight: 500; line-height: 1.5;">
+            <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.25rem; font-weight: 500; line-height: 1.5;">
                 This chart tracks your overall mental wellness based on your clinical assessments. The index is computed by inverting your total distress percentage (100% minus distress), where a higher percentage indicates better emotional health and resilience.
             </p>
-            <div style="flex: 1; position: relative;">
+            <div class="chart-canvas-wrapper" style="flex: 1; position: relative;">
                 <canvas id="trendChart"></canvas>
             </div>
         </div>
 
         <!-- Mood Chart -->
         <div class="chart-container-premium staggered">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.25rem;">
+            <div class="chart-header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
                 <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem; margin: 0; color: var(--text); letter-spacing: -0.02em;">Emotional Vector Summary</h2>
                 <a href="{{ route('student.mood') }}" class="btn-link" style="color: #f59e0b;">Analyze Logs →</a>
             </div>
-            <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.5rem; font-weight: 500; line-height: 1.5;">
+            <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.25rem; font-weight: 500; line-height: 1.5;">
                 A visualization of your daily emotional fluctuations. This maps your self-reported mood levels (on a scale of 1-5) from your journal entries to help you identify emotional patterns over time.
             </p>
-            <div style="flex: 1; position: relative;">
+            <div class="chart-canvas-wrapper" style="flex: 1; position: relative;">
                 <canvas id="moodChart"></canvas>
             </div>
         </div>
