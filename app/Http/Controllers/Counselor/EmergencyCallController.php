@@ -100,10 +100,17 @@ class EmergencyCallController extends Controller
     /**
      * Counselor ends an active call.
      */
-    public function end(EmergencyCall $call)
+    public function end(EmergencyCall $call, Request $request)
     {
-        if ($call->counselor_id != Auth::id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+        $user = Auth::user();
+        $userType = $user->user_type->value ?? (string) $user->user_type;
+        $isParticipant = ($call->counselor_id == $user->user_id) || ($call->student_id == $user->user_id) || in_array($userType, ['counselor', 'admin']);
+
+        if (!$isParticipant) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+            return redirect()->back()->with('error', 'Unauthorized to end call.');
         }
 
         $call->update(['status' => 'ended', 'ended_at' => now()]);
@@ -111,14 +118,18 @@ class EmergencyCallController extends Controller
         Notification::create([
             'user_id' => $call->student_id,
             'title'   => 'Call Ended',
-            'message' => "Your emergency counseling call has been ended by the counselor. You may book a follow-up appointment anytime.",
+            'message' => "Your emergency counseling call has been ended. You may book a follow-up appointment anytime.",
             'type'    => 'emergency',
         ]);
 
         // Notify next queued student and available counselors
         $this->notifyQueuedStudentAndCounselors();
 
-        return response()->json(['success' => true]);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->back()->with('success', 'Emergency call session successfully ended.');
     }
 
     /**
@@ -299,6 +310,9 @@ class EmergencyCallController extends Controller
      */
     public function logs(Request $request): View
     {
+        // Clean up stale calls first
+        EmergencyCall::cleanupStaleCalls(90);
+
         $user = Auth::user();
         $userType = $user->user_type->value ?? $user->user_type ?? '';
 

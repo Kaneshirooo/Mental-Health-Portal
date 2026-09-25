@@ -282,9 +282,17 @@
                             </td>
                             <td style="padding:1.1rem 1.25rem; text-align:right; border-radius:0 20px 20px 0;" onclick="event.stopPropagation()">
                                 @if($status === 'active')
-                                    <a href="{{ route('counselor.video.call', $call->call_id) }}" class="btn-action-premium" style="background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: #10b981;">
-                                        <i class="ph-bold ph-video-camera"></i> Join
-                                    </a>
+                                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
+                                        <a href="{{ route('counselor.video.call', $call->call_id) }}" class="btn-action-premium" style="background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: #10b981;">
+                                            <i class="ph-bold ph-video-camera"></i> Join
+                                        </a>
+                                        <form action="{{ route('counselor.emergency.calls.end', $call->call_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to end this emergency call session?');">
+                                            @csrf
+                                            <button type="submit" class="btn-action-premium" style="background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #ef4444; cursor: pointer;">
+                                                <i class="ph-bold ph-phone-x"></i> End
+                                            </button>
+                                        </form>
+                                    </div>
                                 @else
                                     <a href="{{ route('counselor.emergency.calls.history', $call->call_id) }}" class="btn-action-premium">
                                         <i class="ph-bold ph-article"></i> Transcript

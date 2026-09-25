@@ -1227,22 +1227,18 @@
             try { peerConnection.close(); } catch (e) {}
         }
 
-        // 2. Dispatch termination signals with short timeout so UI never freezes
+        // 2. Dispatch termination signals and call backend endpoint
         const url = `/video-call/${CALL_ID}/terminate`;
         sendSignal({ signal_type: 'hangup' });
-
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 800);
 
         try {
             await fetch(url, { 
                 method: 'POST', 
-                headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
-                signal: controller.signal
+                headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
             });
         } catch (e) {
+            console.error('Termination request error:', e);
         } finally {
-            clearTimeout(timeoutId);
             window.location.href = IS_STUDENT ? "{{ route('student.dashboard') }}" : "{{ route('counselor.dashboard') }}";
         }
     }

@@ -94,5 +94,13 @@ class EmergencyCall extends Model
                 'type'    => 'emergency',
             ]);
         }
+
+        // Auto-cleanup abandoned active calls older than 60 minutes
+        static::where('status', 'active')
+            ->where('updated_at', '<=', now()->subMinutes(60))
+            ->update([
+                'status'   => 'ended',
+                'ended_at' => now(),
+            ]);
     }
 }

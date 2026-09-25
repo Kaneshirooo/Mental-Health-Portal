@@ -168,7 +168,7 @@ class VideoCallController extends Controller
             'statusBefore' => $call->status,
         ]);
 
-        if (!$isStudent && !$isCounselor) {
+        if (!$this->isCallParticipant($call, (int) $user->user_id)) {
             $this->agentDebugLog('H4', 'VideoCallController.php:terminate', 'Terminate rejected unauthorized participant', [
                 'callId' => $call->call_id,
                 'userId' => $user->user_id,
