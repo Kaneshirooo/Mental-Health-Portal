@@ -99,7 +99,7 @@
 
     .stat-grid {
         display: grid;
-        grid-template-cols: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 2rem;
         padding-top: 3rem;
         border-top: 1px solid rgba(255, 255, 255, 0.15);
@@ -137,7 +137,7 @@
     }
     .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); opacity: 0.5; }
 
-    .input-row { display: grid; grid-template-cols: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
     .input-group { margin-bottom: 0; }
     .input-group label { display: block; font-weight: 800; font-size: 0.8rem; margin-bottom: 0.75rem; color: var(--text); text-transform: uppercase; letter-spacing: 0.05em; }
     
@@ -201,7 +201,7 @@
         .register-card { flex-direction: column; min-height: auto; border-radius: var(--radius-lg); }
         .register-hero { padding: 3rem 2rem; }
         .register-form-area { padding: 3.5rem 2.5rem; max-height: none; }
-        .input-row { grid-template-cols: 1fr; gap: 1rem; }
+        .input-row { grid-template-columns: 1fr; gap: 1rem; }
     }
     @media (max-width: 640px) {
         body { padding: 0.75rem; align-items: flex-start; }
@@ -333,7 +333,12 @@
 
                 <div class="input-group staggered" style="margin-bottom: 1.5rem;">
                     <label for="department">Department / College</label>
-                    <input type="text" id="department" name="department" value="{{ old('department') }}" placeholder="e.g. College of Computing">
+                    <select id="department" name="department" required>
+                        <option value="">Select Department / College</option>
+                        <option value="CHMBAC" {{ old('department') === 'CHMBAC' ? 'selected' : '' }}>CHMBAC</option>
+                        <option value="COA" {{ old('department') === 'COA' ? 'selected' : '' }}>COA</option>
+                        <option value="CTE" {{ old('department') === 'CTE' ? 'selected' : '' }}>CTE</option>
+                    </select>
                 </div>
 
                 <div class="section-label staggered">Security Protocol</div>

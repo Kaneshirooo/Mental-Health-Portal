@@ -82,9 +82,9 @@
                         <!-- Course -->
                         <div class="space-y-2">
                             <label class="input-label text-[10px] font-black uppercase tracking-widest">Academic Course</label>
-                            <input type="text" name="course" value="{{ old('course', $user->course ?? '-') }}" 
+                            <input type="text" name="course" value="{{ old('course', ($user->course && $user->course !== '-') ? $user->course : '') }}" 
                                 class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none"
-                                placeholder="- (e.g. BS Information Technology)">
+                                placeholder="e.g. BS Information Technology">
                         </div>
 
                         <!-- Semester -->
@@ -101,9 +101,13 @@
                         <!-- Department -->
                         <div class="space-y-2 md:col-span-2">
                             <label class="input-label text-[10px] font-black uppercase tracking-widest">Department / College</label>
-                            <input type="text" name="department" value="{{ old('department', $user->department) }}" 
-                                class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none"
-                                placeholder="e.g. College of Computing">
+                            <select name="department" 
+                                class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none appearance-none">
+                                <option value="" disabled {{ !old('department', $user->department) ? 'selected' : '' }}>Select Department / College</option>
+                                <option value="CHMBAC" {{ old('department', $user->department) === 'CHMBAC' ? 'selected' : '' }}>CHMBAC</option>
+                                <option value="COA" {{ old('department', $user->department) === 'COA' ? 'selected' : '' }}>COA</option>
+                                <option value="CTE" {{ old('department', $user->department) === 'CTE' ? 'selected' : '' }}>CTE</option>
+                            </select>
                         </div>
                     </div>
                 </div>

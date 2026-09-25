@@ -300,14 +300,19 @@
                 </div>
                 <div>
                     <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Department</label>
-                    <input type="text" id="edit_department" name="department" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                    <select id="edit_department" name="department" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                        <option value="">Select Department / College</option>
+                        <option value="CHMBAC">CHMBAC</option>
+                        <option value="COA">COA</option>
+                        <option value="CTE">CTE</option>
+                    </select>
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
                 <div>
                     <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Course</label>
-                    <input type="text" id="edit_course" name="course" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                    <input type="text" id="edit_course" name="course" placeholder="e.g. BS Information Technology" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
                 </div>
                 <div>
                     <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Year & Section</label>
