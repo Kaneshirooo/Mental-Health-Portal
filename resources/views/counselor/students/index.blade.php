@@ -238,16 +238,113 @@
                             @endif
                         </td>
                         <td style="padding: 1.25rem 1.5rem; text-align: right; border-top-right-radius: 18px; border-bottom-right-radius: 18px;">
-                            <a href="{{ route('counselor.students.show', $student->user_id ?? 0) }}" class="btn-sm" style="color: var(--primary); background: var(--primary-glow); border: 1.5px solid var(--primary-light); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; padding: 0.5rem 1.1rem; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s ease;">
-                                <span>View Records</span>
-                                <i class="ph-bold ph-caret-right"></i>
-                            </a>
+                            <div style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                                <a href="{{ route('counselor.students.show', $student->user_id ?? 0) }}" class="btn-sm" style="color: var(--primary); background: var(--primary-glow); border: 1.5px solid var(--primary-light); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; padding: 0.5rem 0.85rem; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem; transition: all 0.2s ease;">
+                                    <span>View</span>
+                                    <i class="ph-bold ph-caret-right"></i>
+                                </a>
+                                <button type="button" onclick="openEditModal({{ json_encode($student) }})" style="background: rgba(99, 102, 241, 0.1); color: #6366f1; border: 1.5px solid rgba(99, 102, 241, 0.25); font-weight: 800; font-size: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.2s ease;" title="Edit Student Profile">
+                                    <i class="ph-bold ph-pencil-simple"></i>
+                                </button>
+                                <button type="button" onclick="openDeleteModal('{{ $student->user_id }}', '{{ e($s_name) }}')" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1.5px solid rgba(239, 68, 68, 0.25); font-weight: 800; font-size: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.2s ease;" title="Delete Student Record">
+                                    <i class="ph-bold ph-trash"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
+
+<!-- Edit Student Modal -->
+<div id="editStudentModal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;">
+    <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; width: 100%; max-width: 600px; padding: 2.25rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative;">
+        <button type="button" onclick="closeEditModal()" style="position: absolute; top: 1.25rem; right: 1.25rem; background: var(--surface-2); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-dim); cursor: pointer; transition: all 0.2s;">
+            <i class="ph-bold ph-x" style="font-size: 1.1rem;"></i>
+        </button>
+
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem;">
+            <div style="width: 48px; height: 48px; border-radius: 16px; background: rgba(99, 102, 241, 0.1); color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
+                <i class="ph-bold ph-pencil-simple-line"></i>
+            </div>
+            <div>
+                <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 900; color: var(--text); margin: 0;">Edit Student Profile</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.2rem 0 0; font-weight: 500;">Update student clinical registry and personal information.</p>
+            </div>
+        </div>
+
+        <form id="editStudentForm" onsubmit="submitEditStudent(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
+            @csrf
+            @method('PUT')
+            <input type="hidden" id="edit_student_id" name="student_id">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Full Name *</label>
+                    <input type="text" id="edit_full_name" name="full_name" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Email Address *</label>
+                    <input type="email" id="edit_email" name="email" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Student ID / Roll No.</label>
+                    <input type="text" id="edit_roll_number" name="roll_number" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Department</label>
+                    <input type="text" id="edit_department" name="department" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Course</label>
+                    <input type="text" id="edit_course" name="course" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Year & Section</label>
+                    <input type="text" id="edit_year_section" name="year_section" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Semester</label>
+                    <input type="text" id="edit_semester" name="semester" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+                <button type="button" onclick="closeEditModal()" class="btn-secondary" style="padding: 0.75rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Cancel</button>
+                <button type="submit" id="btnEditSubmit" class="btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Student Modal -->
+<div id="deleteStudentModal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;">
+    <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; width: 100%; max-width: 480px; padding: 2.25rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative; text-align: center;">
+        <div style="width: 60px; height: 60px; border-radius: 20px; background: rgba(239, 68, 68, 0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem;">
+            <i class="ph-bold ph-warning-octagon"></i>
+        </div>
+
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--text); margin: 0 0 0.5rem;">Delete Student Account?</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0 0 1.5rem; font-weight: 500; line-height: 1.5;">
+            Are you sure you want to delete <strong id="deleteStudentName" style="color: var(--text);">Student</strong>? This will permanently remove their records, assessment history, and clinical notes. This action cannot be undone.
+        </p>
+
+        <form id="deleteStudentForm" onsubmit="submitDeleteStudent(event)" style="display: flex; gap: 0.75rem; justify-content: center;">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" id="delete_student_id" name="student_id">
+            <button type="button" onclick="closeDeleteModal()" class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Cancel</button>
+            <button type="submit" id="btnDeleteSubmit" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; background: #ef4444; color: white; border: none; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#dc2626';" onmouseout="this.style.background='#ef4444';">Delete Permanently</button>
+        </form>
     </div>
 </div>
 
@@ -345,7 +442,9 @@ const refreshRegistry = async () => {
         }
     } catch (err) {
         console.error(err);
-        App.toast({ type: 'error', title: 'Filter Failed', message: 'Could not sync clinical data.' });
+        if (window.App && window.App.toast) {
+            App.toast({ type: 'error', title: 'Filter Failed', message: 'Could not sync clinical data.' });
+        }
     } finally {
         document.body.style.opacity = '1';
     }
@@ -374,6 +473,119 @@ function exportCSV() {
     a.href = URL.createObjectURL(blob);
     a.download = 'students_registry_' + new Date().toISOString().slice(0,10) + '.csv';
     a.click();
+}
+
+// Edit & Delete Modal Functions
+function openEditModal(student) {
+    document.getElementById('edit_student_id').value = student.user_id;
+    document.getElementById('edit_full_name').value = student.full_name || '';
+    document.getElementById('edit_email').value = student.email || '';
+    document.getElementById('edit_roll_number').value = student.roll_number || '';
+    document.getElementById('edit_department').value = student.department || '';
+    document.getElementById('edit_course').value = student.course || '';
+    document.getElementById('edit_year_section').value = student.year_section || '';
+    document.getElementById('edit_semester').value = student.semester || '';
+    
+    const modal = document.getElementById('editStudentModal');
+    modal.style.display = 'flex';
+}
+
+function closeEditModal() {
+    document.getElementById('editStudentModal').style.display = 'none';
+}
+
+async function submitEditStudent(e) {
+    e.preventDefault();
+    const studentId = document.getElementById('edit_student_id').value;
+    const form = document.getElementById('editStudentForm');
+    const btn = document.getElementById('btnEditSubmit');
+    const originalText = btn.innerHTML;
+    
+    btn.disabled = true;
+    btn.innerHTML = 'Saving...';
+    
+    const formData = new FormData(form);
+
+    try {
+        const res = await fetch(`/counselor/students/${studentId}`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
+        const data = await res.json();
+        if (data.success) {
+            if (window.App && window.App.toast) {
+                App.toast({ type: 'success', title: 'Success', message: data.message });
+            } else {
+                alert(data.message);
+            }
+            closeEditModal();
+            refreshRegistry();
+        } else {
+            alert(data.error || 'Failed to update student.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred while updating the student.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+}
+
+function openDeleteModal(id, name) {
+    document.getElementById('delete_student_id').value = id;
+    document.getElementById('deleteStudentName').innerText = name;
+    document.getElementById('deleteStudentModal').style.display = 'flex';
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteStudentModal').style.display = 'none';
+}
+
+async function submitDeleteStudent(e) {
+    e.preventDefault();
+    const studentId = document.getElementById('delete_student_id').value;
+    const btn = document.getElementById('btnDeleteSubmit');
+    const originalText = btn.innerHTML;
+    
+    btn.disabled = true;
+    btn.innerHTML = 'Deleting...';
+
+    const formData = new FormData();
+    formData.append('_method', 'DELETE');
+
+    try {
+        const res = await fetch(`/counselor/students/${studentId}`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
+        const data = await res.json();
+        if (data.success) {
+            if (window.App && window.App.toast) {
+                App.toast({ type: 'success', title: 'Deleted', message: data.message });
+            } else {
+                alert(data.message);
+            }
+            closeDeleteModal();
+            refreshRegistry();
+        } else {
+            alert(data.error || 'Failed to delete student.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred while deleting student.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
 }
 </script>
 @endpush

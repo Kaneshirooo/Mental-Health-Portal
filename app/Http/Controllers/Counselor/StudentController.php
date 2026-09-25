@@ -8,11 +8,22 @@ use App\Models\AssessmentScore;
 use App\Models\MoodLog;
 use App\Models\CounselorNote;
 use App\Models\EmergencyCall;
+use App\Models\Appointment;
+use App\Models\AnonymousNote;
+use App\Models\AnonymousNoteMessage;
+use App\Models\CallMessage;
+use App\Models\ChatConversation;
+use App\Models\ChatHistory;
+use App\Models\AiPreassessment;
+use App\Models\Notification;
+use App\Models\SatisfactionSurvey;
+use App\Models\StudentResponse;
 use App\Services\OpenRouterService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class StudentController extends Controller
@@ -295,5 +306,113 @@ class StudentController extends Controller
             ->firstOrFail();
 
         return view('counselor.students.session_show', compact('student', 'session'));
+    }
+
+    /**
+     * Update the specified student profile.
+     */
+    public function update(Request $request, User $student): JsonResponse|RedirectResponse
+    {
+        if (!$student->isStudent()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'error' => 'Only student accounts can be modified.'], 403);
+            }
+            abort(404);
+        }
+
+        $request->validate([
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $student->user_id . ',user_id',
+            'roll_number' => 'nullable|string|max:255',
+            'department' => 'nullable|string|max:255',
+            'course' => 'nullable|string|max:255',
+            'year_section' => 'nullable|string|max:255',
+            'semester' => 'nullable|string|max:255',
+            'contact_number' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|max:255',
+            'date_of_birth' => 'nullable|date',
+        ]);
+
+        $student->update([
+            'full_name' => $request->full_name,
+            'email' => strtolower($request->email),
+            'roll_number' => $request->roll_number,
+            'department' => $request->department,
+            'course' => $request->course,
+            'year_section' => $request->year_section,
+            'semester' => $request->semester,
+            'contact_number' => $request->contact_number,
+            'gender' => $request->gender,
+            'date_of_birth' => $request->date_of_birth,
+        ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Student account updated successfully.',
+                'student' => $student->fresh(),
+            ]);
+        }
+
+        return back()->with('success', 'Student account updated successfully.');
+    }
+
+    /**
+     * Remove the specified student from the system cleanly.
+     */
+    public function destroy(Request $request, User $student): JsonResponse|RedirectResponse
+    {
+        if (!$student->isStudent()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'error' => 'Only student accounts can be deleted.'], 403);
+            }
+            abort(404);
+        }
+
+        DB::transaction(function () use ($student) {
+            $studentId = $student->user_id;
+
+            // Delete dependent messages first
+            $noteIds = AnonymousNote::where('student_id', $studentId)->pluck('note_id');
+            if ($noteIds->isNotEmpty()) {
+                AnonymousNoteMessage::whereIn('note_id', $noteIds)->delete();
+            }
+
+            $callIds = EmergencyCall::where('student_id', $studentId)->pluck('call_id');
+            if ($callIds->isNotEmpty()) {
+                CallMessage::whereIn('call_id', $callIds)->delete();
+            }
+
+            $chatIds = ChatConversation::where('student_id', $studentId)->pluck('conversation_id');
+            if ($chatIds->isNotEmpty()) {
+                ChatHistory::whereIn('conversation_id', $chatIds)->delete();
+            }
+
+            // Delete main student relations
+            AssessmentScore::where('user_id', $studentId)->delete();
+            CounselorNote::where('student_id', $studentId)->delete();
+            MoodLog::where('student_id', $studentId)->delete();
+            Appointment::where('student_id', $studentId)->delete();
+            AnonymousNote::where('student_id', $studentId)->delete();
+            EmergencyCall::where('student_id', $studentId)->delete();
+            AiPreassessment::where('student_id', $studentId)->delete();
+            Notification::where('user_id', $studentId)->delete();
+            SatisfactionSurvey::where('student_id', $studentId)->delete();
+            StudentResponse::where('user_id', $studentId)->delete();
+            ChatConversation::where('student_id', $studentId)->delete();
+
+            // Finally delete the student user record
+            $student->delete();
+        });
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Student account deleted successfully.',
+                'redirect' => route('counselor.students.index')
+            ]);
+        }
+
+        return redirect()->route('counselor.students.index')->with('success', 'Student account deleted successfully.');
     }
 }

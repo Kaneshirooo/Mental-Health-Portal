@@ -112,6 +112,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/students', [\App\Http\Controllers\Counselor\StudentController::class, 'index'])->name('students.index');
         Route::get('/students/{student}', [\App\Http\Controllers\Counselor\StudentController::class, 'show'])->name('students.show');
+        Route::put('/students/{student}', [\App\Http\Controllers\Counselor\StudentController::class, 'update'])->name('students.update');
+        Route::delete('/students/{student}', [\App\Http\Controllers\Counselor\StudentController::class, 'destroy'])->name('students.destroy');
         Route::post('/students/{student}/note', [\App\Http\Controllers\Counselor\StudentController::class, 'addNote'])->name('students.note');
         Route::post('/students/{student}/ai-summary', [\App\Http\Controllers\Counselor\StudentController::class, 'aiSummary'])->name('students.ai-summary');
         Route::get('/students/{student}/session/{pre_id}', [\App\Http\Controllers\Counselor\StudentController::class, 'showSession'])->name('students.session.show');
