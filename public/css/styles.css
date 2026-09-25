@@ -323,7 +323,7 @@ body {
     font-family: 'Inter', sans-serif;
     background: var(--bg);
     color: var(--text);
-    display: flex;
+    display: block; 
     min-height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
@@ -334,7 +334,6 @@ body {
 }
 
 .main-content {
-    flex: 1;
     margin-left: calc(var(--sidebar-width) + 0.75rem);
     padding: 2.25rem 2.75rem 4rem;
     max-width: 1480px;
@@ -979,9 +978,15 @@ textarea:focus,
 }
 
 @media (max-width: 1024px) {
+    body {
+        display: block !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+    }
     .main-content {
         margin-left: 0;
-        width: 100%;
+        width: 100% !important;
+        max-width: 100vw !important;
         padding: 4.5rem 1.25rem 2rem; /* 4.5rem top to clear the 56px mobile nav */
     }
 }
