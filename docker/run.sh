@@ -1,6 +1,10 @@
 #!/bin/sh
 
-# Cache configuration
+# Clear any stale cached config from the Docker build layer
+# (important so Render's runtime env vars like MAIL_* are picked up)
+php artisan config:clear
+
+# Re-cache with the actual runtime environment variables
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
