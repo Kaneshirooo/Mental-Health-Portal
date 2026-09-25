@@ -39,9 +39,9 @@
             padding-top: 8rem !important;
         }
     }
-    /* Hide the global mobile-nav hamburger on the assessment page */
+    /* Show global mobile-nav hamburger on assessment page */
     #mobileNav {
-        display: none !important;
+        display: flex !important;
     }
     .progress-indicator {
         display: flex;

@@ -308,6 +308,53 @@
     }
 
     @media (max-width: 1200px) { .triage-matrix-container { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 768px) {
+        .dash-content {
+            padding: 1rem 0.75rem 4rem !important;
+        }
+        header.staggered {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1.25rem !important;
+            margin-bottom: 2rem !important;
+        }
+        header.staggered h1 {
+            font-size: 2rem !important;
+        }
+        header.staggered > div:last-child {
+            align-items: flex-start !important;
+            width: 100% !important;
+        }
+        header.staggered > div:last-child > div {
+            width: 100% !important;
+            flex-direction: column !important;
+        }
+        header.staggered button, header.staggered a {
+            width: 100% !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+        .triage-matrix-container {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+        .stat-card {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+        }
+        .clinical-control-panel {
+            padding: 1.25rem 1rem !important;
+            border-radius: 24px !important;
+        }
+        .patient-voice-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.25rem !important;
+        }
+        .note-card {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+        }
+    }
     @media (max-width: 640px)  { .triage-matrix-container { grid-template-columns: 1fr; } }
 </style>
 @endpush

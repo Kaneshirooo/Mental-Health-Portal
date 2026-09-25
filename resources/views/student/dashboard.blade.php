@@ -82,7 +82,69 @@
 
     @media (max-width: 1024px) {
         .quick-actions-grid { grid-template-columns: repeat(2, 1fr) !important; }
-        .stats-grid { grid-template-cols: repeat(2, 1fr) !important; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+    @media (max-width: 768px) {
+        .container {
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+            padding-top: 0.5rem !important;
+        }
+        .wellness-banner {
+            padding: 1.5rem 1.25rem !important;
+            border-radius: 20px !important;
+        }
+        .wellness-banner h2 {
+            font-size: 1.25rem !important;
+            margin-bottom: 1.25rem !important;
+        }
+        .wellness-banner div[style*="display: flex; gap: 1rem"] {
+            flex-direction: column !important;
+            gap: 0.75rem !important;
+        }
+        .wellness-banner .btn-primary, .wellness-banner button {
+            width: 100% !important;
+            text-align: center !important;
+            justify-content: center !important;
+        }
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.75rem !important;
+        }
+        .stat-card-premium {
+            padding: 1.15rem 1rem !important;
+            border-radius: 18px !important;
+        }
+        .quick-actions-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.75rem !important;
+        }
+        .quick-action-premium {
+            padding: 1.25rem 0.85rem !important;
+            border-radius: 18px !important;
+        }
+        .chart-container-premium {
+            height: 340px !important;
+            padding: 1.25rem !important;
+            border-radius: 20px !important;
+        }
+        div[style*="grid-template-columns: 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+        div[style*="grid-template-columns: 1fr 2fr"] {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+        }
+        div[style*="grid-template-columns: repeat(3, 1fr)"] {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 0.5rem !important;
+        }
+    }
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr !important;
+        }
     }
 </style>
 @endpush

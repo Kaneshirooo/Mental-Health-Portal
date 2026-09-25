@@ -68,6 +68,34 @@
     .orb-active { background: #10b981; box-shadow: 0 0 15px #10b981; animation: blink 2s infinite; }
 
     @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem 0.75rem 4rem !important;
+        }
+        .admin-command-matrix {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.75rem !important;
+            margin-bottom: 2rem !important;
+        }
+        .admin-card-premium {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+        }
+        .ai-system-pulse-container {
+            padding: 1.5rem 1rem !important;
+            border-radius: 24px !important;
+        }
+        div[style*="grid-template-columns: repeat(auto-fill, minmax(400px, 1fr))"] {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+    }
+    @media (max-width: 480px) {
+        .admin-command-matrix {
+            grid-template-columns: 1fr !important;
+        }
+    }
 </style>
 @endpush
 
