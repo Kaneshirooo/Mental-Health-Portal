@@ -313,7 +313,7 @@ class GeminiService
     {
         // #region agent log
         file_put_contents(
-            base_path('debug-a97deb.log'),
+            storage_path('logs/debug-a97deb.log'),
             json_encode([
                 'sessionId' => 'a97deb',
                 'runId' => 'initial',
