@@ -82,15 +82,9 @@
                         <!-- Course -->
                         <div class="space-y-2">
                             <label class="input-label text-[10px] font-black uppercase tracking-widest">Academic Course</label>
-                            <select name="course" 
-                                class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none appearance-none">
-                                <option value="BS Information Technology" {{ old('course', $user->course) === 'BS Information Technology' ? 'selected' : '' }}>BS Information Technology</option>
-                                <option value="BS Computer Science" {{ old('course', $user->course) === 'BS Computer Science' ? 'selected' : '' }}>BS Computer Science</option>
-                                <option value="BS Business Administration" {{ old('course', $user->course) === 'BS Business Administration' ? 'selected' : '' }}>BS Business Administration</option>
-                                <option value="BS Psychology" {{ old('course', $user->course) === 'BS Psychology' ? 'selected' : '' }}>BS Psychology</option>
-                                <option value="BS Education" {{ old('course', $user->course) === 'BS Education' ? 'selected' : '' }}>BS Education</option>
-                                <option value="Other" {{ old('course', $user->course) === 'Other' ? 'selected' : '' }}>Other</option>
-                            </select>
+                            <input type="text" name="course" value="{{ old('course', $user->course ?? '-') }}" 
+                                class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none"
+                                placeholder="- (e.g. BS Information Technology)">
                         </div>
 
                         <!-- Semester -->

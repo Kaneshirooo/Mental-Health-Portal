@@ -14,6 +14,37 @@
         perspective: 1000px;
     }
 
+    @media (max-width: 900px) {
+        .chat-layout {
+            grid-template-columns: 1fr !important;
+            padding: 1rem 1rem 3rem !important;
+            gap: 1.5rem !important;
+        }
+        .aria-panel {
+            position: static !important;
+            padding: 1.25rem !important;
+        }
+        .aria-avatar {
+            width: 80px !important;
+            height: 80px !important;
+            margin-bottom: 0.75rem !important;
+        }
+        .chat-interface {
+            height: 600px !important;
+        }
+        .stream-row {
+            max-width: 96% !important;
+        }
+        .chat-topbar, .chat-input-bar, .chat-actions {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+        .msg-bubble {
+            padding: 0.85rem 1.25rem !important;
+            font-size: 0.92rem !important;
+        }
+    }
+
     /* Aria Identity Panel */
     .aria-panel {
         background: var(--surface);

@@ -235,6 +235,13 @@
 
         <!-- Left: Booking Form -->
         <div>
+            <!-- In-page top error popup banner for failed booking -->
+            <div id="bookingErrorBanner" style="display:none; margin-bottom: 1.5rem; padding: 1rem 1.25rem; border-radius: 14px; background: rgba(239,68,68,0.1); border: 1.5px solid #ef4444; color: #dc2626; font-weight: 700; font-size: 0.9rem; align-items: center; gap: 0.75rem; box-shadow: 0 4px 16px rgba(239,68,68,0.15);">
+                <span style="font-size: 1.25rem; flex-shrink: 0;">⚠️</span>
+                <span id="bookingErrorText" style="flex: 1;">Unable to book appointment.</span>
+                <button type="button" onclick="document.getElementById('bookingErrorBanner').style.display='none'" style="background:none; border:none; color:#dc2626; font-weight:800; cursor:pointer; font-size:1.1rem; padding:0;">✕</button>
+            </div>
+
             <form method="POST" action="{{ route('student.appointments.book') }}" id="bookingForm">
                 @csrf
                 <h2 style="font-family:'Outfit',sans-serif; font-size:1.25rem; font-weight:800; color:var(--text); margin-bottom:1.5rem;">Schedule Your Session</h2>
@@ -509,6 +516,11 @@
         const orig = AjaxHelpers.startBtn(btn, 'Processing...');
         const fd   = new FormData(form);
 
+        // Hide any previous error banner
+        const errBanner = document.getElementById('bookingErrorBanner');
+        const errText   = document.getElementById('bookingErrorText');
+        if (errBanner) errBanner.style.display = 'none';
+
         try {
             const res  = await fetch(form.action, {
                 method: 'POST', body: fd,
@@ -555,10 +567,21 @@
                     const modal = document.getElementById('conflictModal');
                     if (modal) modal.classList.add('is-open');
                 } else {
-                    App.toast({ type: 'error', title: 'Booking Failed', message: data.error || data.message || 'Unable to book. Please try another time.' });
+                    const msg = data.error || data.message || 'Unable to book. Please select a valid date/time.';
+                    if (errBanner && errText) {
+                        errText.textContent = msg;
+                        errBanner.style.display = 'flex';
+                        errBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    App.toast({ type: 'error', title: 'Booking Failed', message: msg });
                 }
             }
         } catch (err) {
+            if (errBanner && errText) {
+                errText.textContent = 'Network or server error. Please try again.';
+                errBanner.style.display = 'flex';
+                errBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
             App.toast({ type: 'error', title: 'Error', message: 'Something went wrong. Please try again.' });
         } finally {
             AjaxHelpers.stopBtn(btn, orig);

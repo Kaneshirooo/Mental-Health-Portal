@@ -106,6 +106,19 @@
         border-bottom: 1px solid var(--border);
         padding-bottom: 0.75rem;
     }
+    @media (max-width: 900px) {
+        .mood-selector {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 0.5rem !important;
+        }
+        .mood-grid-container {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+        }
+        .mood-sticky-col {
+            position: static !important;
+        }
+    }
 </style>
 @endpush
 
@@ -141,10 +154,10 @@
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start;">
+    <div class="mood-grid-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start;">
         
         <!-- Mood Selector -->
-        <div style="background: var(--surface-solid); border-radius: var(--radius); padding: 2rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm); position: sticky; top: 80px;">
+        <div class="mood-sticky-col" style="background: var(--surface-solid); border-radius: var(--radius); padding: 2rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm); position: sticky; top: 80px;">
             <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--primary-glow); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1.25rem;">🧘</div>
             <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text);">How are you feeling?</h2>
             <p style="color: var(--text-muted); font-weight: 400; margin-bottom: 1.75rem; line-height: 1.6; font-size: 0.88rem;">Select your current mood. Your honesty helps build a clearer picture.</p>

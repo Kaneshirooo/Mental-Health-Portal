@@ -1,10 +1,38 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="p-8 max-w-5xl mx-auto">
+<style>
+@media (max-width: 768px) {
+    .mindfulness-container {
+        padding: 1rem !important;
+    }
+    .mindfulness-title {
+        font-size: 2.75rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    .glass-card {
+        padding: 1.25rem !important;
+        border-radius: 24px !important;
+        margin-bottom: 1.5rem !important;
+    }
+    #circle {
+        width: 140px !important;
+        height: 140px !important;
+    }
+    #statusLabel {
+        font-size: 1.25rem !important;
+    }
+    #instruction {
+        font-size: 0.95rem !important;
+        margin-bottom: 1.5rem !important;
+        height: auto !important;
+    }
+}
+</style>
+
+<div class="p-8 max-w-5xl mx-auto mindfulness-container">
     <!-- Header -->
     <div class="text-center mb-16">
-        <h1 class="text-6xl font-black text-white tracking-tighter italic uppercase mb-4">Mindfulness</h1>
+        <h1 class="text-6xl font-black text-white tracking-tighter italic uppercase mb-4 mindfulness-title">Mindfulness</h1>
         <p class="text-gray-500 font-medium italic">"Deep stillness starts with one intentional breath."</p>
     </div>
 

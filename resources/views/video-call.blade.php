@@ -153,6 +153,57 @@
 .line-wobble::before, .line-wobble::after { content: ''; width: 2px; height: 100%; background: #10b981; animation: wobble 1s infinite ease-in-out; }
 .line-wobble::after { animation-delay: 0.5s; }
 @keyframes wobble { 0%, 100% { height: 4px; } 50% { height: 12px; } }
+
+@media (max-width: 900px) {
+    .video-call-page {
+        height: calc(100vh - 5rem) !important;
+        gap: 0.75rem !important;
+    }
+    .clinical-header {
+        padding: 0.75rem 1rem !important;
+        border-radius: 16px !important;
+    }
+    .clinical-header h1 {
+        font-size: 1rem !important;
+    }
+    .session-info {
+        gap: 0.75rem !important;
+    }
+    .session-info .participant {
+        display: none;
+    }
+    .btn-end-session {
+        padding: 0.6rem 1rem !important;
+        font-size: 0.8rem !important;
+        border-radius: 12px !important;
+    }
+    .local-video-container {
+        width: 120px !important;
+        bottom: 5.5rem !important;
+        right: 1rem !important;
+        border-radius: 14px !important;
+    }
+    .call-controls {
+        bottom: 1rem !important;
+        padding: 0.6rem 0.8rem !important;
+        gap: 0.6rem !important;
+        border-radius: 20px !important;
+        max-width: 94% !important;
+    }
+    .control-btn {
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 14px !important;
+    }
+    #callChatSidebar {
+        width: 100% !important;
+        right: -100% !important;
+    }
+    #liveSubtitlesOverlay {
+        bottom: 5rem !important;
+        max-width: 92% !important;
+    }
+}
 </style>
 
 @push('scripts')
@@ -354,6 +405,14 @@
                 requestAnimationFrame(checkAudioLevel);
             }
             checkAudioLevel();
+
+            const resumeAudio = () => {
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume().catch(() => {});
+                }
+            };
+            window.addEventListener('click', resumeAudio, { passive: true });
+            window.addEventListener('touchstart', resumeAudio, { passive: true });
         } catch (e) {
             console.log('Audio meter setup info:', e);
         }

@@ -185,17 +185,26 @@
             </div>
         </div>
 
-        <div style="margin-top: 3rem; padding: 1.5rem; background: var(--surface-2); border-radius: var(--radius); display: flex; align-items: center; justify-content: space-between;" class="no-print">
-            <div style="max-width: 400px;">
-                @if($score->risk_level === 'Moderate')
-                    <h4 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem;">Clinical Guidance</h4>
-                    <p style="color: var(--text-muted); font-weight: 400; font-size: 0.88rem;">If you want to speak professional and gain deeper clarity on these results, you can book a session here.</p>
-                @else
-                    <h4 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem;">Seek Professional Support</h4>
-                    <p style="color: var(--text-muted); font-weight: 400; font-size: 0.88rem;">You are recommended to consult with the counselor for a detailed wellness plan.</p>
-                @endif
+        <div style="margin-top: 3rem; padding: 0;" class="no-print">
+            @if($score->risk_level === 'Moderate')
+            <div style="display:flex; align-items:center; gap:1.25rem; padding: 1.5rem 2rem; background: linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(99,102,241,0.06) 100%); border: 1.5px solid rgba(13,148,136,0.2); border-radius: var(--radius); border-left: 5px solid var(--primary);">
+                <div style="font-size:2rem; flex-shrink:0;">💬</div>
+                <div style="flex:1;">
+                    <h4 style="font-family:'Outfit',sans-serif; font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:0.25rem;">Clinical Guidance</h4>
+                    <p style="color:var(--text-muted); font-weight:400; font-size:0.88rem; margin:0;">If you want to speak with a professional and gain deeper clarity on these results, you can book a session here.</p>
+                </div>
+                <a href="{{ route('student.appointments') }}" class="btn-primary" style="padding:0.65rem 1.5rem; border-radius:var(--radius-sm); font-size:0.85rem; text-decoration:none; box-shadow:0 4px 12px rgba(13,148,136,0.2); white-space:nowrap; flex-shrink:0;">Book Session →</a>
             </div>
-            <a href="{{ route('student.appointments') }}" class="btn-primary" style="padding: 0.65rem 1.5rem; border-radius: var(--radius-sm); font-size: 0.85rem; text-decoration: none; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);">Book Consultation →</a>
+            @else
+            <div style="display:flex; align-items:center; gap:1.25rem; padding: 1.5rem 2rem; background: linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(245,158,11,0.06) 100%); border: 1.5px solid rgba(239,68,68,0.25); border-radius: var(--radius); border-left: 5px solid #dc2626;">
+                <div style="font-size:2rem; flex-shrink:0;">🩺</div>
+                <div style="flex:1;">
+                    <h4 style="font-family:'Outfit',sans-serif; font-size:1rem; font-weight:800; color:#dc2626; margin-bottom:0.25rem;">Seek Professional Support</h4>
+                    <p style="color:var(--text-muted); font-weight:400; font-size:0.88rem; margin:0;">You are recommended to consult with the counselor for a detailed wellness plan. Please don't hesitate to reach out.</p>
+                </div>
+                <a href="{{ route('student.appointments') }}" style="padding:0.65rem 1.5rem; border-radius:var(--radius-sm); font-size:0.85rem; text-decoration:none; background:#dc2626; color:white; font-weight:700; box-shadow:0 4px 12px rgba(220,38,38,0.25); white-space:nowrap; flex-shrink:0;">Book Now →</a>
+            </div>
+            @endif
         </div>
     </div>
 
@@ -203,17 +212,34 @@
         <a href="{{ route('student.dashboard') }}" style="font-weight: 600; color: var(--text-muted); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.85rem;">
             <span>🏠</span> Return to Dashboard
         </a>
- @push('scripts')
+    </div>
+</div>
+@endsection
+
+@push('scripts')
 <script>
 async function requestEmergencyCall() {
     if (typeof window.gStartCallStudent === 'function') {
         window.gStartCallStudent();
     } else {
-        // Fallback if navigation script is not loaded
         window.location.href = "{{ route('student.dashboard') }}";
     }
 }
 
+function exportPDF() {
+    const btn = document.getElementById('exportResultBtn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Preparing...';
+    }
+    setTimeout(() => {
+        window.print();
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ph ph-file-pdf"></i> Export PDF';
+        }
+    }, 300);
+}
 async function translateToTagalog() {
     const btn = document.getElementById('translateBtn');
     const container = document.getElementById('aiInsightText');
@@ -257,4 +283,3 @@ async function translateToTagalog() {
 }
 </script>
 @endpush
-@endsection

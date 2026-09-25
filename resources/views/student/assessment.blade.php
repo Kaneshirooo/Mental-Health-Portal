@@ -23,6 +23,8 @@
             left: 0;
             padding: 0 1.25rem;
             height: 56px;
+            /* Shift below the mobile nav bar */
+            top: 56px;
         }
         .assessment-header .progress-indicator {
             gap: 0.75rem;
@@ -32,6 +34,14 @@
             height: 32px;
             font-size: 0.75rem;
         }
+        /* Push assessment content below both bars */
+        .container[style*="padding-top: 6rem"] {
+            padding-top: 8rem !important;
+        }
+    }
+    /* Hide the global mobile-nav hamburger on the assessment page */
+    #mobileNav {
+        display: none !important;
     }
     .progress-indicator {
         display: flex;

@@ -318,15 +318,7 @@
                 <div class="input-row">
                     <div class="input-group staggered">
                         <label for="course">Academic Course</label>
-                        <select id="course" name="course" required>
-                            <option value="">Select Course</option>
-                            <option value="BS Information Technology" {{ old('course') === 'BS Information Technology' ? 'selected' : '' }}>BS Information Technology</option>
-                            <option value="BS Computer Science" {{ old('course') === 'BS Computer Science' ? 'selected' : '' }}>BS Computer Science</option>
-                            <option value="BS Business Administration" {{ old('course') === 'BS Business Administration' ? 'selected' : '' }}>BS Business Administration</option>
-                            <option value="BS Psychology" {{ old('course') === 'BS Psychology' ? 'selected' : '' }}>BS Psychology</option>
-                            <option value="BS Education" {{ old('course') === 'BS Education' ? 'selected' : '' }}>BS Education</option>
-                            <option value="Other" {{ old('course') === 'Other' ? 'selected' : '' }}>Other</option>
-                        </select>
+                        <input type="text" id="course" name="course" value="{{ old('course') }}" required placeholder="e.g. BS Information Technology">
                     </div>
                     <div class="input-group staggered">
                         <label for="semester">Current Semester</label>

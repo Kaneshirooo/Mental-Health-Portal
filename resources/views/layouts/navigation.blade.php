@@ -5,7 +5,7 @@
     $currentRoute = Route::currentRouteName();
 @endphp
 
-<aside class="sidebar glass" id="sidebar" style="margin: 1rem; height: calc(100vh - 2rem); border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: var(--shadow-lg); left: 0; top: 0; position: fixed;">
+<aside class="sidebar glass" id="sidebar" style="margin: 1rem; height: calc(100vh - 2rem); border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: var(--shadow-lg); left: 0; top: 0; position: fixed; z-index: 1000;">
     <div class="sidebar-header" style="padding: 1.5rem 1.25rem;">
         <div class="sidebar-brand" style="display: flex; align-items: center;">
         <div class="sidebar-logo-container" style="position: relative; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center;" onmouseover="this.style.transform='scale(1.05) rotate(-1deg)'" onmouseout="this.style.transform='scale(1) rotate(0)'">
@@ -162,8 +162,50 @@
 </aside>
 
 <!-- Mobile Top Navigation Bar -->
+<style>
+/* ── Mobile Nav: always visible on phones, hidden on desktop ── */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    z-index: 1050;
+    background: var(--surface-solid);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1rem;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+@media (max-width: 1024px) {
+    .mobile-nav { display: flex !important; }
+    .sidebar {
+        /* sidebar is off-screen on mobile; only slides in when .open class is added */
+        transform: translateX(-110%);
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1040;
+        margin: 0 !important;
+        height: 100vh !important;
+        border-radius: 0 24px 24px 0 !important;
+        top: 0 !important;
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    .main-content {
+        margin-left: 0 !important;
+        padding-top: 56px !important;
+    }
+}
+@media (min-width: 1025px) {
+    .mobile-nav { display: none !important; }
+}
+</style>
 <div class="mobile-nav" id="mobileNav">
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" onclick="toggleSidebar()">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" onclick="toggleSidebar()" style="background:none; border:none; cursor:pointer; padding:0.5rem; color:var(--text); font-size:1.5rem; display:flex; align-items:center;">
         <i class="ph ph-list" id="navToggleIcon"></i>
     </button>
     <div style="display: flex; align-items: center; gap: 0.5rem;">

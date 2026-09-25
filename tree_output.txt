@@ -1,0 +1,90 @@
+Folder PATH listing for volume Acer
+Volume serial number is 00FC-D5B9
+C:\USERS\AQUINOM\DESKTOP\BACKTORENZ\BACKTORENZ\RESOURCES
++---css
+ª       app.css
+ª       
++---js
+ª       app.js
+ª       bootstrap.js
+ª       
++---views
+    ª   emergency.blade.php
+    ª   video-call.blade.php
+    ª   welcome.blade.php
+    ª   
+    +---admin
+    ª   ª   dashboard.blade.php
+    ª   ª   
+    ª   +---reports
+    ª   ª       index.blade.php
+    ª   ª       
+    ª   +---staff
+    ª   ª       index.blade.php
+    ª   ª       
+    ª   +---users
+    ª           index.blade.php
+    ª           
+    +---auth
+    ª       login.blade.php
+    ª       register.blade.php
+    ª       verify-otp.blade.php
+    ª       
+    +---counselor
+    ª   ª   appointments.blade.php
+    ª   ª   availability.blade.php
+    ª   ª   dashboard.blade.php
+    ª   ª   ledger.blade.php
+    ª   ª   
+    ª   +---emergency_calls
+    ª   ª       history.blade.php
+    ª   ª       logs.blade.php
+    ª   ª       
+    ª   +---notes
+    ª   ª       index.blade.php
+    ª   ª       
+    ª   +---students
+    ª           clinical_report.blade.php
+    ª           index.blade.php
+    ª           session_show.blade.php
+    ª           show.blade.php
+    ª           
+    +---errors
+    ª       403.blade.php
+    ª       404.blade.php
+    ª       419.blade.php
+    ª       
+    +---layouts
+    ª       app.blade.php
+    ª       navigation.blade.php
+    ª       
+    +---notifications
+    ª       index.blade.php
+    ª       
+    +---resources
+    ª       index.blade.php
+    ª       
+    +---student
+        ª   appointments.blade.php
+        ª   assessment.blade.php
+        ª   chat.blade.php
+        ª   dashboard.blade.php
+        ª   mood.blade.php
+        ª   profile.blade.php
+        ª   survey.blade.php
+        ª   survey_thank_you.blade.php
+        ª   
+        +---assessment
+        ª       results.blade.php
+        ª       
+        +---mindfulness
+        ª       index.blade.php
+        ª       
+        +---notes
+        ª       index.blade.php
+        ª       
+        +---reports
+                index.blade.php
+                session_show.blade.php
+                show.blade.php
+                

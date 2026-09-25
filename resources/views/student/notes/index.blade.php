@@ -16,10 +16,37 @@
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 380px 1fr; gap: 2.5rem; align-items: start;">
+    <style>
+    .notes-grid {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 2.5rem;
+        align-items: start;
+    }
+    .notes-sticky {
+        background: var(--surface-solid);
+        border-radius: var(--radius);
+        padding: 2rem;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        position: sticky;
+        top: 80px;
+    }
+    @media (max-width: 900px) {
+        .notes-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+        }
+        .notes-sticky {
+            position: static !important;
+        }
+    }
+    </style>
+
+    <div class="notes-grid">
         
         <!-- New Note Form -->
-        <div style="background: var(--surface-solid); border-radius: var(--radius); padding: 2rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm); position: sticky; top: 80px;">
+        <div class="notes-sticky">
             <div style="font-size: 0.7rem; font-weight: 800; color: #ef4444; background: rgba(239, 68, 68, 0.08); padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid #ef4444; line-height: 1.4;">
                 ⚠️ <b>CLINICAL NOTE:</b> Information shared will be reviewed by the guidance staff for patient oversight under total confidentiality.
             </div>
