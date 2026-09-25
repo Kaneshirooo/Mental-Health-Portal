@@ -54,11 +54,10 @@ class ReportController extends Controller
                 ->sortKeys();
         } else {
             $monthly_data = AssessmentScore::where('assessment_date', '>=', now()->subMonths(6))
-                ->selectRaw("DATE_FORMAT(assessment_date, '%Y-%m') as month, count(*) as cnt")
-                ->groupBy('month')
-                ->orderBy('month')
                 ->get()
-                ->pluck('cnt', 'month');
+                ->groupBy(fn($d) => $d->assessment_date->format('Y-m'))
+                ->map(fn($group) => $group->count())
+                ->sortKeys();
         }
 
         $monthly_labels = collect($monthly_data->keys())->map(fn($m) => Carbon::parse($m . '-01')->format('M Y'));

@@ -111,6 +111,63 @@
     </div>
 </div>
 
+<!-- Add Staff Modal -->
+<div id="addStaffModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.65); backdrop-filter:blur(12px); align-items:center; justify-content:center;">
+    <div class="staggered-row" style="background:var(--surface-solid); border: 1px solid var(--border); border-radius:32px; padding:2.5rem; max-width:500px; width:92%; position:relative; box-shadow:var(--shadow-lg);">
+        <button onclick="document.getElementById('addStaffModal').style.display='none'" style="position:absolute; top:1.5rem; right:1.5rem; background:var(--surface-2); border:none; width:40px; height:40px; border-radius:12px; cursor:pointer; color:var(--text); display:flex; align-items:center; justify-content:center; transition:var(--transition);" onmouseover="this.style.background='var(--primary-glow)';this.style.color='var(--primary)'" onmouseout="this.style.background='var(--surface-2)';this.style.color='var(--text)'">
+            <i class="ph ph-x" style="font-size:1.25rem;"></i>
+        </button>
+        
+        <div style="margin-bottom: 2rem;">
+            <div style="width: 56px; height: 56px; border-radius: 16px; background: rgba(16, 185, 129, 0.12); color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem;">
+                <i class="ph-bold ph-user-plus"></i>
+            </div>
+            <h3 style="font-family:'Outfit',sans-serif; font-size:1.75rem; font-weight:900; color:var(--text); margin:0; line-height: 1.2;">Register Staff</h3>
+            <p style="color:var(--text-muted); font-size:0.95rem; font-weight:500; margin-top:0.4rem;">Add a new clinical professional to the system to manage student cases.</p>
+        </div>
+
+        <form id="addStaffForm" method="POST" action="{{ route('admin.staff.store') }}" style="display: flex; flex-direction: column; gap: 1.25rem;">
+            @csrf
+            <div>
+                <label style="display:block; font-size:0.82rem; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem;">Full Name <span style="color:#ef4444">*</span></label>
+                <div style="position: relative;">
+                    <i class="ph ph-user" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
+                    <input type="text" name="full_name" required placeholder="e.g. Dr. Jane Doe" class="form-input-premium" style="width: 100%; padding-left: 2.75rem; background: var(--surface-2); border: 1.5px solid var(--border);">
+                </div>
+            </div>
+            
+            <div>
+                <label style="display:block; font-size:0.82rem; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem;">Email Address <span style="color:#ef4444">*</span></label>
+                <div style="position: relative;">
+                    <i class="ph ph-envelope" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
+                    <input type="email" name="email" required placeholder="staff@institution.edu" class="form-input-premium" style="width: 100%; padding-left: 2.75rem; background: var(--surface-2); border: 1.5px solid var(--border);">
+                </div>
+            </div>
+
+            <div>
+                <label style="display:block; font-size:0.82rem; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem;">Temporary Password <span style="color:#ef4444">*</span></label>
+                <div style="position: relative;">
+                    <i class="ph ph-lock" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
+                    <input type="password" name="password" required placeholder="Min. 6 characters" class="form-input-premium" style="width: 100%; padding-left: 2.75rem; background: var(--surface-2); border: 1.5px solid var(--border);">
+                </div>
+            </div>
+
+            <div>
+                <label style="display:block; font-size:0.82rem; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem;">Department / Unit</label>
+                <div style="position: relative;">
+                    <i class="ph ph-buildings" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
+                    <input type="text" name="department" placeholder="e.g. Guidance Office" class="form-input-premium" style="width: 100%; padding-left: 2.75rem; background: var(--surface-2); border: 1.5px solid var(--border);">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button type="button" onclick="document.getElementById('addStaffModal').style.display='none'" style="flex:1; padding:1rem; border-radius:14px; background:var(--surface-2); border:1px solid var(--border); color:var(--text); font-weight:800; cursor:pointer;" onmouseover="this.style.background='var(--surface-3)'" onmouseout="this.style.background='var(--surface-2)'">Cancel</button>
+                <button type="submit" style="flex:1.5; padding:1rem; border-radius:14px; background:var(--primary); border:none; color:#ffffff; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(16,185,129,0.25);" onmouseover="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Register Staff</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {
