@@ -18,8 +18,10 @@
         .chat-layout {
             display: flex !important;
             flex-direction: column !important;
-            padding: 1.25rem 1rem 4rem !important;
+            padding: 1.25rem 1.25rem 4rem !important;
             gap: 1.25rem !important;
+            align-items: stretch !important;
+            margin: 0 auto !important;
         }
         .aria-panel {
             position: static !important;
