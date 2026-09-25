@@ -218,14 +218,22 @@
             padding: 1rem 0.75rem;
         }
         .container {
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
+            padding-left: 1.25rem !important;
+            padding-right: 1.25rem !important;
         }
         .assessment-header {
             left: 0;
         }
         .assessment-nav-bar {
-            padding: 0.75rem 0.85rem calc(0.75rem + env(safe-area-inset-bottom, 0px)) 0.85rem !important;
+            position: fixed !important;
+            bottom: 0.85rem !important;
+            left: 0.85rem !important;
+            right: 0.85rem !important;
+            width: calc(100% - 1.7rem) !important;
+            border-radius: 22px !important;
+            padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px)) 1rem !important;
+            border: 1.5px solid var(--border) !important;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28) !important;
         }
         .btn-nav-back {
             padding: 0.65rem 1rem !important;
