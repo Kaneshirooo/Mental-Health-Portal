@@ -19,8 +19,21 @@ class OtpController extends Controller
             return redirect()->route('login');
         }
 
+        $tempUser = Session::get('temp_user');
+
+        // Send the OTP email here (when page loads) instead of during login POST
+        // This avoids 504 Gateway Timeout on the login endpoint
+        if (!Session::has('otp_sent_' . ($tempUser['otp_code'] ?? ''))) {
+            try {
+                $this->sendOtpEmail($tempUser['email'], $tempUser['otp_code']);
+                Session::put('otp_sent_' . $tempUser['otp_code'], true);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('OTP Send Error on page load: ' . $e->getMessage());
+            }
+        }
+
         return view('auth.verify-otp', [
-            'email' => Session::get('temp_user')['email']
+            'email' => $tempUser['email']
         ]);
     }
 

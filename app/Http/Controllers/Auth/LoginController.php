@@ -56,31 +56,20 @@ class LoginController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
-            // Success - Generate OTP
+            // Success - Generate OTP and store in session
             $otp = rand(100000, 999999);
-            $userEmail = $user->email;
 
             session(['temp_user' => [
-                'user_id' => $user->user_id,
-                'email'   => $userEmail,
+                'user_id'    => $user->user_id,
+                'email'      => $user->email,
                 'otp_code'   => $otp,
                 'otp_expiry' => Carbon::now()->addMinutes(10),
                 'activity'   => 'Standard login',
             ]]);
 
-            LoginAttempt::where('ip_address', $ip)->delete(); // Clear attempts
+            LoginAttempt::where('ip_address', $ip)->delete();
 
-            // Send email AFTER the redirect response is delivered to the browser
-            // This prevents 504 Gateway Timeout from slow SMTP connections
-            $controller = $this;
-            app()->terminating(function () use ($controller, $userEmail, $otp) {
-                try {
-                    $controller->sendOtpEmail($userEmail, $otp);
-                } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::error("Login OTP Mail Error: " . $e->getMessage());
-                }
-            });
-
+            // Redirect immediately — OTP email is sent when the verify page loads
             return redirect()->route('verify.otp');
         }
 
