@@ -24,14 +24,13 @@
 
     .login-card {
         display: flex;
-        background: var(--surface-solid);
+        background: rgba(255, 255, 255, 0.9);
         border-radius: var(--radius-lg);
-        overflow: hidden;
+        overflow: visible;
         box-shadow: var(--shadow-lg);
         border: 1px solid var(--border);
         min-height: 640px;
         position: relative;
-        background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(20px);
     }
     
@@ -252,22 +251,22 @@
     @media (max-width: 640px) {
         body { padding: 0.75rem; align-items: flex-start; }
         .login-container { width: 100%; }
-        .login-card { border-radius: 20px; }
+        .login-card { border-radius: 20px; overflow: hidden; }
         .login-hero { padding: 1.75rem 1.25rem; }
         .hero-logo { width: 44px; height: 44px; margin-bottom: 1.25rem; border-radius: 12px; }
         .hero-title { font-size: 1.5rem; margin-bottom: 0.5rem; }
         .hero-text { font-size: 0.88rem; line-height: 1.5; }
         .portal-features { display: none; }
-        .login-form-area { padding: 1.75rem 1.25rem; }
-        .form-header { margin-bottom: 1.75rem; }
-        .form-title { font-size: 1.85rem; }
-        .form-subtitle { font-size: 0.95rem; }
-        .input-group { margin-bottom: 1.25rem; }
-        .input-group input { padding: 1rem 1.15rem; font-size: 0.95rem; }
-        .btn-sign-in { padding: 1rem; font-size: 0.95rem; margin-top: 0.5rem; }
-        .or-divider { margin: 1.75rem 0; }
-        .btn-google { padding: 0.95rem; font-size: 0.92rem; }
-        .signup-prompt { margin-top: 2rem; font-size: 0.9rem; }
+        .login-form-area { padding: 1.5rem 1.25rem 2rem; }
+        .form-header { margin-bottom: 1.25rem; }
+        .form-title { font-size: 1.75rem; }
+        .form-subtitle { font-size: 0.9rem; }
+        .input-group { margin-bottom: 1rem; }
+        .input-group input { padding: 0.9rem 1.1rem; font-size: 0.95rem; }
+        .btn-sign-in { padding: 0.9rem; font-size: 0.95rem; margin-top: 0.25rem; }
+        .or-divider { margin: 1.25rem 0; }
+        .btn-google { padding: 0.85rem; font-size: 0.9rem; }
+        .signup-prompt { margin-top: 1.25rem; font-size: 0.9rem; padding-bottom: 0.5rem; }
     }
 </style>
 
