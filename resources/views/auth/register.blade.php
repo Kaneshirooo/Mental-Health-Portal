@@ -457,6 +457,14 @@
             delay: 0.2
         });
 
+        // Auto-scroll to error alert if present
+        const errorAlert = document.querySelector('.error-alert');
+        if (errorAlert) {
+            setTimeout(() => {
+                errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+
         // Registration Loading Logic
         const regForm = document.getElementById('registrationForm');
         const regBtn = document.getElementById('regSubmitBtn');
@@ -468,16 +476,22 @@
                 if (!regForm.checkValidity()) {
                     return;
                 }
-                regBtn.disabled = true;
+                // Show spinner UI immediately without synchronously disabling the submit button to allow form dispatch
                 if (regBtnText) regBtnText.style.display = 'none';
                 if (regSpinner) regSpinner.style.display = 'block';
                 regBtn.style.display = 'flex';
                 regBtn.style.alignItems = 'center';
                 regBtn.style.justifyContent = 'center';
                 regBtn.style.gap = '1rem';
+                
+                // Defer disabling button slightly so browser completes form POST initiation
+                setTimeout(() => {
+                    regBtn.disabled = true;
+                }, 100);
             });
         }
     });
 </script>
+
 
 @endsection

@@ -34,10 +34,8 @@ class RegistrationController extends Controller
             'password' => [
                 'required',
                 'string',
-                'min:8',
+                'min:6',
                 'confirmed',
-                'regex:/[A-Z]/',
-                'regex:/[^a-zA-Z0-9]/',
             ],
             'contact_number' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
@@ -48,10 +46,10 @@ class RegistrationController extends Controller
         ], [
             'student_id.unique' => 'This Student ID / Faculty ID is already registered.',
             'email.unique' => 'This Email Address is already registered. Please sign in instead.',
-            'password.min' => 'Password must be at least 8 characters long.',
+            'password.min' => 'Password must be at least 6 characters long.',
             'password.confirmed' => 'Password confirmation does not match.',
-            'password.regex' => 'Password must contain at least one uppercase letter and one special character (e.g. ! @ # $ % ^ & * _ -).',
         ]);
+
 
         try {
             DB::beginTransaction();
