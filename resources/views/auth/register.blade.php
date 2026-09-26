@@ -476,22 +476,20 @@
                 if (!regForm.checkValidity()) {
                     return;
                 }
-                // Show spinner UI immediately without synchronously disabling the submit button to allow form dispatch
+                // Lock button visually and prevent double-clicks without disabling DOM element
+                regBtn.style.pointerEvents = 'none';
+                regBtn.style.opacity = '0.85';
                 if (regBtnText) regBtnText.style.display = 'none';
                 if (regSpinner) regSpinner.style.display = 'block';
                 regBtn.style.display = 'flex';
                 regBtn.style.alignItems = 'center';
                 regBtn.style.justifyContent = 'center';
                 regBtn.style.gap = '1rem';
-                
-                // Defer disabling button slightly so browser completes form POST initiation
-                setTimeout(() => {
-                    regBtn.disabled = true;
-                }, 100);
             });
         }
     });
 </script>
+
 
 
 @endsection

@@ -92,13 +92,10 @@ class RegistrationController extends Controller
                 'exception' => $e
             ]);
             
-            $errorMessage = config('app.debug') 
-                ? 'Registration failed: ' . $e->getMessage() 
-                : 'An unexpected error occurred during registration. Please check your details and try again.';
-
-            return back()->withInput()->withErrors(['email' => $errorMessage]);
+            return back()->withInput()->withErrors(['email' => 'Registration failed: ' . $e->getMessage()]);
         }
     }
 }
+
 
 
