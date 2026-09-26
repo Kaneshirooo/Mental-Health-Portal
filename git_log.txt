@@ -1,0 +1,168 @@
+commit 2a3809f113262b1621d5c644c466e59968cc29dc
+Author: Kaneshirooo <aquinorenz69@gmail.com>
+Date:   Sat Sep 26 13:50:44 2026 +0800
+
+    Fix mobile logo alignment in login page
+
+diff --git a/resources/views/auth/login.blade.php b/resources/views/auth/login.blade.php
+index 0884212..91b6c89 100644
+--- a/resources/views/auth/login.blade.php
++++ b/resources/views/auth/login.blade.php
+@@ -71,7 +71,13 @@
+         to { transform: translate(5%, 5%) rotate(5deg); }
+     }
+ 
+-    .hero-content { position: relative; z-index: 1; }
++    .hero-content { 
++        position: relative; 
++        z-index: 1; 
++        display: flex;
++        flex-direction: column;
++        align-items: flex-start; 
++    }
+ 
+     .hero-logo {
+         width: 64px;
+@@ -84,6 +90,7 @@
+         justify-content: center;
+         margin-bottom: 3rem;
+         box-shadow: 0 12px 24px rgba(0,0,0,0.15);
++        flex-shrink: 0;
+     }
+     .hero-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+ 
+
+commit f405127aabd4e2f440bc0b664aa3f8e12752fc81
+Author: Kaneshirooo <aquinorenz69@gmail.com>
+Date:   Fri Sep 25 15:27:40 2026 +0800
+
+    Enhance mobile UI responsiveness, smooth scroll, and touch scroll
+
+diff --git a/resources/views/auth/login.blade.php b/resources/views/auth/login.blade.php
+index 3e2884e..0884212 100644
+--- a/resources/views/auth/login.blade.php
++++ b/resources/views/auth/login.blade.php
+@@ -10,9 +10,10 @@
+         align-items: center;
+         justify-content: center;
+         min-height: 100vh;
+-        padding: 1rem;
+-
+-        overflow: hidden;
++        padding: 1.5rem 1rem;
++        overflow-y: auto;
++        overflow-x: hidden;
++        -webkit-overflow-scrolling: touch;
+     }
+ 
+     .login-container {
+@@ -237,9 +238,29 @@
+     }
+ 
+     @media (max-width: 1024px) {
+-        .login-card { flex-direction: column; min-height: auto; border-radius: 0; }
+-        .login-hero { padding: 4rem 2rem; }
+-        .login-form-area { padding: 4rem 2rem; }
++        .login-card { flex-direction: column; min-height: auto; border-radius: var(--radius-lg); }
++        .login-hero { padding: 3rem 2rem; }
++        .login-form-area { padding: 3.5rem 2.5rem; }
++    }
++    @media (max-width: 640px) {
++        body { padding: 0.75rem; align-items: flex-start; }
++        .login-container { width: 100%; }
++        .login-card { border-radius: 20px; }
++        .login-hero { padding: 1.75rem 1.25rem; }
++        .hero-logo { width: 44px; height: 44px; margin-bottom: 1.25rem; border-radius: 12px; }
++        .hero-title { font-size: 1.5rem; margin-bottom: 0.5rem; }
++        .hero-text { font-size: 0.88rem; line-height: 1.5; }
++        .portal-features { display: none; }
++        .login-form-area { padding: 1.75rem 1.25rem; }
++        .form-header { margin-bottom: 1.75rem; }
++        .form-title { font-size: 1.85rem; }
++        .form-subtitle { font-size: 0.95rem; }
++        .input-group { margin-bottom: 1.25rem; }
++        .input-group input { padding: 1rem 1.15rem; font-size: 0.95rem; }
++        .btn-sign-in { padding: 1rem; font-size: 0.95rem; margin-top: 0.5rem; }
++        .or-divider { margin: 1.75rem 0; }
++        .btn-google { padding: 0.95rem; font-size: 0.92rem; }
++        .signup-prompt { margin-top: 2rem; font-size: 0.9rem; }
+     }
+ </style>
+ 
+
+commit 6ee269410beea335acabb19f0dda19c1a5e3247d
+Author: Kaneshirooo <aquinorenz69@gmail.com>
+Date:   Fri Sep 25 00:11:19 2026 +0800
+
+    Added Docker deployment files for Render
+
+diff --git a/resources/views/auth/login.blade.php b/resources/views/auth/login.blade.php
+index 2a6718e..3e2884e 100644
+--- a/resources/views/auth/login.blade.php
++++ b/resources/views/auth/login.blade.php
+@@ -280,7 +280,7 @@
+         <div class="login-form-area">
+             <div class="form-header">
+                 <h2 class="form-title staggered">Welcome Back</h2>
+-                <p class="form-subtitle staggered">Please authenticate with your PSU credentials</p>
++                <p class="form-subtitle staggered">Please authenticate with your credentials</p>
+             </div>
+ 
+             @if($errors->any())
+@@ -293,8 +293,8 @@
+             <form method="POST" action="{{ route('login') }}" id="loginForm">
+                 @csrf
+                 <div class="input-group staggered">
+-                    <label for="email">Institutional Email</label>
+-                    <input type="email" id="email" name="email" placeholder="student@psu.edu.ph" value="{{ old('email') }}" required autofocus autocomplete="email">
++                    <label for="email">Email Address</label>
++                    <input type="email" id="email" name="email" placeholder="your@email.com" value="{{ old('email') }}" required autofocus autocomplete="email">
+                 </div>
+                 
+                 <div class="input-group staggered">
+@@ -325,12 +325,12 @@
+                         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                     </svg>
+-                    <span>Login with PSU Institutional ID</span>
++                    <span>Login with Google</span>
+                 </a>
+             </div>
+ 
+             <div class="signup-prompt staggered">
+-                Need an account? <a href="{{ route('register') }}" class="signup-link">Register Institutional Access</a>
++                Need an account? <a href="{{ route('register') }}" class="signup-link">Register New Account</a>
+             </div>
+         </div>
+     </div>
+@@ -370,20 +370,20 @@
+             this.style.pointerEvents = 'none';
+             this.innerHTML = '<div class="loading-spinner" style="border-top-color: var(--primary); display: block;"></div> <span>Redirecting...</span>';
+         });
+-    });
+-
+         // Toggle Password Visibility
+         const toggleBtn = document.getElementById('togglePassword');
+         const passField = document.getElementById('password');
+ 
+-        toggleBtn.addEventListener('click', () => {
+-            const isPass = passField.type === 'password';
+-            passField.type = isPass ? 'text' : 'password';
+-            gsap.fromTo(toggleBtn, { scale: 0.8 }, { scale: 1.1, duration: 0.3, ease: "back.out" });
+-            toggleBtn.innerHTML = isPass 
+-                ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
+-                : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+-        });
++        if (toggleBtn && passField) {
++            toggleBtn.addEventListener('click', () => {
++                const isPass = passField.type === 'password';
++                passField.type = isPass ? 'text' : 'password';
++                gsap.fromTo(toggleBtn, { scale: 0.8 }, { scale: 1.1, duration: 0.3, ease: "back.out" });
++                toggleBtn.innerHTML = isPass 
++                    ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12/a 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
++                    : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
++            });
++        }
+     });
+ </script>
+ @endsection

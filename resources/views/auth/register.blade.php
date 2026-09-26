@@ -204,22 +204,39 @@
         .input-row { grid-template-columns: 1fr; gap: 1rem; }
     }
     @media (max-width: 640px) {
-        body { padding: 0.75rem; align-items: flex-start; }
-        .register-container { width: 100%; }
-        .register-card { border-radius: 20px; }
-        .register-hero { padding: 1.75rem 1.25rem; }
-        .hero-badge { margin-bottom: 1rem; padding: 0.4rem 0.8rem; font-size: 0.65rem; }
-        .hero-title { font-size: 1.6rem; margin-bottom: 0.75rem; }
-        .hero-text { font-size: 0.88rem; margin-bottom: 1.5rem; line-height: 1.5; }
+        body { 
+            padding: 0.75rem; 
+            align-items: center; 
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+        .register-container { 
+            width: 100%; 
+            max-width: 100%;
+        }
+        .register-card { 
+            border-radius: 24px; 
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+        }
+        .register-hero { 
+            padding: 1.75rem 1.5rem; 
+            flex-shrink: 0;
+        }
+        .hero-badge { margin-bottom: 1rem; padding: 0.4rem 0.8rem; font-size: 0.68rem; }
+        .hero-title { font-size: 1.65rem; margin-bottom: 0.75rem; }
+        .hero-text { font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5; }
         .stat-grid { display: flex; gap: 1.5rem; padding-top: 1.5rem; }
-        .stat-item h3 { font-size: 1.6rem; }
-        .register-form-area { padding: 1.75rem 1.25rem; }
+        .stat-item h3 { font-size: 1.65rem; }
+        .register-form-area { padding: 2rem 1.5rem; flex: 1; }
         .form-header { margin-bottom: 1.75rem; }
-        .form-title { font-size: 1.85rem; }
-        .section-label { margin: 1.75rem 0 1rem; font-size: 0.7rem; }
-        .input-group label { font-size: 0.75rem; }
-        input, select { padding: 0.9rem 1rem; font-size: 0.9rem; border-radius: 12px; }
-        .btn-register { padding: 1rem; font-size: 0.95rem; border-radius: 14px; margin-top: 1.5rem; }
+        .form-title { font-size: 1.9rem; }
+        .section-label { margin: 1.75rem 0 1rem; font-size: 0.75rem; }
+        .input-group label { font-size: 0.8rem; }
+        input, select { padding: 0.95rem 1.1rem; font-size: 0.95rem; border-radius: 14px; }
+        .btn-register { padding: 1.1rem; font-size: 1rem; border-radius: 14px; margin-top: 1.5rem; }
     }
 
     /* Custom Scrollbar */

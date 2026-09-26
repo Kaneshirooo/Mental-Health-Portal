@@ -257,30 +257,77 @@
         .login-form-area { padding: 3.5rem 2.5rem; }
     }
     @media (max-width: 640px) {
-        body { padding: 0.5rem; align-items: center; justify-content: center; min-height: 100vh; }
-        .login-container { width: 100%; max-width: 100%; }
-        .login-card { border-radius: 16px; min-height: auto; }
-        .login-hero { padding: 0.75rem 1rem; }
-        .hero-logo { width: 32px; height: 32px; margin-bottom: 0.4rem; border-radius: 8px; padding: 4px; }
-        .hero-title { font-size: 1rem; margin-bottom: 0; line-height: 1.2; }
-        .hero-title b { display: inline; margin-top: 0; color: #a7f3d0; }
-        .hero-text { display: none !important; }
+        body { 
+            padding: 0.75rem; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            min-height: 100dvh;
+        }
+        .login-container { 
+            width: 100%; 
+            max-width: 100%; 
+            min-height: calc(100dvh - 1.5rem);
+            min-height: calc(100vh - 1.5rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .login-card { 
+            border-radius: 24px; 
+            min-height: calc(100dvh - 1.5rem); 
+            min-height: calc(100vh - 1.5rem); 
+            width: 100%; 
+            box-shadow: var(--shadow-lg); 
+            display: flex;
+            flex-direction: column;
+        }
+        .login-hero { 
+            padding: 1.75rem 1.5rem; 
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .hero-logo { 
+            width: 48px; 
+            height: 48px; 
+            margin-bottom: 0.85rem; 
+            border-radius: 14px; 
+            padding: 6px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+            flex-shrink: 0;
+            position: relative;
+        }
+        .hero-title { 
+            font-size: 1.45rem; 
+            margin-bottom: 0.4rem; 
+            line-height: 1.25; 
+        }
+        .hero-title b { display: block; margin-top: 0.15rem; color: #a7f3d0; }
+        .hero-text { font-size: 0.88rem; line-height: 1.45; opacity: 0.92; display: block !important; margin-bottom: 0; }
         .portal-features { display: none !important; }
         
-        .login-form-area { padding: 1rem 1.15rem 1.25rem; }
-        .form-header { margin-bottom: 0.65rem; }
-        .form-title { font-size: 1.35rem; margin-bottom: 0.2rem; }
-        .form-subtitle { font-size: 0.8rem; }
-        .input-group { margin-bottom: 0.6rem; }
-        .input-group label { margin-bottom: 0.25rem; font-size: 0.72rem; letter-spacing: 0.05em; }
-        .input-group input { padding: 0.65rem 0.85rem; font-size: 0.85rem; border-radius: 10px; }
-        .password-toggle { top: 8px; padding: 0.25rem; }
-        .password-toggle svg { width: 18px; height: 18px; }
-        .btn-sign-in { padding: 0.7rem; font-size: 0.85rem; margin-top: 0.1rem; border-radius: 10px; }
-        .signup-prompt { margin-top: 0.5rem; margin-bottom: 0.25rem; font-size: 0.82rem; }
-        .or-divider { margin: 0.5rem 0; font-size: 0.65rem; }
-        .btn-google { padding: 0.65rem; font-size: 0.82rem; border-radius: 10px; }
-        .btn-google svg { width: 18px; height: 18px; }
+        .login-form-area { 
+            padding: 2rem 1.5rem 2.25rem; 
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .form-header { margin-bottom: 1.5rem; }
+        .form-title { font-size: 1.85rem; margin-bottom: 0.35rem; }
+        .form-subtitle { font-size: 0.95rem; }
+        .input-group { margin-bottom: 1.25rem; }
+        .input-group label { margin-bottom: 0.5rem; font-size: 0.8rem; letter-spacing: 0.05em; }
+        .input-group input { padding: 1rem 1.15rem; font-size: 1rem; border-radius: 14px; }
+        .password-toggle { top: 14px; right: 1rem; padding: 0.35rem; }
+        .password-toggle svg { width: 22px; height: 22px; }
+        .btn-sign-in { padding: 1.1rem; font-size: 1rem; margin-top: 0.5rem; border-radius: 14px; }
+        .signup-prompt { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 0.95rem; text-align: center; }
+        .or-divider { margin: 1.5rem 0; font-size: 0.8rem; }
+        .btn-google { padding: 1.05rem; font-size: 0.95rem; border-radius: 14px; }
+        .btn-google svg { width: 22px; height: 22px; }
     }
 </style>
 
