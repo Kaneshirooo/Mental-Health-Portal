@@ -71,7 +71,13 @@
         to { transform: translate(5%, 5%) rotate(5deg); }
     }
 
-    .hero-content { position: relative; z-index: 1; }
+    .hero-content { 
+        position: relative; 
+        z-index: 1; 
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; 
+    }
 
     .hero-logo {
         width: 64px;
@@ -84,6 +90,7 @@
         justify-content: center;
         margin-bottom: 3rem;
         box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        flex-shrink: 0;
     }
     .hero-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
 
