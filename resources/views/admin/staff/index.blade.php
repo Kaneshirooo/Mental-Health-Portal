@@ -150,11 +150,15 @@
 
             <div>
                 <label style="display:block; font-size:0.82rem; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem;">Temporary Password <span style="color:#ef4444">*</span></label>
-                <div style="position: relative;">
-                    <i class="ph ph-lock" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
-                    <input type="password" name="password" required placeholder="Min. 6 characters" class="form-input-premium" style="width: 100%; padding-left: 2.75rem; background: var(--surface-2); border: 1.5px solid var(--border);">
+                <div class="password-wrapper" style="position:relative;">
+                    <i class="ph ph-lock" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem; z-index: 6; pointer-events:none;"></i>
+                    <input type="password" name="password" required placeholder="Min. 6 characters" class="form-input-premium" style="width: 100%; padding-left: 2.75rem; padding-right: 2.75rem; background: var(--surface-2); border: 1.5px solid var(--border);">
+                    <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
                 </div>
             </div>
+
 
             <div>
                 <label style="display:block; font-size:0.82rem; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem;">Department / Unit</label>

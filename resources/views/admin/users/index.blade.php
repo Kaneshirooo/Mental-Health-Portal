@@ -53,8 +53,14 @@
             </div>
             <div class="form-group">
                 <label style="display:block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; letter-spacing: 0.05em;">Password</label>
-                <input type="password" name="password" required placeholder="••••••••" class="form-input-premium" style="width: 100%;">
+                <div class="password-wrapper">
+                    <input type="password" name="password" required placeholder="••••••••" class="form-input-premium" style="width: 100%;">
+                    <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
             </div>
+
             <div class="form-group">
                 <label style="display:block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; letter-spacing: 0.05em;">Identity Role</label>
                 <select name="user_type" required class="form-input-premium" style="width: 100%;">

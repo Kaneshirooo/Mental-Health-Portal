@@ -88,7 +88,40 @@
         .toast-content { flex: 1; }
         .toast-title { font-weight: 850; font-family: 'Outfit', sans-serif; font-size: 1rem; margin-bottom: 0.1rem; }
         .toast-message { font-size: 0.85rem; font-weight: 500; opacity: 0.8; line-height: 1.4; }
+
+        /* Global Password Eye Toggle System */
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 2.75rem !important;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            padding: 0.35rem;
+            cursor: pointer;
+            color: var(--text-dim, #94a3b8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s, transform 0.2s;
+            z-index: 5;
+        }
+        .password-toggle:hover {
+            color: var(--primary, #10b981);
+            transform: translateY(-50%) scale(1.1);
+        }
     </style>
+
 
     @stack('styles')
 </head>
@@ -280,6 +313,64 @@
         @if(session('error'))
             App.toast({ type: 'error', title: 'System Warning', message: "{{ session('error') }}" });
         @endif
+    </script>
+
+    <script>
+    // Global Password Eye Toggle — auto-applies to all password inputs on every page
+    (function initPasswordToggles() {
+        const EYE_OPEN = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+        const EYE_OFF  = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+
+        function wrapInput(input) {
+            // Skip if already wrapped or is in an existing password-wrapper
+            if (input.closest('.password-wrapper')) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'password-wrapper';
+
+            // Preserve existing inline styles / classes on input
+            input.parentNode.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'password-toggle';
+            btn.setAttribute('aria-label', 'Toggle password visibility');
+            btn.innerHTML = EYE_OPEN;
+            wrapper.appendChild(btn);
+
+            btn.addEventListener('click', () => {
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                btn.innerHTML = isPassword ? EYE_OFF : EYE_OPEN;
+                btn.style.color = isPassword ? 'var(--primary, #10b981)' : '';
+                input.focus();
+            });
+        }
+
+        function init() {
+            document.querySelectorAll('input[type="password"]').forEach(wrapInput);
+        }
+
+        // Run on DOMContentLoaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Also watch for dynamically added inputs (modals, etc.)
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(m => {
+                m.addedNodes.forEach(node => {
+                    if (node.nodeType !== 1) return;
+                    if (node.matches('input[type="password"]')) wrapInput(node);
+                    node.querySelectorAll && node.querySelectorAll('input[type="password"]').forEach(wrapInput);
+                });
+            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    })();
     </script>
 
     @stack('scripts')
