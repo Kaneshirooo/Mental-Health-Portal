@@ -74,7 +74,9 @@
             <a href="{{ route('counselor.emergency.calls.logs') }}" class="sidebar-link {{ request()->routeIs('counselor.emergency.calls.logs') || request()->routeIs('counselor.emergency.calls.history') ? 'active' : '' }}">
                 <div class="link-icon"><i class="ph ph-phone-call"></i></div> <span>Call History</span>
             </a>
-
+            <a href="{{ route('counselor.profile.edit') }}" class="sidebar-link {{ request()->routeIs('counselor.profile.*') ? 'active' : '' }}">
+                <div class="link-icon"><i class="ph ph-user-circle"></i></div> <span>My Profile</span>
+            </a>
 
         @elseif($userType === 'admin')
             <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -98,7 +100,11 @@
             <a href="{{ route('counselor.emergency.calls.logs') }}" class="sidebar-link {{ request()->routeIs('counselor.emergency.calls.logs') || request()->routeIs('counselor.emergency.calls.history') ? 'active' : '' }}">
                 <div class="link-icon"><i class="ph ph-phone-call"></i></div> <span>Call History</span>
             </a>
+            <a href="{{ route('counselor.profile.edit') }}" class="sidebar-link {{ request()->routeIs('counselor.profile.*') ? 'active' : '' }}">
+                <div class="link-icon"><i class="ph ph-user-circle"></i></div> <span>My Profile</span>
+            </a>
         @endif
+
     </nav>
 
     <div class="sidebar-footer" style="padding: 1.25rem; background: rgba(0,0,0,0.03); border-radius: 0 0 24px 24px; border-top: 1px solid var(--border);">

@@ -122,11 +122,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ledger', [\App\Http\Controllers\Counselor\LedgerController::class, 'index'])->name('ledger.index');
         Route::get('/ledger/export', [\App\Http\Controllers\Counselor\LedgerController::class, 'export'])->name('ledger.export');
         
+        // Profile Management Routes
+        Route::get('/profile', [\App\Http\Controllers\Counselor\ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profile', [\App\Http\Controllers\Counselor\ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/password', [\App\Http\Controllers\Counselor\ProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('/profile/email', [\App\Http\Controllers\Counselor\ProfileController::class, 'updateEmail'])->name('profile.email');
+
         // AI Routes
         Route::post('/ai/suggest-reply', [CounselorDashboard::class, 'suggestReply'])->name('ai.suggest');
 
         // Clinical Safety Toggle
         Route::post('/emergency/toggle', [CounselorDashboard::class, 'toggleEmergencyStatus'])->name('emergency.toggle');
+
 
         // Emergency Call routes
         Route::get('/emergency-calls/logs', [CounselorEmergencyCall::class, 'logs'])->name('emergency.calls.logs');
