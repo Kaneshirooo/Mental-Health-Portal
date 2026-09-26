@@ -234,7 +234,14 @@
     .btn-google:hover { background: var(--surface-2); border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--shadow); }
 
     .signup-prompt { text-align: center; margin-top: 3rem; font-size: 1rem; color: var(--text-muted); }
-    .signup-link { color: var(--primary); font-weight: 800; text-decoration: none; position: relative; padding-bottom: 2px; }
+    .signup-link {
+        color: var(--primary);
+        font-weight: 800;
+        text-decoration: none;
+        position: relative;
+        padding-bottom: 2px;
+        border-bottom: 2px solid var(--primary);
+    }
     .signup-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--primary); transition: width 0.3s; }
     .signup-link:hover::after { width: 100%; }
 
@@ -250,24 +257,28 @@
         .login-form-area { padding: 3.5rem 2.5rem; }
     }
     @media (max-width: 640px) {
-        body { padding: 0.75rem; align-items: flex-start; }
+        body { padding: 0.5rem; align-items: flex-start; }
         .login-container { width: 100%; }
-        .login-card { border-radius: 20px; }
-        .login-hero { padding: 1.75rem 1.25rem; }
-        .hero-logo { width: 44px; height: 44px; margin-bottom: 1.25rem; border-radius: 12px; }
-        .hero-title { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .hero-text { font-size: 0.88rem; line-height: 1.5; }
+        .login-card { border-radius: 16px; }
+        /* Make hero ultra-compact: just logo + title */
+        .login-hero { padding: 1rem 1.25rem; }
+        .hero-logo { width: 36px; height: 36px; margin-bottom: 0.6rem; border-radius: 10px; padding: 5px; }
+        .hero-title { font-size: 1.1rem; margin-bottom: 0; line-height: 1.2; }
+        .hero-text { display: none; }
         .portal-features { display: none; }
-        .login-form-area { padding: 1.75rem 1.25rem; }
-        .form-header { margin-bottom: 1.75rem; }
-        .form-title { font-size: 1.85rem; }
-        .form-subtitle { font-size: 0.95rem; }
-        .input-group { margin-bottom: 1.25rem; }
-        .input-group input { padding: 1rem 1.15rem; font-size: 0.95rem; }
-        .btn-sign-in { padding: 1rem; font-size: 0.95rem; margin-top: 0.5rem; }
-        .or-divider { margin: 0.75rem 0; }
-        .btn-google { padding: 0.95rem; font-size: 0.92rem; }
-        .signup-prompt { margin-top: 0.75rem; font-size: 0.9rem; }
+        /* Tighten form */
+        .login-form-area { padding: 1.25rem 1.25rem 1.5rem; }
+        .form-header { margin-bottom: 1rem; }
+        .form-title { font-size: 1.6rem; }
+        .form-subtitle { font-size: 0.85rem; }
+        .input-group { margin-bottom: 0.9rem; }
+        .input-group label { margin-bottom: 0.4rem; font-size: 0.75rem; }
+        .input-group input { padding: 0.85rem 1rem; font-size: 0.9rem; border-radius: 12px; }
+        .btn-sign-in { padding: 0.85rem; font-size: 0.9rem; margin-top: 0.2rem; border-radius: 12px; }
+        .or-divider { margin: 0.75rem 0; font-size: 0.7rem; }
+        .btn-google { padding: 0.8rem; font-size: 0.88rem; border-radius: 12px; }
+        /* Register link — clearly visible */
+        .signup-prompt { margin-top: 0.85rem; font-size: 0.88rem; }
     }
 </style>
 
