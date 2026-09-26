@@ -7,23 +7,29 @@
         margin: 0 auto;
         padding: 2.25rem 1.75rem 6rem;
     }
+
+    /* ── KPI Cards ── */
     .kpi-card {
         background: var(--surface-solid);
         border: 1px solid var(--border);
         border-radius: 24px;
         padding: 1.75rem;
-        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 4px 24px rgba(15, 23, 42, 0.04);
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         position: relative;
         overflow: hidden;
     }
-    .dark-mode .kpi-card {
-        background: #1e293b;
-        border-color: #334155;
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+        pointer-events: none;
     }
+    .dark-mode .kpi-card { background: #1e293b; border-color: #334155; }
     .kpi-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        transform: translateY(-5px);
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
     }
     .kpi-icon {
         width: 52px;
@@ -36,6 +42,8 @@
         font-weight: 800;
         margin-bottom: 1rem;
     }
+
+    /* ── Chart Cards ── */
     .chart-card {
         background: var(--surface-solid);
         border: 1px solid var(--border);
@@ -43,64 +51,89 @@
         padding: 2.25rem;
         box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03);
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
-    .dark-mode .chart-card {
-        background: #1e293b;
-        border-color: #334155;
+    .chart-card::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #059669, #10b981, #34d399);
+        border-radius: 28px 28px 0 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
+    .chart-card:hover::after { opacity: 1; }
+    .dark-mode .chart-card { background: #1e293b; border-color: #334155; }
+
+    /* ── Preset Pills ── */
     .preset-pill {
-        padding: 0.6rem 1.25rem;
+        padding: 0.55rem 1.15rem;
         border-radius: 100px;
-        font-size: 0.9rem;
-        font-weight: 850;
+        font-size: 0.84rem;
+        font-weight: 800;
         background: var(--surface-2);
-        color: var(--text);
-        border: 1px.5px solid var(--border);
+        color: var(--text-muted);
+        border: 1.5px solid var(--border);
         cursor: pointer;
-        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
+        white-space: nowrap;
     }
     .preset-pill:hover {
         border-color: var(--primary);
         color: var(--primary);
-        transform: translateY(-1px);
-        background: var(--surface-solid);
+        transform: translateY(-2px);
+        background: rgba(16, 185, 129, 0.06);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
     }
     .preset-pill.active {
         background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
         color: #ffffff !important;
-        border-color: #059669 !important;
-        box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+        border-color: transparent !important;
+        box-shadow: 0 4px 16px rgba(5, 150, 105, 0.35);
+        transform: translateY(-1px);
     }
+
+    /* ── Chart Type Buttons ── */
     .chart-type-btn {
-        background: var(--surface-2);
-        border: 1px solid var(--border);
+        background: transparent;
+        border: none;
         color: var(--text-muted);
         padding: 0.5rem 1rem;
-        border-radius: 12px;
-        font-size: 0.85rem;
+        border-radius: 10px;
+        font-size: 0.82rem;
         font-weight: 800;
         cursor: pointer;
         transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
     }
+    .chart-type-btn:hover { color: var(--text); background: rgba(16, 185, 129, 0.08); }
     .chart-type-btn.active {
         background: var(--primary);
         color: #ffffff;
-        border-color: var(--primary);
+        box-shadow: 0 3px 10px rgba(5, 150, 105, 0.3);
     }
+
+    /* ── Heatmap Cards ── */
     .heatmap-card {
         background: var(--surface-solid);
         border-radius: 20px;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         cursor: pointer;
     }
     .heatmap-card:hover {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 10px 25px rgba(239, 68, 68, 0.15);
+        transform: translateY(-4px) scale(1.025);
+        box-shadow: 0 14px 30px rgba(239, 68, 68, 0.18);
     }
+
+    /* ── Search / Inputs ── */
     .search-input-box {
         background: var(--surface-2);
         border: 1.5px solid var(--border);
@@ -115,7 +148,8 @@
     }
     .search-input-box:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-glow);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+        background: var(--surface-solid);
     }
     .filter-select {
         padding: 0.7rem 1.1rem;
@@ -127,15 +161,128 @@
         cursor: pointer;
         font-size: 0.92rem;
         outline: none;
-        transition: all 0.2s ease;
+        transition: all 0.22s ease;
         height: 48px;
         flex: 1;
         min-width: 210px;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 12px;
+        padding-right: 2.5rem;
     }
     .filter-select:focus, .filter-select:hover {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        background-color: var(--surface-solid);
     }
+
+    /* ── Date Input Wrapper ── */
+    .date-input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: var(--surface-solid);
+        padding: 0 1.25rem;
+        border-radius: 14px;
+        border: 1.5px solid var(--border);
+        height: 48px;
+        flex: 1.5;
+        min-width: 340px;
+        transition: all 0.22s ease;
+    }
+    .date-input-wrapper:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    /* ── Refresh Loading Overlay ── */
+    #refreshOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+    #refreshOverlay.active { opacity: 1; pointer-events: all; }
+    .refresh-bar {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #059669, #10b981, #34d399, #10b981, #059669);
+        background-size: 200% 100%;
+        animation: shimmerBar 1.2s linear infinite;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+    .refresh-bar.active { opacity: 1; }
+    @keyframes shimmerBar {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* ── Shimmer Skeleton ── */
+    @keyframes shimmer {
+        0% { background-position: -400px 0; }
+        100% { background-position: 400px 0; }
+    }
+    .shimmer-pulse {
+        background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 50%, var(--surface-2) 75%);
+        background-size: 400px 100%;
+        animation: shimmer 1.4s ease-in-out infinite;
+        border-radius: 8px;
+    }
+
+    /* ── Live Indicator Dot ── */
+    .live-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+        animation: livePulse 2s ease-in-out infinite;
+    }
+    @keyframes livePulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+        50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    }
+
+    /* ── Stats Footer Tiles ── */
+    .stat-tile {
+        background: var(--surface-2);
+        padding: 0.85rem 1.1rem;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        transition: all 0.25s ease;
+        cursor: default;
+    }
+    .stat-tile:hover {
+        border-color: var(--primary);
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.1);
+        transform: translateY(-2px);
+    }
+    .stat-tile-label {
+        font-size: 0.67rem;
+        font-weight: 850;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.25rem;
+    }
+    .stat-tile-value {
+        font-size: 1.05rem;
+        font-weight: 900;
+        font-family: 'Outfit', sans-serif;
+        line-height: 1.2;
+    }
+
+    /* ── Updating state ── */
+    .charts-updating canvas { opacity: 0.45; filter: blur(1px); pointer-events: none; }
+    .charts-updating { transition: all 0.3s ease; }
 </style>
 @endpush
 
@@ -257,16 +404,16 @@
             <!-- Detailed Controls Row (Side-by-side flex alignment) -->
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
                 <!-- Date Picker Box -->
-                <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--surface-solid); padding: 0 1.25rem; border-radius: 14px; border: 1.5px solid var(--border); height: 48px; flex: 1.5; min-width: 340px;">
+                <div class="date-input-wrapper">
                     <i class="ph-bold ph-calendar-blank" style="color: var(--primary); font-size: 1.25rem; flex-shrink: 0;"></i>
                     <span style="font-size: 0.8rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">From</span>
-                    <input type="date" id="startDate" name="start_date" value="{{ $start_date }}" onchange="refreshAnalytics()" style="background: transparent; border: none; color: var(--text); font-weight: 800; font-size: 0.95rem; outline: none; cursor: pointer; font-family: inherit; flex: 1;">
+                    <input type="date" id="startDate" name="start_date" value="{{ $start_date }}" onchange="debouncedRefresh()" oninput="debouncedRefresh()" style="background: transparent; border: none; color: var(--text); font-weight: 800; font-size: 0.95rem; outline: none; cursor: pointer; font-family: inherit; flex: 1;">
                     <span style="font-size: 0.8rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">To</span>
-                    <input type="date" id="endDate" name="end_date" value="{{ $end_date }}" onchange="refreshAnalytics()" style="background: transparent; border: none; color: var(--text); font-weight: 800; font-size: 0.95rem; outline: none; cursor: pointer; font-family: inherit; flex: 1;">
+                    <input type="date" id="endDate" name="end_date" value="{{ $end_date }}" onchange="debouncedRefresh()" oninput="debouncedRefresh()" style="background: transparent; border: none; color: var(--text); font-weight: 800; font-size: 0.95rem; outline: none; cursor: pointer; font-family: inherit; flex: 1;">
                 </div>
 
                 <!-- Semester Select -->
-                <select name="semester" onchange="refreshAnalytics()" class="filter-select">
+                <select name="semester" onchange="debouncedRefresh()" class="filter-select">
                     <option value="">All Semesters</option>
                     @foreach ($semesters as $s)
                         <option value="{{ $s }}" {{ $semester === $s ? 'selected' : '' }}>{{ $s }}</option>
@@ -274,7 +421,7 @@
                 </select>
 
                 <!-- Course Select -->
-                <select name="course" onchange="refreshAnalytics()" class="filter-select">
+                <select name="course" onchange="debouncedRefresh()" class="filter-select">
                     <option value="">All Courses / Programs</option>
                     @foreach ($courses as $c)
                         <option value="{{ $c }}" {{ $course === $c ? 'selected' : '' }}>{{ $c }}</option>
@@ -282,7 +429,7 @@
                 </select>
 
                 <!-- Risk Level Select -->
-                <select name="risk_level" onchange="refreshAnalytics()" class="filter-select">
+                <select name="risk_level" onchange="debouncedRefresh()" class="filter-select">
                     <option value="">All Risk Tiers</option>
                     <option value="Low" {{ ($risk_level ?? '') === 'Low' ? 'selected' : '' }}>Low Risk</option>
                     <option value="Moderate" {{ ($risk_level ?? '') === 'Moderate' ? 'selected' : '' }}>Moderate Risk</option>
@@ -395,9 +542,14 @@
                         </div>
                         <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem; font-weight: 500;">Temporal distribution of student self-evaluations over time.</p>
                     </div>
-                    <div style="display: flex; gap: 0.4rem; background: var(--surface-2); padding: 0.25rem; border-radius: 12px; border: 1px solid var(--border);">
-                        <button type="button" class="chart-type-btn active" id="btnChartLine" onclick="switchChartType('line')"><i class="ph ph-chart-line-up"></i> Line</button>
-                        <button type="button" class="chart-type-btn" id="btnChartBar" onclick="switchChartType('bar')"><i class="ph ph-chart-bar"></i> Bar</button>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 800; color: #10b981;">
+                            <span class="live-dot"></span> Live
+                        </div>
+                        <div style="display: flex; gap: 0.3rem; background: var(--surface-2); padding: 0.3rem; border-radius: 12px; border: 1px solid var(--border);">
+                            <button type="button" class="chart-type-btn active" id="btnChartLine" onclick="switchChartType('line')"><i class="ph ph-chart-line-up"></i> Line</button>
+                            <button type="button" class="chart-type-btn" id="btnChartBar" onclick="switchChartType('bar')"><i class="ph ph-chart-bar"></i> Bar</button>
+                        </div>
                     </div>
                 </div>
 
@@ -407,19 +559,19 @@
             </div>
 
             <!-- Volume Analytics Footer Summary Strip -->
-            <div style="margin-top: 1.25rem; padding-top: 1.1rem; border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.85rem;">
-                <div style="background: var(--surface-2); padding: 0.75rem 1rem; border-radius: 14px; border: 1px solid var(--border);">
-                    <div style="font-size: 0.68rem; font-weight: 850; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">Peak Month</div>
-                    <div style="font-size: 1.05rem; font-weight: 900; color: #059669; font-family: 'Outfit', sans-serif; margin-top: 0.15rem;" id="peakMonthLabel">--</div>
+            <div style="margin-top: 1.35rem; padding-top: 1.2rem; border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.85rem;">
+                <div class="stat-tile">
+                    <div class="stat-tile-label">Peak Month</div>
+                    <div class="stat-tile-value" style="color: #059669;" id="peakMonthLabel">--</div>
                 </div>
-                <div style="background: var(--surface-2); padding: 0.75rem 1rem; border-radius: 14px; border: 1px solid var(--border);">
-                    <div style="font-size: 0.68rem; font-weight: 850; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">Monthly Average</div>
-                    <div style="font-size: 1.05rem; font-weight: 900; color: var(--text); font-family: 'Outfit', sans-serif; margin-top: 0.15rem;" id="monthlyAvgLabel">--</div>
+                <div class="stat-tile">
+                    <div class="stat-tile-label">Monthly Average</div>
+                    <div class="stat-tile-value" style="color: var(--text);" id="monthlyAvgLabel">--</div>
                 </div>
-                <div style="background: var(--surface-2); padding: 0.75rem 1rem; border-radius: 14px; border: 1px solid var(--border);">
-                    <div style="font-size: 0.68rem; font-weight: 850; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">Volume Trajectory</div>
-                    <div style="font-size: 0.88rem; font-weight: 850; color: #10b981; margin-top: 0.2rem; display: flex; align-items: center; gap: 0.3rem;" id="trajectoryLabel">
-                        <i class="ph-bold ph-trend-up"></i> Steady Growth
+                <div class="stat-tile">
+                    <div class="stat-tile-label">Volume Trajectory</div>
+                    <div style="font-size: 0.85rem; font-weight: 850; color: #10b981; margin-top: 0.2rem; display: flex; align-items: center; gap: 0.3rem;" id="trajectoryLabel">
+                        <i class="ph-bold ph-trend-up"></i> Upward Trend
                     </div>
                 </div>
             </div>
@@ -708,19 +860,26 @@
 </div>
 
 @push('scripts')
+<!-- Refresh loading bar -->
+<div class="refresh-bar" id="refreshBar"></div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script>
 let currentChartType = 'line';
 let currentTableRiskFilter = 'ALL';
+let refreshTimer = null;
+
+// Debounced refresh to avoid too many requests on rapid input
+function debouncedRefresh(delay = 400) {
+    clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(() => refreshAnalytics(), delay);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     if (window.gsap) {
         gsap.from('.staggered', { y: 25, opacity: 0, duration: 0.7, stagger: 0.08, ease: "expo.out", clearProps: "all" });
     }
-
-    setTimeout(() => {
-        animateBars();
-    }, 350);
+    setTimeout(() => animateBars(), 350);
+    initCharts();
 });
 
 function setPreset(preset) {
@@ -809,26 +968,30 @@ function filterTable() {
 const refreshAnalytics = async () => {
     const form = document.querySelector('#analyticsFilterForm');
     const spinIcon = document.getElementById('refreshSpinIcon');
+    const bar = document.getElementById('refreshBar');
+    const chartsContainer = document.getElementById('chartsContainer');
+
     if (spinIcon) spinIcon.classList.add('ph-spin');
+    if (bar) bar.classList.add('active');
+    if (chartsContainer) chartsContainer.classList.add('charts-updating');
 
     const fd = new FormData(form);
     const params = new URLSearchParams(fd);
     const url = new URL(window.location.href);
-    
+
     for (const [key, value] of params) {
         if (value) url.searchParams.set(key, value);
         else url.searchParams.delete(key);
     }
-    
+
     history.pushState({}, '', url);
-    document.body.style.opacity = '0.85';
-    
+
     try {
-        const res = await fetch(url);
+        const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
         const html = await res.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
-        
+
         const containers = ['#analyticsMatrix', '#chartsContainer', '#domainMetricsContainer', '#heatmapContainer', '#intelligenceFeed'];
         containers.forEach(selector => {
             const newEl = doc.querySelector(selector);
@@ -839,13 +1002,21 @@ const refreshAnalytics = async () => {
         initCharts(doc);
         animateBars();
         filterTableByRisk(currentTableRiskFilter);
+
+        // Subtle flash-in animation on updated cards
+        if (window.gsap) {
+            gsap.from(['#analyticsMatrix .kpi-card', '#chartsContainer .chart-card'], {
+                opacity: 0, y: 10, duration: 0.4, stagger: 0.05, ease: 'power2.out', clearProps: 'all'
+            });
+        }
     } catch (err) {
         if (window.App && App.toast) {
             App.toast({ type: 'error', title: 'Error', message: 'Failed to update analytics filters.' });
         }
     } finally {
-        document.body.style.opacity = '1';
         if (spinIcon) spinIcon.classList.remove('ph-spin');
+        if (bar) bar.classList.remove('active');
+        if (chartsContainer) chartsContainer.classList.remove('charts-updating');
     }
 };
 
@@ -1155,7 +1326,9 @@ function closeRiskModal() {
     }
 }
 
-initCharts();
+// initCharts() is now called inside DOMContentLoaded above
+// — also re-call on back/forward nav
+window.addEventListener('pageshow', () => initCharts());
 </script>
 @endpush
 @endsection
