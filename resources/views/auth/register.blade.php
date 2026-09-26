@@ -209,6 +209,20 @@
 
     .privacy-notice { text-align: center; margin-top: 2rem; font-size: 0.75rem; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
 
+    .error-alert {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+        padding: 1.25rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
     @media (max-width: 1024px) {
         .register-card { flex-direction: column; min-height: auto; border-radius: var(--radius-lg); }
         .register-hero { padding: 3rem 2rem; }
@@ -447,13 +461,16 @@
         const regForm = document.getElementById('registrationForm');
         const regBtn = document.getElementById('regSubmitBtn');
         const regSpinner = document.getElementById('regSpinner');
-        const regBtnText = regBtn.querySelector('.btn-text');
+        const regBtnText = regBtn ? regBtn.querySelector('.btn-text') : null;
 
-        if (regForm) {
-            regForm.addEventListener('submit', () => {
+        if (regForm && regBtn) {
+            regForm.addEventListener('submit', (e) => {
+                if (!regForm.checkValidity()) {
+                    return;
+                }
                 regBtn.disabled = true;
-                regBtnText.style.display = 'none';
-                regSpinner.style.display = 'block';
+                if (regBtnText) regBtnText.style.display = 'none';
+                if (regSpinner) regSpinner.style.display = 'block';
                 regBtn.style.display = 'flex';
                 regBtn.style.alignItems = 'center';
                 regBtn.style.justifyContent = 'center';
@@ -462,4 +479,5 @@
         }
     });
 </script>
+
 @endsection
