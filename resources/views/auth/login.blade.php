@@ -233,7 +233,7 @@
     }
     .btn-google:hover { background: var(--surface-2); border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--shadow); }
 
-    .signup-prompt { text-align: center; margin-top: 3rem; font-size: 1rem; color: var(--text-muted); }
+    .signup-prompt { text-align: center; margin-top: 1.75rem; margin-bottom: 0.5rem; font-size: 1rem; color: var(--text-muted); }
     .signup-link {
         color: var(--primary);
         font-weight: 800;
@@ -275,10 +275,9 @@
         .input-group label { margin-bottom: 0.4rem; font-size: 0.75rem; }
         .input-group input { padding: 0.85rem 1rem; font-size: 0.9rem; border-radius: 12px; }
         .btn-sign-in { padding: 0.85rem; font-size: 0.9rem; margin-top: 0.2rem; border-radius: 12px; }
-        .or-divider { margin: 0.75rem 0; font-size: 0.7rem; }
+        .signup-prompt { margin-top: 1rem; margin-bottom: 0.25rem; font-size: 0.88rem; }
+        .or-divider { margin: 1rem 0; font-size: 0.7rem; }
         .btn-google { padding: 0.8rem; font-size: 0.88rem; border-radius: 12px; }
-        /* Register link — clearly visible */
-        .signup-prompt { margin-top: 0.85rem; font-size: 0.88rem; }
     }
 </style>
 
@@ -354,7 +353,11 @@
                 </div>
             </form>
 
-            <div class="or-divider staggered">Secured SSO Gateway</div>
+            <div class="signup-prompt staggered">
+                Need an account? <a href="{{ route('register') }}" class="signup-link">Register an account</a>
+            </div>
+
+            <div class="or-divider staggered">Or Sign In With</div>
 
             <div class="staggered">
                 <a href="{{ route('auth.google') }}" class="btn-google">
@@ -366,10 +369,6 @@
                     </svg>
                     <span>Login with Google</span>
                 </a>
-            </div>
-
-            <div class="signup-prompt staggered">
-                Need an account? <a href="{{ route('register') }}" class="signup-link">Register New Account</a>
             </div>
         </div>
     </div>
