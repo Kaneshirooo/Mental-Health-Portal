@@ -64,36 +64,46 @@
         animation: meshFloat 25s infinite alternate ease-in-out;
     }
 
-    .hero-content { position: relative; z-index: 1; }
+    .hero-content { 
+        position: relative; 
+        z-index: 1; 
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+    }
 
     .hero-badge {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
         padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
         border-radius: 100px;
-        font-size: 0.7rem;
+        font-size: 0.72rem;
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.15em;
-        margin-bottom: 2rem;
+        margin: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .hero-title {
         font-family: 'Outfit', sans-serif;
         font-size: 3rem;
         font-weight: 900;
-        line-height: 1;
-        margin-bottom: 2rem;
+        line-height: 1.15;
+        margin: 0;
         letter-spacing: -0.04em;
     }
     .hero-title span { color: #a7f3d0; }
 
     .hero-text {
         font-size: 1.15rem;
-        opacity: 0.85;
-        line-height: 1.7;
-        margin-bottom: 3rem;
+        opacity: 0.88;
+        line-height: 1.65;
+        margin: 0;
         max-width: 380px;
     }
 
@@ -101,11 +111,13 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 2rem;
-        padding-top: 3rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        padding-top: 2rem;
+        margin-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        width: 100%;
     }
-    .stat-item h3 { font-size: 2.25rem; font-weight: 900; line-height: 1; margin-bottom: 0.5rem; color: #a7f3d0; }
-    .stat-item p { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6; }
+    .stat-item h3 { font-size: 2.25rem; font-weight: 900; line-height: 1; margin: 0 0 0.5rem 0; color: #a7f3d0; }
+    .stat-item p { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; margin: 0; }
 
     /* ── Right Side (Form) ── */
     .register-form-area {
@@ -224,12 +236,49 @@
         .register-hero { 
             padding: 1.75rem 1.5rem; 
             flex-shrink: 0;
+            background: linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%);
         }
-        .hero-badge { margin-bottom: 1rem; padding: 0.4rem 0.8rem; font-size: 0.68rem; }
-        .hero-title { font-size: 1.65rem; margin-bottom: 0.75rem; }
-        .hero-text { font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5; }
-        .stat-grid { display: flex; gap: 1.5rem; padding-top: 1.5rem; }
-        .stat-item h3 { font-size: 1.65rem; }
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .hero-badge { 
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 0.85rem; 
+            font-size: 0.68rem; 
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 100px;
+            margin: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .hero-title { 
+            font-size: 1.65rem; 
+            line-height: 1.25; 
+            margin: 0;
+            font-weight: 900;
+        }
+        .hero-text { 
+            font-size: 0.88rem; 
+            margin: 0;
+            line-height: 1.45; 
+            opacity: 0.92;
+        }
+        .stat-grid { 
+            display: flex; 
+            gap: 2rem; 
+            padding-top: 1rem; 
+            margin-top: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+        }
+        .stat-item h3 { font-size: 1.5rem; margin: 0 0 0.15rem 0; }
+        .stat-item p { font-size: 0.68rem; margin: 0; opacity: 0.75; letter-spacing: 0.08em; }
         .register-form-area { padding: 2rem 1.5rem; flex: 1; }
         .form-header { margin-bottom: 1.75rem; }
         .form-title { font-size: 1.9rem; }

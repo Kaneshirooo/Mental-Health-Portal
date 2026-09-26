@@ -288,11 +288,18 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            background: linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%);
+        }
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
         }
         .hero-logo { 
             width: 48px; 
             height: 48px; 
-            margin-bottom: 0.85rem; 
+            margin-bottom: 0; 
             border-radius: 14px; 
             padding: 6px; 
             box-shadow: 0 8px 16px rgba(0,0,0,0.12);
@@ -300,12 +307,12 @@
             position: relative;
         }
         .hero-title { 
-            font-size: 1.45rem; 
-            margin-bottom: 0.4rem; 
+            font-size: 1.5rem; 
+            margin: 0; 
             line-height: 1.25; 
         }
         .hero-title b { display: block; margin-top: 0.15rem; color: #a7f3d0; }
-        .hero-text { font-size: 0.88rem; line-height: 1.45; opacity: 0.92; display: block !important; margin-bottom: 0; }
+        .hero-text { font-size: 0.88rem; line-height: 1.45; opacity: 0.92; display: block !important; margin: 0; }
         .portal-features { display: none !important; }
         
         .login-form-area { 
