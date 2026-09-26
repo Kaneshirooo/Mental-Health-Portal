@@ -7,6 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Mental Health Portal') }}</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('logo/system_logo.jpg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('logo/system_logo.jpg') }}">
 
     <!-- Google Fonts -->
     <link

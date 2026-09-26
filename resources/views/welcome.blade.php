@@ -4,7 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'Mental Health Portal') }}</title>
+        <link rel="icon" type="image/jpeg" href="{{ asset('logo/system_logo.jpg') }}">
+        <link rel="shortcut icon" type="image/jpeg" href="{{ asset('logo/system_logo.jpg') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
