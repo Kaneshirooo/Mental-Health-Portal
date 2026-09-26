@@ -570,97 +570,97 @@
 
         <!-- Card 1: Total Assessment Volume -->
         <div class="kpi-card-v2 staggered"
-             style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-color: rgba(99,102,241,0.35); box-shadow: 0 8px 32px rgba(99,102,241,0.2);"
+             style="border-color: rgba(99,102,241,0.25); box-shadow: 0 8px 30px rgba(99,102,241,0.06);"
              onclick="openKpiDrawer('all')" role="button" tabindex="0">
             <div class="kpi-bg-blob" style="background: #6366f1;"></div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(99,102,241,0.25); color: #a5b4fc; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(99,102,241,0.3);">
+                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(99,102,241,0.12); color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(99,102,241,0.2);">
                     <i class="ph-bold ph-clipboard-text"></i>
                 </div>
                 <svg class="kpi-progress-ring" width="52" height="52" viewBox="0 0 36 36">
-                    <circle class="track" cx="18" cy="18" r="15"/>
-                    <circle class="fill" cx="18" cy="18" r="15" stroke="#a5b4fc"
+                    <circle class="track" cx="18" cy="18" r="15" stroke="rgba(99,102,241,0.15)"/>
+                    <circle class="fill" cx="18" cy="18" r="15" stroke="#6366f1"
                             stroke-dashoffset="{{ 100 - $all_pct }}"/>
                 </svg>
             </div>
-            <div style="font-size: 0.68rem; font-weight: 900; color: rgba(165,180,252,0.8); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Total Assessment Volume</div>
-            <div style="font-size: 2.75rem; font-weight: 950; color: #ffffff; line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($total_assessments) }}</div>
-            <div style="font-size: 0.78rem; color: rgba(165,180,252,0.75); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-users" style="color: #a5b4fc;"></i> {{ number_format($total_students) }} unique students
+            <div style="font-size: 0.68rem; font-weight: 900; color: #4f46e5; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Total Assessment Volume</div>
+            <div style="font-size: 2.75rem; font-weight: 950; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($total_assessments) }}</div>
+            <div style="font-size: 0.78rem; color: var(--text-dim); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="ph-bold ph-users" style="color: #6366f1;"></i> {{ number_format($total_students) }} unique students
             </div>
-            <div class="kpi-click-hint" style="color: #a5b4fc;">
+            <div class="kpi-click-hint" style="color: #4f46e5;">
                 <i class="ph ph-arrow-right"></i> View all records
             </div>
         </div>
 
         <!-- Card 2: Low Risk -->
         <div class="kpi-card-v2 staggered"
-             style="background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); border-color: rgba(16,185,129,0.35); box-shadow: 0 8px 32px rgba(16,185,129,0.18);"
+             style="border-color: rgba(16,185,129,0.25); box-shadow: 0 8px 30px rgba(16,185,129,0.06);"
              onclick="openKpiDrawer('low')" role="button" tabindex="0">
             <div class="kpi-bg-blob" style="background: #10b981;"></div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(16,185,129,0.25); color: #6ee7b7; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(16,185,129,0.3);">
+                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(16,185,129,0.12); color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(16,185,129,0.2);">
                     <i class="ph-bold ph-shield-check"></i>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-size: 1.6rem; font-weight: 900; color: #6ee7b7; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $low_pct }}%</div>
-                    <div style="font-size: 0.65rem; font-weight: 800; color: rgba(110,231,183,0.7); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
+                    <div style="font-size: 1.6rem; font-weight: 900; color: #10b981; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $low_pct }}%</div>
+                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
                 </div>
             </div>
-            <div style="font-size: 0.68rem; font-weight: 900; color: rgba(110,231,183,0.8); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Low Risk (Baseline)</div>
-            <div style="font-size: 2.75rem; font-weight: 950; color: #ffffff; line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($low_cnt) }}</div>
-            <div style="font-size: 0.78rem; color: rgba(110,231,183,0.75); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-trend-up" style="color: #6ee7b7;"></i> Stable wellness status
+            <div style="font-size: 0.68rem; font-weight: 900; color: #059669; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Low Risk (Baseline)</div>
+            <div style="font-size: 2.75rem; font-weight: 950; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($low_cnt) }}</div>
+            <div style="font-size: 0.78rem; color: var(--text-dim); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="ph-bold ph-trend-up" style="color: #10b981;"></i> Stable wellness status
             </div>
-            <div class="kpi-click-hint" style="color: #6ee7b7;">
+            <div class="kpi-click-hint" style="color: #059669;">
                 <i class="ph ph-arrow-right"></i> View low risk students
             </div>
         </div>
 
         <!-- Card 3: Active Observation -->
         <div class="kpi-card-v2 staggered"
-             style="background: linear-gradient(135deg, #451a03 0%, #78350f 100%); border-color: rgba(245,158,11,0.35); box-shadow: 0 8px 32px rgba(245,158,11,0.18);"
+             style="border-color: rgba(245,158,11,0.25); box-shadow: 0 8px 30px rgba(245,158,11,0.06);"
              onclick="openKpiDrawer('observation')" role="button" tabindex="0">
             <div class="kpi-bg-blob" style="background: #f59e0b;"></div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(245,158,11,0.25); color: #fcd34d; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(245,158,11,0.3);">
+                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(245,158,11,0.12); color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(245,158,11,0.2);">
                     <i class="ph-bold ph-eye"></i>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-size: 1.6rem; font-weight: 900; color: #fcd34d; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $obs_pct }}%</div>
-                    <div style="font-size: 0.65rem; font-weight: 800; color: rgba(252,211,77,0.7); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
+                    <div style="font-size: 1.6rem; font-weight: 900; color: #f59e0b; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $obs_pct }}%</div>
+                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
                 </div>
             </div>
-            <div style="font-size: 0.68rem; font-weight: 900; color: rgba(252,211,77,0.8); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Active Observation</div>
-            <div style="font-size: 2.75rem; font-weight: 950; color: #ffffff; line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($obs_cnt) }}</div>
-            <div style="font-size: 0.78rem; color: rgba(252,211,77,0.75); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-clock" style="color: #fcd34d;"></i> Moderate &amp; High cases
+            <div style="font-size: 0.68rem; font-weight: 900; color: #d97706; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Active Observation</div>
+            <div style="font-size: 2.75rem; font-weight: 950; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($obs_cnt) }}</div>
+            <div style="font-size: 0.78rem; color: var(--text-dim); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="ph-bold ph-clock" style="color: #f59e0b;"></i> Moderate &amp; High cases
             </div>
-            <div class="kpi-click-hint" style="color: #fcd34d;">
+            <div class="kpi-click-hint" style="color: #d97706;">
                 <i class="ph ph-arrow-right"></i> View observation cases
             </div>
         </div>
 
         <!-- Card 4: Critical Severity -->
         <div class="kpi-card-v2 staggered"
-             style="background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%); border-color: rgba(239,68,68,0.35); box-shadow: 0 8px 32px rgba(239,68,68,0.2);"
+             style="border-color: rgba(239,68,68,0.25); box-shadow: 0 8px 30px rgba(239,68,68,0.06);"
              onclick="openKpiDrawer('critical')" role="button" tabindex="0">
             <div class="kpi-bg-blob" style="background: #ef4444;"></div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(239,68,68,0.25); color: #fca5a5; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(239,68,68,0.3);">
+                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(239,68,68,0.12); color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(239,68,68,0.2);">
                     <i class="ph-bold ph-warning-octagon"></i>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-size: 1.6rem; font-weight: 900; color: #fca5a5; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $crit_pct }}%</div>
-                    <div style="font-size: 0.65rem; font-weight: 800; color: rgba(252,165,165,0.7); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
+                    <div style="font-size: 1.6rem; font-weight: 900; color: #ef4444; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $crit_pct }}%</div>
+                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
                 </div>
             </div>
-            <div style="font-size: 0.68rem; font-weight: 900; color: rgba(252,165,165,0.8); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Critical Severity</div>
-            <div style="font-size: 2.75rem; font-weight: 950; color: #ffffff; line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($crit_cnt) }}</div>
-            <div style="font-size: 0.78rem; color: rgba(252,165,165,0.75); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-bell-ringing" style="color: #fca5a5;"></i> Immediate intervention needed
+            <div style="font-size: 0.68rem; font-weight: 900; color: #dc2626; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Critical Severity</div>
+            <div style="font-size: 2.75rem; font-weight: 950; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($crit_cnt) }}</div>
+            <div style="font-size: 0.78rem; color: var(--text-dim); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="ph-bold ph-bell-ringing" style="color: #ef4444;"></i> Immediate intervention needed
             </div>
-            <div class="kpi-click-hint" style="color: #fca5a5;">
+            <div class="kpi-click-hint" style="color: #dc2626;">
                 <i class="ph ph-arrow-right"></i> View critical students
             </div>
         </div>
