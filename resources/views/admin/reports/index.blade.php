@@ -926,9 +926,41 @@ const initCharts = (doc = document) => {
             }
 
             if (window.myMonthlyChart) window.myMonthlyChart.destroy();
+
+            // Build gradient for bar mode
+            function buildVolumeGradient(ctx, chartArea) {
+                const grad = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                grad.addColorStop(0, 'rgba(5, 150, 105, 0.95)');
+                grad.addColorStop(1, 'rgba(16, 185, 129, 0.55)');
+                return grad;
+            }
+
+            // Value-on-top plugin
+            const valueLabelsPlugin = {
+                id: 'volumeValueLabels',
+                afterDatasetsDraw(chart) {
+                    if (chart.config.type !== 'bar') return;
+                    const { ctx: c } = chart;
+                    chart.data.datasets.forEach((dataset, di) => {
+                        const meta = chart.getDatasetMeta(di);
+                        meta.data.forEach((bar, i) => {
+                            const v = dataset.data[i];
+                            if (!v) return;
+                            c.save();
+                            c.font = '800 10px Outfit, sans-serif';
+                            c.fillStyle = '#059669';
+                            c.textAlign = 'center';
+                            c.textBaseline = 'bottom';
+                            c.fillText(v, bar.x, bar.y - 3);
+                            c.restore();
+                        });
+                    });
+                }
+            };
             
             window.myMonthlyChart = new Chart(ctx, {
                 type: currentChartType,
+                plugins: [valueLabelsPlugin],
                 data: {
                     labels: labels,
                     datasets: [{
@@ -937,50 +969,67 @@ const initCharts = (doc = document) => {
                         borderColor: '#059669',
                         backgroundColor: currentChartType === 'line' ? (context) => {
                             const chart = context.chart;
-                            const {ctx, chartArea} = chart;
+                            const {ctx: c, chartArea} = chart;
                             if (!chartArea) return null;
-                            const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                            gradient.addColorStop(0, 'rgba(5, 150, 105, 0.28)');
+                            const gradient = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                            gradient.addColorStop(0, 'rgba(5, 150, 105, 0.3)');
+                            gradient.addColorStop(0.6, 'rgba(5, 150, 105, 0.08)');
                             gradient.addColorStop(1, 'rgba(5, 150, 105, 0.01)');
                             return gradient;
-                        } : '#10b981',
-                        borderRadius: currentChartType === 'bar' ? 8 : 0,
+                        } : (context) => {
+                            const chart = context.chart;
+                            const {ctx: c, chartArea} = chart;
+                            if (!chartArea) return '#10b981';
+                            return buildVolumeGradient(c, chartArea);
+                        },
+                        borderRadius: currentChartType === 'bar' ? { topLeft: 8, topRight: 8 } : 0,
+                        borderSkipped: false,
                         fill: currentChartType === 'line',
-                        tension: 0.38,
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
+                        tension: 0.42,
+                        pointRadius: currentChartType === 'line' ? 5 : 0,
+                        pointHoverRadius: 8,
                         pointBackgroundColor: '#ffffff',
                         pointBorderColor: '#059669',
-                        pointBorderWidth: 2.5
+                        pointBorderWidth: 2.5,
+                        borderWidth: currentChartType === 'line' ? 2.5 : 0,
+                        barThickness: 'flex',
+                        maxBarThickness: 52,
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: { duration: 700, easing: 'easeInOutQuart' },
                     plugins: { 
                         legend: { display: false },
                         tooltip: {
                             backgroundColor: '#0f172a',
                             titleFont: { family: 'Outfit', size: 13, weight: '800' },
                             bodyFont: { family: 'Inter', size: 12, weight: '600' },
-                            padding: 12,
-                            cornerRadius: 12,
-                            displayColors: false
+                            padding: 14,
+                            cornerRadius: 14,
+                            displayColors: false,
+                            callbacks: {
+                                label: ctx => ` ${ctx.parsed.y} assessment${ctx.parsed.y !== 1 ? 's' : ''}`
+                            }
                         }
                     },
                     scales: {
                         y: { 
                             beginAtZero: true, 
-                            grid: { color: 'rgba(15, 23, 42, 0.06)', drawBorder: false }, 
-                            ticks: { font: { weight: '700', size: 11 }, color: '#64748b', padding: 8 } 
+                            grid: { color: 'rgba(5, 150, 105, 0.06)', drawBorder: false }, 
+                            border: { display: false },
+                            ticks: { font: { weight: '700', size: 11 }, color: '#94a3b8', padding: 8, stepSize: 1 } 
                         },
                         x: { 
                             grid: { display: false }, 
+                            border: { display: false },
                             ticks: { font: { weight: '700', size: 11 }, color: '#64748b', padding: 8 } 
                         }
                     }
                 }
             });
+
         }
     }
 

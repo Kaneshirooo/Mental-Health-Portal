@@ -146,21 +146,42 @@
     @endif
 
     <!-- Analytics Section -->
-    <div class="staggered" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 3.5rem;">
-        <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: var(--shadow-sm);">
-            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 900; color: var(--text); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                <i class="ph-bold ph-chart-pie-slice" style="color: var(--primary);"></i> Clinical Risk Distribution
-            </h3>
-            <div style="height: 250px; position: relative;">
+    <div class="staggered" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3.5rem;">
+        {{-- Risk Distribution Card --}}
+        <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2rem 2.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgba(16,185,129,0.06); pointer-events: none;"></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(16,185,129,0.12); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                            <i class="ph-bold ph-chart-pie-slice"></i>
+                        </div>
+                        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--text); margin: 0;">Risk Distribution</h3>
+                    </div>
+                    <p style="font-size: 0.78rem; color: var(--text-muted); font-weight: 500; margin: 0.3rem 0 0 0;">DASS-21 classification across all students</p>
+                </div>
+            </div>
+            <div style="height: 230px; position: relative;">
                 <canvas id="riskChart"></canvas>
             </div>
         </div>
 
-        <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: var(--shadow-sm);">
-            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 900; color: var(--text); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                <i class="ph-bold ph-graduation-cap" style="color: #6366f1;"></i> Students by Course
-            </h3>
-            <div style="height: 250px; position: relative;">
+        {{-- Students by Course Card --}}
+        <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2rem 2.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgba(99,102,241,0.06); pointer-events: none;"></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(99,102,241,0.12); color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                            <i class="ph-bold ph-graduation-cap"></i>
+                        </div>
+                        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--text); margin: 0;">Students by Course</h3>
+                    </div>
+                    <p style="font-size: 0.78rem; color: var(--text-muted); font-weight: 500; margin: 0.3rem 0 0 0;">Enrollment breakdown per academic program</p>
+                </div>
+                <span id="totalStudentsBadge" style="font-size: 0.72rem; font-weight: 850; background: rgba(99,102,241,0.1); color: #6366f1; padding: 0.3rem 0.75rem; border-radius: 100px; border: 1px solid rgba(99,102,241,0.2); white-space:nowrap;">{{ count($students) }} Total</span>
+            </div>
+            <div style="height: 230px; position: relative;">
                 <canvas id="courseChart"></canvas>
             </div>
         </div>
@@ -370,51 +391,148 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Risk Distribution Chart
+    // Risk Distribution Doughnut Chart
     const riskData = @json($risk_distribution);
     const riskCtx = document.getElementById('riskChart').getContext('2d');
+    const riskPalette = ['#10b981', '#f59e0b', '#f97316', '#ef4444', '#94a3b8'];
     new Chart(riskCtx, {
         type: 'doughnut',
         data: {
             labels: Object.keys(riskData),
             datasets: [{
                 data: Object.values(riskData),
-                backgroundColor: ['#10b981', '#f59e0b', '#f97316', '#ef4444', '#94a3b8'],
-                borderWidth: 0,
-                hoverOffset: 10
+                backgroundColor: riskPalette,
+                borderWidth: 4,
+                borderColor: getComputedStyle(document.body).getPropertyValue('--surface-solid').trim() || '#ffffff',
+                hoverOffset: 12
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '70%',
+            cutout: '72%',
+            animation: { animateRotate: true, duration: 900, easing: 'easeInOutQuart' },
             plugins: {
-                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20, font: { weight: '800', size: 11 } } }
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        padding: 18,
+                        font: { weight: '800', size: 11, family: 'Inter' },
+                        color: '#64748b'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#0f172a',
+                    titleFont: { family: 'Outfit', size: 13, weight: '800' },
+                    bodyFont: { family: 'Inter', size: 12, weight: '600' },
+                    padding: 12, cornerRadius: 12, displayColors: true
+                }
             }
         }
     });
 
-    // Course Distribution Chart
+    // Students by Course — Gradient Bar Chart
     const courseData = @json($course_distribution);
     const courseCtx = document.getElementById('courseChart').getContext('2d');
+    const courseLabels = Object.keys(courseData).map(k => k || 'General');
+    const courseValues = Object.values(courseData);
+    const maxVal = Math.max(...courseValues, 1);
+
+    // Build per-bar gradient colors
+    const barPalette = [
+        { from: '#818cf8', to: '#6366f1' },
+        { from: '#34d399', to: '#059669' },
+        { from: '#fbbf24', to: '#d97706' },
+        { from: '#f87171', to: '#dc2626' },
+        { from: '#38bdf8', to: '#0284c7' },
+        { from: '#a78bfa', to: '#7c3aed' },
+    ];
+
+    function buildBarGradient(ctx, chartArea, idx) {
+        const palette = barPalette[idx % barPalette.length];
+        const grad = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+        grad.addColorStop(0, palette.from);
+        grad.addColorStop(1, palette.to);
+        return grad;
+    }
+
     new Chart(courseCtx, {
         type: 'bar',
         data: {
-            labels: Object.keys(courseData).map(k => k || 'General'),
+            labels: courseLabels,
             datasets: [{
-                label: 'Student Count',
-                data: Object.values(courseData),
-                backgroundColor: '#6366f1',
-                borderRadius: 8,
+                label: 'Students',
+                data: courseValues,
+                backgroundColor: function(context) {
+                    const chart = context.chart;
+                    const { ctx: c, chartArea } = chart;
+                    if (!chartArea) return '#6366f1';
+                    return buildBarGradient(c, chartArea, context.dataIndex);
+                },
+                borderRadius: { topLeft: 10, topRight: 10 },
+                borderSkipped: false,
+                barThickness: 'flex',
+                maxBarThickness: 64,
             }]
         },
+        plugins: [{
+            id: 'valueLabels',
+            afterDatasetsDraw(chart) {
+                const { ctx: c } = chart;
+                chart.data.datasets.forEach((dataset, datasetIndex) => {
+                    const meta = chart.getDatasetMeta(datasetIndex);
+                    meta.data.forEach((bar, index) => {
+                        const value = dataset.data[index];
+                        c.save();
+                        c.font = '900 11px Outfit, sans-serif';
+                        c.fillStyle = '#64748b';
+                        c.textAlign = 'center';
+                        c.textBaseline = 'bottom';
+                        c.fillText(value, bar.x, bar.y - 4);
+                        c.restore();
+                    });
+                });
+            }
+        }],
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            animation: { duration: 900, easing: 'easeInOutQuart' },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#0f172a',
+                    titleFont: { family: 'Outfit', size: 13, weight: '800' },
+                    bodyFont: { family: 'Inter', size: 12, weight: '600' },
+                    padding: 12, cornerRadius: 12, displayColors: false,
+                    callbacks: {
+                        label: ctx => ` ${ctx.parsed.y} student${ctx.parsed.y !== 1 ? 's' : ''}`
+                    }
+                }
+            },
             scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { weight: '700' } } },
-                x: { grid: { display: false }, ticks: { font: { weight: '700' } } }
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(99,102,241,0.06)', drawBorder: false },
+                    border: { display: false },
+                    ticks: { font: { weight: '700', size: 11 }, color: '#94a3b8', padding: 8, stepSize: 1 }
+                },
+                x: {
+                    grid: { display: false },
+                    border: { display: false },
+                    ticks: {
+                        font: { weight: '800', size: 10 },
+                        color: '#64748b',
+                        padding: 8,
+                        maxRotation: 25,
+                        callback: function(val, index) {
+                            const label = this.getLabelForValue(val);
+                            return label.length > 14 ? label.substring(0, 13) + '…' : label;
+                        }
+                    }
+                }
             }
         }
     });
