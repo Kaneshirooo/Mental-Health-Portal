@@ -37,7 +37,7 @@ class RegistrationController extends Controller
                 'min:8',
                 'confirmed',
                 'regex:/[A-Z]/',
-                'regex:/[!@#$%^&*(),.?":{}|<>]/',
+                'regex:/[^a-zA-Z0-9]/',
             ],
             'contact_number' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
@@ -50,7 +50,7 @@ class RegistrationController extends Controller
             'email.unique' => 'This Email Address is already registered. Please sign in instead.',
             'password.min' => 'Password must be at least 8 characters long.',
             'password.confirmed' => 'Password confirmation does not match.',
-            'password.regex' => 'Password must contain at least one uppercase letter and one special character.',
+            'password.regex' => 'Password must contain at least one uppercase letter and one special character (e.g. ! @ # $ % ^ & * _ -).',
         ]);
 
         try {
@@ -63,11 +63,11 @@ class RegistrationController extends Controller
                 'password' => Hash::make($request->password),
                 'user_type' => UserRole::STUDENT->value,
                 'contact_number' => $request->contact_number ? trim($request->contact_number) : null,
-                'date_of_birth' => $request->date_of_birth,
-                'gender' => $request->gender,
-                'department' => $request->department,
-                'course' => $request->course,
-                'semester' => $request->semester,
+                'date_of_birth' => $request->date_of_birth ? $request->date_of_birth : null,
+                'gender' => $request->gender ? $request->gender : null,
+                'department' => $request->department ? $request->department : null,
+                'course' => $request->course ? $request->course : null,
+                'semester' => $request->semester ? $request->semester : null,
             ]);
 
             try {
@@ -83,6 +83,9 @@ class RegistrationController extends Controller
             DB::commit();
 
             Auth::login($user);
+            $request->session()->regenerate();
+            session()->save();
+
             return redirect()->route('student.dashboard')->with('success', 'Welcome to the Mental Health Portal! Your account has been successfully created.');
 
         } catch (\Exception $e) {
@@ -93,10 +96,11 @@ class RegistrationController extends Controller
             
             $errorMessage = config('app.debug') 
                 ? 'Registration failed: ' . $e->getMessage() 
-                : 'An unexpected error occurred during registration. Please check your information and try again.';
+                : 'An unexpected error occurred during registration. Please check your details and try again.';
 
             return back()->withInput()->withErrors(['email' => $errorMessage]);
         }
     }
 }
+
 
