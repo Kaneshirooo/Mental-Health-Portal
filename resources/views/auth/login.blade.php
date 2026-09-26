@@ -257,27 +257,30 @@
         .login-form-area { padding: 3.5rem 2.5rem; }
     }
     @media (max-width: 640px) {
-        body { padding: 0.5rem; align-items: flex-start; }
-        .login-container { width: 100%; }
-        .login-card { border-radius: 16px; }
-        /* Make hero ultra-compact: just logo + title */
-        .login-hero { padding: 1rem 1.25rem; }
-        .hero-logo { width: 36px; height: 36px; margin-bottom: 0.6rem; border-radius: 10px; padding: 5px; }
-        .hero-title { font-size: 1.1rem; margin-bottom: 0; line-height: 1.2; }
-        .hero-text { display: none; }
-        .portal-features { display: none; }
-        /* Tighten form */
-        .login-form-area { padding: 1.25rem 1.25rem 1.5rem; }
-        .form-header { margin-bottom: 1rem; }
-        .form-title { font-size: 1.6rem; }
-        .form-subtitle { font-size: 0.85rem; }
-        .input-group { margin-bottom: 0.9rem; }
-        .input-group label { margin-bottom: 0.4rem; font-size: 0.75rem; }
-        .input-group input { padding: 0.85rem 1rem; font-size: 0.9rem; border-radius: 12px; }
-        .btn-sign-in { padding: 0.85rem; font-size: 0.9rem; margin-top: 0.2rem; border-radius: 12px; }
-        .signup-prompt { margin-top: 1rem; margin-bottom: 0.25rem; font-size: 0.88rem; }
-        .or-divider { margin: 1rem 0; font-size: 0.7rem; }
-        .btn-google { padding: 0.8rem; font-size: 0.88rem; border-radius: 12px; }
+        body { padding: 0.5rem; align-items: center; justify-content: center; min-height: 100vh; }
+        .login-container { width: 100%; max-width: 100%; }
+        .login-card { border-radius: 16px; min-height: auto; }
+        .login-hero { padding: 0.75rem 1rem; }
+        .hero-logo { width: 32px; height: 32px; margin-bottom: 0.4rem; border-radius: 8px; padding: 4px; }
+        .hero-title { font-size: 1rem; margin-bottom: 0; line-height: 1.2; }
+        .hero-title b { display: inline; margin-top: 0; color: #a7f3d0; }
+        .hero-text { display: none !important; }
+        .portal-features { display: none !important; }
+        
+        .login-form-area { padding: 1rem 1.15rem 1.25rem; }
+        .form-header { margin-bottom: 0.65rem; }
+        .form-title { font-size: 1.35rem; margin-bottom: 0.2rem; }
+        .form-subtitle { font-size: 0.8rem; }
+        .input-group { margin-bottom: 0.6rem; }
+        .input-group label { margin-bottom: 0.25rem; font-size: 0.72rem; letter-spacing: 0.05em; }
+        .input-group input { padding: 0.65rem 0.85rem; font-size: 0.85rem; border-radius: 10px; }
+        .password-toggle { top: 8px; padding: 0.25rem; }
+        .password-toggle svg { width: 18px; height: 18px; }
+        .btn-sign-in { padding: 0.7rem; font-size: 0.85rem; margin-top: 0.1rem; border-radius: 10px; }
+        .signup-prompt { margin-top: 0.5rem; margin-bottom: 0.25rem; font-size: 0.82rem; }
+        .or-divider { margin: 0.5rem 0; font-size: 0.65rem; }
+        .btn-google { padding: 0.65rem; font-size: 0.82rem; border-radius: 10px; }
+        .btn-google svg { width: 18px; height: 18px; }
     }
 </style>
 
