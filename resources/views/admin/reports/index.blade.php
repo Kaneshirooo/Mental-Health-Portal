@@ -283,6 +283,121 @@
     /* ── Updating state ── */
     .charts-updating canvas { opacity: 0.45; filter: blur(1px); pointer-events: none; }
     .charts-updating { transition: all 0.3s ease; }
+
+    /* ── Enhanced KPI Cards ── */
+    .kpi-card-v2 {
+        position: relative;
+        border-radius: 24px;
+        padding: 1.6rem 1.75rem;
+        cursor: pointer;
+        overflow: hidden;
+        transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1.5px solid transparent;
+        background: var(--surface-solid);
+    }
+    .kpi-card-v2::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 55%);
+        pointer-events: none;
+        border-radius: 24px;
+    }
+    .kpi-card-v2:hover {
+        transform: translateY(-6px) scale(1.015);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+    .kpi-card-v2 .kpi-bg-blob {
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        right: -30px;
+        top: -30px;
+        opacity: 0.12;
+        filter: blur(20px);
+        transition: all 0.5s ease;
+    }
+    .kpi-card-v2:hover .kpi-bg-blob { opacity: 0.22; transform: scale(1.2); }
+    .kpi-click-hint {
+        font-size: 0.68rem;
+        font-weight: 800;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-top: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+    .kpi-card-v2:hover .kpi-click-hint { opacity: 1; }
+
+    /* ── KPI Drawer Slide-in ── */
+    #kpiDrawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(520px, 96vw);
+        z-index: 99990;
+        background: var(--surface-solid);
+        box-shadow: -16px 0 60px rgba(0,0,0,0.14);
+        transform: translateX(110%);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid var(--border);
+    }
+    #kpiDrawer.open { transform: translateX(0); }
+    #kpiDrawerBackdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15,23,42,0.5);
+        backdrop-filter: blur(6px);
+        z-index: 99989;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    #kpiDrawerBackdrop.open { opacity: 1; pointer-events: all; }
+    .drawer-header {
+        padding: 1.75rem 2rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+    }
+    .drawer-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1.25rem 2rem 2rem;
+    }
+    .drawer-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.95rem 1.1rem;
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        background: var(--surface-2);
+        margin-bottom: 0.65rem;
+        transition: all 0.2s ease;
+    }
+    .drawer-row:hover { border-color: var(--primary); transform: translateX(4px); background: var(--surface-solid); }
+    .drawer-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+        border: 1px solid var(--border);
+    }
+    .kpi-progress-ring { transform: rotate(-90deg); }
+    .kpi-progress-ring circle.track { stroke-width: 4; fill: none; stroke: rgba(255,255,255,0.12); }
+    .kpi-progress-ring circle.fill { stroke-width: 4; fill: none; stroke-dasharray: 100; transition: stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1); stroke-linecap: round; }
 </style>
 @endpush
 
@@ -441,85 +556,112 @@
     </div>
 
     <!-- Analytics Matrix (KPI Stat Cards) -->
-    <div id="analyticsMatrix" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem;">
-        
-        <!-- Total Scale / Assessments -->
-        <div class="kpi-card staggered" style="border-top: 4px solid #6366f1;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div class="kpi-icon" style="background: rgba(99, 102, 241, 0.12); color: #4f46e5;">
+    <div id="analyticsMatrix" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.35rem; margin-bottom: 2.5rem;">
+
+        @php
+            $low_cnt  = $risk_counts['Low'] ?? 0;
+            $low_pct  = $total_assessments > 0 ? round(($low_cnt / $total_assessments) * 100) : 0;
+            $obs_cnt  = ($risk_counts['Moderate'] ?? 0) + ($risk_counts['High'] ?? 0);
+            $obs_pct  = $total_assessments > 0 ? round(($obs_cnt / $total_assessments) * 100) : 0;
+            $crit_cnt = $risk_counts['Critical'] ?? 0;
+            $crit_pct = $total_assessments > 0 ? round(($crit_cnt / $total_assessments) * 100) : 0;
+            $all_pct  = 100;
+        @endphp
+
+        <!-- Card 1: Total Assessment Volume -->
+        <div class="kpi-card-v2 staggered"
+             style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-color: rgba(99,102,241,0.35); box-shadow: 0 8px 32px rgba(99,102,241,0.2);"
+             onclick="openKpiDrawer('all')" role="button" tabindex="0">
+            <div class="kpi-bg-blob" style="background: #6366f1;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(99,102,241,0.25); color: #a5b4fc; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(99,102,241,0.3);">
                     <i class="ph-bold ph-clipboard-text"></i>
                 </div>
-                <span style="font-size: 0.72rem; font-weight: 850; background: rgba(99, 102, 241, 0.12); color: #4f46e5; padding: 0.35rem 0.75rem; border-radius: 100px;">
-                    {{ number_format($total_students) }} Active Students
-                </span>
+                <svg class="kpi-progress-ring" width="52" height="52" viewBox="0 0 36 36">
+                    <circle class="track" cx="18" cy="18" r="15"/>
+                    <circle class="fill" cx="18" cy="18" r="15" stroke="#a5b4fc"
+                            stroke-dashoffset="{{ 100 - $all_pct }}"/>
+                </svg>
             </div>
-            <div style="font-size: 0.7rem; font-weight: 850; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem;">Total Assessment Volume</div>
-            <div style="font-size: 2.5rem; font-weight: 900; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif;">{{ number_format($total_assessments) }}</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-check-circle" style="color: #6366f1;"></i> Completed evaluations
+            <div style="font-size: 0.68rem; font-weight: 900; color: rgba(165,180,252,0.8); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Total Assessment Volume</div>
+            <div style="font-size: 2.75rem; font-weight: 950; color: #ffffff; line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($total_assessments) }}</div>
+            <div style="font-size: 0.78rem; color: rgba(165,180,252,0.75); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="ph-bold ph-users" style="color: #a5b4fc;"></i> {{ number_format($total_students) }} unique students
+            </div>
+            <div class="kpi-click-hint" style="color: #a5b4fc;">
+                <i class="ph ph-arrow-right"></i> View all records
             </div>
         </div>
 
-        <!-- Low Risk -->
-        <div class="kpi-card staggered" style="border-top: 4px solid #10b981;">
-            @php
-                $low_cnt = $risk_counts['Low'] ?? 0;
-                $low_pct = $total_assessments > 0 ? round(($low_cnt / $total_assessments) * 100) : 0;
-            @endphp
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.12); color: #059669;">
+        <!-- Card 2: Low Risk -->
+        <div class="kpi-card-v2 staggered"
+             style="background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); border-color: rgba(16,185,129,0.35); box-shadow: 0 8px 32px rgba(16,185,129,0.18);"
+             onclick="openKpiDrawer('low')" role="button" tabindex="0">
+            <div class="kpi-bg-blob" style="background: #10b981;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(16,185,129,0.25); color: #6ee7b7; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(16,185,129,0.3);">
                     <i class="ph-bold ph-shield-check"></i>
                 </div>
-                <span style="font-size: 0.72rem; font-weight: 850; background: rgba(16, 185, 129, 0.12); color: #059669; padding: 0.35rem 0.75rem; border-radius: 100px;">
-                    {{ $low_pct }}% Share
-                </span>
+                <div style="text-align: right;">
+                    <div style="font-size: 1.6rem; font-weight: 900; color: #6ee7b7; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $low_pct }}%</div>
+                    <div style="font-size: 0.65rem; font-weight: 800; color: rgba(110,231,183,0.7); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
+                </div>
             </div>
-            <div style="font-size: 0.7rem; font-weight: 850; color: #059669; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem;">Low Risk (Baseline)</div>
-            <div style="font-size: 2.5rem; font-weight: 900; color: #059669; line-height: 1; font-family: 'Outfit', sans-serif;">{{ number_format($low_cnt) }}</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-trend-up" style="color: #059669;"></i> Stable wellness status
+            <div style="font-size: 0.68rem; font-weight: 900; color: rgba(110,231,183,0.8); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Low Risk (Baseline)</div>
+            <div style="font-size: 2.75rem; font-weight: 950; color: #ffffff; line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($low_cnt) }}</div>
+            <div style="font-size: 0.78rem; color: rgba(110,231,183,0.75); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="ph-bold ph-trend-up" style="color: #6ee7b7;"></i> Stable wellness status
+            </div>
+            <div class="kpi-click-hint" style="color: #6ee7b7;">
+                <i class="ph ph-arrow-right"></i> View low risk students
             </div>
         </div>
 
-        <!-- Observation / Moderate-High -->
-        <div class="kpi-card staggered" style="border-top: 4px solid #f59e0b;">
-            @php
-                $obs_cnt = ($risk_counts['Moderate'] ?? 0) + ($risk_counts['High'] ?? 0);
-                $obs_pct = $total_assessments > 0 ? round(($obs_cnt / $total_assessments) * 100) : 0;
-            @endphp
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.12); color: #d97706;">
+        <!-- Card 3: Active Observation -->
+        <div class="kpi-card-v2 staggered"
+             style="background: linear-gradient(135deg, #451a03 0%, #78350f 100%); border-color: rgba(245,158,11,0.35); box-shadow: 0 8px 32px rgba(245,158,11,0.18);"
+             onclick="openKpiDrawer('observation')" role="button" tabindex="0">
+            <div class="kpi-bg-blob" style="background: #f59e0b;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(245,158,11,0.25); color: #fcd34d; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(245,158,11,0.3);">
                     <i class="ph-bold ph-eye"></i>
                 </div>
-                <span style="font-size: 0.72rem; font-weight: 850; background: rgba(245, 158, 11, 0.12); color: #d97706; padding: 0.35rem 0.75rem; border-radius: 100px;">
-                    {{ $obs_pct }}% Share
-                </span>
+                <div style="text-align: right;">
+                    <div style="font-size: 1.6rem; font-weight: 900; color: #fcd34d; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $obs_pct }}%</div>
+                    <div style="font-size: 0.65rem; font-weight: 800; color: rgba(252,211,77,0.7); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
+                </div>
             </div>
-            <div style="font-size: 0.7rem; font-weight: 850; color: #d97706; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem;">Active Observation</div>
-            <div style="font-size: 2.5rem; font-weight: 900; color: #d97706; line-height: 1; font-family: 'Outfit', sans-serif;">{{ number_format($obs_cnt) }}</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-clock" style="color: #d97706;"></i> Moderate to High cases
+            <div style="font-size: 0.68rem; font-weight: 900; color: rgba(252,211,77,0.8); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Active Observation</div>
+            <div style="font-size: 2.75rem; font-weight: 950; color: #ffffff; line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($obs_cnt) }}</div>
+            <div style="font-size: 0.78rem; color: rgba(252,211,77,0.75); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="ph-bold ph-clock" style="color: #fcd34d;"></i> Moderate &amp; High cases
+            </div>
+            <div class="kpi-click-hint" style="color: #fcd34d;">
+                <i class="ph ph-arrow-right"></i> View observation cases
             </div>
         </div>
 
-        <!-- Critical Risk -->
-        <div class="kpi-card staggered" style="border-top: 4px solid #ef4444;">
-            @php
-                $crit_cnt = $risk_counts['Critical'] ?? 0;
-                $crit_pct = $total_assessments > 0 ? round(($crit_cnt / $total_assessments) * 100) : 0;
-            @endphp
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div class="kpi-icon" style="background: rgba(239, 68, 68, 0.12); color: #dc2626;">
+        <!-- Card 4: Critical Severity -->
+        <div class="kpi-card-v2 staggered"
+             style="background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%); border-color: rgba(239,68,68,0.35); box-shadow: 0 8px 32px rgba(239,68,68,0.2);"
+             onclick="openKpiDrawer('critical')" role="button" tabindex="0">
+            <div class="kpi-bg-blob" style="background: #ef4444;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(239,68,68,0.25); color: #fca5a5; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(239,68,68,0.3);">
                     <i class="ph-bold ph-warning-octagon"></i>
                 </div>
-                <span style="font-size: 0.72rem; font-weight: 850; background: rgba(239, 68, 68, 0.12); color: #dc2626; padding: 0.35rem 0.75rem; border-radius: 100px;">
-                    {{ $crit_pct }}% Share
-                </span>
+                <div style="text-align: right;">
+                    <div style="font-size: 1.6rem; font-weight: 900; color: #fca5a5; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $crit_pct }}%</div>
+                    <div style="font-size: 0.65rem; font-weight: 800; color: rgba(252,165,165,0.7); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
+                </div>
             </div>
-            <div style="font-size: 0.7rem; font-weight: 850; color: #dc2626; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem;">Critical Severity</div>
-            <div style="font-size: 2.5rem; font-weight: 900; color: #dc2626; line-height: 1; font-family: 'Outfit', sans-serif;">{{ number_format($crit_cnt) }}</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-bell-ringing" style="color: #dc2626;"></i> Immediate intervention
+            <div style="font-size: 0.68rem; font-weight: 900; color: rgba(252,165,165,0.8); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Critical Severity</div>
+            <div style="font-size: 2.75rem; font-weight: 950; color: #ffffff; line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($crit_cnt) }}</div>
+            <div style="font-size: 0.78rem; color: rgba(252,165,165,0.75); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="ph-bold ph-bell-ringing" style="color: #fca5a5;"></i> Immediate intervention needed
+            </div>
+            <div class="kpi-click-hint" style="color: #fca5a5;">
+                <i class="ph ph-arrow-right"></i> View critical students
             </div>
         </div>
     </div>
@@ -858,6 +1000,31 @@
         </div>
     </div>
 </div>
+
+<!-- ═══ KPI Detail Drawer ═══ -->
+<div id="kpiDrawerBackdrop" onclick="closeKpiDrawer()"></div>
+<aside id="kpiDrawer" aria-label="KPI Detail Drawer">
+    <div class="drawer-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <div id="kpiDrawerBadge" style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; padding: 0.3rem 0.8rem; border-radius: 100px; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 0.6rem;"></div>
+                <h3 id="kpiDrawerTitle" style="font-family: 'Outfit', sans-serif; font-size: 1.55rem; font-weight: 900; color: var(--text); margin: 0; line-height: 1.2;"></h3>
+                <p id="kpiDrawerSubtitle" style="font-size: 0.84rem; color: var(--text-muted); font-weight: 500; margin-top: 0.3rem;"></p>
+            </div>
+            <button onclick="closeKpiDrawer()" style="width: 40px; height: 40px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s ease;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--surface-2)'">
+                <i class="ph ph-x" style="font-size: 1.2rem;"></i>
+            </button>
+        </div>
+        <!-- Search inside drawer -->
+        <div style="margin-top: 1rem; position: relative;">
+            <i class="ph ph-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 1rem;"></i>
+            <input type="text" id="kpiDrawerSearch" oninput="filterKpiDrawer()" placeholder="Search students..." style="width: 100%; padding: 0.7rem 1rem 0.7rem 2.8rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 700; font-size: 0.88rem; outline: none; transition: all 0.2s ease; box-sizing: border-box;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+    </div>
+    <div class="drawer-body" id="kpiDrawerBody">
+        <!-- Populated by JS -->
+    </div>
+</aside>
 
 @push('scripts')
 <!-- Refresh loading bar -->
@@ -1329,6 +1496,130 @@ function closeRiskModal() {
 // initCharts() is now called inside DOMContentLoaded above
 // — also re-call on back/forward nav
 window.addEventListener('pageshow', () => initCharts());
+
+// ═══ KPI Drawer Logic ═══
+const kpiAllData = @json($recent_assessments->values());
+
+const kpiDrawerConfig = {
+    all: {
+        title: 'All Assessments',
+        subtitle: 'Complete list of student evaluation records.',
+        badge: '📋 All Records',
+        badgeStyle: 'background: rgba(99,102,241,0.15); color: #6366f1; border: 1px solid rgba(99,102,241,0.3);',
+        accent: '#6366f1',
+        avatarBg: 'rgba(99,102,241,0.12)',
+        filter: r => true,
+    },
+    low: {
+        title: 'Low Risk Students',
+        subtitle: 'Students in the baseline wellness tier.',
+        badge: '🛡️ Low Risk',
+        badgeStyle: 'background: rgba(16,185,129,0.15); color: #059669; border: 1px solid rgba(16,185,129,0.3);',
+        accent: '#10b981',
+        avatarBg: 'rgba(16,185,129,0.12)',
+        filter: r => r.risk_level === 'Low',
+    },
+    observation: {
+        title: 'Active Observation',
+        subtitle: 'Students in Moderate or High risk requiring monitoring.',
+        badge: '👁 Under Observation',
+        badgeStyle: 'background: rgba(245,158,11,0.15); color: #d97706; border: 1px solid rgba(245,158,11,0.3);',
+        accent: '#f59e0b',
+        avatarBg: 'rgba(245,158,11,0.12)',
+        filter: r => r.risk_level === 'Moderate' || r.risk_level === 'High',
+    },
+    critical: {
+        title: 'Critical Severity',
+        subtitle: 'Students flagged for immediate intervention.',
+        badge: '🚨 Critical',
+        badgeStyle: 'background: rgba(239,68,68,0.15); color: #dc2626; border: 1px solid rgba(239,68,68,0.3);',
+        accent: '#ef4444',
+        avatarBg: 'rgba(239,68,68,0.12)',
+        filter: r => r.risk_level === 'Critical',
+    },
+};
+
+const riskColors = { Low: '#10b981', Moderate: '#f59e0b', High: '#f97316', Critical: '#ef4444' };
+
+function openKpiDrawer(type) {
+    const cfg = kpiDrawerConfig[type];
+    if (!cfg) return;
+
+    document.getElementById('kpiDrawerTitle').textContent = cfg.title;
+    document.getElementById('kpiDrawerSubtitle').textContent = cfg.subtitle;
+    const badge = document.getElementById('kpiDrawerBadge');
+    badge.textContent = cfg.badge;
+    badge.style.cssText += cfg.badgeStyle;
+    document.getElementById('kpiDrawerSearch').value = '';
+
+    renderKpiDrawerRows(cfg.filter, cfg.avatarBg, cfg.accent);
+
+    document.getElementById('kpiDrawer').classList.add('open');
+    document.getElementById('kpiDrawerBackdrop').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function renderKpiDrawerRows(filterFn, avatarBg, accent) {
+    const body = document.getElementById('kpiDrawerBody');
+    const filtered = kpiAllData.filter(filterFn);
+    body.innerHTML = '';
+
+    if (filtered.length === 0) {
+        body.innerHTML = `
+            <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+                <i class="ph ph-folder-open" style="font-size: 3rem; opacity: 0.3; display: block; margin-bottom: 0.75rem;"></i>
+                <div style="font-weight: 800; font-size: 1rem; color: var(--text);">No records found</div>
+                <div style="font-size: 0.85rem; margin-top: 0.3rem;">No students match this category in the current date range.</div>
+            </div>`;
+        return;
+    }
+
+    filtered.forEach(r => {
+        const name = r.user?.full_name ?? 'Anonymous Student';
+        const roll = r.user?.roll_number ?? 'N/A';
+        const email = r.user?.email ?? '';
+        const risk = r.risk_level ?? 'Low';
+        const score = r.overall_score ?? 0;
+        const date = r.assessment_date ? new Date(r.assessment_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A';
+        const initial = name.charAt(0).toUpperCase();
+        const riskColor = riskColors[risk] || '#6b7280';
+        const userId = r.user_id;
+
+        const row = document.createElement('div');
+        row.className = 'drawer-row';
+        row.setAttribute('data-search', `${name.toLowerCase()} ${roll.toLowerCase()} ${email.toLowerCase()} ${risk.toLowerCase()}`);
+        row.innerHTML = `
+            <div class="drawer-avatar" style="background: ${avatarBg}; color: ${accent}; font-size: 1.1rem;">${initial}</div>
+            <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 800; color: var(--text); font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${name}</div>
+                <div style="font-size: 0.72rem; color: var(--text-dim); font-weight: 600;">${roll} &nbsp;·&nbsp; ${date}</div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0;">
+                <div style="font-size: 1.1rem; font-weight: 900; color: ${accent}; font-family: 'Outfit', sans-serif;">${score}%</div>
+                <span style="font-size: 0.6rem; font-weight: 900; padding: 0.2rem 0.6rem; border-radius: 100px; background: ${riskColor}18; color: ${riskColor}; border: 1px solid ${riskColor}40; text-transform: uppercase; letter-spacing: 0.06em;">${risk}</span>
+            </div>
+            ${userId ? `<a href="/counselor/students/${userId}" style="width: 36px; height: 36px; border-radius: 10px; background: var(--surface-solid); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; flex-shrink: 0; transition: all 0.2s ease;" title="View Profile" onmouseover="this.style.borderColor='${accent}'; this.style.color='${accent}'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-muted)'"><i class="ph ph-arrow-square-out" style="font-size: 1rem;"></i></a>` : ''}
+        `;
+        body.appendChild(row);
+    });
+}
+
+function filterKpiDrawer() {
+    const q = document.getElementById('kpiDrawerSearch').value.toLowerCase().trim();
+    document.querySelectorAll('#kpiDrawerBody .drawer-row').forEach(row => {
+        const text = row.getAttribute('data-search') || '';
+        row.style.display = (!q || text.includes(q)) ? 'flex' : 'none';
+    });
+}
+
+function closeKpiDrawer() {
+    document.getElementById('kpiDrawer').classList.remove('open');
+    document.getElementById('kpiDrawerBackdrop').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+// Close on Escape key
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeKpiDrawer(); });
 </script>
 @endpush
 @endsection
