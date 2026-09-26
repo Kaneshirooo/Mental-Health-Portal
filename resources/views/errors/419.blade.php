@@ -47,12 +47,16 @@
     <div class="card">
         <div class="icon">⏱️</div>
         <h1>Session Expired</h1>
-        <p>Your session has timed out for security reasons. Please log in again to continue using the portal.</p>
-        <a href="/login" class="btn">Return to Login →</a>
+        <p>Your session has timed out for security reasons. Please click below to return or try again.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; flex-wrap: wrap;">
+            <button onclick="window.history.back()" class="btn" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); cursor: pointer;">← Go Back & Retry</button>
+            <a href="/login" class="btn">Return to Login →</a>
+        </div>
     </div>
     <script>
-        // Auto-redirect after 5 seconds
-        setTimeout(() => { window.location.href = '/login'; }, 5000);
+        // Auto-redirect to login after 10 seconds if idle
+        setTimeout(() => { window.location.href = '/login'; }, 10000);
     </script>
 </body>
 </html>
+
