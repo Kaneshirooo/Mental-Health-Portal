@@ -249,24 +249,39 @@
         .login-form-area { padding: 3.5rem 2.5rem; }
     }
     @media (max-width: 640px) {
-        body { padding: 0.75rem; align-items: flex-start; }
+        body { padding: 0.5rem; align-items: flex-start; }
         .login-container { width: 100%; }
-        .login-card { border-radius: 20px; overflow: hidden; }
-        .login-hero { padding: 1.75rem 1.25rem; }
-        .hero-logo { width: 44px; height: 44px; margin-bottom: 1.25rem; border-radius: 12px; }
-        .hero-title { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .hero-text { font-size: 0.88rem; line-height: 1.5; }
+        .login-card { border-radius: 16px; overflow: hidden; }
+        .login-hero { padding: 1.25rem 1.25rem; }
+        .hero-logo { width: 40px; height: 40px; margin-bottom: 0.75rem; border-radius: 10px; }
+        .hero-title { font-size: 1.3rem; margin-bottom: 0.35rem; }
+        .hero-text { font-size: 0.82rem; line-height: 1.4; }
         .portal-features { display: none; }
-        .login-form-area { padding: 1.5rem 1.25rem 2rem; }
-        .form-header { margin-bottom: 1.25rem; }
-        .form-title { font-size: 1.75rem; }
+        .login-form-area { padding: 1.25rem 1.25rem 1.5rem; }
+        .form-header { margin-bottom: 1rem; }
+        .form-title { font-size: 1.6rem; }
+        .form-subtitle { font-size: 0.85rem; }
+        .input-group { margin-bottom: 0.85rem; }
+        .input-group label { margin-bottom: 0.5rem; font-size: 0.78rem; }
+        .input-group input { padding: 0.85rem 1rem; font-size: 0.9rem; border-radius: 12px; }
+        .btn-sign-in { padding: 0.85rem; font-size: 0.9rem; margin-top: 0.15rem; border-radius: 12px; }
+        .or-divider { margin: 0.85rem 0; font-size: 0.7rem; }
+        .btn-google { padding: 0.75rem; font-size: 0.85rem; border-radius: 12px; }
+        .signup-prompt { margin-top: 0.85rem; font-size: 0.85rem; padding-bottom: 0.25rem; }
+    }
+    @media (max-width: 480px) {
+        .login-hero { display: none; }
+        .login-form-area { padding: 2rem 1.5rem; }
+        .form-header { margin-bottom: 1.5rem; }
+        .form-title { font-size: 1.8rem; }
         .form-subtitle { font-size: 0.9rem; }
         .input-group { margin-bottom: 1rem; }
+        .input-group label { margin-bottom: 0.6rem; }
         .input-group input { padding: 0.9rem 1.1rem; font-size: 0.95rem; }
         .btn-sign-in { padding: 0.9rem; font-size: 0.95rem; margin-top: 0.25rem; }
-        .or-divider { margin: 1.25rem 0; }
+        .or-divider { margin: 1rem 0; }
         .btn-google { padding: 0.85rem; font-size: 0.9rem; }
-        .signup-prompt { margin-top: 1.25rem; font-size: 0.9rem; padding-bottom: 0.5rem; }
+        .signup-prompt { margin-top: 1rem; font-size: 0.9rem; }
     }
 </style>
 
