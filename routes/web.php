@@ -168,3 +168,37 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 Route::get('/debug-log', function() { return response(file_exists(storage_path('logs/laravel.log')) ? substr(file_get_contents(storage_path('logs/laravel.log')), -5000) : 'No log file', 200, ['Content-Type' => 'text/plain']); });
+
+// Google OAuth Configuration Diagnostic (safe — shows no secrets, only IDs and URIs)
+Route::get('/google-oauth-check', function () {
+    $clientId     = config('services.google.client_id');
+    $clientSecret = config('services.google.client_secret');
+    $redirectCfg  = config('services.google.redirect');
+    $redirectRoute = route('auth.google.callback');
+    $appUrl        = config('app.url');
+
+    $idOk     = filled($clientId);
+    $secretOk = filled($clientSecret);
+    $uriMatch = ($redirectCfg === $redirectRoute);
+
+    $lines = [
+        '=== Google OAuth Configuration Diagnostic ===',
+        '',
+        'APP_URL (config):         ' . $appUrl,
+        '',
+        'GOOGLE_CLIENT_ID:         ' . ($idOk     ? substr($clientId, 0, 30) . '...' : '*** MISSING ***'),
+        'GOOGLE_CLIENT_SECRET:     ' . ($secretOk ? '(set, ' . strlen($clientSecret) . ' chars)' : '*** MISSING ***'),
+        '',
+        'GOOGLE_REDIRECT_URI (env):   ' . ($redirectCfg  ?: '*** MISSING ***'),
+        'route(auth.google.callback): ' . $redirectRoute,
+        'URI Match:                   ' . ($uriMatch ? 'YES ✓' : 'NO - MISMATCH! ← Fix this'),
+        '',
+        '--- What to check in Google Cloud Console ---',
+        'Authorized JavaScript origins:  ' . $appUrl,
+        'Authorized redirect URIs:        ' . $redirectRoute,
+        '',
+        'Status: ' . ($idOk && $secretOk && $uriMatch ? 'OK — credentials are set and URIs match.' : 'PROBLEM DETECTED — see above.'),
+    ];
+
+    return response(implode("\n", $lines), 200, ['Content-Type' => 'text/plain']);
+});
