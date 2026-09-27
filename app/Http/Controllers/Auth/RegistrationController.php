@@ -68,23 +68,9 @@ class RegistrationController extends Controller
                 'semester' => $request->semester ? $request->semester : null,
             ]);
 
-            try {
-                SessionLog::create([
-                    'user_id' => $user->user_id,
-                    'login_time' => Carbon::now(),
-                    'activity' => 'Registration Direct login',
-                ]);
-            } catch (\Exception $logEx) {
-                \Illuminate\Support\Facades\Log::warning("Session log creation skipped: " . $logEx->getMessage());
-            }
-
             DB::commit();
 
-            Auth::login($user);
-            $request->session()->regenerate();
-            session()->save();
-
-            return redirect()->route('student.dashboard')->with('success', 'Welcome to the Mental Health Portal! Your account has been successfully created.');
+            return redirect()->route('login')->with('success', 'Your account has been successfully created! Please log in with your credentials.');
 
         } catch (\Exception $e) {
             DB::rollBack();

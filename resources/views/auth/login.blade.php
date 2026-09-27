@@ -378,6 +378,13 @@
                 <p class="form-subtitle staggered">Please authenticate with your credentials</p>
             </div>
 
+            @if(session('success'))
+                <div class="success-alert staggered" style="background: rgba(16, 185, 129, 0.1); border: 2px solid rgba(16, 185, 129, 0.3); color: #10b981; padding: 1.25rem; border-radius: 16px; margin-bottom: 2rem; font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 1.5rem;">✅</span>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+
             @if($errors->any())
                 <div class="error-alert staggered">
                     <span style="font-size: 1.5rem;">⚠️</span>
