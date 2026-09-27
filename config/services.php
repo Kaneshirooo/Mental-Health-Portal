@@ -29,8 +29,8 @@ return [
     ],
 
     'google' => [
-        'client_id'     => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'client_id'     => trim((string) env('GOOGLE_CLIENT_ID')),
+        'client_secret' => trim((string) env('GOOGLE_CLIENT_SECRET')),
         // Always generate dynamically from APP_URL so it NEVER mismatches.
         // This eliminates env var typos, hidden characters, and vd08/vd83 confusion.
         'redirect'      => rtrim(env('APP_URL', 'http://localhost'), '/') . '/auth/google/callback',
