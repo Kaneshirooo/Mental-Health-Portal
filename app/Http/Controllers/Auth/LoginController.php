@@ -113,54 +113,32 @@ class LoginController extends Controller
 
     public function redirectToGoogle()
     {
-        $clientId = trim(config('services.google.client_id') ?: env('GOOGLE_CLIENT_ID'));
-        $clientSecret = trim(config('services.google.client_secret') ?: env('GOOGLE_CLIENT_SECRET'));
-
-        // Use the explicit env var first (already correct on Render).
-        // Fall back to route() but force https:// so Render's reverse proxy
-        // doesn't cause Google to reject an http:// redirect URI.
-        $redirectUrl = env('GOOGLE_REDIRECT_URI')
-            ?: str_replace('http://', 'https://', route('auth.google.callback'));
-
-        if (empty($clientId) || empty($clientSecret)) {
+        if (!$this->hasGoogleOauthConfig()) {
             return redirect()
                 ->route('login')
                 ->withErrors(['email' => 'Google sign-in is not configured yet. Please contact administrator.']);
         }
 
-        return Socialite::buildProvider(\Laravel\Socialite\Two\GoogleProvider::class, [
-            'client_id'     => $clientId,
-            'client_secret' => $clientSecret,
-            'redirect'      => $redirectUrl,
-        ])
-        ->stateless()
-        ->with(['prompt' => 'select_account'])
-        ->redirect();
+        return Socialite::driver('google')
+            ->stateless()
+            ->redirectUrl(route('auth.google.callback'))
+            ->with(['prompt' => 'select_account'])
+            ->redirect();
     }
 
     public function handleGoogleCallback()
     {
-        $clientId = trim(config('services.google.client_id') ?: env('GOOGLE_CLIENT_ID'));
-        $clientSecret = trim(config('services.google.client_secret') ?: env('GOOGLE_CLIENT_SECRET'));
-
-        // Must match exactly what was used in redirectToGoogle()
-        $redirectUrl = env('GOOGLE_REDIRECT_URI')
-            ?: str_replace('http://', 'https://', route('auth.google.callback'));
-
-        if (empty($clientId) || empty($clientSecret)) {
+        if (!$this->hasGoogleOauthConfig()) {
             return redirect()
                 ->route('login')
                 ->withErrors(['email' => 'Google sign-in is not configured yet. Please contact administrator.']);
         }
 
         try {
-            $googleUser = Socialite::buildProvider(\Laravel\Socialite\Two\GoogleProvider::class, [
-                'client_id'     => $clientId,
-                'client_secret' => $clientSecret,
-                'redirect'      => $redirectUrl,
-            ])
-            ->stateless()
-            ->user();
+            $googleUser = Socialite::driver('google')
+                ->stateless()
+                ->redirectUrl(route('auth.google.callback'))
+                ->user();
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Google OAuth callback failed: ' . $e->getMessage());
             return redirect()->route('login')->withErrors(['email' => 'Google authentication failed. Please try again.']);
