@@ -181,45 +181,108 @@ class LoginController extends Controller
     protected function sendOtpEmail($email, $code)
     {
         $year = date('Y');
-        $body = "
-            <div style='font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;'>
-                <h2 style='color: #0d9488; margin-bottom: 16px;'>Security Verification</h2>
-                <p style='font-size: 16px; color: #475569;'>Hello,</p>
-                <p style='font-size: 16px; color: #475569;'>Your one-time verification code for the Mental Health Portal is:</p>
-                <div style='background: #f1f5f9; padding: 24px; text-align: center; border-radius: 8px; margin: 24px 0;'>
-                    <span style='font-size: 32px; font-weight: 700; letter-spacing: 8px; color: #0f172a;'>$code</span>
-                </div>
-                <p style='font-size: 14px; color: #64748b; margin-top: 24px;'>This code will expire in 10 minutes. If you didn't request this code, please ignore this email.</p>
-                <hr style='border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;'>
-                <p style='font-size: 12px; color: #94a3b8;'>© $year PSU Mental Health Portal. All rights reserved.</p>
-            </div>
-        ";
+        $fromName = config('mail.from.name', env('MAIL_FROM_NAME', 'PSU Mental Health Portal'));
+
+        $html = <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Verification Code</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f5;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#064e3b 0%,#059669 60%,#10b981 100%);padding:36px 40px;text-align:center;">
+              <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;letter-spacing:-0.3px;">PSU Mental Health Portal</h1>
+              <p style="margin:8px 0 0;color:rgba(255,255,255,0.8);font-size:13px;">Secure Login Verification</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 40px 24px;">
+              <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.6;">Hello,</p>
+              <p style="margin:0 0 28px;color:#374151;font-size:15px;line-height:1.6;">You are receiving this email because a login was attempted on your account. Use the verification code below to complete your sign-in. <strong>Do not share this code with anyone.</strong></p>
+
+              <!-- OTP Block -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" style="background-color:#f0fdf4;border:2px dashed #10b981;border-radius:10px;padding:28px 20px;">
+                    <p style="margin:0 0 8px;color:#065f46;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;">Your Verification Code</p>
+                    <p style="margin:0;color:#064e3b;font-size:42px;font-weight:800;letter-spacing:14px;font-family:'Courier New',Courier,monospace;">$code</p>
+                    <p style="margin:10px 0 0;color:#6b7280;font-size:12px;">Expires in <strong>10 minutes</strong></p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:28px 0 0;color:#6b7280;font-size:13px;line-height:1.7;">
+                If you did not attempt to log in, please ignore this email. Your account remains secure and no changes have been made.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f9fafb;border-top:1px solid #e5e7eb;padding:24px 40px;text-align:center;">
+              <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.6;">
+                This is an automated security message from $fromName.<br>
+                Please do not reply to this email.<br><br>
+                &copy; $year PSU Mental Health Portal. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+HTML;
+
+        $text = "PSU Mental Health Portal - Login Verification\n\n"
+            . "Your one-time verification code is: $code\n\n"
+            . "This code expires in 10 minutes.\n\n"
+            . "If you did not attempt to log in, please ignore this email.\n\n"
+            . "-- PSU Mental Health Portal";
 
         $password = config('mail.mailers.smtp.password', env('MAIL_PASSWORD'));
-        
+        $fromAddress = config('mail.from.address', env('MAIL_FROM_ADDRESS'));
+
         // Render Free Tier blocks outbound SMTP (port 25, 465, 587).
         // If we detect a Resend API key, use their HTTP API (port 443) instead of Laravel's SMTP Mail facade.
         if (str_starts_with((string) $password, 're_')) {
-            $fromAddress = config('mail.from.address', env('MAIL_FROM_ADDRESS'));
-            $fromName = config('mail.from.name', env('MAIL_FROM_NAME', 'Mental Health Portal'));
-            
             $response = \Illuminate\Support\Facades\Http::withHeaders([
                 'Authorization' => 'Bearer ' . $password,
-                'Content-Type' => 'application/json',
+                'Content-Type'  => 'application/json',
             ])->post('https://api.resend.com/emails', [
-                'from' => $fromName . ' <' . $fromAddress . '>',
-                'to' => [$email],
-                'subject' => 'Your Verification Code — Mental Health Portal',
-                'html' => $body,
+                'from'    => $fromName . ' <' . $fromAddress . '>',
+                'to'      => [$email],
+                'reply_to' => $fromAddress,
+                'subject' => '[PSU Mental Health Portal] Your Login Verification Code',
+                'html'    => $html,
+                'text'    => $text,
+                'tags'    => [
+                    ['name' => 'category', 'value' => 'otp'],
+                ],
             ]);
-            
+
             if (!$response->successful()) {
                 \Illuminate\Support\Facades\Log::error('Resend API HTTP Error: ' . $response->body());
             }
         } else {
-            \Illuminate\Support\Facades\Mail::html($body, function ($message) use ($email) {
+            \Illuminate\Support\Facades\Mail::html($html, function ($message) use ($email, $fromName, $fromAddress, $text) {
                 $message->to($email)
-                    ->subject('Your Verification Code — Mental Health Portal');
+                    ->replyTo($fromAddress, $fromName)
+                    ->subject('[PSU Mental Health Portal] Your Login Verification Code')
+                    ->text($text);
             });
         }
     }
