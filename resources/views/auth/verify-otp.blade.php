@@ -155,6 +155,10 @@
         <div class="error-msg">⚠️ {{ $errors->first() }}</div>
     @endif
 
+    @if(session('warning'))
+        <div class="error-msg" style="background:#fffbe6;color:#856404;border-color:#ffeeba;">⚠️ {{ session('warning') }}</div>
+    @endif
+
     @if(session('success'))
         <div class="success-msg">✅ {{ session('success') }}</div>
     @endif

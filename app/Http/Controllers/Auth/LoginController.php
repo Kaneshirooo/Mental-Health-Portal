@@ -267,9 +267,29 @@ HTML;
         $password = config('mail.mailers.smtp.password', env('MAIL_PASSWORD'));
         $fromAddress = config('mail.from.address', env('MAIL_FROM_ADDRESS'));
 
-        // Render Free Tier blocks outbound SMTP (port 25, 465, 587).
-        // If we detect a Resend API key, use their HTTP API (port 443) instead of Laravel's SMTP Mail facade.
-        if (str_starts_with((string) $password, 're_')) {
+        // If we detect a Brevo API key (xkeysib-), use Brevo HTTP API (Port 443) which delivers to ALL recipient domains!
+        if (str_starts_with((string) $password, 'xkeysib-') || str_starts_with((string) env('BREVO_API_KEY'), 'xkeysib-')) {
+            $apiKey = str_starts_with((string) $password, 'xkeysib-') ? $password : env('BREVO_API_KEY');
+            $senderEmail = env('BREVO_SENDER_EMAIL', 'quinomrenzo@gmail.com');
+
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
+                'api-key'      => $apiKey,
+                'accept'       => 'application/json',
+                'content-type' => 'application/json',
+            ])->post('https://api.brevo.com/v3/smtp/email', [
+                'sender'      => ['name' => $fromName, 'email' => $senderEmail],
+                'to'          => [['email' => $email]],
+                'subject'     => '[PSU Mental Health Portal] Your Login Verification Code',
+                'htmlContent' => $html,
+                'textContent' => $text,
+            ]);
+
+            if (!$response->successful()) {
+                \Illuminate\Support\Facades\Log::error("Brevo API HTTP Error [{$response->status()}] for email {$email}: " . $response->body());
+            }
+        }
+        // If we detect a Resend API key, use their HTTP API (port 443)
+        elseif (str_starts_with((string) $password, 're_')) {
             $response = \Illuminate\Support\Facades\Http::withHeaders([
                 'Authorization' => 'Bearer ' . $password,
                 'Content-Type'  => 'application/json',
@@ -286,7 +306,12 @@ HTML;
             ]);
 
             if (!$response->successful()) {
-                \Illuminate\Support\Facades\Log::error('Resend API HTTP Error: ' . $response->body());
+                $errBody = $response->body();
+                \Illuminate\Support\Facades\Log::error("Resend API HTTP Error [{$response->status()}] for email {$email}: " . $errBody);
+
+                if (str_contains($errBody, 'testing emails') || $response->status() === 403) {
+                    session()->flash('warning', 'Note: Resend Sandbox active. Emails can only be sent to the registered owner address unless a custom domain is added in Resend.');
+                }
             }
         } else {
             \Illuminate\Support\Facades\Mail::html($html, function ($message) use ($email, $fromName, $fromAddress, $text) {
