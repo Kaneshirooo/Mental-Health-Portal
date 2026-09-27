@@ -200,7 +200,7 @@ HTML;
         // If we detect a Brevo API key (xkeysib-), use Brevo HTTP API (Port 443) which delivers to ALL recipient domains!
         if (str_starts_with((string) $password, 'xkeysib-') || str_starts_with((string) env('BREVO_API_KEY'), 'xkeysib-')) {
             $apiKey = str_starts_with((string) $password, 'xkeysib-') ? $password : env('BREVO_API_KEY');
-            $senderEmail = env('BREVO_SENDER_EMAIL', 'quinomrenzo@gmail.com');
+            $senderEmail = env('BREVO_SENDER_EMAIL', (!empty($fromAddress) && !str_contains($fromAddress, 'resend.dev') ? $fromAddress : 'aquinorenz69@gmail.com'));
 
             $response = \Illuminate\Support\Facades\Http::withHeaders([
                 'api-key'      => $apiKey,
