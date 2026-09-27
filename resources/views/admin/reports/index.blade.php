@@ -151,50 +151,92 @@
         box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
         background: var(--surface-solid);
     }
+    /* ── Search / Inputs ── */
+    .search-input-box {
+        background: var(--surface-2);
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        padding: 0.75rem 1.35rem;
+        color: var(--text);
+        font-weight: 700;
+        font-size: 0.95rem;
+        outline: none;
+        width: 320px;
+        transition: all 0.25s ease;
+    }
+    .search-input-box:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+        background: var(--surface-solid);
+    }
     .filter-select {
-        padding: 0.7rem 1.1rem;
+        padding: 0.7rem 2.6rem 0.7rem 1.1rem;
         border-radius: 14px;
         border: 1.5px solid var(--border);
         background: var(--surface-solid);
         color: var(--text);
         font-weight: 800;
         cursor: pointer;
-        font-size: 0.92rem;
+        font-size: 0.9rem;
         outline: none;
         transition: all 0.22s ease;
         height: 48px;
-        flex: 1;
-        min-width: 210px;
+        flex: 1.2;
+        min-width: 190px;
         appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%230f172a' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 1rem center;
         background-size: 12px;
-        padding-right: 2.5rem;
+    }
+    .dark-mode .filter-select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23f8fafc' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
     }
     .filter-select:focus, .filter-select:hover {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
         background-color: var(--surface-solid);
     }
 
-    /* ── Date Input Wrapper ── */
-    .date-input-wrapper {
+    /* ── Dedicated Date Input Boxes ── */
+    .date-picker-box {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.55rem;
         background: var(--surface-solid);
-        padding: 0 1.25rem;
+        padding: 0 0.85rem;
         border-radius: 14px;
         border: 1.5px solid var(--border);
         height: 48px;
-        flex: 1.5;
-        min-width: 340px;
         transition: all 0.22s ease;
+        flex: 1;
+        min-width: 175px;
     }
-    .date-input-wrapper:focus-within {
+    .date-picker-box:focus-within, .date-picker-box:hover {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+    .date-badge {
+        font-size: 0.72rem;
+        font-weight: 900;
+        color: var(--primary);
+        background: rgba(16, 185, 129, 0.12);
+        padding: 0.2rem 0.55rem;
+        border-radius: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        flex-shrink: 0;
+    }
+    .date-picker-box input[type="date"] {
+        background: transparent;
+        border: none;
+        color: var(--text);
+        font-weight: 800;
+        font-size: 0.88rem;
+        outline: none;
+        cursor: pointer;
+        font-family: inherit;
+        width: 100%;
     }
 
     /* ── Refresh Loading Overlay ── */
@@ -284,54 +326,157 @@
     .charts-updating canvas { opacity: 0.45; filter: blur(1px); pointer-events: none; }
     .charts-updating { transition: all 0.3s ease; }
 
-    /* ── Enhanced KPI Cards ── */
+    /* ── Enhanced High Contrast KPI Cards ── */
     .kpi-card-v2 {
         position: relative;
-        border-radius: 24px;
-        padding: 1.6rem 1.75rem;
+        border-radius: 22px;
+        padding: 1.65rem 1.75rem;
         cursor: pointer;
         overflow: hidden;
         transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-        border: 1.5px solid transparent;
+        border: 1.5px solid var(--border);
         background: var(--surface-solid);
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.04);
     }
     .kpi-card-v2::before {
         content: '';
         position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 55%);
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        border-radius: 22px 22px 0 0;
         pointer-events: none;
-        border-radius: 24px;
     }
+    .kpi-card-v2.kpi-volume::before { background: linear-gradient(90deg, #4f46e5, #6366f1); }
+    .kpi-card-v2.kpi-low::before { background: linear-gradient(90deg, #059669, #10b981); }
+    .kpi-card-v2.kpi-obs::before { background: linear-gradient(90deg, #d97706, #f59e0b); }
+    .kpi-card-v2.kpi-crit::before { background: linear-gradient(90deg, #dc2626, #ef4444); }
+
     .kpi-card-v2:hover {
-        transform: translateY(-6px) scale(1.015);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
+    }
+    .dark-mode .kpi-card-v2 {
+        background: #1e293b;
+        border-color: #334155;
     }
     .kpi-card-v2 .kpi-bg-blob {
         position: absolute;
-        width: 140px;
-        height: 140px;
+        width: 150px;
+        height: 150px;
         border-radius: 50%;
         right: -30px;
         top: -30px;
-        opacity: 0.12;
-        filter: blur(20px);
+        opacity: 0.1;
+        filter: blur(24px);
         transition: all 0.5s ease;
     }
     .kpi-card-v2:hover .kpi-bg-blob { opacity: 0.22; transform: scale(1.2); }
-    .kpi-click-hint {
-        font-size: 0.68rem;
-        font-weight: 800;
-        opacity: 0;
-        transition: opacity 0.25s ease;
+
+    .kpi-title-text {
+        font-size: 0.82rem;
+        font-weight: 850;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 0.35rem;
+        color: var(--text) !important;
+    }
+    .kpi-value-num {
+        font-size: 2.85rem;
+        font-weight: 950;
+        color: var(--text);
+        line-height: 1.05;
+        font-family: 'Outfit', sans-serif;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.35rem;
+    }
+    .kpi-subtext {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        font-weight: 700;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+    }
+    .dark-mode .kpi-subtext {
+        color: #cbd5e1;
+    }
+    .kpi-footer-action {
+        margin-top: 1rem;
+        padding-top: 0.65rem;
+        border-top: 1px dashed var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.78rem;
+        font-weight: 850;
+        transition: all 0.2s ease;
+        color: var(--text-dim);
+    }
+    .kpi-card-v2:hover .kpi-footer-action {
+        color: var(--primary);
+    }
+    .kpi-card-v2:hover .kpi-footer-action i {
+        transform: translateX(4px);
+    }
+
+    /* High Contrast KPI Percentage Badges */
+    .kpi-badge-low {
+        background: #d1fae5;
+        color: #065f46;
+        font-weight: 900;
+        font-size: 0.95rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 100px;
+        border: 1.5px solid #a7f3d0;
+        font-family: 'Outfit', sans-serif;
         display: inline-flex;
         align-items: center;
-        gap: 0.25rem;
-        margin-top: 0.65rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
+        gap: 0.35rem;
     }
-    .kpi-card-v2:hover .kpi-click-hint { opacity: 1; }
+    .dark-mode .kpi-badge-low {
+        background: rgba(6, 78, 59, 0.6);
+        color: #6ee7b7;
+        border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .kpi-badge-obs {
+        background: #fef3c7;
+        color: #92400e;
+        font-weight: 900;
+        font-size: 0.95rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 100px;
+        border: 1.5px solid #fde68a;
+        font-family: 'Outfit', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .dark-mode .kpi-badge-obs {
+        background: rgba(120, 53, 15, 0.6);
+        color: #fde68a;
+        border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .kpi-badge-crit {
+        background: #fee2e2;
+        color: #991b1b;
+        font-weight: 900;
+        font-size: 0.95rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 100px;
+        border: 1.5px solid #fecaca;
+        font-family: 'Outfit', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .dark-mode .kpi-badge-crit {
+        background: rgba(127, 29, 29, 0.6);
+        color: #fca5a5;
+        border-color: rgba(239, 68, 68, 0.4);
+    }
 
     /* ── KPI Drawer Slide-in ── */
     #kpiDrawer {
@@ -499,8 +644,8 @@
             <!-- Quick Presets Row -->
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.25rem;">
                 <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
-                    <span style="font-size: 0.82rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.12em; margin-right: 0.4rem; display: inline-flex; align-items: center; gap: 0.4rem;">
-                        <i class="ph-bold ph-funnel" style="color: var(--primary); font-size: 1.05rem;"></i> Quick Presets:
+                    <span style="font-size: 0.82rem; font-weight: 900; color: var(--text); text-transform: uppercase; letter-spacing: 0.12em; margin-right: 0.4rem; display: inline-flex; align-items: center; gap: 0.4rem;">
+                        <i class="ph-bold ph-funnel" style="color: var(--primary); font-size: 1.1rem;"></i> Quick Presets:
                     </span>
                     <button type="button" onclick="setPreset('7days')" class="preset-pill {{ request('preset') == '7days' ? 'active' : '' }}">Last 7 Days</button>
                     <button type="button" onclick="setPreset('30days')" class="preset-pill {{ request('preset') == '30days' ? 'active' : '' }}">Last 30 Days</button>
@@ -510,21 +655,26 @@
                 </div>
 
                 @if ($start_date || $end_date || $course || $semester || ($risk_level ?? ''))
-                    <button type="button" onclick="window.location.href='{{ route('admin.reports.index') }}'" style="padding: 0.55rem 1.15rem; border-radius: 100px; background: rgba(239, 68, 68, 0.1); color: #dc2626; font-weight: 850; border: 1.5px solid rgba(239, 68, 68, 0.25); cursor: pointer; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s ease;">
-                        <i class="ph-bold ph-x-circle" style="font-size: 1rem;"></i> Reset All Filters
+                    <button type="button" onclick="window.location.href='{{ route('admin.reports.index') }}'" style="padding: 0.55rem 1.15rem; border-radius: 100px; background: rgba(239, 68, 68, 0.12); color: #dc2626; font-weight: 900; border: 1.5px solid rgba(239, 68, 68, 0.3); cursor: pointer; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 0.45rem; transition: all 0.2s ease;">
+                        <i class="ph-bold ph-x-circle" style="font-size: 1.05rem;"></i> Reset All Filters
                     </button>
                 @endif
             </div>
 
             <!-- Detailed Controls Row (Side-by-side flex alignment) -->
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
-                <!-- Date Picker Box -->
-                <div class="date-input-wrapper">
-                    <i class="ph-bold ph-calendar-blank" style="color: var(--primary); font-size: 1.25rem; flex-shrink: 0;"></i>
-                    <span style="font-size: 0.8rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">From</span>
-                    <input type="date" id="startDate" name="start_date" value="{{ $start_date }}" onchange="debouncedRefresh()" oninput="debouncedRefresh()" style="background: transparent; border: none; color: var(--text); font-weight: 800; font-size: 0.95rem; outline: none; cursor: pointer; font-family: inherit; flex: 1;">
-                    <span style="font-size: 0.8rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">To</span>
-                    <input type="date" id="endDate" name="end_date" value="{{ $end_date }}" onchange="debouncedRefresh()" oninput="debouncedRefresh()" style="background: transparent; border: none; color: var(--text); font-weight: 800; font-size: 0.95rem; outline: none; cursor: pointer; font-family: inherit; flex: 1;">
+            <div style="display: flex; gap: 0.85rem; flex-wrap: wrap; align-items: center;">
+                <!-- From Date Box -->
+                <div class="date-picker-box">
+                    <i class="ph-bold ph-calendar-blank" style="color: var(--primary); font-size: 1.15rem; flex-shrink: 0;"></i>
+                    <span class="date-badge">FROM</span>
+                    <input type="date" id="startDate" name="start_date" value="{{ $start_date }}" onchange="debouncedRefresh()" oninput="debouncedRefresh()">
+                </div>
+
+                <!-- To Date Box -->
+                <div class="date-picker-box">
+                    <i class="ph-bold ph-calendar-blank" style="color: var(--primary); font-size: 1.15rem; flex-shrink: 0;"></i>
+                    <span class="date-badge">TO</span>
+                    <input type="date" id="endDate" name="end_date" value="{{ $end_date }}" onchange="debouncedRefresh()" oninput="debouncedRefresh()">
                 </div>
 
                 <!-- Semester Select -->
@@ -569,99 +719,106 @@
         @endphp
 
         <!-- Card 1: Total Assessment Volume -->
-        <div class="kpi-card-v2 staggered"
-             style="border-color: rgba(99,102,241,0.25); box-shadow: 0 8px 30px rgba(99,102,241,0.06);"
+        <div class="kpi-card-v2 kpi-volume staggered"
+             style="border-color: rgba(99,102,241,0.3); box-shadow: 0 8px 25px rgba(99,102,241,0.08);"
              onclick="openKpiDrawer('all')" role="button" tabindex="0">
             <div class="kpi-bg-blob" style="background: #6366f1;"></div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(99,102,241,0.12); color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(99,102,241,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.1rem;">
+                <div style="width: 52px; height: 52px; border-radius: 16px; background: rgba(99,102,241,0.12); color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 1.5px solid rgba(99,102,241,0.25);">
                     <i class="ph-bold ph-clipboard-text"></i>
                 </div>
                 <svg class="kpi-progress-ring" width="52" height="52" viewBox="0 0 36 36">
-                    <circle class="track" cx="18" cy="18" r="15" stroke="rgba(99,102,241,0.15)"/>
-                    <circle class="fill" cx="18" cy="18" r="15" stroke="#6366f1"
+                    <circle class="track" cx="18" cy="18" r="15" stroke="rgba(99,102,241,0.18)"/>
+                    <circle class="fill" cx="18" cy="18" r="15" stroke="#4f46e5"
                             stroke-dashoffset="{{ 100 - $all_pct }}"/>
                 </svg>
             </div>
-            <div style="font-size: 0.68rem; font-weight: 900; color: #4f46e5; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Total Assessment Volume</div>
-            <div style="font-size: 2.75rem; font-weight: 950; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($total_assessments) }}</div>
-            <div style="font-size: 0.78rem; color: var(--text-dim); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-users" style="color: #6366f1;"></i> {{ number_format($total_students) }} unique students
+            <div class="kpi-title-text" style="color: var(--text);">Total Assessment Volume</div>
+            <div class="kpi-value-num">{{ number_format($total_assessments) }}</div>
+            <div class="kpi-subtext">
+                <i class="ph-bold ph-users" style="color: #4f46e5; font-size: 1.05rem;"></i> <span style="color: var(--text);">{{ number_format($total_students) }} unique students</span>
             </div>
-            <div class="kpi-click-hint" style="color: #4f46e5;">
-                <i class="ph ph-arrow-right"></i> View all records
+            <div class="kpi-footer-action">
+                <span>View all records</span>
+                <i class="ph-bold ph-arrow-right"></i>
             </div>
         </div>
 
         <!-- Card 2: Low Risk -->
-        <div class="kpi-card-v2 staggered"
-             style="border-color: rgba(16,185,129,0.25); box-shadow: 0 8px 30px rgba(16,185,129,0.06);"
+        <div class="kpi-card-v2 kpi-low staggered"
+             style="border-color: rgba(16,185,129,0.3); box-shadow: 0 8px 25px rgba(16,185,129,0.08);"
              onclick="openKpiDrawer('low')" role="button" tabindex="0">
             <div class="kpi-bg-blob" style="background: #10b981;"></div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(16,185,129,0.12); color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(16,185,129,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.1rem;">
+                <div style="width: 52px; height: 52px; border-radius: 16px; background: rgba(16,185,129,0.12); color: #047857; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 1.5px solid rgba(16,185,129,0.25);">
                     <i class="ph-bold ph-shield-check"></i>
                 </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 1.6rem; font-weight: 900; color: #10b981; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $low_pct }}%</div>
-                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
+                <div>
+                    <span class="kpi-badge-low">
+                        {{ $low_pct }}% <span style="font-size: 0.65rem; font-weight: 850; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.9;">of total</span>
+                    </span>
                 </div>
             </div>
-            <div style="font-size: 0.68rem; font-weight: 900; color: #059669; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Low Risk (Baseline)</div>
-            <div style="font-size: 2.75rem; font-weight: 950; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($low_cnt) }}</div>
-            <div style="font-size: 0.78rem; color: var(--text-dim); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-trend-up" style="color: #10b981;"></i> Stable wellness status
+            <div class="kpi-title-text" style="color: var(--text);">Low Risk (Baseline)</div>
+            <div class="kpi-value-num">{{ number_format($low_cnt) }}</div>
+            <div class="kpi-subtext">
+                <i class="ph-bold ph-trend-up" style="color: #059669; font-size: 1.05rem;"></i> <span style="color: var(--text);">Stable wellness status</span>
             </div>
-            <div class="kpi-click-hint" style="color: #059669;">
-                <i class="ph ph-arrow-right"></i> View low risk students
+            <div class="kpi-footer-action">
+                <span>View low risk students</span>
+                <i class="ph-bold ph-arrow-right"></i>
             </div>
         </div>
 
         <!-- Card 3: Active Observation -->
-        <div class="kpi-card-v2 staggered"
-             style="border-color: rgba(245,158,11,0.25); box-shadow: 0 8px 30px rgba(245,158,11,0.06);"
+        <div class="kpi-card-v2 kpi-obs staggered"
+             style="border-color: rgba(245,158,11,0.3); box-shadow: 0 8px 25px rgba(245,158,11,0.08);"
              onclick="openKpiDrawer('observation')" role="button" tabindex="0">
             <div class="kpi-bg-blob" style="background: #f59e0b;"></div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(245,158,11,0.12); color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(245,158,11,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.1rem;">
+                <div style="width: 52px; height: 52px; border-radius: 16px; background: rgba(245,158,11,0.12); color: #b45309; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 1.5px solid rgba(245,158,11,0.25);">
                     <i class="ph-bold ph-eye"></i>
                 </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 1.6rem; font-weight: 900; color: #f59e0b; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $obs_pct }}%</div>
-                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
+                <div>
+                    <span class="kpi-badge-obs">
+                        {{ $obs_pct }}% <span style="font-size: 0.65rem; font-weight: 850; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.9;">of total</span>
+                    </span>
                 </div>
             </div>
-            <div style="font-size: 0.68rem; font-weight: 900; color: #d97706; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Active Observation</div>
-            <div style="font-size: 2.75rem; font-weight: 950; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($obs_cnt) }}</div>
-            <div style="font-size: 0.78rem; color: var(--text-dim); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-clock" style="color: #f59e0b;"></i> Moderate &amp; High cases
+            <div class="kpi-title-text" style="color: var(--text);">Active Observation</div>
+            <div class="kpi-value-num">{{ number_format($obs_cnt) }}</div>
+            <div class="kpi-subtext">
+                <i class="ph-bold ph-clock" style="color: #d97706; font-size: 1.05rem;"></i> <span style="color: var(--text);">Moderate &amp; High cases</span>
             </div>
-            <div class="kpi-click-hint" style="color: #d97706;">
-                <i class="ph ph-arrow-right"></i> View observation cases
+            <div class="kpi-footer-action">
+                <span>View observation cases</span>
+                <i class="ph-bold ph-arrow-right"></i>
             </div>
         </div>
 
         <!-- Card 4: Critical Severity -->
-        <div class="kpi-card-v2 staggered"
-             style="border-color: rgba(239,68,68,0.25); box-shadow: 0 8px 30px rgba(239,68,68,0.06);"
+        <div class="kpi-card-v2 kpi-crit staggered"
+             style="border-color: rgba(239,68,68,0.3); box-shadow: 0 8px 25px rgba(239,68,68,0.08);"
              onclick="openKpiDrawer('critical')" role="button" tabindex="0">
             <div class="kpi-bg-blob" style="background: #ef4444;"></div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                <div style="width: 50px; height: 50px; border-radius: 16px; background: rgba(239,68,68,0.12); color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; border: 1px solid rgba(239,68,68,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.1rem;">
+                <div style="width: 52px; height: 52px; border-radius: 16px; background: rgba(239,68,68,0.12); color: #b91c1c; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 1.5px solid rgba(239,68,68,0.25);">
                     <i class="ph-bold ph-warning-octagon"></i>
                 </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 1.6rem; font-weight: 900; color: #ef4444; font-family: 'Outfit', sans-serif; line-height: 1;">{{ $crit_pct }}%</div>
-                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;">of total</div>
+                <div>
+                    <span class="kpi-badge-crit">
+                        {{ $crit_pct }}% <span style="font-size: 0.65rem; font-weight: 850; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.9;">of total</span>
+                    </span>
                 </div>
             </div>
-            <div style="font-size: 0.68rem; font-weight: 900; color: #dc2626; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.3rem;">Critical Severity</div>
-            <div style="font-size: 2.75rem; font-weight: 950; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; letter-spacing: -0.03em;">{{ number_format($crit_cnt) }}</div>
-            <div style="font-size: 0.78rem; color: var(--text-dim); font-weight: 600; margin-top: 0.45rem; display: flex; align-items: center; gap: 0.3rem;">
-                <i class="ph-bold ph-bell-ringing" style="color: #ef4444;"></i> Immediate intervention needed
+            <div class="kpi-title-text" style="color: var(--text);">Critical Severity</div>
+            <div class="kpi-value-num">{{ number_format($crit_cnt) }}</div>
+            <div class="kpi-subtext">
+                <i class="ph-bold ph-bell-ringing" style="color: #dc2626; font-size: 1.05rem;"></i> <span style="color: var(--text);">Immediate intervention needed</span>
             </div>
-            <div class="kpi-click-hint" style="color: #dc2626;">
-                <i class="ph ph-arrow-right"></i> View critical students
+            <div class="kpi-footer-action">
+                <span>View critical students</span>
+                <i class="ph-bold ph-arrow-right"></i>
             </div>
         </div>
     </div>
