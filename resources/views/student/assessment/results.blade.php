@@ -6,6 +6,8 @@
         .sidebar, .action-buttons, .no-print, footer { display:none!important; }
         .main-content { margin-left: 0 !important; padding: 0 !important; }
         body { background:#fff; }
+        .pdf-only-header { display: block !important; }
+        .pdf-only-footer { display: block !important; }
     }
     .score-fill {
         background: var(--primary);
@@ -15,15 +17,6 @@
     @keyframes call-btn-pulse {
         0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
         50%      { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
-    }
-    @keyframes pulse-ring {
-        0%   { transform:scale(0.95); box-shadow:0 0 0 0 rgba(220,38,38,0.5); }
-        70%  { transform:scale(1);    box-shadow:0 0 0 16px rgba(220,38,38,0); }
-        100% { transform:scale(0.95); box-shadow:0 0 0 0 rgba(220,38,38,0); }
-    }
-    @keyframes pulse-dot {
-        0%,100% { opacity:1; transform:scale(1); }
-        50%     { opacity:0.6; transform:scale(0.85); }
     }
     /* AI Insight Header Styling */
     #aiInsightText h3, #aiInsightText b, #aiInsightText strong {
@@ -42,17 +35,34 @@
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 800px; padding-top: 1.5rem; padding-bottom: 3rem;">
+<div class="container" style="max-width: 850px; padding-top: 1.5rem; padding-bottom: 3rem;">
     
-    <div style="text-align: center; margin-bottom: 2.5rem;">
+    <div style="text-align: center; margin-bottom: 2.5rem;" class="no-print">
         <div style="font-size: 2.5rem; margin-bottom: 1rem;">✨</div>
         <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Insight Generated</h1>
         <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 400;">Your clinical reflection has been analyzed. Here are the personalized findings.</p>
     </div>
 
-    <div style="background: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 2rem; position: relative; overflow: hidden;">
+    <div id="printableCardArea" style="background: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 2.5rem; position: relative; overflow: hidden;">
         <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }};"></div>
         
+        {{-- Official PSU PDF Report Header (Visible in exported PDF & Print) --}}
+        <div class="pdf-only-header" style="display: none; border-bottom: 2px solid #0f766e; padding-bottom: 1.25rem; margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 0.7rem; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.2rem;">PANGASINAN STATE UNIVERSITY</div>
+                    <div style="font-size: 1.35rem; font-weight: 800; color: #0f172a; font-family: 'Outfit', sans-serif;">STUDENT MENTAL HEALTH & WELLNESS CENTER</div>
+                    <div style="font-size: 0.8rem; color: #475569; font-weight: 600;">Official Clinical Assessment Evaluation Report</div>
+                </div>
+                <div style="text-align: right; font-size: 0.75rem; color: #334155; font-weight: 600; line-height: 1.5; background: #f8fafc; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <div><strong>Report ID:</strong> #PAS-{{ sprintf('%05d', $score->score_id) }}</div>
+                    <div><strong>Date:</strong> {{ $score->assessment_date->format('F d, Y h:i A') }}</div>
+                    <div><strong>Student:</strong> {{ Auth::user()->full_name ?? Auth::user()->name ?? 'Student' }}</div>
+                    <div><strong>Email / ID:</strong> {{ Auth::user()->email }}</div>
+                </div>
+            </div>
+        </div>
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; margin-bottom: 3rem;">
             <div style="text-align: center;">
                 <div style="width: 140px; height: 140px; border-radius: 50%; border: 8px solid #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto; position: relative;">
@@ -65,7 +75,7 @@
                 <div style="font-size: 0.85rem; font-weight: 800; color: var(--primary); margin-top: 0.5rem; margin-bottom: 1.5rem;">{{ $wellness_info['label'] }}</div>
 
                 {{-- Scale Identification Legend --}}
-                <div style="background: var(--surface-2); border-radius: 12px; padding: 1rem; border: 1px solid var(--border); text-align: left; max-width: 200px; margin: 0 auto;">
+                <div style="background: var(--surface-2); border-radius: 12px; padding: 1rem; border: 1px solid var(--border); text-align: left; max-width: 220px; margin: 0 auto;">
                     <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Clinical Scale Key</div>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 700; color: #ef4444;">
@@ -89,7 +99,7 @@
 
             <div>
                 <div style="display: inline-block; padding: 0.35rem 0.85rem; border-radius: 6px; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; margin-bottom: 1rem; 
-                    background: {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}15; color: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }};">
+                    background: {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}15; color: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }}; border: 1px solid {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }}30;">
                     {{ $score->risk_level }} Risk Profile
                 </div>
                 <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem;">Analysis Complete</h2>
@@ -112,7 +122,7 @@
                 <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.6rem;">
                     <span style="font-size: 1.25rem;">🧠</span> AI Clinical Insight
                 </h3>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;" class="no-print">
                     <button onclick="translateToTagalog()" id="translateBtn" style="background: none; border: 1.5px solid var(--primary); color: var(--primary); padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s;" onmouseover="this.style.background='var(--primary-glow)'" onmouseout="this.style.background='none'">
                         <i class="ph ph-translate"></i> Translate to Tagalog
                     </button>
@@ -151,7 +161,7 @@
                             <div style="font-weight: 800; color: var(--text);">{{ $dim['score'] }}<span style="font-size: 0.7rem; color: var(--text-dim); margin-left: 0.2rem;">/{{ $max }}</span></div>
                         </div>
                         <div style="height: 8px; background: var(--surface-2); border-radius: 10px; overflow: hidden; border: 1px solid var(--border);">
-                            <div class="score-fill" data-width="{{ $pct }}" style="width: 0%;"></div>
+                            <div class="score-fill" data-width="{{ $pct }}" style="width: {{ $pct }}%;"></div>
                         </div>
                     </div>
                 @endforeach
@@ -206,6 +216,21 @@
             </div>
             @endif
         </div>
+
+        {{-- Official PDF Sign-off Footer --}}
+        <div class="pdf-only-footer" style="display: none; border-top: 1.5px dashed #cbd5e1; padding-top: 1.5rem; margin-top: 2.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div style="font-size: 0.7rem; color: #64748b; line-height: 1.5;">
+                    <strong>Verification & Authenticity Notice:</strong><br>
+                    This psychological assessment evaluation report was generated automatically via the PSU Mental Health Portal.<br>
+                    Confidential document intended strictly for the student and authorized University Guidance Counselors.
+                </div>
+                <div style="text-align: right; border-top: 1px solid #94a3b8; width: 220px; padding-top: 0.35rem; font-size: 0.72rem; font-weight: 700; color: #334155;">
+                    University Guidance Counselor<br>
+                    <span style="font-size: 0.65rem; font-weight: 500; color: #64748b;">Verified Clinical Evaluation Record</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div style="margin-top: 2rem; text-align: center;" class="no-print">
@@ -217,6 +242,8 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 async function requestEmergencyCall() {
     if (typeof window.gStartCallStudent === 'function') {
@@ -226,20 +253,71 @@ async function requestEmergencyCall() {
     }
 }
 
-function exportPDF() {
+async function exportPDF() {
     const btn = document.getElementById('exportResultBtn');
+    const originalHTML = btn ? btn.innerHTML : '';
     if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Preparing...';
+        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Generating PDF...';
     }
-    setTimeout(() => {
+
+    const pdfHeaders = document.querySelectorAll('.pdf-only-header');
+    const pdfFooters = document.querySelectorAll('.pdf-only-footer');
+    const noPrintEls = document.querySelectorAll('.no-print');
+
+    // Display PDF header & footer for snapshot
+    pdfHeaders.forEach(el => el.style.display = 'block');
+    pdfFooters.forEach(el => el.style.display = 'block');
+    noPrintEls.forEach(el => el.style.display = 'none');
+
+    try {
+        const element = document.getElementById('printableCardArea');
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            logging: false
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.98);
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            orientation: 'p',
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const imgH  = (canvas.height * pageW) / canvas.width;
+        
+        let remaining = imgH;
+        let yOffset = 0;
+
+        while (remaining > 0) {
+            pdf.addImage(imgData, 'JPEG', 0, -yOffset, pageW, imgH);
+            remaining -= pageH;
+            yOffset += pageH;
+            if (remaining > 0) {
+                pdf.addPage();
+            }
+        }
+
+        pdf.save(`PSU_Clinical_Assessment_Result_#PAS-{{ sprintf('%05d', $score->score_id) }}.pdf`);
+    } catch (err) {
+        console.error('PDF export error:', err);
         window.print();
+    } finally {
+        pdfHeaders.forEach(el => el.style.display = 'none');
+        pdfFooters.forEach(el => el.style.display = 'none');
+        noPrintEls.forEach(el => el.style.display = '');
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="ph ph-file-pdf"></i> Export PDF';
+            btn.innerHTML = originalHTML;
         }
-    }, 300);
+    }
 }
+
 async function translateToTagalog() {
     const btn = document.getElementById('translateBtn');
     const container = document.getElementById('aiInsightText');
@@ -283,3 +361,4 @@ async function translateToTagalog() {
 }
 </script>
 @endpush
+
