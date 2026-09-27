@@ -85,6 +85,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/profile', [\App\Http\Controllers\Student\ProfileController::class, 'edit'])->name('profile.edit');
         Route::post('/profile', [\App\Http\Controllers\Student\ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/password', [\App\Http\Controllers\Student\ProfileController::class, 'updatePassword'])->name('profile.password');
 
         // Emergency Call routes
         Route::post('/emergency-call/request', [StudentEmergencyCall::class, 'request'])->name('emergency.call.request');

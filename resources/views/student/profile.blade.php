@@ -121,6 +121,51 @@
                 </div>
             </form>
         </div>
+
+        {{-- Change Password Section --}}
+        <div class="profile-card rounded-3xl overflow-hidden p-8 md:p-12 mt-8">
+            <div class="mb-8">
+                <h2 class="text-xl font-extrabold flex items-center gap-3 profile-title">
+                    <i class="ph-fill ph-lock-key text-emerald-500"></i>
+                    Security Settings
+                </h2>
+                <p class="profile-subtitle mt-2 text-sm">Ensure your account is using a long, random password to stay secure.</p>
+            </div>
+            
+            <form id="passwordForm" action="{{ route('student.profile.password') }}" method="POST">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="input-label text-[10px] font-black uppercase tracking-widest">Current Password</label>
+                        <input type="password" name="current_password" required
+                            class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none"
+                            placeholder="••••••••">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="input-label text-[10px] font-black uppercase tracking-widest">New Password</label>
+                        <input type="password" name="new_password" required minlength="6"
+                            class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none"
+                            placeholder="••••••••">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="input-label text-[10px] font-black uppercase tracking-widest">Confirm New Password</label>
+                        <input type="password" name="new_password_confirmation" required minlength="6"
+                            class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div class="pt-8 border-t divider-line flex justify-end">
+                    <button type="submit" 
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white px-10 py-4 rounded-2xl font-black shadow-xl shadow-emerald-500/20 transition-all hover:-translate-y-1 active:translate-y-0 flex items-center gap-3 uppercase tracking-widest text-[10px]">
+                        <i class="ph-bold ph-key text-lg"></i>
+                        Update Password
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -191,6 +236,7 @@ document.getElementById('profileForm').addEventListener('submit', async function
             body: formData,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
         });
@@ -218,6 +264,48 @@ document.getElementById('profileForm').addEventListener('submit', async function
         }
     } catch (error) {
         App.toast({ type: 'error', title: 'Connection Error', message: 'Failed to reach server. Please try again.' });
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+    }
+});
+
+document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = this;
+    const btn = form.querySelector('button[type="submit"]');
+    const originalContent = btn.innerHTML;
+    const formData = new FormData(form);
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ph ph-circle-notch animate-spin text-lg"></i> Updating...';
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
+        
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            App.toast({ type: 'success', title: 'Security Updated', message: data.message });
+            form.reset();
+        } else if (response.status === 422) {
+            // Validation error
+            const errors = data.errors;
+            const firstErrorMsg = Object.values(errors)[0][0];
+            App.toast({ type: 'error', title: 'Validation Error', message: firstErrorMsg });
+        } else {
+            App.toast({ type: 'error', title: 'Update Failed', message: data.error || 'Check your passwords and try again.' });
+        }
+    } catch (error) {
+        App.toast({ type: 'error', title: 'Error', message: 'Failed to update. Something went wrong.' });
     } finally {
         btn.disabled = false;
         btn.innerHTML = originalContent;

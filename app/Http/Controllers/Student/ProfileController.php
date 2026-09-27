@@ -58,4 +58,35 @@ class ProfileController extends Controller
 
         return back()->with('success', 'Profile updated successfully.');
     }
+
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6|confirmed',
+        ], [
+            'current_password.required' => 'Please enter your current password.',
+            'new_password.min' => 'The new password must be at least 6 characters long.',
+            'new_password.confirmed' => 'New password confirmation does not match.',
+        ]);
+
+        if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'error' => 'The current password you entered is incorrect.']);
+            }
+            return back()->withErrors(['current_password' => 'The current password you entered is incorrect.']);
+        }
+
+        $user->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($request->new_password)
+        ]);
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Password updated successfully.']);
+        }
+
+        return back()->with('success', 'Password updated successfully.');
+    }
 }
