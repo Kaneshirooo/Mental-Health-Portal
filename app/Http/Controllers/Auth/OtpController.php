@@ -110,12 +110,7 @@ class OtpController extends Controller
         Session::put('temp_user', $tempUser);
 
         try {
-            $emailToSend = $tempUser['email'];
-            $otpToSend = $otp;
-            $controller = $this;
-            app()->terminating(function () use ($controller, $emailToSend, $otpToSend) {
-                $controller->sendOtpEmail($emailToSend, $otpToSend);
-            });
+            $this->sendOtpEmail($tempUser['email'], $otp);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("OTP Resend Mail Error: " . $e->getMessage());
         }

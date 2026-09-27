@@ -72,19 +72,14 @@ class LoginController extends Controller
 
             LoginAttempt::where('ip_address', $ip)->delete();
 
-            // Send OTP email AFTER the redirect response is delivered to the browser.
-            // app()->terminating() fires after $response->send() + fastcgi_finish_request(),
-            // so the user sees the verify page instantly with no SMTP delay.
-            $emailToSend = $user->email;
-            $otpToSend   = $otp;
-            $controller  = $this;
-            app()->terminating(function () use ($controller, $emailToSend, $otpToSend) {
-                try {
-                    $controller->sendOtpEmail($emailToSend, $otpToSend);
-                } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::error('OTP Mail Error: ' . $e->getMessage());
-                }
-            });
+            // Send OTP email synchronously before redirecting.
+            // The Resend HTTP API call is fast (< 300ms) so this does not
+            // noticeably delay the redirect for the user.
+            try {
+                $this->sendOtpEmail($user->email, $otp);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('OTP Mail Error: ' . $e->getMessage());
+            }
 
             return redirect()->route('verify.otp');
         }
