@@ -115,7 +115,12 @@ class LoginController extends Controller
     {
         $clientId = trim(config('services.google.client_id') ?: env('GOOGLE_CLIENT_ID'));
         $clientSecret = trim(config('services.google.client_secret') ?: env('GOOGLE_CLIENT_SECRET'));
-        $redirectUrl = route('auth.google.callback');
+
+        // Use the explicit env var first (already correct on Render).
+        // Fall back to route() but force https:// so Render's reverse proxy
+        // doesn't cause Google to reject an http:// redirect URI.
+        $redirectUrl = env('GOOGLE_REDIRECT_URI')
+            ?: str_replace('http://', 'https://', route('auth.google.callback'));
 
         if (empty($clientId) || empty($clientSecret)) {
             return redirect()
@@ -137,7 +142,10 @@ class LoginController extends Controller
     {
         $clientId = trim(config('services.google.client_id') ?: env('GOOGLE_CLIENT_ID'));
         $clientSecret = trim(config('services.google.client_secret') ?: env('GOOGLE_CLIENT_SECRET'));
-        $redirectUrl = route('auth.google.callback');
+
+        // Must match exactly what was used in redirectToGoogle()
+        $redirectUrl = env('GOOGLE_REDIRECT_URI')
+            ?: str_replace('http://', 'https://', route('auth.google.callback'));
 
         if (empty($clientId) || empty($clientSecret)) {
             return redirect()
