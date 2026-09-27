@@ -113,8 +113,8 @@ class LoginController extends Controller
 
     public function redirectToGoogle()
     {
-        $clientId = config('services.google.client_id') ?: env('GOOGLE_CLIENT_ID');
-        $clientSecret = config('services.google.client_secret') ?: env('GOOGLE_CLIENT_SECRET');
+        $clientId = trim(config('services.google.client_id') ?: env('GOOGLE_CLIENT_ID'));
+        $clientSecret = trim(config('services.google.client_secret') ?: env('GOOGLE_CLIENT_SECRET'));
         $redirectUrl = route('auth.google.callback');
 
         if (empty($clientId) || empty($clientSecret)) {
@@ -135,8 +135,8 @@ class LoginController extends Controller
 
     public function handleGoogleCallback()
     {
-        $clientId = config('services.google.client_id') ?: env('GOOGLE_CLIENT_ID');
-        $clientSecret = config('services.google.client_secret') ?: env('GOOGLE_CLIENT_SECRET');
+        $clientId = trim(config('services.google.client_id') ?: env('GOOGLE_CLIENT_ID'));
+        $clientSecret = trim(config('services.google.client_secret') ?: env('GOOGLE_CLIENT_SECRET'));
         $redirectUrl = route('auth.google.callback');
 
         if (empty($clientId) || empty($clientSecret)) {
