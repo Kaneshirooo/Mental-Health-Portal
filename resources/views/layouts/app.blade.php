@@ -120,6 +120,42 @@
             color: var(--primary, #10b981);
             transform: translateY(-50%) scale(1.1);
         }
+
+        /* ── Mobile parity: counselor UI matches student UI ── */
+        @media (max-width: 768px) {
+            .main-content .container,
+            .main-content .dash-content {
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+                padding-top: 0.5rem !important;
+            }
+            .main-content div[style*="grid-template-columns: 1fr 1fr"],
+            .main-content div[style*="grid-template-columns: 1fr 2fr"],
+            .main-content div[style*="grid-template-columns: 2fr 1fr"],
+            .main-content div[style*="grid-template-columns: repeat(3, 1fr)"],
+            .main-content div[style*="grid-template-columns: repeat(auto-fit"],
+            .main-content div[style*="grid-template-columns: repeat(auto-fill"] {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+            .main-content table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .main-content header[style*="display: flex"],
+            .main-content div[style*="display: flex; justify-content: space-between"] {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 1rem !important;
+            }
+            .main-content .card,
+            .main-content .stat-card,
+            .main-content .form-card {
+                border-radius: 18px !important;
+            }
+        }
     </style>
 
 
