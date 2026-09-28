@@ -114,6 +114,20 @@
         background: rgba(255,255,255,0.2);
     }
     .filter-tab.active .count-badge { background: rgba(255,255,255,0.25); }
+
+    @media (max-width: 768px) {
+        .container.history-content { padding: 0.5rem 0.6rem 4rem !important; }
+        header { flex-direction: column !important; align-items: stretch !important; }
+        header h1 { font-size: 1.6rem !important; }
+        header > div:last-child { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.6rem !important; width: 100% !important; }
+        header > div:last-child a, header > div:last-child button { justify-content: center !important; width: 100% !important; min-height: 46px !important; }
+        .session-meta-card { padding: 1.1rem 1rem !important; border-radius: 20px !important; }
+        .meta-grid { grid-template-columns: 1fr 1fr !important; gap: 0.85rem !important; }
+        .filter-tabs { width: 100% !important; overflow-x: auto !important; }
+        .filter-tab { flex: 1 !important; white-space: nowrap !important; min-height: 44px !important; }
+        .msg-card { padding: 0.9rem 0.95rem !important; border-radius: 16px !important; }
+        .msg-body-text { text-align: left !important; font-size: 0.88rem !important; }
+    }
 </style>
 @endpush
 
