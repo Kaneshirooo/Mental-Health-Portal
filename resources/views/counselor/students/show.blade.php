@@ -16,6 +16,16 @@
         margin-bottom: 1rem;
     }
     .note-date { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.75rem; text-transform: uppercase; }
+    @media (max-width: 768px) {
+        .container { padding: 0.5rem 0.6rem 4rem !important; }
+        header.staggered { flex-direction: column !important; align-items: stretch !important; gap: 1.25rem !important; margin-bottom: 1.5rem !important; }
+        header.staggered h1 { font-size: 1.8rem !important; }
+        header.staggered > div:last-child { align-items: stretch !important; width: 100% !important; }
+        header.staggered > div:last-child > div:first-child { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.6rem !important; width: 100% !important; }
+        header.staggered .btn-secondary { justify-content: center !important; width: 100% !important; min-height: 46px !important; }
+        div[style*="grid-template-columns: 1.6fr 1fr"] { grid-template-columns: 1fr !important; gap: 1.25rem !important; margin-bottom: 2rem !important; }
+        table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    }
 </style>
 @endpush
 
