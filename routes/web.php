@@ -63,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/assessment', [\App\Http\Controllers\Student\AssessmentController::class, 'index'])->name('assessment');
         Route::post('/assessment', [\App\Http\Controllers\Student\AssessmentController::class, 'store'])->name('assessment.store');
         Route::get('/assessment/results/{score}', [\App\Http\Controllers\Student\AssessmentController::class, 'results'])->name('assessment.results');
+        Route::get('/assessment/insight/{score}', [\App\Http\Controllers\Student\AssessmentController::class, 'insight'])->name('assessment.insight');
         Route::post('/assessment/translate', [\App\Http\Controllers\Student\AssessmentController::class, 'translate'])->name('assessment.translate');
         Route::get('/notes', [\App\Http\Controllers\Student\AnonymousNoteController::class, 'index'])->name('notes.index');
         Route::post('/notes', [\App\Http\Controllers\Student\AnonymousNoteController::class, 'store'])->name('notes.store');

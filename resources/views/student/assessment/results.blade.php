@@ -134,6 +134,9 @@
                 <div id="aiInsightText" style="font-size: 0.95rem; line-height: 1.7; color: var(--text); font-weight: 500; font-style: italic;">
                     {!! preg_replace('/### (.*?)(\n|<br \/>)/', '<b>$1</b>$2', nl2br(e($score->ai_analysis))) !!}
                 </div>
+                <div id="aiInsightRetry" style="display:none; margin-top:1rem;">
+                    <button onclick="retryInsight()" id="retryInsightBtn" class="no-print" style="background:var(--primary);color:#fff;border:none;padding:0.6rem 1.2rem;border-radius:10px;font-weight:800;cursor:pointer;font-size:0.85rem;">Retry Insight</button>
+                </div>
             </div>
         </div>
 
@@ -318,8 +321,42 @@ async function exportPDF() {
     }
 }
 
-async function translateToTagalog() {
-    const btn = document.getElementById('translateBtn');
+async function pollInsight(retries = 4) {
+    const box = document.getElementById('aiInsightText');
+    const retryWrap = document.getElementById('aiInsightRetry');
+    if (!box || !box.textContent.match(/pending|Processing/i)) return;
+    for (let i = 0; i < retries; i++) {
+        await new Promise(r => setTimeout(r, 3000));
+        try {
+            const res = await fetch("{{ route('student.assessment.insight', $score->score_id) }}");
+            const data = await res.json();
+            if (data.success && !data.pending) {
+                box.innerHTML = data.insight.replace(/\n/g, '<br>');
+                if (retryWrap) retryWrap.style.display = 'none';
+                return;
+            }
+        } catch (e) {}
+    }
+    if (retryWrap) retryWrap.style.display = 'block';
+}
+async function retryInsight() {
+    const box = document.getElementById('aiInsightText');
+    const btn = document.getElementById('retryInsightBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Retrying...'; }
+    try {
+        const res = await fetch("{{ route('student.assessment.insight', $score->score_id) }}");
+        const data = await res.json();
+        if (data.success) {
+            box.innerHTML = data.insight.replace(/\n/g, '<br>');
+            if (!data.pending) document.getElementById('aiInsightRetry').style.display = 'none';
+        }
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Retry Insight'; }
+    }
+}
+document.addEventListener('DOMContentLoaded', () => pollInsight());
+
+async function translateToTagalog() {    const btn = document.getElementById('translateBtn');
     const container = document.getElementById('aiInsightText');
     const originalText = `{!! addslashes($score->ai_analysis) !!}`;
     

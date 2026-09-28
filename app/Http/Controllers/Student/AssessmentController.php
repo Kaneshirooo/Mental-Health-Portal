@@ -100,39 +100,32 @@ class AssessmentController extends Controller
                 ]);
             $historyJson = $history->isNotEmpty() ? json_encode($history) : "No previous assessments.";
 
-            // Defer the slow AI API call until after the response is sent to the user.
-            // This prevents the "hanging" waiting time on submit.
-            app()->terminating(function () use ($score, $depressionScore, $anxietyScore, $stressScore, $riskLevel, $historyJson, $ai) {
-                try {
-                    $prompt = "As a professional clinical AI, analyze these DASS-21 and PHQ-9 derived scores for a student. 
-                               Current Data:
-                               Depression Score: {$depressionScore} (0-27), 
-                               Anxiety Score: {$anxietyScore} (0-21), 
-                               Stress Score: {$stressScore} (0-21). 
-                               Risk Level: {$riskLevel}. 
-    
-                               Historical Comparison: {$historyJson}
-                               
-                               You MUST provide the following sections in this EXACT order:
-                               1. ### Supportive Recommendation
-                                  (A 1-sentence supportive recommendation for the student)
-                               2. ### Empathetic Summary
-                                  (A 2-sentence empathetic summary of their current mental state, highlighting any 'Clinical Shifts' e.g. if wellness is declining or improving).
-                               3. ### Professional Clinical Insight
-                                  (A professional clinical insight for a counselor to read (concise)).
-                               
-                               Ensure the Supportive Recommendation is at the very top.";
-                    
-                    $aiAnalysis = $ai->generateSingleTurn($prompt);
-                    
-                    $score->update([
-                        'ai_analysis' => $aiAnalysis,
-                        'ai_summary' => "AI analysis successfully generated based on clinical data."
-                    ]);
-                } catch (\Exception $ae) {
-                    \Illuminate\Support\Facades\Log::error("AI Analysis Failed: " . $ae->getMessage());
+            // Fast sync AI attempt (short prompt, small token cap) so results page
+            // rarely shows pending. Falls back instantly to rule-based insight.
+            $prompt = "Clinical scores D:{$depressionScore}/27 A:{$anxietyScore}/21 S:{$stressScore}/21 Risk:{$riskLevel} History:{$historyJson}. Output exactly: 1. ### Supportive Recommendation (1 sentence) 2. ### Empathetic Summary (2 sentences, note shift) 3. ### Professional Clinical Insight (1-2 sentences concise).";
+
+            try {
+                $aiAnalysis = $ai->generateResponse(
+                    [['role' => 'user', 'content' => $prompt]],
+                    '',
+                    300,
+                    0.3,
+                    12
+                );
+                if (empty(trim((string) $aiAnalysis)) || str_contains($aiAnalysis, "trouble connecting")) {
+                    throw new \Exception('AI empty or fallback');
                 }
-            });
+                $score->update([
+                    'ai_analysis' => $aiAnalysis,
+                    'ai_summary' => 'AI analysis generated.',
+                ]);
+            } catch (\Throwable $ae) {
+                \Illuminate\Support\Facades\Log::warning('AI insight fast-path failed, using local fallback: ' . $ae->getMessage());
+                $score->update([
+                    'ai_analysis' => $this->buildLocalInsight($depressionScore, $anxietyScore, $stressScore, $riskLevel),
+                    'ai_summary' => 'Local clinical insight (AI unavailable).',
+                ]);
+            }
 
             // Log activity (following legacy logActivity function)
             SessionLog::create([
@@ -266,6 +259,44 @@ class AssessmentController extends Controller
                 'message' => 'Translation failed: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * JSON polling endpoint for the results page. Retries AI once if still pending.
+     */
+    public function insight($score_id, \App\Services\OpenRouterService $ai)
+    {
+        $score = AssessmentScore::where('score_id', $score_id)
+            ->where('user_id', \Illuminate\Support\Facades\Auth::id())
+            ->firstOrFail();
+
+        if (str_contains((string) $score->ai_analysis, 'pending') || str_contains((string) $score->ai_analysis, 'Processing')) {
+            try {
+                $prompt = "Clinical scores D:{$score->depression_score}/27 A:{$score->anxiety_score}/21 S:{$score->stress_score}/21 Risk:{$score->risk_level}. Output exactly: 1. ### Supportive Recommendation (1 sentence) 2. ### Empathetic Summary (2 sentences) 3. ### Professional Clinical Insight (concise).";
+                $fresh = $ai->generateResponse([['role' => 'user', 'content' => $prompt]], '', 300, 0.3, 10);
+                if (!empty(trim($fresh)) && !str_contains($fresh, 'trouble connecting')) {
+                    $score->update(['ai_analysis' => $fresh, 'ai_summary' => 'AI analysis generated on retry.']);
+                    $score->refresh();
+                }
+            } catch (\Throwable $e) {
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'pending' => str_contains((string) $score->ai_analysis, 'pending') || str_contains((string) $score->ai_analysis, 'Processing'),
+            'insight' => $score->ai_analysis,
+        ]);
+    }
+
+    private function buildLocalInsight(int $d, int $a, int $s, string $risk): string
+    {
+        $top = match ($risk) {
+            'Critical' => 'Please reach out to your counselor as soon as possible — you do not have to face this alone.',
+            'High' => 'Consider booking a counselor session this week to talk through what has been weighing on you.',
+            default => 'Keep up your self-care routine and track your mood daily to notice early changes.',
+        };
+        return "### Supportive Recommendation\n{$top}\n\n### Empathetic Summary\nYour recent scores reflect current strain across mood and stress. Small consistent steps and talking to someone you trust can help stabilize things.\n\n### Professional Clinical Insight\nScores D:{$d}/27 A:{$a}/21 S:{$s}/21 Risk:{$risk}. Review trend and prioritize follow-up per risk protocol.";
     }
 
     private function getWellnessLabel(int $val): array
