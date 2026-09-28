@@ -43,6 +43,22 @@
         border-color: var(--primary);
         box-shadow: 0 0 0 3px var(--primary-glow);
     }
+    @media (max-width: 768px) {
+        .container { padding: 0.5rem 0.6rem 4rem !important; }
+        header.staggered { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; margin-bottom: 1.5rem !important; }
+        header.staggered h1 { font-size: 1.8rem !important; }
+        #filterForm { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.6rem !important; width: 100% !important; }
+        #filterForm > div:first-child { grid-column: 1 / -1 !important; display: grid !important; grid-template-columns: auto 1fr auto 1fr !important; gap: 0.4rem !important; align-items: center !important; }
+        #filterForm .filter-control { width: 100% !important; min-height: 48px !important; font-size: 16px !important; }
+        #liveSearch { font-size: 16px !important; min-height: 48px !important; }
+        div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 1rem !important; }
+        div[style*="grid-template-columns: repeat(auto-fill, minmax(270px, 1fr))"] { grid-template-columns: 1fr !important; }
+        #studentsTable thead { display: none !important; }
+        #studentsTable, #studentsTable tbody, #studentsTable tr, #studentsTable td { display: block !important; width: 100% !important; box-sizing: border-box !important; }
+        #studentsTable tbody tr.student-row { border: 1px solid var(--border) !important; border-radius: 18px !important; padding: 1rem !important; margin-bottom: 0.85rem !important; background: var(--surface-solid) !important; }
+        #studentsTable tbody tr.student-row td { padding: 0.3rem 0 !important; border: none !important; text-align: left !important; }
+        #studentsTable tbody tr.student-row td:last-child > div { display: grid !important; grid-template-columns: 1fr auto auto !important; gap: 0.5rem !important; }
+    }
 </style>
 @endpush
 
