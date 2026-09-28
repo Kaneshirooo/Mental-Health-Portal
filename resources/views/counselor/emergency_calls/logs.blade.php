@@ -137,6 +137,72 @@
         opacity: 0.5;
         cursor: not-allowed;
     }
+
+    @media (max-width: 768px) {
+        .logs-content {
+            padding: 0.5rem 0.6rem 4rem !important;
+        }
+        .logs-content header.staggered {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        .logs-content header.staggered h1 {
+            font-size: 1.7rem !important;
+        }
+        .logs-content header.staggered .btn-secondary {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+        .clinical-control-panel {
+            padding: 1rem 0.85rem !important;
+            border-radius: 20px !important;
+        }
+        .clinical-control-panel form {
+            width: 100% !important;
+        }
+        .clinical-control-panel select {
+            width: 100% !important;
+            min-height: 46px !important;
+            font-size: 16px !important;
+        }
+        /* Table → stacked cards using full width */
+        .clinical-control-panel thead {
+            display: none !important;
+        }
+        .clinical-control-panel table,
+        .clinical-control-panel tbody,
+        .clinical-control-panel tr,
+        .clinical-control-panel td {
+            display: block !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .clinical-control-panel tbody tr.log-row {
+            background: var(--surface-2) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 18px !important;
+            padding: 1rem !important;
+            margin-bottom: 0.85rem !important;
+            transform: none !important;
+        }
+        .clinical-control-panel tbody tr.log-row td {
+            padding: 0.35rem 0 !important;
+            border-radius: 0 !important;
+            text-align: left !important;
+            border: none !important;
+        }
+        .clinical-control-panel tbody tr.log-row td:last-child {
+            padding-top: 0.75rem !important;
+            text-align: stretch !important;
+        }
+        .clinical-control-panel .btn-action-premium {
+            width: 100% !important;
+            justify-content: center !important;
+            min-height: 46px !important;
+        }
+    }
 </style>
 @endpush
 
