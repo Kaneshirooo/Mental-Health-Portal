@@ -30,6 +30,30 @@
     /* ── Layout ── */
     .dash-content { position: relative; z-index: 1; }
 
+    /* ── Green hero header (matches student dashboard) ── */
+    .counselor-hero {
+        background: linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%);
+        border-radius: 24px;
+        padding: 2.25rem 2rem;
+        color: #fff;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 12px 32px rgba(5, 150, 105, 0.2);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+    .counselor-hero h1 { color: #fff !important; }
+    .counselor-hero .hero-sub { color: rgba(255,255,255,0.85) !important; }
+    .counselor-hero .ai-insight-badge {
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        border-color: rgba(255,255,255,0.3);
+    }
+
     /* ── Stat cards ── */
     .triage-matrix-container {
         display: grid;
@@ -308,7 +332,10 @@
     }
 
     @media (max-width: 1200px) { .triage-matrix-container { grid-template-columns: repeat(2,1fr); } }
+    .counselor-hero #liveClock { color: rgba(255,255,255,0.9); }
     @media (max-width: 768px) {
+        .counselor-hero { padding: 1.5rem 1.25rem !important; border-radius: 20px !important; }
+        .counselor-hero h1 { font-size: 2rem !important; }
         .dash-content {
             padding: 1rem 0.75rem 4rem !important;
         }
@@ -367,15 +394,14 @@
 <div class="container dash-content" style="max-width: 1400px; margin: 0 auto; padding: 2rem 2rem 5rem;">
 
     <!-- ── Premium Header ── -->
-    <header class="staggered" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+    <header class="staggered counselor-hero">
         <div>
             <div class="ai-insight-badge" style="margin-bottom: 0.9rem;">
                 <div class="pulse-ai"></div>
                 AI Core Active &mdash; GPT-4o
             </div>
-            <h1 style="font-family:'Outfit',sans-serif; font-size:2.9rem; font-weight:900; letter-spacing:-0.05em; line-height:1.05; margin:0;"
-                class="text-gradient">Clinical Triage
-                <span style="display:block; font-size:1rem; font-weight:500; letter-spacing:0; color:var(--text-muted); margin-top:0.4rem;">Advanced institutional oversight &amp; predictive wellness monitoring</span>
+            <h1 style="font-family:'Outfit',sans-serif; font-size:2.9rem; font-weight:900; letter-spacing:-0.05em; line-height:1.05; margin:0;">Clinical Triage
+                <span class="hero-sub" style="display:block; font-size:1rem; font-weight:500; letter-spacing:0; margin-top:0.4rem;">Advanced institutional oversight &amp; predictive wellness monitoring</span>
             </h1>
         </div>
 
