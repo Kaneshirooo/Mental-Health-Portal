@@ -93,7 +93,47 @@
     }
     @media (max-width: 480px) {
         .admin-command-matrix {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.7rem !important;
+        }
+        .admin-card-premium div[style*="font-size: 3.5rem"] {
+            font-size: 2rem !important;
+        }
+    }
+    @media (max-width: 768px) {
+        /* Institutional Triage table → stacked full-width cards */
+        .ai-system-pulse-container table,
+        .ai-system-pulse-container tbody,
+        .ai-system-pulse-container tr,
+        .ai-system-pulse-container td {
+            display: block !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .ai-system-pulse-container thead {
+            display: none !important;
+        }
+        .ai-system-pulse-container tbody tr {
+            background: var(--surface-solid) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 18px !important;
+            padding: 1rem !important;
+            margin-bottom: 0.85rem !important;
+        }
+        .ai-system-pulse-container tbody tr td {
+            padding: 0.3rem 0 !important;
+            border: none !important;
+            text-align: left !important;
+        }
+        .ai-system-pulse-container tbody tr td:last-child {
+            padding-top: 0.7rem !important;
+        }
+        .ai-system-pulse-container tbody tr td:last-child a {
+            display: flex !important;
+            justify-content: center !important;
+            background: var(--primary-glow) !important;
+            border-radius: 12px !important;
+            padding: 0.7rem !important;
         }
     }
 </style>
