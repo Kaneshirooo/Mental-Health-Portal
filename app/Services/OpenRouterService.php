@@ -20,7 +20,7 @@ class OpenRouterService
     /**
      * Generate a response from OpenRouter AI.
      */
-    public function generateResponse(array $messages, string $systemInstruction = ''): string
+    public function generateResponse(array $messages, string $systemInstruction = '', int $maxTokens = 800, float $temperature = 0.7, int $timeout = 20): string
     {
         if (empty($this->apiKey)) {
             Log::error('OpenRouter API key is missing.');
@@ -49,7 +49,7 @@ class OpenRouterService
                 $formattedMessages[] = ['role' => $role, 'content' => $content];
             }
 
-            $response = Http::timeout(30)
+            $response = Http::timeout($timeout)
                 ->withHeaders([
                     'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
@@ -59,7 +59,8 @@ class OpenRouterService
                 ->post($this->apiUrl, [
                     'model' => $this->model,
                     'messages' => $formattedMessages,
-                    'temperature' => 0.7,
+                    'temperature' => $temperature,
+                    'max_tokens' => $maxTokens,
                 ]);
 
             if ($response->successful()) {

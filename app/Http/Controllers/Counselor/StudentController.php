@@ -195,28 +195,37 @@ class StudentController extends Controller
             return response()->json(['success' => false, 'error' => 'Invalid student.']);
         }
 
-        $assessments = AssessmentScore::where('user_id', $student->user_id)
+        $latest = AssessmentScore::where('user_id', $student->user_id)
             ->latest('assessment_date')
-            ->limit(5)
-            ->get();
+            ->first();
+        $cacheKey = 'ai_summary_' . $student->user_id . '_' . ($latest ? $latest->assessment_date->timestamp : 'none');
 
-        $moods = MoodLog::where('student_id', $student->user_id)
-            ->latest('logged_at')
-            ->limit(10)
-            ->get();
+        $summary = \Illuminate\Support\Facades\Cache::remember($cacheKey, now()->addMinutes(30), function () use ($student) {
+            $assessments = AssessmentScore::where('user_id', $student->user_id)
+                ->latest('assessment_date')
+                ->limit(3)
+                ->get();
 
-        $pastNotes = CounselorNote::where('student_id', $student->user_id)
-            ->latest('created_at')
-            ->limit(3)
-            ->get();
+            $moods = MoodLog::where('student_id', $student->user_id)
+                ->latest('logged_at')
+                ->limit(5)
+                ->get();
 
-        $prompt = $this->buildClinicalPrompt($student, $assessments, $moods, $pastNotes);
-        
-        $messages = [
-            ['role' => 'user', 'content' => $prompt]
-        ];
-        
-        $summary = $this->openRouter->generateResponse($messages);
+            $pastNotes = CounselorNote::where('student_id', $student->user_id)
+                ->latest('created_at')
+                ->limit(2)
+                ->get();
+
+            $prompt = $this->buildClinicalPrompt($student, $assessments, $moods, $pastNotes);
+
+            return $this->openRouter->generateResponse(
+                [['role' => 'user', 'content' => $prompt]],
+                '',
+                350,
+                0.3,
+                15
+            );
+        });
 
         if ($summary) {
             return response()->json(['success' => true, 'summary' => nl2br(e($summary))]);
@@ -241,15 +250,18 @@ class StudentController extends Controller
 
         $prompt .= "\n### RECENT MOOD LOGS:\n";
         foreach ($moods as $m) {
-            $prompt .= "- Date: {$m->logged_at} | Score: {$m->mood_score} | Note: " . ($m->note ?: 'No note') . "\n";
+            $note = $m->note ? substr(preg_replace('/\s+/', ' ', (string) $m->note), 0, 120) : 'No note';
+            $prompt .= "- Date: {$m->logged_at} | Score: {$m->mood_score} | Note: {$note}\n";
         }
 
         $prompt .= "\n### PREVIOUS CLINICAL NOTES:\n";
         foreach ($pastNotes as $n) {
-            $prompt .= "- Date: {$n->created_at} | Note: {$n->note_text} | Rec: {$n->recommendation}\n";
+            $txt = substr(preg_replace('/\s+/', ' ', (string) $n->note_text), 0, 150);
+            $rec = $n->recommendation ? substr(preg_replace('/\s+/', ' ', (string) $n->recommendation), 0, 120) : '-';
+            $prompt .= "- Date: {$n->created_at} | Note: {$txt} | Rec: {$rec}\n";
         }
 
-        $prompt .= "\nINSTRUCTIONS:\nProvide a professional, concise clinical summary (max 250 words) including:\n"
+        $prompt .= "\nINSTRUCTIONS:\nProvide a professional, concise clinical summary (max 180 words) including:\n"
             . "1. **Current Status**: Brief overview of recent trends.\n"
             . "2. **Key Risk Factors**: Any highlighted symptoms or patterns.\n"
             . "3. **Clinical Recommendation**: Suggested focus areas for the next session.\n"
