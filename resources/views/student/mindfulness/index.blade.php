@@ -57,6 +57,7 @@
 
         <div class="flex justify-center mb-12 relative">
             <div id="circle" class="w-48 h-48 border-[6px] border-emerald-500/10 rounded-full flex flex-col items-center justify-center transition-all duration-[4s] bg-white/5 backdrop-blur-3xl shadow-2xl" style="border: 4px solid var(--border);">
+                <div id="lungsIcon" style="display:none; font-size:3.2rem; line-height:1; margin-bottom:0.4rem; animation: lungs-hold 2s ease-in-out infinite;">🫁</div>
                 <span id="statusLabel" style="font-size: 1.8rem; font-weight: 900; color: #10b981; font-style: italic; text-transform: uppercase; letter-spacing: 0.05em;">Ready</span>
             </div>
         </div>
@@ -223,6 +224,8 @@ h1.text-white, h2.text-white {
     border-color: rgba(59, 130, 246, 0.5);
     box-shadow: 0 0 100px rgba(59, 130, 246, 0.15);
 }
+#lungsIcon.lungs-hold { animation: lungs-hold 2s ease-in-out infinite; }
+@keyframes lungs-hold { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.15); opacity: 1; } }
 @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 <script>
@@ -263,6 +266,8 @@ h1.text-white, h2.text-white {
             startBtn.classList.remove('bg-red-500/20', 'text-red-400');
         }
         if (circle) circle.classList.remove('expanding');
+        const lungsStop = document.getElementById('lungsIcon');
+        if (lungsStop) { lungsStop.style.display = 'none'; lungsStop.classList.remove('lungs-hold'); }
         if (statusLabel) statusLabel.textContent = 'Ready';
         if (instruct) instruct.textContent = 'Peak stillness attained.';
     }
@@ -272,8 +277,10 @@ h1.text-white, h2.text-white {
         const circle = document.getElementById('circle');
         const statusLabel = document.getElementById('statusLabel');
         const instruct = document.getElementById('instruction');
+        const lungs = document.getElementById('lungsIcon');
 
         if (circle) circle.classList.add('expanding');
+        if (lungs) { lungs.style.display = 'none'; lungs.classList.remove('lungs-hold'); }
         if (statusLabel) statusLabel.textContent = 'Inhale';
         if (instruct) instruct.textContent = 'Oxidize your bloodstream slowly...';
 
@@ -281,10 +288,12 @@ h1.text-white, h2.text-white {
             if (!isRunning) return;
             if (statusLabel) statusLabel.textContent = 'Hold';
             if (instruct) instruct.textContent = 'Stabilize the internal pressure.';
+            if (lungs) { lungs.style.display = 'block'; lungs.classList.add('lungs-hold'); }
             
             cycleTimeouts.push(setTimeout(() => {
                 if (!isRunning) return;
                 if (circle) circle.classList.remove('expanding');
+                if (lungs) { lungs.style.display = 'none'; lungs.classList.remove('lungs-hold'); }
                 if (statusLabel) statusLabel.textContent = 'Exhale';
                 if (instruct) instruct.textContent = 'Purge all biological tension.';
             }, 4000));
