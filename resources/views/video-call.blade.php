@@ -192,6 +192,8 @@
     }
     .control-btn {
         width: 44px !important;
+        height: 44px !important;
+    }
     #callChatSidebar {
         position: fixed;
         top: 0;
@@ -199,6 +201,7 @@
         width: 400px;
         max-width: 100vw;
         height: 100vh;
+        height: 100dvh;
         background: var(--surface-solid);
         border-left: 1px solid var(--border);
         z-index: 10000;
@@ -210,25 +213,31 @@
     #callChatSidebar.open {
         right: 0 !important;
     }
-    @media (max-width: 900px) {
-        .video-call-page {
-            height: calc(100vh - 5rem) !important;
-            gap: 0.75rem !important;
-            overflow-x: hidden !important;
-        }
-        #callChatSidebar {
-            width: 100% !important;
-            max-width: 100vw !important;
-            right: -100% !important;
-        }
-        #callChatSidebar.open {
-            right: 0 !important;
-        }
-        #liveSubtitlesOverlay {
-            bottom: 5rem !important;
-            max-width: 92% !important;
-        }
+}
+@media (max-width: 900px) {
+    .video-call-page {
+        height: calc(100vh - 5rem) !important;
+        height: calc(100dvh - 5rem) !important;
+        gap: 0.75rem !important;
+        overflow-x: hidden !important;
     }
+    #callChatSidebar {
+        width: 100% !important;
+        max-width: 100vw !important;
+        right: -100% !important;
+    }
+    #callChatSidebar.open {
+        right: 0 !important;
+    }
+    #callChatSidebar #chatInput {
+        font-size: 16px !important;
+    }
+    #liveSubtitlesOverlay {
+        bottom: 5rem !important;
+        max-width: 92% !important;
+    }
+    .message-wrap { max-width: 92% !important; }
+}
 </style>
 
 @push('scripts')
@@ -337,8 +346,11 @@
 
     async function initLocalMedia() {
         try {
+            const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 900;
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+                video: isMobileDevice
+                    ? { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
+                    : { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
                 audio: {
                     echoCancellation:   { ideal: true },
                     noiseSuppression:   { ideal: true },
@@ -519,6 +531,18 @@
                 const overlay = document.getElementById('remoteOverlay');
                 if (overlay) overlay.style.display = 'none';
                 adjustSignalPollingSpeed(3000); // Slow down polling once connected
+            } else if (['disconnected', 'failed'].includes(peerConnection?.iceConnectionState)) {
+                // Cross-device mobile networks drop often — fast ICE restart
+                try { peerConnection.restartIce(); } catch (e) {}
+                adjustSignalPollingSpeed(500);
+                if (IS_STUDENT) {
+                    try {
+                        peerConnection.createOffer({ iceRestart: true, offerToReceiveAudio: true, offerToReceiveVideo: true })
+                            .then(o => peerConnection.setLocalDescription(o))
+                            .then(() => sendSignal({ signal_type: 'offer', sdp: peerConnection.localDescription.sdp }))
+                            .catch(() => {});
+                    } catch (e) {}
+                }
             }
         };
 
@@ -1281,12 +1305,24 @@
         if (!sidebar) return;
         const opening = !sidebar.classList.contains('open');
         sidebar.classList.toggle('open');
+        sidebar.style.right = sidebar.classList.contains('open') ? '0px' : '';
         if (opening) {
             unreadChatCount = 0;
             updateUnreadBadge();
             const container = document.getElementById('chatMessages');
             if (container) container.scrollTop = container.scrollHeight;
+            setTimeout(() => document.getElementById('chatInput')?.focus({ preventScroll: true }), 350);
         }
+    }
+    // Keep chat visible above mobile keyboard and always scrolled to latest
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+            const sidebar = document.getElementById('callChatSidebar');
+            if (sidebar?.classList.contains('open')) {
+                const container = document.getElementById('chatMessages');
+                if (container) container.scrollTop = container.scrollHeight;
+            }
+        });
     }
 
     function handleRemoteHangup(declined = false) {
