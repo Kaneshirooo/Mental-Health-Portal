@@ -259,7 +259,9 @@
     #floatingSubmit {
         position: fixed !important;
         bottom: 6.5rem !important;
-        right: 1rem !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
         z-index: 10001 !important;
         display: none;
         align-items: center;
