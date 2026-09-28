@@ -210,7 +210,7 @@
                 <thead>
                     <tr style="text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.68rem; color: var(--text-dim); font-weight: 900;">
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Student Identity</th>
-                        <th style="padding: 1.25rem 1.5rem; text-align: left;">Clinical ID</th>
+                        <th style="padding: 1.25rem 1.5rem; text-align: left;">Student Number</th>
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Department</th>
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Wellness Index</th>
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Risk Classification</th>
