@@ -255,6 +255,27 @@
         from { transform:scale(0.85); opacity:0; }
         to   { transform:scale(1); opacity:1; }
     }
+    /* Floating submit popup — no scrolling needed */
+    #floatingSubmit {
+        position: fixed !important;
+        bottom: 6.5rem !important;
+        right: 1rem !important;
+        z-index: 10001 !important;
+        display: none;
+        align-items: center;
+        gap: 0.6rem;
+        background: #059669 !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 999px !important;
+        padding: 0.85rem 1.4rem !important;
+        font-weight: 800 !important;
+        font-size: 0.9rem !important;
+        cursor: pointer !important;
+        box-shadow: 0 12px 30px rgba(5,150,105,0.4) !important;
+    }
+    #floatingSubmit.show { display: flex !important; }
+    #floatingSubmit .count { background: rgba(255,255,255,0.25); border-radius: 999px; padding: 0.15rem 0.6rem; font-size: 0.78rem; }
 </style>
 @endpush
 
@@ -414,6 +435,8 @@
     ⚠️ Please answer <strong id="toastCount"></strong> before continuing.
 </div>
 
+<button id="floatingSubmit" onclick="confirmSubmit()"><span class="count" id="floatingCount">0/0</span> Submit Assessment</button>
+
 @push('modals')
 {{-- Confirm Submit Modal --}}
 <div id="confirmModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(15,23,42,0.6); backdrop-filter:blur(10px); align-items:center; justify-content:center;">
@@ -453,6 +476,21 @@ function selectChoice(name, val, el) {
         input.checked = true;
         input.dispatchEvent(new Event('change', { bubbles: true }));
     }
+    updateFloatingSubmit();
+}
+
+function updateFloatingSubmit() {
+    const section = document.getElementById('step-' + currentStep);
+    if (!section) return;
+    const strips = section.querySelectorAll('.question-strip');
+    let answered = 0;
+    strips.forEach(q => { if (q.querySelector('input[type="radio"]:checked')) answered++; });
+    const btn = document.getElementById('floatingSubmit');
+    const count = document.getElementById('floatingCount');
+    if (!btn || !count) return;
+    count.textContent = answered + '/' + strips.length;
+    const isLast = currentStep === categories.length - 1;
+    btn.classList.toggle('show', isLast && answered === strips.length && strips.length > 0);
 }
 
 let toastTimer = null;
@@ -499,6 +537,7 @@ function goStep(next) {
 
     window.scrollTo({ top: 0, behavior: 'instant' });
     initObserver();
+    updateFloatingSubmit();
 }
 
 function confirmSubmit() {
@@ -589,5 +628,6 @@ function initObserver() {
 }
 
 document.addEventListener('DOMContentLoaded', initObserver);
+document.addEventListener('DOMContentLoaded', updateFloatingSubmit);
 </script>
 @endpush
