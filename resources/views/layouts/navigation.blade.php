@@ -306,22 +306,23 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- ══════════════════════════════════════════════
      GLOBAL INCOMING CALL TOAST
 ══════════════════════════════════════════════ --}}
-<div id="incomingCallOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); z-index:99998; animation: g-fade-in 0.4s ease;"></div>
-<div id="incomingCallToast" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:99999; width:400px; max-width:90%;">
-    <div style="background:#fff; border-radius:24px; box-shadow:0 20px 60px rgba(0,0,0,0.18); border:2px solid #fca5a5; overflow:hidden; animation:g-toast-in 0.4s cubic-bezier(0.16,1,0.3,1);">
-        <div style="height:3px; background:linear-gradient(90deg,#dc2626,#f87171); animation:g-call-pulse 1.2s ease-in-out infinite;"></div>
+<div id="incomingCallOverlay" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(10px); z-index:99998; animation: g-fade-in 0.4s ease;"></div>
+<div id="incomingCallToast" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:99999; width:420px; max-width:calc(100vw - 2rem);">
+    <div style="background:var(--surface-solid, #fff); border-radius:28px; box-shadow:0 30px 80px rgba(220,38,38,0.25); border:2px solid #fca5a5; overflow:hidden; animation:g-toast-in 0.4s cubic-bezier(0.16,1,0.3,1);">
+        <div style="height:4px; background:linear-gradient(90deg,#dc2626,#f87171,#dc2626); background-size:200% 100%; animation:g-call-slide 1.2s linear infinite;"></div>
         <div style="padding:1.5rem;">
-            <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem;">
-                <div style="width:44px; height:44px; border-radius:14px; background:#fee2e2; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; animation:g-pulse-ring 1.6s ease-out infinite;">📞</div>
-                <div>
-                    <p style="font-size:0.6rem; font-weight:900; text-transform:uppercase; letter-spacing:0.12em; color:#dc2626; margin:0;">Incoming Emergency Call</p>
-                    <p id="gToastStudentName" style="font-size:0.95rem; font-weight:800; color:#0f172a; margin:0.1rem 0 0;">Student</p>
-                    <p id="gToastRiskBadge" style="font-size:0.7rem; font-weight:700; color:#dc2626; margin:0;">⚠ High Risk</p>
+            <div style="display:flex; align-items:center; gap:0.85rem; margin-bottom:0.5rem;">
+                <div style="width:52px; height:52px; border-radius:16px; background:#fee2e2; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; animation:g-pulse-ring 1.6s ease-out infinite;">📞</div>
+                <div style="min-width:0;">
+                    <p style="font-size:0.62rem; font-weight:900; text-transform:uppercase; letter-spacing:0.14em; color:#dc2626; margin:0;">Incoming Emergency Call</p>
+                    <p id="gToastStudentName" style="font-size:1rem; font-weight:800; color:#0f172a; margin:0.15rem 0 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Student</p>
+                    <p id="gToastRiskBadge" style="font-size:0.72rem; font-weight:700; color:#dc2626; margin:0.15rem 0 0;">⚠ High Risk</p>
                 </div>
             </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.6rem;">
-                <button id="gToastDeclineBtn" onclick="gDeclineCall()" style="background:#f1f5f9; border:1.5px solid #cbd5e1; color:#475569; padding:0.75rem; border-radius:14px; font-weight:800; font-size:0.78rem; cursor:pointer;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">Decline</button>
-                <button id="gToastAcceptBtn" onclick="gAcceptCall()" style="background:#dc2626; border:none; color:white; padding:0.75rem; border-radius:14px; font-weight:800; font-size:0.78rem; cursor:pointer; box-shadow:0 6px 16px rgba(220,38,38,0.3);" onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">Accept Call</button>
+            <p style="font-size:0.78rem; color:#64748b; font-weight:600; margin:0 0 1.1rem;">A student needs immediate support. Accept to open the video session.</p>
+            <div style="display:grid; grid-template-columns:1fr 1.4fr; gap:0.6rem;">
+                <button id="gToastDeclineBtn" onclick="gDeclineCall()" style="background:#f1f5f9; border:1.5px solid #cbd5e1; color:#475569; padding:0.85rem; border-radius:14px; font-weight:800; font-size:0.8rem; cursor:pointer; min-height:48px;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">Decline</button>
+                <button id="gToastAcceptBtn" onclick="gAcceptCall()" style="background:#dc2626; border:none; color:white; padding:0.85rem; border-radius:14px; font-weight:800; font-size:0.85rem; cursor:pointer; box-shadow:0 6px 16px rgba(220,38,38,0.3); min-height:48px;" onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">Accept Call</button>
             </div>
         </div>
     </div>
@@ -332,6 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <style>
 @keyframes g-toast-in   { from{opacity:0;transform:translateY(30px) scale(0.9)} to{opacity:1;transform:translateY(0) scale(1)} }
 @keyframes g-fade-in    { from{opacity:0} to{opacity:1} }
+@keyframes g-call-slide { from{background-position:200% 0} to{background-position:-200% 0} }
 .g-focus-mode {
     max-width: 100vw !important;
     max-height: 100vh !important;
@@ -399,12 +401,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showIncomingToast(call) {
+        const wasHidden = document.getElementById('incomingCallToast').style.display !== 'block';
         g_activePendingId = call.call_id;
         const queueInfo = call.total_queued > 1 ? ` (Queue #${call.queue_position} of ${call.total_queued})` : '';
         document.getElementById('gToastStudentName').textContent = call.student_name + (call.roll_number !== 'N/A' ? ` — ${call.roll_number}` : '') + queueInfo;
         document.getElementById('gToastRiskBadge').textContent   = `⚠ ${call.risk_level} Risk — Score ${call.overall_score}`;
         document.getElementById('incomingCallOverlay').style.display = 'block';
         document.getElementById('incomingCallToast').style.display = 'block';
+        if (wasHidden) {
+            try { navigator.vibrate?.([200, 100, 200]); } catch (e) {}
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                [523, 659, 784].forEach((f, i) => {
+                    const o = ctx.createOscillator(), g = ctx.createGain();
+                    o.connect(g); g.connect(ctx.destination);
+                    o.frequency.value = f;
+                    const t = ctx.currentTime + i * 0.18;
+                    g.gain.setValueAtTime(0.12, t);
+                    g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+                    o.start(t); o.stop(t + 0.17);
+                });
+                setTimeout(() => ctx.close(), 900);
+            } catch (e) {}
+        }
     }
 
     window.hideIncomingToast = function() {

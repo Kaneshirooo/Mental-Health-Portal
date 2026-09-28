@@ -1117,11 +1117,13 @@
     }
 
     function initSpeechRecognition() {
-        if (speechRecognition) return;
+        if (speechRecognition) return true;
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
-            console.error('[SpeechRecognition] Web Speech API not supported');
-            return;
+            if (window.App) App.toast({ type: 'error', title: 'Transcription Unavailable', message: 'This browser does not support voice transcription. Use Chrome or Edge.' });
+            const btn = document.getElementById('speechBtn');
+            if (btn) { btn.style.opacity = '0.4'; btn.title = 'Voice transcription not supported in this browser'; }
+            return false;
         }
 
         speechRecognition = new SpeechRecognition();
@@ -1136,7 +1138,7 @@
         };
 
         speechRecognition.onresult = async (event) => {
-            if (!speechActive || !micOn || document.hidden) return;
+            if (!speechActive || !micOn) return;
 
             let interimText = '';
             let finalTranscript = '';
@@ -1144,12 +1146,14 @@
             for (let i = event.resultIndex; i < event.results.length; i++) {
                 const result = event.results[i];
                 const text = result[0]?.transcript?.trim() || '';
+                if (!text) continue;
                 if (result.isFinal) {
                     finalTranscript += (finalTranscript ? ' ' : '') + text;
-                } else {
+                } else if (!document.hidden) {
                     interimText += (interimText ? ' ' : '') + text;
                 }
             }
+            if (!interimText && !finalTranscript) return;
 
             const speakerRole = IS_COUNSELOR ? 'COUNSELOR' : 'STUDENT';
             const speakerLabel = IS_COUNSELOR ? 'Counselor' : 'Student';
@@ -1211,6 +1215,19 @@
 
         speechRecognition.onerror = (event) => {
             speechIsRunning = false;
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                speechActive = false;
+                if (window.App) App.toast({ type: 'error', title: 'Microphone Blocked', message: 'Allow microphone access in browser settings, then tap the mic button again.' });
+                const btn = document.getElementById('speechBtn');
+                if (btn) {
+                    btn.style.removeProperty('background');
+                    btn.style.removeProperty('color');
+                    btn.innerHTML = '<i class="ph-bold ph-microphone-stage" style="font-size:1.4rem"></i>';
+                }
+                const indicator = document.getElementById('transcribingIndicator');
+                if (indicator) indicator.style.display = 'none';
+                return;
+            }
             console.warn('[SpeechRecognition] Error:', event.error);
             if (speechActive && micOn && event.error !== 'aborted' && !document.hidden) {
                 if (speechRestartTimer) clearTimeout(speechRestartTimer);
@@ -1221,6 +1238,7 @@
                 }, 500);
             }
         };
+        return true;
     }
 
     function toggleSpeechCapture() {
@@ -1235,11 +1253,20 @@
             speechInterimBubbleId = null;
 
             if (speechRecognition) {
+                try { speechRecognition.abort(); } catch (_) {}
                 try { speechRecognition.stop(); } catch (_) {}
                 speechRecognition = null;
             }
-            initSpeechRecognition();
-            safeStartSpeech();
+            if (initSpeechRecognition() === false) {
+                speechActive = false;
+                return;
+            }
+            // Ensure mic permission is granted before starting engine
+            if (!localStream) {
+                initLocalMedia().then(() => safeStartSpeech());
+            } else {
+                safeStartSpeech();
+            }
 
             if (btn) {
                 btn.style.setProperty('background', '#10b981', 'important');
