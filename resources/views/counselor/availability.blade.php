@@ -161,6 +161,23 @@
         background: var(--primary-glow);
         border-color: var(--primary);
     }
+
+    @media (max-width: 900px) {
+        div[style*="grid-template-columns: 360px 1fr"] {
+            grid-template-columns: 1fr !important;
+            gap: 1.25rem !important;
+        }
+        .slot-card {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0.75rem !important;
+            padding: 1rem !important;
+            border-radius: 18px !important;
+        }
+        .slot-card > div:first-child { grid-column: 1 / -1 !important; }
+        .slot-card .time-input { font-size: 16px !important; min-height: 48px !important; }
+        .slot-card .btn-trash { grid-column: 1 / -1 !important; width: 100% !important; min-height: 46px !important; }
+        .day-opt { min-height: 44px !important; }
+    }
 </style>
 @endpush
 
