@@ -79,19 +79,19 @@
                     <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">What Your Score Means</div>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 700; color: #ef4444;">
-                            <span style="width: 8px; height: 8px; border-radius: 2px; background: #ef4444;"></span> 0-20: Critical
+                            <span style="width: 8px; height: 8px; border-radius: 2px; background: #ef4444;"></span> 0-20: Really Tough Time
                         </div>
                         <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 700; color: #f97316;">
-                            <span style="width: 8px; height: 8px; border-radius: 2px; background: #f97316;"></span> 21-40: Low
+                            <span style="width: 8px; height: 8px; border-radius: 2px; background: #f97316;"></span> 21-40: Tough Patch
                         </div>
                         <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 700; color: #f59e0b;">
-                            <span style="width: 8px; height: 8px; border-radius: 2px; background: #f59e0b;"></span> 41-60: Moderate
+                            <span style="width: 8px; height: 8px; border-radius: 2px; background: #f59e0b;"></span> 41-60: Ups and Downs
                         </div>
                         <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 700; color: #10b981;">
-                            <span style="width: 8px; height: 8px; border-radius: 2px; background: #10b981;"></span> 61-80: Well
+                            <span style="width: 8px; height: 8px; border-radius: 2px; background: #10b981;"></span> 61-80: Feeling Good
                         </div>
                         <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 700; color: #059669;">
-                            <span style="width: 8px; height: 8px; border-radius: 2px; background: #059669;"></span> 81-100: Optimal
+                            <span style="width: 8px; height: 8px; border-radius: 2px; background: #059669;"></span> 81-100: Feeling Bright
                         </div>
                     </div>
                 </div>

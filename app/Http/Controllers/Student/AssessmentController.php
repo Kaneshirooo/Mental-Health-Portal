@@ -167,10 +167,10 @@ class AssessmentController extends Controller
             ->firstOrFail();
 
         $recommendations = [
-            'Low'      => 'Your assessment indicates low risk. Continue with regular self-care.',
-            'Moderate' => 'If you want to speak with a professional, you can book a session here:',
-            'High'     => 'You are recommended to consult with the counselor.',
-            'Critical' => 'You are strongly recommended to consult with the counselor immediately.',
+            'Low'      => "You're doing okay overall. Keep doing the small things that help you feel steady.",
+            'Moderate' => "You've had some ups and downs lately. If you'd like, talking with your counselor can help lighten things a little.",
+            'High'     => "Things have felt heavy lately. It would really help to spend some time with your counselor soon.",
+            'Critical' => "Things feel really heavy right now. Please reach out to your counselor as soon as you can — you don't have to go through this alone.",
         ];
 
         $risk_colors = [
@@ -343,22 +343,20 @@ class AssessmentController extends Controller
 
     private function calculateRiskLevel(int $depression, int $anxiety, int $stress): string
     {
-        // Clinical best-practice: Risk is determined by the most severe indicator
-        $dep_sev = $this->getSeverityLabel($depression, 'depression')['label'];
-        $anx_sev = $this->getSeverityLabel($anxiety, 'anxiety')['label'];
-        $str_sev = $this->getSeverityLabel($stress, 'stress')['label'];
-
-        $severities = [$dep_sev, $anx_sev, $str_sev];
-
-        if (in_array('Severe', $severities) || in_array('Extreme', $severities) || in_array('Moderately Severe', $severities)) {
+        // Risk is set by the heaviest score. Uses raw numbers so friendly labels can't break it.
+        // Cutoffs match PHQ-9 / GAD-7 / DASS-stress standards.
+        $isCritical = ($depression >= 15) || ($anxiety >= 15) || ($stress >= 13);
+        if ($isCritical) {
             return 'Critical';
         }
 
-        if (in_array('Moderate', $severities)) {
+        $isHigh = ($depression >= 10 && $depression <= 14) || ($anxiety >= 10 && $anxiety <= 14) || ($stress >= 10 && $stress <= 12);
+        if ($isHigh) {
             return 'High';
         }
 
-        if (in_array('Mild', $severities)) {
+        $isModerate = ($depression >= 5 && $depression <= 9) || ($anxiety >= 5 && $anxiety <= 9) || ($stress >= 8 && $stress <= 9);
+        if ($isModerate) {
             return 'Moderate';
         }
 
