@@ -36,9 +36,9 @@ class MindfulnessController extends Controller
 
         $context = $moodPrompts[$request->mood] ?? $moodPrompts['neutral'];
 
-        $systemInstruction = "You are a warm, soothing mindfulness and meditation guide for students. "
-            . "Create a unique, personalized 1-minute mindfulness exercise based on the provided context. "
-            . "Structure it as a short script without markdown (no bold/headers). Keep it under 100 words.";
+        $systemInstruction = "You are a warm, gentle friend guiding a short calm moment for a student. "
+            . "Create a cozy, one-minute breathing or rest message in very simple everyday words. "
+            . "Write it as a short script with no bold or headers. Keep it under 100 words.";
 
         $messages = [
             ['role' => 'user', 'parts' => [['text' => "I am $context"]]]
@@ -67,9 +67,9 @@ class MindfulnessController extends Controller
 
         $name = explode(' ', auth()->user()->full_name)[0];
 
-        $systemInstruction = "You are Aria, a mental health AI counselor. "
-            . "Recommend ONE specific mindfulness exercise (4-7-8 Breathing, 5-4-3-2-1 Grounding, or Body Scan) based on the student's mood log. "
-            . "Keep the response to exactly two supportive sentences.";
+        $systemInstruction = "You are a caring friend for students. "
+            . "Suggest ONE cozy idea (slow breathing, noticing 5 things around you, or a quiet rest) based on how they feel. "
+            . "Use very simple everyday words. Keep it to exactly two warm sentences, text only, no voice.";
 
         $messages = [
             ['role' => 'user', 'parts' => [['text' => "Mood: {$mood->mood_emoji} (Score: {$mood->mood_score}/5). Note: \"{$mood->note}\""]]]
@@ -80,7 +80,7 @@ class MindfulnessController extends Controller
         });
 
         if (!$recommendation) {
-            return response()->json(['success' => false, 'error' => 'Aria is busy right now.']);
+            return response()->json(['success' => false, 'error' => 'That is taking a moment. Try one slow breath for now.']);
         }
 
         return response()->json([

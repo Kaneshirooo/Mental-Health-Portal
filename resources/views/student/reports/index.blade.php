@@ -6,8 +6,8 @@
     <!-- Header -->
     <header class="mb-12 lg:flex justify-between items-end">
         <div>
-            <h1 class="vault-title text-6xl font-black tracking-tighter italic uppercase mb-3">Progress Vault</h1>
-            <p class="vault-subtitle font-medium">Your assessment history and AI session summaries.</p>
+            <h1 class="vault-title text-6xl font-black tracking-tighter italic uppercase mb-3">My Progress</h1>
+            <p class="vault-subtitle font-medium">Your check-ins and chat takeaways in one place.</p>
         </div>
         <div class="mt-8 lg:mt-0">
             <a href="{{ route('student.assessment') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-black px-10 py-5 rounded-[2rem] shadow-xl transition-all uppercase tracking-widest text-xs inline-flex items-center gap-3">
@@ -20,8 +20,8 @@
     <!-- Session Summaries -->
     <div id="session-summaries-section" class="mb-16">
         <header class="mb-10">
-            <h2 class="vault-title text-4xl font-black italic uppercase mb-2 tracking-tighter">Session Summaries</h2>
-            <p class="vault-subtitle font-medium">Observations from your AI chat sessions.</p>
+            <h2 class="vault-title text-4xl font-black italic uppercase mb-2 tracking-tighter">Chat Takeaways</h2>
+            <p class="vault-subtitle font-medium">Short notes from your recent chats.</p>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -42,26 +42,26 @@
                             <p class="text-[11px] font-bold uppercase tracking-widest" style="color:#059669">{{ $session->created_at->format('h:i A') }}</p>
                         </div>
                         <span class="px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border" style="{{ $sbadge }}">
-                            {{ $session->ai_report['risk_level'] ?? 'Low' }} Risk
+                            {{ ['Low' => 'Doing Okay', 'Moderate' => 'A Bit Tough', 'Medium' => 'A Bit Tough', 'High' => 'Need Care', 'Critical' => 'Need Care'][$session->ai_report['risk_level'] ?? 'Low'] ?? ($session->ai_report['risk_level'] ?? 'Doing Okay') }}
                         </span>
                     </div>
 
-                    <!-- Observation Preview -->
+                    <!-- Takeaway Preview -->
                     <div class="mb-6">
                         <p class="card-body text-sm italic line-clamp-3 leading-relaxed font-medium">
-                            "{!! \Illuminate\Support\Str::limit($session->ai_report['clinical_observations'] ?? 'No observations recorded.', 150) !!}"
+                            "{!! \Illuminate\Support\Str::limit($session->ai_report['clinical_observations'] ?? $session->ai_report['core_concerns'] ?? 'Nothing here yet — chat a little more and your takeaways will show up.', 150) !!}"
                         </p>
                     </div>
 
                     <!-- Mood / Sleep -->
                     <div class="grid grid-cols-2 gap-3 mb-8">
                         <div class="stat-box rounded-2xl p-4 text-center">
-                            <p class="text-[9px] font-black uppercase tracking-widest mb-1" style="color:#059669">Mood</p>
-                            <p class="card-title font-bold text-sm">{{ ucfirst($session->ai_report['mood'] ?? 'Stable') }}</p>
+                            <p class="text-[9px] font-black uppercase tracking-widest mb-1" style="color:#059669">How I Felt</p>
+                            <p class="card-title font-bold text-sm">{{ ucfirst($session->ai_report['mood'] ?? 'Okay') }}</p>
                         </div>
                         <div class="stat-box rounded-2xl p-4 text-center">
-                            <p class="text-[9px] font-black uppercase tracking-widest mb-1" style="color:#059669">Sleep</p>
-                            <p class="card-title font-bold text-sm">{{ $session->ai_report['sleep'] ?? 'N/A' }}</p>
+                            <p class="text-[9px] font-black uppercase tracking-widest mb-1" style="color:#059669">My Sleep</p>
+                            <p class="card-title font-bold text-sm">{{ $session->ai_report['sleep'] ?? '—' }}</p>
                         </div>
                     </div>
 
@@ -69,7 +69,7 @@
                     <div class="mt-auto">
                         <a href="{{ route('student.reports.session.show', $session->pre_id) }}"
                            class="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl transition-all uppercase tracking-widest text-[9px]">
-                            View Summary
+                            See What I Shared
                             <i class="ph ph-sparkle"></i>
                         </a>
                     </div>
@@ -83,14 +83,14 @@
     </div>
 
     @if($reports->count() > 1)
-    <!-- Distress Over Time Chart -->
+    <!-- How I've been feeling chart -->
     <div class="vault-card p-10 mb-12">
         <h2 class="section-label text-xs font-black uppercase tracking-[0.3em] mb-4 flex items-center gap-3">
             <i class="ph ph-chart-line text-blue-600 text-lg"></i>
-            Distress Score Over Time
+            How I've Been Feeling Over Time
         </h2>
         <p class="vault-subtitle text-sm mb-8 leading-relaxed max-w-3xl">
-            This visualization tracks your emotional well-being by plotting overall distress scores from your assessment history. The score is calculated as the average of your results across three key clinical dimensions: Depression (PHQ-9), Anxiety (GAD-7), and Stress (DASS-21). A higher score indicates a higher level of psychological distress, helping you identify patterns and monitor your progression over time.
+            This line shows how your check-in scores have changed. It's a mix of your mood, worries, and pressure answers. Going up is good — it means brighter days. Dips just mean you've had heavier days lately, and that's okay.
         </p>
         <div class="h-[280px] w-full">
             <canvas id="historyChart"></canvas>
@@ -117,29 +117,29 @@
                         <p class="card-time text-[11px] font-bold uppercase tracking-widest">{{ $report->assessment_date->format('h:i A') }}</p>
                     </div>
                     <span class="px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border" style="{{ $badge }}">
-                        {{ $report->risk_level }} Risk
+                        {{ ['Low' => 'Doing Okay', 'Moderate' => 'A Bit Tough', 'Medium' => 'A Bit Tough', 'High' => 'Need Care', 'Critical' => 'Need Care'][$report->risk_level] ?? $report->risk_level }}
                     </span>
                 </div>
 
                 <!-- Overall Score -->
                 <div class="mb-8 flex items-end gap-2 px-1">
                     <span class="text-6xl font-black text-blue-700 leading-none tracking-tighter">{{ $report->overall_score }}</span>
-                    <span class="card-label text-xs font-bold uppercase mb-1 tracking-widest">/ 100 pts</span>
+                    <span class="card-label text-xs font-bold uppercase mb-1 tracking-widest">feel-good pts</span>
                 </div>
 
-                <!-- D/A/S Breakdown -->
+                <!-- Mood / Worries / Pressure -->
                 <div class="stat-box grid grid-cols-3 gap-0 rounded-2xl p-5 mb-8">
                     <div class="text-center">
                         <p class="card-title text-base font-black">{{ $report->depression_score }}</p>
-                        <p class="card-label text-[9px] font-black uppercase tracking-widest">Depression</p>
+                        <p class="card-label text-[9px] font-black uppercase tracking-widest">Low Mood</p>
                     </div>
                     <div class="text-center stat-divider">
                         <p class="card-title text-base font-black">{{ $report->anxiety_score }}</p>
-                        <p class="card-label text-[9px] font-black uppercase tracking-widest">Anxiety</p>
+                        <p class="card-label text-[9px] font-black uppercase tracking-widest">Worries</p>
                     </div>
                     <div class="text-center">
                         <p class="card-title text-base font-black">{{ $report->stress_score }}</p>
-                        <p class="card-label text-[9px] font-black uppercase tracking-widest">Stress</p>
+                        <p class="card-label text-[9px] font-black uppercase tracking-widest">Pressure</p>
                     </div>
                 </div>
 
@@ -147,7 +147,7 @@
                 <div class="mt-auto">
                     <a href="{{ route('student.reports.show', $report) }}"
                        class="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl transition-all uppercase tracking-widest text-[9px]">
-                        View Details
+                        See My Check-In
                         <i class="ph ph-arrow-right"></i>
                     </a>
                 </div>
@@ -225,7 +225,7 @@
         data: {
             labels: {!! json_encode($reports->reverse()->pluck('assessment_date')->map(fn($d) => $d->format('M d, Y'))->values()) !!},
             datasets: [{
-                label: 'Distress Level',
+                label: 'How I Felt',
                 data: {!! json_encode($reports->reverse()->pluck('overall_score')->values()) !!},
                 borderColor: '#3b82f6',
                 borderWidth: 4,

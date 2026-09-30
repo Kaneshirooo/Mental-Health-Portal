@@ -8,7 +8,7 @@
                 <i class="ph-fill ph-user-circle text-emerald-500"></i>
                 Account Profile
             </h1>
-            <p class="profile-subtitle mt-2">Manage your academic information and contact details for clinical records.</p>
+            <p class="profile-subtitle mt-2">Keep your school info and contact details up to date.</p>
         </div>
 
         <div class="profile-card rounded-3xl overflow-hidden p-8 md:p-12">

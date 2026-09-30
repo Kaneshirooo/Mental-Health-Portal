@@ -39,21 +39,21 @@
         <p class="text-gray-500 font-medium italic">"Deep stillness starts with one intentional breath."</p>
     </div>
 
-    <!-- Aria Recommendation -->
+    <!-- Gentle tip for you -->
     <div id="ariaRecCard" class="hidden glass-card p-8 mb-12 flex items-center gap-8 border-l-4 border-l-emerald-500 animate-fade-in" style="background: var(--surface-solid); border: 2px solid var(--border); border-left: 6px solid #10b981; border-radius: 32px; box-shadow: var(--shadow-lg);">
         <div class="w-16 h-16 bg-emerald-600/10 border border-emerald-500/20 rounded-3xl flex items-center justify-center text-3xl">✨</div>
         <div class="flex-1">
-            <h3 style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: #10b981; margin-bottom: 0.4rem;">Aria's Insight</h3>
+            <h3 style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: #10b981; margin-bottom: 0.4rem;">A Gentle Tip for You</h3>
             <p id="ariaRecText" style="color: var(--text-dim); font-weight: 600; font-style: italic; line-height: 1.6;"></p>
         </div>
     </div>
 
-    <!-- Breathing Exercise (Premium Clinical Protocol) -->
+    <!-- Calm breathing -->
     <div class="glass-card p-12 mb-12 text-center relative overflow-hidden" style="background: var(--surface-solid); border: 2px solid var(--border); border-radius: 48px; box-shadow: var(--shadow-lg);">
         <div class="absolute inset-0 bg-gradient-to-b from-emerald-600/5 to-transparent"></div>
         
-        <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -0.02em;">4-7-8 Respiratory Protocol</h2>
-        <p style="color: var(--text-muted); font-weight: 600; font-size: 1rem; margin-bottom: 3rem;">Neutralize stress by recalibrating your autonomic nervous system.</p>
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -0.02em;">4-7-8 Calm Breathing</h2>
+        <p style="color: var(--text-muted); font-weight: 600; font-size: 1rem; margin-bottom: 3rem;">Breathe slowly to feel calmer and lighter.</p>
 
         <div class="flex justify-center mb-12 relative">
             <div id="circle" class="w-48 h-48 border-[6px] border-emerald-500/10 rounded-full flex flex-col items-center justify-center transition-all duration-[4s] bg-white/5 backdrop-blur-3xl shadow-2xl" style="border: 4px solid var(--border);">
@@ -62,10 +62,10 @@
             </div>
         </div>
 
-        <p id="instruction" style="font-size: 1.2rem; font-weight: 800; color: var(--text-dim); height: 2rem; margin-bottom: 3.5rem; font-style: italic;">Enter the zone of stillness.</p>
+        <p id="instruction" style="font-size: 1.2rem; font-weight: 800; color: var(--text-dim); height: 2rem; margin-bottom: 3.5rem; font-style: italic;">Find a comfy spot and relax.</p>
         
         <button id="startBtn" onclick="toggleBreathing()" class="btn-primary" style="padding: 1.25rem 3.5rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8rem; background: #10b981; color: white; border: none; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);">
-            Initialize Session
+            Start Breathing
         </button>
     </div>
 
@@ -74,20 +74,20 @@
         <div class="glass-card p-10 group hover:border-emerald-500/30 transition-all" style="background: var(--surface-solid); border: 2px solid var(--border); border-radius: 40px; box-shadow: var(--shadow-lg);">
             <div class="flex justify-between items-start mb-8">
                 <div class="w-14 h-14 bg-emerald-600/10 rounded-2xl flex items-center justify-center text-3xl">⚓</div>
-                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-500 bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20">Tactical Grounding</span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-500 bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20">Feel Grounded</span>
             </div>
-            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem;">5-4-3-2-1 Sensory Protocol</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-bottom: 2rem;">Anchor your neurological state through physical verification.</p>
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem;">5-4-3-2-1 Senses Game</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-bottom: 2rem;">Notice what you see, hear, and feel to come back to the moment.</p>
             
             <div id="groundingSteps" class="bg-white/5 border border-white/10 rounded-[2rem] p-8 mb-8 min-h-[220px] flex flex-col items-center justify-center text-center transition-all bg-emerald-50/10" style="border: 2px dashed var(--border);">
-                <div id="groundingContent" style="color: var(--text-dim); font-weight: 700; font-style: italic; font-size: 1.1rem;">Initialize grounding protocol to stabilize awareness...</div>
+                <div id="groundingContent" style="color: var(--text-dim); font-weight: 700; font-style: italic; font-size: 1.1rem;">Tap start and we'll walk through it together, one step at a time...</div>
                 <div id="groundingInputs" style="display:none; width: 100%; margin-top: 1.5rem;">
                     <input type="text" id="groundingField" placeholder="Record what you sense..." style="width: 100%; padding: 1rem 1.5rem; border-radius: 16px; border: 1.5px solid var(--border); font-weight: 600; font-size: 0.95rem; background: white; color: var(--text); outline: none;">
                 </div>
             </div>
             
             <button onclick="nextGroundingStep()" id="groundingBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-5 rounded-2xl transition-all shadow-xl shadow-emerald-600/20 uppercase tracking-widest text-[10px]">
-                Activate Protocol
+                Start
             </button>
         </div>
 
@@ -136,8 +136,8 @@
                 <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-3xl mb-8 flex items-center justify-center shadow-xl shadow-blue-500/20">
                     <i class="ph ph-sparkle text-white text-3xl"></i>
                 </div>
-                <h2 class="text-2xl font-bold mb-4">Aria AI Session</h2>
-                <p class="text-gray-500 leading-relaxed font-medium mb-8">Generate a personalized 1-minute mindfulness script based on your current state.</p>
+                <h2 class="text-2xl font-bold mb-4">A Calm Minute, Just for You</h2>
+                <p class="text-gray-500 leading-relaxed font-medium mb-8">Pick how you're feeling and get a short, cozy reading made for this moment.</p>
                 
                 <div class="grid grid-cols-2 gap-3 mb-8">
                     @foreach(['stressed', 'anxious', 'sad', 'tired', 'neutral', 'happy'] as $m)
@@ -154,7 +154,7 @@
             <div class="lg:w-2/3 w-full h-full min-h-[300px] bg-white/[0.02] border border-dashed border-white/20 rounded-[3rem] p-10 flex items-center justify-center text-center relative overflow-hidden">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_70%)]"></div>
                 <p id="aiScriptText" class="text-gray-500 italic font-medium leading-relaxed relative z-10">
-                    Select your current affective state to initialize AI generation protocol.
+                    Pick how you're feeling right now to get your message.
                 </p>
             </div>
         </div>
@@ -243,7 +243,7 @@ h1.text-white, h2.text-white {
         if (!startBtn) return;
         
         isRunning = true;
-        startBtn.textContent = 'End Session Protocol';
+        startBtn.textContent = 'Take a Break';
         startBtn.classList.add('bg-red-500/20', 'text-red-400');
         
         cycle();
@@ -262,7 +262,7 @@ h1.text-white, h2.text-white {
         cycleTimeouts = [];
 
         if (startBtn) {
-            startBtn.textContent = 'Initialize Session';
+            startBtn.textContent = 'Start Breathing';
             startBtn.classList.remove('bg-red-500/20', 'text-red-400');
         }
         if (circle) circle.classList.remove('expanding');
@@ -331,7 +331,7 @@ h1.text-white, h2.text-white {
                 text.innerHTML = data.script.replace(/\n/g, '<br>');
                 text.className = 'text-white font-medium leading-relaxed italic animate-fade-in';
             } else {
-                text.textContent = 'Aria is busy right now, but remember: just take one deep breath. ' + (data.error || '');
+                text.textContent = 'Hmm, that is taking a moment. For now, just take one slow deep breath with me. ' + (data.error || '');
             }
         } catch(e) { 
             console.error(e); 

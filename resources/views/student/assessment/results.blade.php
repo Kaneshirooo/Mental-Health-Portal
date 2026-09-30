@@ -39,8 +39,8 @@
     
     <div style="text-align: center; margin-bottom: 2.5rem;" class="no-print">
         <div style="font-size: 2.5rem; margin-bottom: 1rem;">✨</div>
-        <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Insight Generated</h1>
-        <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 400;">Your clinical reflection has been analyzed. Here are the personalized findings.</p>
+        <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Here's How You're Doing</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 400;">We looked at your check-in answers. Here's a simple breakdown of what we see.</p>
     </div>
 
     <div id="printableCardArea" style="background: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 2.5rem; position: relative; overflow: hidden;">
@@ -52,7 +52,7 @@
                 <div>
                     <div style="font-size: 0.7rem; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.2rem;">PANGASINAN STATE UNIVERSITY</div>
                     <div style="font-size: 1.35rem; font-weight: 800; color: #0f172a; font-family: 'Outfit', sans-serif;">STUDENT MENTAL HEALTH & WELLNESS CENTER</div>
-                    <div style="font-size: 0.8rem; color: #475569; font-weight: 600;">Official Clinical Assessment Evaluation Report</div>
+                    <div style="font-size: 0.8rem; color: #475569; font-weight: 600;">Your Personal Check-In Summary</div>
                 </div>
                 <div style="text-align: right; font-size: 0.75rem; color: #334155; font-weight: 600; line-height: 1.5; background: #f8fafc; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #e2e8f0;">
                     <div><strong>Report ID:</strong> #PAS-{{ sprintf('%05d', $score->score_id) }}</div>
@@ -76,7 +76,7 @@
 
                 {{-- Scale Identification Legend --}}
                 <div style="background: var(--surface-2); border-radius: 12px; padding: 1rem; border: 1px solid var(--border); text-align: left; max-width: 220px; margin: 0 auto;">
-                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Clinical Scale Key</div>
+                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">What Your Score Means</div>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 700; color: #ef4444;">
                             <span style="width: 8px; height: 8px; border-radius: 2px; background: #ef4444;"></span> 0-20: Critical
@@ -100,9 +100,9 @@
             <div>
                 <div style="display: inline-block; padding: 0.35rem 0.85rem; border-radius: 6px; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; margin-bottom: 1rem; 
                     background: {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}15; color: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }}; border: 1px solid {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }}30;">
-                    {{ $score->risk_level }} Risk Profile
+                    {{ ['Low' => 'Doing Okay', 'Moderate' => 'A Bit Tough', 'High' => 'Need Extra Care', 'Critical' => 'Need Extra Care'][$score->risk_level] ?? $score->risk_level }} — How You're Doing
                 </div>
-                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem;">Analysis Complete</h2>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem;">All Done — Thank You for Sharing</h2>
                 <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; font-weight: 400;">{{ $recommendations[$score->risk_level] ?? '' }}</p>
                 
                 <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;" class="no-print">
@@ -120,7 +120,7 @@
         <div style="border-top: 1px solid var(--border); padding-top: 2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                 <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.6rem;">
-                    <span style="font-size: 1.25rem;">🧠</span> AI Clinical Insight
+                    <span style="font-size: 1.25rem;">💬</span> What This Means for You
                 </h3>
                 <div style="display: flex; align-items: center; gap: 0.75rem;" class="no-print">
                     <button onclick="translateToTagalog()" id="translateBtn" style="background: none; border: 1.5px solid var(--primary); color: var(--primary); padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s;" onmouseover="this.style.background='var(--primary-glow)'" onmouseout="this.style.background='none'">
@@ -145,9 +145,9 @@
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
                 @php
                     $dimConfigs = [
-                        ['id' => 'depression', 'label' => 'Depression', 'score' => $score->depression_score, 'info' => $dep_info],
-                        ['id' => 'anxiety',    'label' => 'Anxiety',    'score' => $score->anxiety_score,    'info' => $anx_info],
-                        ['id' => 'stress',     'label' => 'Stress',     'score' => $score->stress_score,     'info' => $str_info],
+                        ['id' => 'depression', 'label' => 'Low Mood', 'score' => $score->depression_score, 'info' => $dep_info],
+                        ['id' => 'anxiety',    'label' => 'Worries',    'score' => $score->anxiety_score,    'info' => $anx_info],
+                        ['id' => 'stress',     'label' => 'Pressure',     'score' => $score->stress_score,     'info' => $str_info],
                     ];
                 @endphp
                 @foreach($dimConfigs as $dim)
@@ -174,24 +174,25 @@
         {{-- Computation Transparency Section --}}
         <div style="border-top: 1px solid var(--border); padding-top: 2.5rem; margin-top: 2.5rem;">
             <h3 style="font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 1.25rem;">📊</span> Computation Logic & Clinical Sources
+                <span style="font-size: 1.25rem;">📊</span> How Your Score Was Made
             </h3>
             <div style="background: var(--surface-2); border-radius: var(--radius); padding: 1.5rem; border: 1px solid var(--border);">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                     <div>
-                        <h4 style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.75rem;">Source Scales</h4>
+                        <h4 style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.75rem;">Your 3 Check-In Areas</h4>
                         <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem;">
-                            <li>• <strong>Depression:</strong> PHQ-9 Standard (Max 27)</li>
-                            <li>• <strong>Anxiety:</strong> GAD-7 Standard (Max 21)</li>
-                            <li>• <strong>Stress:</strong> DASS-21 Subscale (Max 21)</li>
+                            <li>• <strong>Mood:</strong> How down or low you've felt (out of 27)</li>
+                            <li>• <strong>Worries:</strong> How nervous or on-edge you've felt (out of 21)</li>
+                            <li>• <strong>Pressure:</strong> How stressed or stretched thin you've felt (out of 21)</li>
                         </ul>
                     </div>
                     <div>
-                        <h4 style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.75rem;">Wellness Calculation</h4>
+                        <h4 style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.75rem;">How We Get Your Score</h4>
                         <div style="font-size: 0.85rem; color: var(--text); line-height: 1.6;">
-                            Your Raw Distress: <strong>{{ $raw_total }}</strong> / {{ $max_total }}<br>
-                            Distress Percentage: <strong>{{ round(($raw_total / $max_total) * 100) }}%</strong><br>
-                            Wellness Index: <code>100 - {{ round(($raw_total / $max_total) * 100) }} = <strong>{{ $wellness_index }}</strong></code>
+                            Your answers added up to: <strong>{{ $raw_total }}</strong> / {{ $max_total }}<br>
+                            That means: <strong>{{ round(($raw_total / $max_total) * 100) }}% tough days</strong><br>
+                            Your feel-good score: <code>100 - {{ round(($raw_total / $max_total) * 100) }} = <strong>{{ $wellness_index }}</strong></code><br>
+                            <span style="font-size:0.8rem; color:var(--text-dim);">Higher = you're feeling better.</span>
                         </div>
                     </div>
                 </div>
@@ -203,8 +204,8 @@
             <div style="display:flex; align-items:center; gap:1.25rem; padding: 1.5rem 2rem; background: linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(99,102,241,0.06) 100%); border: 1.5px solid rgba(13,148,136,0.2); border-radius: var(--radius); border-left: 5px solid var(--primary);">
                 <div style="font-size:2rem; flex-shrink:0;">💬</div>
                 <div style="flex:1;">
-                    <h4 style="font-family:'Outfit',sans-serif; font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:0.25rem;">Clinical Guidance</h4>
-                    <p style="color:var(--text-muted); font-weight:400; font-size:0.88rem; margin:0;">If you want to speak with a professional and gain deeper clarity on these results, you can book a session here.</p>
+                    <h4 style="font-family:'Outfit',sans-serif; font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:0.25rem;">A Gentle Next Step</h4>
+                    <p style="color:var(--text-muted); font-weight:400; font-size:0.88rem; margin:0;">If you'd like to talk this through with someone who cares, you can set a time with your counselor here.</p>
                 </div>
                 <a href="{{ route('student.appointments') }}" class="btn-primary" style="padding:0.65rem 1.5rem; border-radius:var(--radius-sm); font-size:0.85rem; text-decoration:none; box-shadow:0 4px 12px rgba(13,148,136,0.2); white-space:nowrap; flex-shrink:0;">Book Session →</a>
             </div>
@@ -212,8 +213,8 @@
             <div style="display:flex; align-items:center; gap:1.25rem; padding: 1.5rem 2rem; background: linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(245,158,11,0.06) 100%); border: 1.5px solid rgba(239,68,68,0.25); border-radius: var(--radius); border-left: 5px solid #dc2626;">
                 <div style="font-size:2rem; flex-shrink:0;">🩺</div>
                 <div style="flex:1;">
-                    <h4 style="font-family:'Outfit',sans-serif; font-size:1rem; font-weight:800; color:#dc2626; margin-bottom:0.25rem;">Seek Professional Support</h4>
-                    <p style="color:var(--text-muted); font-weight:400; font-size:0.88rem; margin:0;">You are recommended to consult with the counselor for a detailed wellness plan. Please don't hesitate to reach out.</p>
+                    <h4 style="font-family:'Outfit',sans-serif; font-size:1rem; font-weight:800; color:#dc2626; margin-bottom:0.25rem;">We're Here for You</h4>
+                    <p style="color:var(--text-muted); font-weight:400; font-size:0.88rem; margin:0;">It looks like things have been really tough. Please reach out to your counselor soon — you don't have to go through this alone.</p>
                 </div>
                 <a href="{{ route('student.appointments') }}" style="padding:0.65rem 1.5rem; border-radius:var(--radius-sm); font-size:0.85rem; text-decoration:none; background:#dc2626; color:white; font-weight:700; box-shadow:0 4px 12px rgba(220,38,38,0.25); white-space:nowrap; flex-shrink:0;">Book Now →</a>
             </div>
@@ -224,13 +225,13 @@
         <div class="pdf-only-footer" style="display: none; border-top: 1.5px dashed #cbd5e1; padding-top: 1.5rem; margin-top: 2.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                 <div style="font-size: 0.7rem; color: #64748b; line-height: 1.5;">
-                    <strong>Verification & Authenticity Notice:</strong><br>
-                    This psychological assessment evaluation report was generated automatically via the PSU Mental Health Portal.<br>
-                    Confidential document intended strictly for the student and authorized University Guidance Counselors.
+                    <strong>About this summary:</strong><br>
+                    This check-in summary was made for you from your answers in the PSU check-in space.<br>
+                    It's private — only you and your school counselor can see it.
                 </div>
                 <div style="text-align: right; border-top: 1px solid #94a3b8; width: 220px; padding-top: 0.35rem; font-size: 0.72rem; font-weight: 700; color: #334155;">
-                    University Guidance Counselor<br>
-                    <span style="font-size: 0.65rem; font-weight: 500; color: #64748b;">Verified Clinical Evaluation Record</span>
+                    School Counselor<br>
+                    <span style="font-size: 0.65rem; font-weight: 500; color: #64748b;">Reviewed Support Summary</span>
                 </div>
             </div>
         </div>
@@ -306,7 +307,7 @@ async function exportPDF() {
             }
         }
 
-        pdf.save(`PSU_Clinical_Assessment_Result_#PAS-{{ sprintf('%05d', $score->score_id) }}.pdf`);
+        pdf.save(`My_Check-In_Summary_#PAS-{{ sprintf('%05d', $score->score_id) }}.pdf`);
     } catch (err) {
         console.error('PDF export error:', err);
         window.print();
@@ -386,7 +387,7 @@ async function translateToTagalog() {    const btn = document.getElementById('tr
             btn.innerHTML = '<i class="ph ph-arrow-counter-clockwise"></i> Show English';
             btn.dataset.translated = 'true';
         } else {
-            if (window.App) App.toast({ type: 'error', title: 'Translation Failed', message: 'Unable to translate clinical insight.' });
+            if (window.App) App.toast({ type: 'error', title: 'Translation Failed', message: 'Sorry, we could not translate your summary right now.' });
             btn.innerHTML = '<i class="ph ph-translate"></i> Translate to Tagalog';
         }
     } catch (e) {

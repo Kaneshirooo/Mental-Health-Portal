@@ -82,8 +82,8 @@ class AssessmentController extends Controller
                 'stress_score' => $stressScore,
                 'overall_score' => $overallScore,
                 'risk_level' => $riskLevel,
-                'ai_analysis' => "Clinical summary pending...",
-                'ai_summary' => "Processing clinical insight...",
+                'ai_analysis' => "Your summary is getting ready...",
+                'ai_summary' => "Getting your summary ready...",
                 'assessment_date' => now(),
             ]);
 
@@ -102,7 +102,7 @@ class AssessmentController extends Controller
 
             // Fast sync AI attempt (short prompt, small token cap) so results page
             // rarely shows pending. Falls back instantly to rule-based insight.
-            $prompt = "Clinical scores D:{$depressionScore}/27 A:{$anxietyScore}/21 S:{$stressScore}/21 Risk:{$riskLevel} History:{$historyJson}. Output exactly: 1. ### Supportive Recommendation (1 sentence) 2. ### Empathetic Summary (2 sentences, note shift) 3. ### Professional Clinical Insight (1-2 sentences concise).";
+        $prompt = "You are a kind friend writing for a student. Check-in scores — low mood {$depressionScore}/27, worries {$anxietyScore}/21, pressure {$stressScore}/21, overall feeling: {$riskLevel}. Past check-ins: {$historyJson}. Write in very simple everyday words, no clinical or doctor words. Output exactly: 1. ### A gentle next step (1 sentence) 2. ### What I see in your answers (2 sentences, kindly note if days got heavier or lighter) 3. ### Something to remember (1-2 short kind sentences).";
 
             try {
                 $aiAnalysis = $ai->generateResponse(
@@ -117,13 +117,13 @@ class AssessmentController extends Controller
                 }
                 $score->update([
                     'ai_analysis' => $aiAnalysis,
-                    'ai_summary' => 'AI analysis generated.',
+                    'ai_summary' => 'Summary ready.',
                 ]);
             } catch (\Throwable $ae) {
                 \Illuminate\Support\Facades\Log::warning('AI insight fast-path failed, using local fallback: ' . $ae->getMessage());
                 $score->update([
                     'ai_analysis' => $this->buildLocalInsight($depressionScore, $anxietyScore, $stressScore, $riskLevel),
-                    'ai_summary' => 'Local clinical insight (AI unavailable).',
+                    'ai_summary' => 'Friendly summary ready (made on this device).',
                 ]);
             }
 
@@ -216,7 +216,7 @@ class AssessmentController extends Controller
     }
 
     /**
-     * Translates clinical insight text or assessment questions into Tagalog.
+     * Translates check-in summary text or questions into Tagalog.
      */
     public function translate(Request $request, \App\Services\OpenRouterService $ai)
     {
@@ -226,17 +226,17 @@ class AssessmentController extends Controller
             $text = $request->text;
 
             if (str_contains($text, ' | ')) {
-                $prompt = "You are a precise translation API for a clinical assessment UI.\n"
-                        . "The input string contains multiple assessment items separated strictly by ' | '.\n\n"
+                $prompt = "You are a precise translation helper for a student check-in page.\n"
+                        . "The input string contains multiple check-in questions separated strictly by ' | '.\n\n"
                         . "RULES:\n"
-                        . "1. Translate each item into natural, empathetic Tagalog (Filipino).\n"
+                        . "1. Translate each item into natural, warm Tagalog (Filipino) a student can easily understand.\n"
                         . "2. You MUST preserve the exact ' | ' separator between each translated item.\n"
                         . "3. DO NOT add any introductory text (such as 'Narito ang pagsasalin...'), concluding advice, disclaimers, bullet points (-), or newlines.\n"
                         . "4. Output ONLY the pipe-separated translated string on a single line.\n\n"
                         . "INPUT:\n" . $text;
             } else {
-                $prompt = "You are a professional clinical translator for a mental health portal.\n"
-                        . "Translate the following clinical insight text into natural, empathetic Tagalog (Filipino) for a student to understand easily.\n\n"
+                $prompt = "You are a kind translator for a student support page.\n"
+                        . "Translate the following friendly summary into natural, warm Tagalog (Filipino) that is easy for a student to understand.\n\n"
                         . "RULES:\n"
                         . "1. Output ONLY the direct translated text.\n"
                         . "2. DO NOT include any conversational preamble (e.g., 'Narito ang pagsasalin...'), intro, outro, disclaimers, or polite chatter.\n"
@@ -272,7 +272,7 @@ class AssessmentController extends Controller
 
         if (str_contains((string) $score->ai_analysis, 'pending') || str_contains((string) $score->ai_analysis, 'Processing')) {
             try {
-                $prompt = "Clinical scores D:{$score->depression_score}/27 A:{$score->anxiety_score}/21 S:{$score->stress_score}/21 Risk:{$score->risk_level}. Output exactly: 1. ### Supportive Recommendation (1 sentence) 2. ### Empathetic Summary (2 sentences) 3. ### Professional Clinical Insight (concise).";
+                $prompt = "You are a kind friend writing for a student. Check-in scores — low mood {$score->depression_score}/27, worries {$score->anxiety_score}/21, pressure {$score->stress_score}/21, overall: {$score->risk_level}. Use very simple everyday words, no clinical words. Output exactly: 1. ### A gentle next step (1 sentence) 2. ### What I see in your answers (2 sentences) 3. ### Something to remember (concise).";
                 $fresh = $ai->generateResponse([['role' => 'user', 'content' => $prompt]], '', 300, 0.3, 10);
                 if (!empty(trim($fresh)) && !str_contains($fresh, 'trouble connecting')) {
                     $score->update(['ai_analysis' => $fresh, 'ai_summary' => 'AI analysis generated on retry.']);
@@ -292,21 +292,21 @@ class AssessmentController extends Controller
     private function buildLocalInsight(int $d, int $a, int $s, string $risk): string
     {
         $top = match ($risk) {
-            'Critical' => 'Please reach out to your counselor as soon as possible — you do not have to face this alone.',
-            'High' => 'Consider booking a counselor session this week to talk through what has been weighing on you.',
-            default => 'Keep up your self-care routine and track your mood daily to notice early changes.',
+            'Critical' => 'Things sound really heavy right now — please reach out to your counselor soon. You deserve care and you are not alone.',
+            'High' => 'It might really help to set a time to talk with your counselor this week about what has been weighing on you.',
+            default => 'Keep doing small kind things for yourself each day, and jot down your feelings so you can see your brighter days too.',
         };
-        return "### Supportive Recommendation\n{$top}\n\n### Empathetic Summary\nYour recent scores reflect current strain across mood and stress. Small consistent steps and talking to someone you trust can help stabilize things.\n\n### Professional Clinical Insight\nScores D:{$d}/27 A:{$a}/21 S:{$s}/21 Risk:{$risk}. Review trend and prioritize follow-up per risk protocol.";
+        return "### A gentle next step\n{$top}\n\n### What I see in your answers\nYour recent check-in shows you've had some tougher days with mood and pressure. Small steady steps and talking to someone you trust can help days feel lighter.\n\n### Something to remember\nYou've been carrying a lot lately, and it makes sense to feel tired. Be gentle with yourself and reach out whenever you need a hand.";
     }
 
     private function getWellnessLabel(int $val): array
     {
         return match (true) {
-            $val <= 20 => ['label' => 'Critically Low Wellness', 'cls' => 'wellness-critical'],
-            $val <= 40 => ['label' => 'Low Wellness', 'cls' => 'wellness-low'],
-            $val <= 60 => ['label' => 'Moderately Well', 'cls' => 'wellness-moderate'],
-            $val <= 80 => ['label' => 'Well', 'cls' => 'wellness-well'],
-            default    => ['label' => 'Exceptional Wellness', 'cls' => 'wellness-excellent'],
+            $val <= 20 => ['label' => 'Having a Really Tough Time', 'cls' => 'wellness-critical'],
+            $val <= 40 => ['label' => 'Going Through a Tough Patch', 'cls' => 'wellness-low'],
+            $val <= 60 => ['label' => 'Doing Okay, Ups and Downs', 'cls' => 'wellness-moderate'],
+            $val <= 80 => ['label' => 'Feeling Good', 'cls' => 'wellness-well'],
+            default    => ['label' => 'Feeling Bright', 'cls' => 'wellness-excellent'],
         };
     }
 
@@ -314,30 +314,30 @@ class AssessmentController extends Controller
     {
         if ($type === 'depression') {
             return match (true) {
-                $val <= 4  => ['label' => 'Minimal',          'cls' => 'sev-minimal'],
-                $val <= 9  => ['label' => 'Mild',             'cls' => 'sev-mild'],
-                $val <= 14 => ['label' => 'Moderate',         'cls' => 'sev-moderate'],
-                $val <= 19 => ['label' => 'Moderately Severe', 'cls' => 'sev-high'],
-                default    => ['label' => 'Severe',           'cls' => 'sev-severe'],
+                $val <= 4  => ['label' => 'Mostly Okay',          'cls' => 'sev-minimal'],
+                $val <= 9  => ['label' => 'A Little Low',             'cls' => 'sev-mild'],
+                $val <= 14 => ['label' => 'Feeling Low', 'cls' => 'sev-moderate'],
+                $val <= 19 => ['label' => 'Really Low', 'cls' => 'sev-high'],
+                default    => ['label' => 'Very Heavy',           'cls' => 'sev-severe'],
             };
         }
         
         if ($type === 'anxiety') {
             return match (true) {
-                $val <= 4  => ['label' => 'Minimal',  'cls' => 'sev-minimal'],
-                $val <= 9  => ['label' => 'Mild',     'cls' => 'sev-mild'],
-                $val <= 14 => ['label' => 'Moderate', 'cls' => 'sev-moderate'],
-                default    => ['label' => 'Severe',   'cls' => 'sev-severe'],
+                $val <= 4  => ['label' => 'Mostly Calm',  'cls' => 'sev-minimal'],
+                $val <= 9  => ['label' => 'A Bit Worried',     'cls' => 'sev-mild'],
+                $val <= 14 => ['label' => 'Quite Worried', 'cls' => 'sev-moderate'],
+                default    => ['label' => 'Very Worried',   'cls' => 'sev-severe'],
             };
         }
 
-        // Stress (DASS-21 Subscale logic)
+        // Pressure levels — everyday words
         return match (true) {
-            $val <= 7  => ['label' => 'Normal',   'cls' => 'sev-minimal'],
-            $val <= 9  => ['label' => 'Mild',     'cls' => 'sev-mild'],
-            $val <= 12 => ['label' => 'Moderate', 'cls' => 'sev-moderate'],
-            $val <= 16 => ['label' => 'Severe',   'cls' => 'sev-high'],
-            default    => ['label' => 'Extreme',  'cls' => 'sev-severe'],
+            $val <= 7  => ['label' => 'Feeling Calm',   'cls' => 'sev-minimal'],
+            $val <= 9  => ['label' => 'A Bit Pressured',     'cls' => 'sev-mild'],
+            $val <= 12 => ['label' => 'Feeling Pressured', 'cls' => 'sev-moderate'],
+            $val <= 16 => ['label' => 'Really Pressured',   'cls' => 'sev-high'],
+            default    => ['label' => 'Overloaded',  'cls' => 'sev-severe'],
         };
     }
 

@@ -211,7 +211,7 @@
     <!-- Daily Tip Banner (Premium Glass) -->
     <div class="wellness-banner staggered">
         <div style="max-width: 800px; position: relative; z-index: 1;">
-            <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2rem; margin-bottom: 1.25rem; color: #a7f3d0; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Aria's Daily Insight</div>
+            <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2rem; margin-bottom: 1.25rem; color: #a7f3d0; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Your Daily Gentle Reminder</div>
             <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 600; line-height: 1.35; margin-bottom: 2rem; letter-spacing: -0.01em; text-shadow: 0 2px 10px rgba(0,0,0,0.1);">{{ $tip }}</h2>
             <div style="display: flex; gap: 1rem;">
                 <button onclick="location.href='{{ route('student.mindfulness.index') }}'" class="btn-primary" style="background: white; color: #064e3b; padding: 0.85rem 2rem;">Start Mindful Moment</button>
@@ -244,8 +244,8 @@
             <div style="font-size: 0.8rem; color: var(--text-dim); font-weight: 600; margin-top: 0.25rem;">Wellness Index</div>
         </div>
         <div class="stat-card-premium staggered" style="background: {{ ($latest_score->risk_level === 'Critical' || $latest_score->risk_level === 'High') ? 'rgba(244, 63, 94, 0.05)' : 'rgba(16, 185, 129, 0.05)' }}; border-color: {{ ($latest_score->risk_level === 'Critical' || $latest_score->risk_level === 'High') ? 'rgba(244, 63, 94, 0.2)' : 'rgba(16, 185, 129, 0.2)' }};">
-            <div style="font-size: 0.7rem; font-weight: 800; color: {{ ($latest_score->risk_level === 'Critical' || $latest_score->risk_level === 'High') ? 'var(--accent)' : 'var(--primary)' }}; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.1em;">Status</div>
-            <div style="font-size: 1.6rem; font-weight: 900; color: {{ ($latest_score->risk_level === 'Critical' || $latest_score->risk_level === 'High') ? 'var(--accent)' : 'var(--primary)' }}; text-transform: uppercase; letter-spacing: -0.02em;">{{ $latest_score->risk_level }}</div>
+            <div style="font-size: 0.7rem; font-weight: 800; color: {{ ($latest_score->risk_level === 'Critical' || $latest_score->risk_level === 'High') ? 'var(--accent)' : 'var(--primary)' }}; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.1em;">How You're Doing</div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: {{ ($latest_score->risk_level === 'Critical' || $latest_score->risk_level === 'High') ? 'var(--accent)' : 'var(--primary)' }}; text-transform: uppercase; letter-spacing: -0.02em;">{{ ['Low' => 'Doing Okay', 'Moderate' => 'A Bit Tough', 'High' => 'Need Care', 'Critical' => 'Need Care'][$latest_score->risk_level] ?? $latest_score->risk_level }}</div>
         </div>
         @endif
     </div>
@@ -254,23 +254,23 @@
     <div class="quick-actions-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 2.5rem;">
         <a href="{{ route('student.assessment') }}" class="quick-action-premium staggered">
             <div class="quick-icon-box" style="color: var(--primary);">📋</div>
-            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text);">Clinical Scan</h3>
-            <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; font-weight: 500;">Comprehensive pre-assessment protocol.</p>
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text);">Check-In</h3>
+            <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; font-weight: 500;">A short quiz to see how you're doing lately.</p>
         </a>
         <a href="{{ route('student.chat') }}" class="quick-action-premium staggered">
             <div class="quick-icon-box" style="color: var(--secondary);">✨</div>
-            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text);">Guardian Chat</h3>
-            <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; font-weight: 500;">Direct AI-assisted wellness companion.</p>
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text);">Friendly Chat</h3>
+            <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; font-weight: 500;">A safe space to talk about what's on your mind.</p>
         </a>
         <a href="{{ route('student.mood') }}" class="quick-action-premium staggered">
             <div class="quick-icon-box" style="color: #f59e0b;">📔</div>
-            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text);">Mood Tracker</h3>
-            <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; font-weight: 500;">Secure emotional reflection journal.</p>
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text);">Mood Notes</h3>
+            <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; font-weight: 500;">Jot down your feelings day by day.</p>
         </a>
         <a href="{{ route('student.appointments') }}" class="quick-action-premium staggered">
             <div class="quick-icon-box" style="color: var(--accent);">📅</div>
-            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text);">Counseling</h3>
-            <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; font-weight: 500;">Bridge to professional clinical support.</p>
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text);">Talk to Someone</h3>
+            <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; font-weight: 500;">Book a one-on-one time with your counselor.</p>
         </a>
     </div>
 
@@ -283,7 +283,7 @@
                 <a href="{{ route('student.reports.index') }}" class="btn-link">View Detailed Analysis →</a>
             </div>
             <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.25rem; font-weight: 500; line-height: 1.5;">
-                This chart tracks your overall mental wellness based on your clinical assessments. The index is computed by inverting your total distress percentage (100% minus distress), where a higher percentage indicates better emotional health and resilience.
+                This chart shows how you've been feeling overall based on your check-ins. A higher score means you're feeling better and more balanced.
             </p>
             <div class="chart-canvas-wrapper" style="flex: 1; position: relative;">
                 <canvas id="trendChart"></canvas>
@@ -297,7 +297,7 @@
                 <a href="{{ route('student.mood') }}" class="btn-link" style="color: #f59e0b;">Analyze Logs →</a>
             </div>
             <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.25rem; font-weight: 500; line-height: 1.5;">
-                A visualization of your daily emotional fluctuations. This maps your self-reported mood levels (on a scale of 1-5) from your journal entries to help you identify emotional patterns over time.
+                A simple look at your daily ups and downs. This maps the moods you've shared (from 1-5) to help you spot patterns over time.
             </p>
             <div class="chart-canvas-wrapper" style="flex: 1; position: relative;">
                 <canvas id="moodChart"></canvas>
@@ -311,24 +311,24 @@
             <div>
                 <h3 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.25rem; margin-bottom: 1rem; color: var(--text);">Privacy Statement</h3>
                 <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.7; font-weight: 500;">
-                    All assessment data and reflections are protected under institutional encryption protocols. Clinical staff only access data necessary for dedicated support.
+                    Your check-ins and notes stay private and safe. Only your school counselor can see what you choose to share, so they can look out for you.
                 </p>
             </div>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
                 <div style="text-align: center;">
                     <div style="width: 8px; height: 8px; background: var(--primary); border-radius: 50%; display: inline-block; margin-bottom: 0.5rem;"></div>
-                    <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Low Risk</div>
-                    <div style="font-size: 0.65rem; color: var(--text-dim);">Wellness Phase</div>
+                    <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Doing Okay</div>
+                    <div style="font-size: 0.65rem; color: var(--text-dim);">Steady Phase</div>
                 </div>
                 <div style="text-align: center;">
                     <div style="width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; display: inline-block; margin-bottom: 0.5rem;"></div>
-                    <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Moderate</div>
-                    <div style="font-size: 0.65rem; color: var(--text-dim);">Reflection Zone</div>
+                    <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">A Bit Tough</div>
+                    <div style="font-size: 0.65rem; color: var(--text-dim);">Time to Pause</div>
                 </div>
                 <div style="text-align: center;">
                     <div style="width: 8px; height: 8px; background: var(--accent); border-radius: 50%; display: inline-block; margin-bottom: 0.5rem;"></div>
-                    <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Clinical</div>
-                    <div style="font-size: 0.65rem; color: var(--text-dim);">Priority Support</div>
+                    <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Need Care</div>
+                    <div style="font-size: 0.65rem; color: var(--text-dim);">Extra Support</div>
                 </div>
             </div>
         </div>

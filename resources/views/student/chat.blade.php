@@ -130,9 +130,6 @@
             display: flex !important;
             justify-content: center !important;
         }
-        #handsFreeBtn, #ttsToggle {
-            display: none !important;
-        }
         .chat-input-bar {
             padding: 0.65rem 0.65rem !important;
             gap: 0.4rem !important;
@@ -255,17 +252,6 @@
     @keyframes pulse-aria {
         0%, 100% { transform: scale(1); box-shadow: 0 8px 20px rgba(13, 148, 136, 0.1); }
         50%       { transform: scale(1.03); box-shadow: 0 12px 28px rgba(13, 148, 136, 0.15); }
-    }
-
-    .aria-avatar.speaking {
-        animation: aria-speak-pulse 0.4s infinite ease-in-out;
-        border-color: #10b981;
-        box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
-    }
-
-    @keyframes aria-speak-pulse {
-        0%, 100% { transform: scale(1.05); }
-        50% { transform: scale(1.1) rotate(2deg); }
     }
 
     .online-badge {
@@ -640,7 +626,7 @@
 
             <div class="chat-actions">
                 <div style="display:flex; gap:1rem;">
-                    <button id="reportBtn" onclick="openReportModal()" {{ $chat_history->count() < 4 ? 'disabled' : '' }} style="background:var(--primary); color:white; border:none; padding:0.85rem 1.75rem; border-radius:50px; font-weight:800; font-size:0.85rem; cursor:pointer; opacity:{{ $chat_history->count() < 4 ? '0.4' : '1' }}; transition:var(--transition);">📋 GENERATE REPORT</button>
+                    <button id="reportBtn" onclick="openReportModal()" {{ $chat_history->count() < 4 ? 'disabled' : '' }} style="background:var(--primary); color:white; border:none; padding:0.85rem 1.75rem; border-radius:50px; font-weight:800; font-size:0.85rem; cursor:pointer; opacity:{{ $chat_history->count() < 4 ? '0.4' : '1' }}; transition:var(--transition);">📋 MY SUMMARY</button>
                     <button onclick="endConversation()" style="background:rgba(239, 68, 68, 0.1); border:1.5px solid rgba(239, 68, 68, 0.2); padding:0.85rem 1.75rem; border-radius:50px; font-weight:800; font-size:0.85rem; color:#dc2626; cursor:pointer; transition:all 0.3s ease;">🚪 END CONVERSATION</button>
                 </div>
                 <div style="font-size:0.85rem; font-weight:800; color:var(--primary); cursor:pointer; display:flex; align-items:center; gap:0.4rem;" onclick="window.location.href='{{ route('student.appointments') }}'">
@@ -660,10 +646,8 @@
             </div>
 
             <div class="chat-input-bar">
-                <button id="micBtn" onclick="toggleVoice()" title="Hold to speak" aria-label="Toggle voice input" style="width:60px;height:60px;border-radius:20px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:#f1f5f9;color:var(--text-dim);transition:var(--transition);flex-shrink:0;">🎤</button>
-                <button id="handsFreeBtn" onclick="toggleHandsFree()" title="Toggle Hands-free mode" aria-label="Toggle hands-free mode" style="width:60px;height:60px;border-radius:20px;border:2.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:var(--surface-solid);color:var(--text-dim);transition:var(--transition);flex-shrink:0;">🙌</button>
-                <textarea id="chatInput" class="msg-input" placeholder="Type or tap 🎤 to speak…" rows="1" onkeydown="handleKey(event)" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" aria-label="Type your message"></textarea>
-                <button id="ttsToggle" onclick="toggleTTS()" title="Toggle Aria voice" aria-label="Toggle text to speech" style="width:60px;height:60px;border-radius:20px;border:2.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:var(--surface-solid);color:#10b981;transition:var(--transition);flex-shrink:0;">🔊</button>
+                <button id="micBtn" onclick="toggleVoice()" title="Tap to speak" aria-label="Voice input" style="width:60px;height:60px;border-radius:20px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:#f1f5f9;color:var(--text-dim);transition:var(--transition);flex-shrink:0;">🎤</button>
+                <textarea id="chatInput" class="msg-input" placeholder="Type how you're feeling…" rows="1" onkeydown="handleKey(event)" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" aria-label="Type your message"></textarea>
                 <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Send message">➤</button>
             </div>
         </div>
@@ -679,13 +663,13 @@
     </div>
 </div>
 
-<!-- Generate Clinical Report Modal -->
+<!-- Generate Wellness Summary Modal -->
 <div class="report-overlay" id="reportModal">
     <div class="report-modal">
         <div id="reportFormSection">
-            <div style="font-weight:800; color:var(--primary); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.12em; margin-bottom:1rem;">Clinical Report</div>
+            <div style="font-weight:800; color:var(--primary); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.12em; margin-bottom:1rem;">Wellness Summary</div>
             <h2 style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800; color:var(--primary-dark); margin-bottom:0.75rem;">Session Summary</h2>
-            <p style="color:var(--text-dim); font-weight:600; margin-bottom:2.5rem; line-height:1.7;">Add a few quick details to complete your wellness report. This will be saved and shared with your counselor.</p>
+            <p style="color:var(--text-dim); font-weight:600; margin-bottom:2.5rem; line-height:1.7;">Add a few quick details to complete your check-in summary. This will be saved and shared with your counselor so they can support you better.</p>
 
             <form id="reportForm" onsubmit="event.preventDefault(); submitReport();">
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:2rem;">
@@ -695,7 +679,7 @@
                             <option value="positive">😊 Good / Positive</option>
                             <option value="neutral" selected>😐 Okay / Neutral</option>
                             <option value="low">😔 Low / Sad</option>
-                            <option value="concerning">😰 Anxious / Distressed</option>
+                            <option value="concerning">😰 Worried / Having a Hard Time</option>
                         </select>
                     </div>
                     <div>
@@ -724,7 +708,7 @@
                 </div>
 
                 <div style="display:flex; gap:1rem;">
-                    <button type="submit" id="submitReportBtn" style="flex:2; background:var(--primary); color:white; border:none; padding:1.25rem; border-radius:50px; font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 12px 30px rgba(67,56,202,0.2);">Generate & Save Report</button>
+                    <button type="submit" id="submitReportBtn" style="flex:2; background:var(--primary); color:white; border:none; padding:1.25rem; border-radius:50px; font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 12px 30px rgba(67,56,202,0.2);">Save My Summary</button>
                     <button type="button" onclick="closeReportModal()" style="flex:1; background:white; border:2px solid var(--border); padding:1.25rem; border-radius:50px; font-weight:800; font-size:1rem; color:var(--text-dim); cursor:pointer;">Cancel</button>
                 </div>
             </form>
@@ -733,10 +717,10 @@
         <!-- Report Result Section -->
         <div id="reportResultSection" style="display:none; text-align:center; padding:1rem;">
             <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
-            <h3 style="font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:800; color:var(--primary-dark); margin-bottom:1rem;">Report Generated</h3>
-            <p style="color:var(--text-dim); font-weight:600; margin-bottom:2rem;">Your wellness summary has been saved and shared with your counselor. You can view it in your reports history.</p>
+            <h3 style="font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:800; color:var(--primary-dark); margin-bottom:1rem;">All Saved</h3>
+            <p style="color:var(--text-dim); font-weight:600; margin-bottom:2rem;">Your check-in summary has been saved and shared with your counselor. You can look back at it anytime in your progress history.</p>
             <div style="display:flex; gap:1rem; justify-content:center;">
-                <button onclick="window.location.href='{{ route('student.reports.index') }}'" style="background:var(--primary); color:white; border:none; padding:1rem 2rem; border-radius:50px; font-weight:800; cursor:pointer;">View in Vault</button>
+                <button onclick="window.location.href='{{ route('student.reports.index') }}'" style="background:var(--primary); color:white; border:none; padding:1rem 2rem; border-radius:50px; font-weight:800; cursor:pointer;">See My Progress</button>
                 <button onclick="closeReportModal()" style="background:white; border:2px solid var(--border); color:var(--text-dim); padding:1rem 2rem; border-radius:50px; font-weight:800; cursor:pointer;">Continue Chatting</button>
             </div>
         </div>
@@ -847,98 +831,7 @@ function updateCounters() {
     }
 }
 
-// ── Text-to-Speech (Aria speaks back) ──
-let ttsEnabled = true;
-let handsFreeEnabled = false;
-let ariaVoice = null;
-
-function loadVoices() {
-    const voices = window.speechSynthesis.getVoices();
-    // Strictly prioritize pleasant, natural female voices
-    ariaVoice = voices.find(v => v.name.includes('Google') && v.name.includes('Female'))
-             || voices.find(v => v.name.includes('Google') && v.name.includes('UK English Female'))
-             || voices.find(v => v.name.includes('Natural') && v.name.includes('Female'))
-             || voices.find(v => /samantha|zira|victoria|karen|moira|fiona|tessa/i.test(v.name))
-             || voices.find(v => v.lang.startsWith('en') && !v.name.toLowerCase().includes('male'))
-             || voices[0] || null;
-}
-
-if (window.speechSynthesis) {
-    if (speechSynthesis.getVoices().length) loadVoices();
-    else speechSynthesis.onvoiceschanged = loadVoices;
-}
-
-function speakAria(text) {
-    if (!ttsEnabled || !window.speechSynthesis) {
-        if (handsFreeEnabled) setTimeout(toggleVoice, 500);
-        return;
-    }
-    speechSynthesis.cancel();
-
-    // Custom 'Aria' Vocal Inflection Engine
-    // Splits text into natural phrases to apply unique 'lilting' pitch shifts
-    const phrases = text.replace(/<[^>]*>/g, '').split(/(?<=[.!?])\s+/);
-    let phraseIndex = 0;
-
-    function speakNextPhrase() {
-        if (phraseIndex >= phrases.length) {
-            document.querySelectorAll('.aria-avatar').forEach(el => el.classList.remove('speaking'));
-            if (handsFreeEnabled) setTimeout(toggleVoice, 500);
-            return;
-        }
-
-        const phrase = phrases[phraseIndex].trim();
-        if (!phrase) { phraseIndex++; speakNextPhrase(); return; }
-
-        const utt = new SpeechSynthesisUtterance(phrase);
-        
-        // Aria's Signature: Playful, rhythmic, and high-pitched
-        // We vary the pitch slightly per phrase to sound 'custom' and alive
-        const basePitch = 1.6;
-        const pitchShift = (phraseIndex % 2 === 0) ? 0.05 : -0.05;
-        
-        utt.pitch = basePitch + pitchShift;
-        utt.rate = 0.96;
-        utt.volume = 1.0;
-
-        if (ariaVoice) utt.voice = ariaVoice;
-
-        utt.onstart = () => {
-            document.querySelectorAll('.aria-avatar').forEach(el => el.classList.add('speaking'));
-        };
-
-        utt.onend = () => {
-            phraseIndex++;
-            speakNextPhrase();
-        };
-
-        utt.onerror = () => {
-            document.querySelectorAll('.aria-avatar').forEach(el => el.classList.remove('speaking'));
-        };
-
-        speechSynthesis.speak(utt);
-    }
-
-    speakNextPhrase();
-}
-
-function toggleTTS() {
-    ttsEnabled = !ttsEnabled;
-    const btn = document.getElementById('ttsToggle');
-    btn.textContent  = ttsEnabled ? '🔊' : '🔇';
-    btn.style.color  = ttsEnabled ? 'var(--primary)' : 'var(--text-dim)';
-    btn.style.borderColor = ttsEnabled ? 'var(--primary-light)' : 'var(--border)';
-    if (!ttsEnabled) speechSynthesis.cancel();
-}
-
-function toggleHandsFree() {
-    handsFreeEnabled = !handsFreeEnabled;
-    const btn = document.getElementById('handsFreeBtn');
-    btn.style.color = handsFreeEnabled ? 'var(--primary)' : 'var(--text-dim)';
-    btn.style.borderColor = handsFreeEnabled ? 'var(--primary-light)' : 'var(--border)';
-    btn.style.background = handsFreeEnabled ? 'var(--primary-glow)' : 'white';
-    if (handsFreeEnabled && !recognizing) toggleVoice();
-}
+// ── Voice input (speech-to-text for typing) ──
 
 // ── Speech Recognition ──
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -963,7 +856,6 @@ if (SpeechRecognition) {
         document.getElementById('voiceStatus').textContent = 'Live';
         document.getElementById('micBtn').style.background = '#ede9fe';
         document.getElementById('micBtn').style.color = '#4338ca';
-        if (window.speechSynthesis) speechSynthesis.cancel();
     };
 
     recognition.onresult = (e) => {
@@ -984,14 +876,11 @@ if (SpeechRecognition) {
         debugLog('H2', 'student/chat.blade.php:recognition.onend', 'Speech recognition ended', {
             hasMessage: !!msg,
             messageLength: msg.length,
-            handsFreeEnabled,
             recognizing
         });
         if (msg) {
             document.getElementById('chatInput').value = msg;
             sendMessage();
-        } else if (handsFreeEnabled && recognizing) {
-            setTimeout(toggleVoice, 500);
         }
         closeVoiceOverlay();
     };
@@ -1026,7 +915,6 @@ async function toggleVoice() {
 }
 
 function stopVoice() { 
-    if (window.speechSynthesis) speechSynthesis.cancel();
     if (recognition && recognizing) {
         recognition.stop(); 
         recognition.abort(); // Force immediate stop
@@ -1142,7 +1030,7 @@ async function sendMessage(textOverride) {
             // Server returned 4xx / 5xx – show a friendly fallback
             const errText = response.status === 422
                 ? "Your message couldn't be sent. Please keep it under 1 000 characters."
-                : "Aria is taking a moment to respond. Please try again shortly.";
+                : "I'm taking a moment to respond. Please try again shortly.";
             appendMessage('aria', errText);
         } else {
             const data = await response.json();
@@ -1155,7 +1043,6 @@ async function sendMessage(textOverride) {
                     activeConversationId = data.conversation_id;
                 }
                 appendMessage('aria', data.message, true); // true for typing effect
-                speakAria(data.message);
                 updateCounters();
             } else {
                 appendMessage('aria', "I didn't quite catch that. Could you say it again?");
@@ -1269,7 +1156,7 @@ function closeReportModal() {
 
 async function submitReport() {
     const btn = document.getElementById('submitReportBtn');
-    const originalBtnText = 'Generate & Save Report';
+    const originalBtnText = 'Save My Summary';
     btn.textContent = 'Generating…';
     btn.disabled = true;
 

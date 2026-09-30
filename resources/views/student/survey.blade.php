@@ -182,9 +182,9 @@
         <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 20px; background: var(--primary-glow); color: var(--primary); font-size: 2rem; margin-bottom: 1.5rem;">
             <i class="ph-fill ph-chat-circle-dots"></i>
         </div>
-        <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 900; color: var(--text); margin-bottom: 0.75rem;">Clinical Excellence Survey</h1>
+        <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 900; color: var(--text); margin-bottom: 0.75rem;">How Was Your Talk?</h1>
         <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 550px; margin: 0 auto; line-height: 1.6;">
-            Your feedback helps us maintain the highest standards of mental health care. Please complete this official satisfaction form.
+            Your thoughts help us take better care of students. Please share how your time with your counselor went.
         </p>
     </div>
 
@@ -195,15 +195,15 @@
 
         @php
             $sqd_questions = [
-                'sqd0' => 'Overall, I am satisfied with the clinical service I received.',
-                'sqd1' => 'I spent a reasonable amount of time for my session.',
-                'sqd2' => 'The counselor followed clinical requirements and steps correctly.',
-                'sqd3' => 'The steps I needed to take for my session were easy and simple.',
-                'sqd4' => 'I easily found information about the clinical services available.',
-                'sqd5' => 'The "fees" (clinical processing) were reasonable/appropriate.',
-                'sqd6' => 'I am confident my sessions are kept confidential and no favoritism was involved.',
-                'sqd7' => 'The staff/counselor gave quick and appropriate attention to my concerns.',
-                'sqd8' => 'I got exactly what I needed from this clinical session.',
+                'sqd0' => 'Overall, I felt cared for and supported in my session.',
+                'sqd1' => 'My session lasted a good amount of time for me.',
+                'sqd2' => 'My counselor guided our talk well step by step.',
+                'sqd3' => 'It was easy to know what to do for my session.',
+                'sqd4' => 'I could easily find what I needed about getting support.',
+                'sqd5' => 'The process felt fair and simple for a student like me.',
+                'sqd6' => 'I trust that what I shared stays private and is treated fairly.',
+                'sqd7' => 'My counselor listened quickly and kindly to what I needed.',
+                'sqd8' => 'I got what I hoped for from talking with my counselor.',
             ];
         @endphp
 
@@ -215,7 +215,7 @@
                 <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
                     <thead>
                         <tr style="background: var(--surface-2); border-bottom: 1px solid var(--border);">
-                            <th style="padding: 2rem; text-align: left; width: 40%; font-size: 0.85rem; color: var(--text-muted); font-weight: 850; text-transform: uppercase; letter-spacing: 0.05em;">Clinical Dimension</th>
+                            <th style="padding: 2rem; text-align: left; width: 40%; font-size: 0.85rem; color: var(--text-muted); font-weight: 850; text-transform: uppercase; letter-spacing: 0.05em;">How It Felt</th>
                             @for($i=1; $i<=5; $i++)
                             <th style="padding: 1.5rem 0.5rem; text-align: center; font-size: 0.7rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase;">
                                 {{ $i }}<br>
@@ -350,12 +350,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <div style="display: inline-flex; align-items: center; justify-content: center; width: 100px; height: 100px; border-radius: 30px; background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 3.5rem; margin-bottom: 2.5rem; box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);">
                                     <i class="ph-fill ph-check-circle"></i>
                                 </div>
-                                <h1 style="font-family: 'Outfit', sans-serif; font-size: 3rem; font-weight: 900; color: var(--text); margin-bottom: 1rem;">Protocol Complete</h1>
+                                <h1 style="font-family: 'Outfit', sans-serif; font-size: 3rem; font-weight: 900; color: var(--text); margin-bottom: 1rem;">Thank You!</h1>
                                 <p style="color: var(--text-muted); font-size: 1.25rem; max-width: 600px; margin: 0 auto 3rem; line-height: 1.6;">
-                                    Your institutional feedback has been securely archived. We appreciate your contribution to clinical excellence.
+                                    Thanks for sharing how your talk went. Your words help us care for students better.
                                 </p>
                                 <a href="{{ route('student.dashboard') }}" class="btn-primary" style="padding: 1.25rem 3rem; font-weight: 800; border-radius: 20px; text-decoration: none;">
-                                    Return to Command Center
+                                    Back to Home
                                 </a>
                             </div>
                         `;
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.innerHTML = originalText;
             }
         } catch (err) {
-            App.toast({ type: 'error', title: 'Network Error', message: 'Could not connect to institutional core.' });
+            App.toast({ type: 'error', title: 'Hmm, that did not send', message: 'Please check your connection and try again.' });
             btn.disabled = false;
             btn.innerHTML = originalText;
         }

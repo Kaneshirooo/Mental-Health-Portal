@@ -40,14 +40,14 @@ class AnonymousNoteController extends Controller
                 'message_text' => $request->message,
             ]);
 
-            // Notify Clinical Staff (optimized)
+            // Notify counselors
             $studentName = auth()->user()->full_name;
             $staff = \App\Models\User::whereIn('user_type', ['admin', 'counselor'])->get();
             foreach ($staff as $member) {
                 \App\Models\Notification::create([
                     'user_id' => $member->user_id,
-                    'title' => 'New Clinical Note',
-                    'message' => "{$studentName} shared a new clinical note.",
+                    'title' => 'New Student Note',
+                    'message' => "{$studentName} shared a new note.",
                     'type' => 'note'
                 ]);
             }
@@ -56,13 +56,13 @@ class AnonymousNoteController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Your note has been sent to our clinical team.',
+                'message' => 'Your note has been sent to your counselor.',
                 'date' => now()->format('M d, Y'),
                 'time' => now()->format('g:i A')
             ]);
         }
 
-        return back()->with('success', 'Your note has been sent to our clinical team.');
+        return back()->with('success', 'Your note has been sent to your counselor.');
     }
 
     public function reply(Request $request, AnonymousNote $note)

@@ -135,8 +135,8 @@ class GeminiService
     }
 
     /**
-     * Local fallback logic for the AI Counselor (Aria personality).
-     * Now significantly more dynamic to avoid repetitive questioning and patterns.
+     * Local fallback replies for the chat companion.
+     * Uses warm, simple, student-friendly words. Text chat only — no voice.
      */
     protected function getSmartCounselorReply(array $messages): string
     {
@@ -172,17 +172,17 @@ class GeminiService
         ];
         $bridge = $bridges[array_rand($bridges)];
 
-        // -- Advice triggers --
+        // -- Advice triggers (simple, everyday words) --
         $adviceTriggers = ['advice', 'advise', 'what should i do', 'help me', 'tips', 'suggest', 'how do i', 'how to'];
         foreach ($adviceTriggers as $trigger) {
             if (str_contains($m, $trigger)) {
                 if (str_contains($m, 'stress') || str_contains($m, 'overwhelm')) {
-                    return "When school or life feels overwhelming, I suggest trying the 'Rule of Three': pick just three small things to do today. You could also try a 5-minute grounding exercise from our Mindfulness Corner. Which of those sounds easier to try first?";
+                    return "When school or life feels like a lot, try picking just 3 tiny things for today. You could also try one slow breathing break in the Calm Space. Which one feels easier to try first?";
                 }
                 if (str_contains($m, 'sleep')) {
-                    return "For better rest, try keeping your phone across the room 30 minutes before bed. Have you noticed if anything specific keeps your mind racing at night?";
+                    return "For better sleep, try putting your phone away 30 minutes before bed and doing something calm. Have you noticed what keeps your mind busy at night?";
                 }
-                return "I'm glad you're looking for ways to help yourself! A good first step is often writing how you feel in the Mood Journal. What area would you like to focus on fixing first?";
+                return "I'm really glad you asked — that takes courage. Writing a few lines in your Mood Notes is often a good first step. What part feels heaviest and you want to start with?";
             }
         }
 
@@ -199,11 +199,11 @@ class GeminiService
 
         // -- General fallback (when no keywords match) --
         $genericQuestions = [
-            "Could you tell me a little more about what's been on your mind lately?",
-            "How has that been affecting your day-to-day life?",
-            "When did you first start noticing these feelings?",
-            "What do you usually do to take care of yourself when things feel this way?",
-            "Is there something specific that triggered this feeling today?"
+            "Could you share a little more about what's been on your mind in your own words?",
+            "How has that been showing up in your day — like sleep, energy, or time with others?",
+            "When did you first start feeling this way?",
+            "What usually helps you feel even a tiny bit better when days are heavy?",
+            "Was there one small moment today that made it feel heavier?"
         ];
         
         return "{$bridge} " . $genericQuestions[array_rand($genericQuestions)];
@@ -218,92 +218,92 @@ class GeminiService
             [
                 'words' => ['exam', 'test', 'grade', 'study', 'school', 'professor', 'workload', 'assignment'],
                 'replies' => [
-                    "Academic pressure is a huge weight for many students.",
-                    "It sounds like school is taking up a lot of your mental energy right now.",
-                    "Balance can be so hard to find when deadlines are looming."
+                    "School pressure can feel really heavy sometimes.",
+                    "It sounds like school is taking up a lot of space in your mind right now.",
+                    "It's hard to rest when deadlines keep piling up."
                 ],
                 'questions' => [
-                    "Which specific subject or project is feeling the heaviest today?",
-                    "Do you feel like you have enough support with your current workload?",
-                    "What's one small thing that would make your study time feel a little lighter?"
+                    "Which subject or school task feels heaviest today?",
+                    "Do you have someone who can help a little with schoolwork?",
+                    "What's one tiny thing that could make studying feel a little lighter?"
                 ]
             ],
             [
                 'words' => ['lonely', 'alone', 'friend', 'social', 'isolation', 'nobody', 'distance'],
                 'replies' => [
-                    "Feeling isolated can make even small challenges feel much larger.",
-                    "It's a very human thing to want to feel connected and seen.",
-                    "I'm sorry you're feeling a distance from others right now."
+                    "Feeling left out can make even small days feel bigger.",
+                    "Wanting to feel seen and included is so normal.",
+                    "I'm sorry you've been feeling far from others lately."
                 ],
                 'questions' => [
-                    "Have you felt this way for a while, or is it a more recent feeling?",
-                    "Is there anyone in your life you feel even a little bit comfortable talking to?",
-                    "What does a 'good' social connection look like for you?"
+                    "Has this lonely feeling been around for a while, or is it newer?",
+                    "Is there one person you feel even a tiny bit comfy talking to?",
+                    "What does a cozy, friendly moment look like for you?"
                 ]
             ],
             [
                 'words' => ['tired', 'fatigue', 'sleep', 'insomnia', 'exhausted', 'drained'],
                 'replies' => [
-                    "Exhaustion can make it so much harder to manage our emotions.",
-                    "It sounds like your body and mind are really asking for some rest.",
-                    "Being drained like this is often a sign of how much you've been handling."
+                    "Being tired can make feelings feel even heavier.",
+                    "It sounds like your body and mind are asking for a little rest.",
+                    "Feeling drained often means you've been carrying a lot."
                 ],
                 'questions' => [
-                    "How has your sleep been lately?",
-                    "What do you think is the biggest thing draining your energy right now?",
-                    "If you could have one hour of pure rest today, how would you spend it?"
+                    "How did you sleep last night?",
+                    "What feels like the biggest energy-drainer right now?",
+                    "If you had one cozy hour to rest today, what would you do?"
                 ]
             ],
             [
                 'words' => ['anxious', 'nervous', 'panic', 'worry', 'dread', 'fear'],
                 'replies' => [
-                    "Anxiety has a way of making the future feel very uncertain.",
-                    "That tight feeling of worry can be so physically draining.",
-                    "I hear the weight of that anxiety in your words."
+                    "That worried feeling can make tomorrow seem really big.",
+                    "That tight, uneasy feeling can be so tiring in your body too.",
+                    "I hear how heavy those worries feel right now."
                 ],
                 'questions' => [
-                    "Where do you feel that anxiety most in your body right now?",
-                    "What's one thing that usually helps you feel even 1% calmer?",
-                    "Would you like to try a quick breathing tool from our Mindfulness Corner?"
+                    "Where do you feel it most in your body right now — like chest, head, or tummy?",
+                    "What's one tiny thing that usually helps you feel even a little calmer?",
+                    "Would you like to try one slow breathing break together from the Calm Space?"
                 ]
             ],
             [
                 'words' => ['sad', 'low', 'empty', 'cry', 'tears', 'numb', 'depressed'],
                 'replies' => [
-                    "It's okay to not be okay, and it's okay to sit with these heavy feelings.",
-                    "Thank you for being honest about feeling low; that takes courage.",
-                    "I can hear the sadness you're carrying right now."
+                    "It's okay to have heavy days, and it's okay to talk about them here.",
+                    "Thank you for telling me you're feeling low — that takes real courage.",
+                    "I hear how sad and heavy things feel right now."
                 ],
                 'questions' => [
-                    "What's been the hardest part of today for you?",
-                    "Do you have a safe space or a Comfort Activity you can turn to?",
-                    "Is this a feeling that comes and goes, or has it been staying for a while?"
+                    "What part of today felt hardest for you?",
+                    "Is there a small cozy thing that usually comforts you a little?",
+                    "Is this a feeling that comes and goes, or has it been sticking around for a while?"
                 ]
             ],
             [
                 'words' => ['suicid', 'hurt myself', 'end it all', 'want to die', 'hopeless', 'giving up'],
                 'replies' => [
-                    "I'm really glad you shared that with me — it means you don't have to carry this alone. Your life has immense value.",
-                    "Thank you for being brave enough to voice these very heavy thoughts. They sound incredibly painful.",
-                    "I hear how much pain you are in right now. Please know that help is available and you're not alone in this."
+                    "Thank you for telling me something so heavy — I'm really glad you did. You matter, and you don't have to carry this alone.",
+                    "That sounds like an incredibly painful place to be. Thank you for being brave and telling me.",
+                    "I hear how much pain you're in right now. Please know there are people who want to help, including me right here."
                 ],
                 'questions' => [
-                    "Could you tell me a bit more about what's making the world feel so heavy today?",
-                    "Do you feel safe where you are right now? I'm concerned about you.",
-                    "Would you be open to talk more about these feelings, or perhaps reaching out to the crisis resources listed on the side?"
+                    "Could you share a little more about what's been making days feel so heavy?",
+                    "Are you in a safe place right now? I care about you.",
+                    "Would you like to keep talking here, or reach out now to someone you trust or your counselor? There's also help in the Crisis Help box."
                 ]
             ],
             [
-                'words' => ['hello', 'hi', 'hey', 'aria'],
+                'words' => ['hello', 'hi', 'hey'],
                 'replies' => [
-                    "Hello! I'm Aria. How are you feeling today?",
-                    "Hi there. I'm glad you're here. What's on your mind?",
-                    "Hello. I'm Aria, your wellness companion. How's your day been going so far?"
+                    "Hello! I'm really glad you're here. How are you feeling today?",
+                    "Hi there. Thanks for stopping by. What's on your mind?",
+                    "Hello! How has your day been so far?"
                 ],
                 'questions' => [
-                    "What would you like to talk about today?",
-                    "Is there anything specific weighing on you, or are you just checking in?",
-                    "How are you holding up with everything going on?"
+                    "What would you like to chat about today?",
+                    "Is there something weighing on you, or do you just want to check in?",
+                    "How are things going for you lately?"
                 ]
             ]
         ];

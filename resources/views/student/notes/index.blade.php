@@ -5,9 +5,9 @@
     
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
         <div>
-            <div style="font-weight: 600; color: var(--primary); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;">Clinical Support</div>
-            <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Clinical Quick Notes</h1>
-            <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 400;">Securely share clinical context or concerns with your counselor.</p>
+            <div style="font-weight: 600; color: var(--primary); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;">Message Your Counselor</div>
+            <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Quick Notes</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 400;">Safely share what's on your mind with your counselor.</p>
         </div>
         <div style="display: flex; gap: 0.75rem;">
             <div style="padding: 0.65rem 1.25rem; border-radius: var(--radius-sm); background: var(--surface-2); color: var(--primary); font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; gap: 0.5rem; border: 1px solid var(--border);">
@@ -48,20 +48,20 @@
         <!-- New Note Form -->
         <div class="notes-sticky">
             <div style="font-size: 0.7rem; font-weight: 800; color: #ef4444; background: rgba(239, 68, 68, 0.08); padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid #ef4444; line-height: 1.4;">
-                ⚠️ <b>CLINICAL NOTE:</b> Information shared will be reviewed by the guidance staff for patient oversight under total confidentiality.
+                ⚠️ <b>A gentle reminder:</b> What you share here will be kindly read by your school counselor. It's private and just between you and them.
             </div>
             
             <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--primary-glow); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1.25rem;">✍️</div>
-            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text);">New Entry</h2>
-            <p style="color: var(--text-muted); font-weight: 400; margin-bottom: 1.75rem; line-height: 1.6; font-size: 0.88rem;">Speak directly to clinical experts in a secure, confidential environment.</p>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text);">New Note</h2>
+            <p style="color: var(--text-muted); font-weight: 400; margin-bottom: 1.75rem; line-height: 1.6; font-size: 0.88rem;">Write to your counselor in a safe, private space.</p>
 
             <form method="POST" action="{{ route('student.notes.store') }}" id="noteForm">
                 @csrf
                 <div style="margin-bottom: 1.25rem;">
-                    <textarea name="message" placeholder="Share your clinical context or concerns..." required style="width: 100%; padding: 1.25rem; border-radius: var(--radius-sm); border: 1.5px solid var(--border); font-family: inherit; font-size: 0.95rem; height: 180px; resize: none; background: var(--surface-2); transition: var(--transition); line-height: 1.6; color: var(--text);"></textarea>
+                    <textarea name="message" placeholder="What's on your mind? Share it here..." required style="width: 100%; padding: 1.25rem; border-radius: var(--radius-sm); border: 1.5px solid var(--border); font-family: inherit; font-size: 0.95rem; height: 180px; resize: none; background: var(--surface-2); transition: var(--transition); line-height: 1.6; color: var(--text);"></textarea>
                 </div>
                 <button type="submit" id="noteSubmitBtn" style="width: 100%; background: var(--primary); color: white; border: none; padding: 0.85rem; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2); transition: var(--transition); font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                    <span id="noteBtnText">Send Clinical Note →</span>
+                    <span id="noteBtnText">Send Note →</span>
                 </button>
             </form>
         </div>
@@ -180,7 +180,7 @@ document.getElementById('noteForm').addEventListener('submit', async function(e)
         App.toast({ type: 'error', title: 'Connection Error', message: 'Please try again.' });
     } finally {
         btn.disabled = false;
-        text.textContent = 'Send Clinical Note →';
+        text.textContent = 'Send Note →';
     }
 });
 

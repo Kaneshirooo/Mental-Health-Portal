@@ -22,20 +22,20 @@
             <div>
                 <div class="flex items-center gap-3 mb-4">
                     <span class="w-3 h-3 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] animate-pulse"></span>
-                    <p class="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-500 italic">AI Session Summary Protocol</p>
+                    <p class="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-500 italic">My Chat Takeaway</p>
                 </div>
                 <h1 class="text-4xl font-black text-white tracking-tighter mb-2">{{ $session->created_at->format('F d, Y') }}</h1>
-                <p class="text-emerald-500 font-black uppercase tracking-[0.4em] text-[10px] italic">Session Logged at {{ $session->created_at->format('h:i A') }}</p>
+                <p class="text-emerald-500 font-black uppercase tracking-[0.4em] text-[10px] italic">Saved at {{ $session->created_at->format('h:i A') }}</p>
             </div>
             <div class="text-right">
-                <p class="text-xs font-black text-gray-500 uppercase tracking-widest mb-2 italic">Clinical Risk Status</p>
+                <p class="text-xs font-black text-gray-500 uppercase tracking-widest mb-2 italic">How I Was Doing</p>
                 <div class="flex items-center gap-3 justify-end">
                     <span class="px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest {{ 
                         ($session->ai_report['risk_level'] ?? 'Low') === 'High' || ($session->ai_report['risk_level'] ?? 'Low') === 'Critical' 
                         ? 'bg-red-500/10 text-red-400 border-red-500/20' 
                         : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
                     }} border shadow-lg shadow-emerald-500/5">
-                        {{ $session->ai_report['risk_level'] ?? 'Low' }} Risk Level
+                        {{ ['Low' => 'Doing Okay', 'Moderate' => 'A Bit Tough', 'Medium' => 'A Bit Tough', 'High' => 'Need Care', 'Critical' => 'Need Care'][$session->ai_report['risk_level'] ?? 'Low'] ?? ($session->ai_report['risk_level'] ?? 'Doing Okay') }}
                     </span>
                 </div>
             </div>
@@ -69,31 +69,31 @@
             </div>
         </div>
 
-        <!-- AI Observations -->
+        <!-- What you shared -->
         <section class="space-y-12 mb-20">
             <div>
-                <h3 class="text-xs font-black uppercase tracking-widest text-white mb-6 italic border-l-4 border-emerald-500 pl-6">Core Concerns Identified</h3>
+                <h3 class="text-xs font-black uppercase tracking-widest text-white mb-6 italic border-l-4 border-emerald-500 pl-6">What's Been on My Mind</h3>
                 <div class="bg-white/[0.02] border border-white/5 p-10 rounded-[3rem]">
                     <p class="text-lg text-gray-300 font-medium leading-relaxed italic">
-                        "{!! $session->ai_report['core_concerns'] ?? 'No concerns identified.' !!}"
+                        "{!! $session->ai_report['core_concerns'] ?? 'Nothing noted yet.' !!}"
                     </p>
                 </div>
             </div>
 
             <div>
-                <h3 class="text-xs font-black uppercase tracking-widest text-white mb-6 italic border-l-4 border-emerald-500 pl-6">Clinical Observations</h3>
+                <h3 class="text-xs font-black uppercase tracking-widest text-white mb-6 italic border-l-4 border-emerald-500 pl-6">What We Noticed Together</h3>
                 <div class="bg-white/[0.02] border border-white/5 p-10 rounded-[3rem]">
                     <p class="text-lg text-gray-300 font-medium leading-relaxed italic">
-                        "{!! $session->ai_report['clinical_observations'] ?? 'No observations available.' !!}"
+                        "{!! $session->ai_report['clinical_observations'] ?? 'Nothing noted yet.' !!}"
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- System Footer -->
+        <!-- Footer -->
         <div class="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-gray-600 border-t border-white/5 pt-8">
-            <span>Clinical Assistant Protocol</span>
-            <span>Follow-up Recommended: {{ ($session->ai_report['follow_up_needed'] ?? false) ? 'YES' : 'NO' }}</span>
+            <span>My Personal Check-In</span>
+            <span>Suggested next chat: {{ ($session->ai_report['follow_up_needed'] ?? false) ? 'YES — soon' : 'Whenever you like' }}</span>
         </div>
     </article>
 

@@ -172,13 +172,13 @@ class MoodJournalController extends Controller
             return response()->json(['success' => false, 'error' => 'No logs found.']);
         }
 
-        $prompt = "Act as Aria, a supportive AI wellness companion. Based on the student's recent mood logs:\n";
+        $prompt = "You are a warm, kind friend. Look at this student's recent mood notes:\n";
         foreach ($logs as $log) {
-            $prompt .= "- {$log->logged_at->format('M d')}: Score {$log->mood_score}/5 ({$log->mood_emoji}). Note: " . ($log->note ?: 'N/A') . "\n";
+            $prompt .= "- {$log->logged_at->format('M d')}: Felt {$log->mood_score}/5 ({$log->mood_emoji}). In their words: " . ($log->note ?: '—') . "\n";
         }
-        $prompt .= "\nProvide a warm, empathetic, and concise insight (max 60 words) about their emotional trend. Suggest a small positive action if needed. Use 'we' and 'you' to feel like a companion.";
+        $prompt .= "\nWrite one warm, simple sentence (max 60 words) about the gentle pattern you see, in everyday student words. No clinical or doctor words. Suggest one tiny kind thing they could try. Use 'you'.";
 
-        $systemInstruction = "You are a mental health professional assistant. Analyze the student's mood log and provide ONE sentence of deep, supportive insight. Avoid generic advice.";
+        $systemInstruction = "You are a caring friend for students. Reply in very simple everyday words with one short warm sentence. No clinical words.";
 
         $messages = [
             ['role' => 'user', 'content' => $prompt]
@@ -187,7 +187,7 @@ class MoodJournalController extends Controller
 
         return response()->json([
             'success' => true,
-            'insight' => $insight ?: "I'm observing your patterns, but I need a few more logs to give you a detailed insight. Keep sharing with me!"
+            'insight' => $insight ?: "Thanks for sharing — keep adding little notes and your gentle patterns will show up here soon!"
         ]);
     }
 }
