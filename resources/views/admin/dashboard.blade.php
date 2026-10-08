@@ -68,6 +68,11 @@
     .orb-active { background: #10b981; box-shadow: 0 0 15px #10b981; animation: blink 2s infinite; }
 
     @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+    @keyframes pulse-red {
+        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+        70% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
 
     @media (max-width: 768px) {
         .container {
@@ -239,7 +244,7 @@
                             <td style="padding: 1.5rem 2rem; text-align: right; white-space: nowrap;">
                                 @php $rowRisk = $student->latestAssessment?->risk_level ?? ''; @endphp
                                 @if(in_array($rowRisk, ['High', 'Critical'], true))
-                                    <button onclick="callStudent({{ $student->user_id }}, '{{ e($student->full_name) }}', this)" title="Start a video call with this student now" style="background: #ef4444; color: white; border: none; padding: 0.55rem 1rem; border-radius: 10px; font-weight: 800; font-size: 0.72rem; text-transform: uppercase; cursor: pointer; margin-right: 0.5rem;">
+                                    <button onclick="openCallModal({{ $student->user_id }}, '{{ e($student->full_name) }}', '{{ $rowRisk }}')" title="Start a video call with this student now" style="background: #ef4444; color: white; border: none; padding: 0.55rem 1rem; border-radius: 10px; font-weight: 800; font-size: 0.72rem; text-transform: uppercase; cursor: pointer; margin-right: 0.5rem;">
                                         📞 Call
                                     </button>
                                 @endif
@@ -294,9 +299,46 @@
     </div>
 </div>
 
+<!-- Call Student Confirm Modal -->
+<div id="callModal" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(15,23,42,0.55); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;" onclick="if(event.target===this)closeCallModal()">
+    <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.5rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);">
+        <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(239,68,68,0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem; animation: pulse-red 2s infinite;">
+            <i class="ph-bold ph-phone-call"></i>
+        </div>
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--text); margin: 0 0 0.5rem;">Call this student now?</h3>
+        <p style="color: var(--text); font-weight: 800; font-size: 1.05rem; margin: 0 0 0.25rem;" id="callModalName">Student</p>
+        <p style="margin: 0 0 1rem;"><span id="callModalRisk" style="padding: 0.3rem 0.85rem; border-radius: 100px; font-weight: 800; font-size: 0.68rem; text-transform: uppercase;">Critical</span></p>
+        <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; margin: 0 0 2rem;">They will be notified immediately and asked to join your video call. Only written safety notes are kept if they chose not to record.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <button onclick="closeCallModal()" style="padding: 0.9rem; border-radius: 14px; font-weight: 800; cursor: pointer; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text);">Cancel</button>
+            <button id="callModalConfirm" onclick="confirmCallStudent()" style="padding: 0.9rem; border-radius: 14px; font-weight: 800; cursor: pointer; background: #ef4444; border: none; color: white;">📞 Call Now</button>
+        </div>
+    </div>
+</div>
+
 <script>
-async function callStudent(studentId, studentName, btn) {
-    if (!confirm('Start a video call with ' + studentName + ' now? They will be notified to join.')) return;
+let pendingCall = { studentId: null, studentName: '', risk: '' };
+
+function openCallModal(studentId, studentName, risk) {
+    pendingCall = { studentId, studentName, risk };
+    document.getElementById('callModalName').textContent = studentName;
+    const riskBadge = document.getElementById('callModalRisk');
+    riskBadge.textContent = risk;
+    riskBadge.style.background = risk === 'Critical' ? 'rgba(239,68,68,0.12)' : 'rgba(249,115,22,0.12)';
+    riskBadge.style.color = risk === 'Critical' ? '#ef4444' : '#f97316';
+    riskBadge.style.border = '1px solid ' + (risk === 'Critical' ? 'rgba(239,68,68,0.35)' : 'rgba(249,115,22,0.35)');
+    document.getElementById('callModal').style.display = 'flex';
+}
+
+function closeCallModal() {
+    document.getElementById('callModal').style.display = 'none';
+    pendingCall = { studentId: null, studentName: '', risk: '' };
+}
+
+async function confirmCallStudent() {
+    const { studentId } = pendingCall;
+    if (!studentId) return;
+    const btn = document.getElementById('callModalConfirm');
     const original = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = 'Calling…';
