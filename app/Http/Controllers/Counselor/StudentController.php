@@ -118,7 +118,7 @@ class StudentController extends Controller
     }
 
     /**
-     * Display the clinical profile for a specific student.
+     * Display the support profile for a specific student.
      */
     public function show(User $student): View
     {
@@ -152,7 +152,7 @@ class StudentController extends Controller
     }
 
     /**
-     * Archive a clinical note for the student.
+     * Save a support note for the student.
      */
     public function addNote(Request $request, User $student): RedirectResponse
     {
@@ -173,7 +173,7 @@ class StudentController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Clinical note archived successfully.',
+                'message' => 'Support note saved successfully.',
                 'note' => [
                     'date' => $note->created_at->format('M d, Y'),
                     'text' => e($note->note_text),
@@ -183,11 +183,11 @@ class StudentController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Clinical note archived successfully.');
+        return back()->with('success', 'Support note saved successfully.');
     }
 
     /**
-     * Generate an AI-driven clinical summary for the counselor.
+     * Generate an AI support summary for the counselor.
      */
     public function aiSummary(Request $request, User $student): JsonResponse
     {
@@ -235,7 +235,7 @@ class StudentController extends Controller
     }
 
     /**
-     * Build a structured prompt for the clinical AI summary.
+     * Build a structured prompt for the AI support summary.
      */
     private function buildClinicalPrompt(User $student, $assessments, $moods, $pastNotes): string
     {
@@ -272,7 +272,7 @@ class StudentController extends Controller
         return $prompt;
     }
     /**
-     * Export the clinical profile as a print-optimized report.
+     * Export the student profile as a print-optimized report.
      */
     public function export(User $student): View
     {

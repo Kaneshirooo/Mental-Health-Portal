@@ -106,12 +106,12 @@
             <table style="width: 100%; border-collapse: separate; border-spacing: 0 0.65rem;">
                 <thead>
                     <tr style="text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.68rem; color: var(--text-dim); font-weight: 900;">
-                        <th style="padding: 1.25rem 1.5rem; text-align: left;">Identity Node</th>
+                        <th style="padding: 1.25rem 1.5rem; text-align: left;">Identity</th>
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Session Login</th>
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Session Logout</th>
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Total Duration</th>
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Observed Activity</th>
-                        <th style="padding: 1.25rem 1.5rem; text-align: right;">Clinical Status</th>
+                        <th style="padding: 1.25rem 1.5rem; text-align: right;">Status</th>
                     </tr>
                 </thead>
                 <tbody id="ledgerTableBody">

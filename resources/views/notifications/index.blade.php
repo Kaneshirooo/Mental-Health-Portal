@@ -124,7 +124,7 @@
     <!-- Header -->
     <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem;">
         <div>
-            <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">Clinical Monitoring</div>
+            <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">Wellness Updates</div>
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Activity Feed</h1>
             <p style="color: var(--text-muted); font-size: 1.05rem; font-weight: 500; margin-top: 0.4rem;">Real-time stream of clinical alerts and system updates.</p>
         </div>
@@ -151,7 +151,7 @@
                     $userRole = auth()->user() && auth()->user()->user_type ? strtolower(auth()->user()->user_type->value ?? (string)auth()->user()->user_type) : 'student';
                     $styleMap = [
                         'appointment' => ['icon' => 'ph-calendar-check', 'bg' => 'rgba(99, 102, 241, 0.12)', 'color' => '#4f46e5', 'label' => 'Appointment'],
-                        'note'        => ['icon' => 'ph-chat-centered-text', 'bg' => 'rgba(139, 92, 246, 0.12)', 'color' => '#7c3aed', 'label' => 'Clinical Note'],
+                        'note'        => ['icon' => 'ph-chat-centered-text', 'bg' => 'rgba(139, 92, 246, 0.12)', 'color' => '#7c3aed', 'label' => 'Counselor Note'],
                         'mood_alert'  => ['icon' => 'ph-activity', 'bg' => 'rgba(239, 68, 68, 0.12)', 'color' => '#dc2626', 'label' => 'Mood Alert'],
                         'emergency'   => ['icon' => 'ph-phone-call', 'bg' => 'rgba(239, 68, 68, 0.15)', 'color' => '#dc2626', 'label' => 'Emergency Call'],
                         'assessment'  => ['icon' => 'ph-clipboard-text', 'bg' => 'rgba(16, 185, 129, 0.15)', 'color' => '#059669', 'label' => 'Assessment'],

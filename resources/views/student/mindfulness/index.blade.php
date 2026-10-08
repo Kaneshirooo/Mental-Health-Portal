@@ -391,9 +391,9 @@ h1.text-white, h2.text-white {
                 // Finalize
                 gsap.to(inputs, { opacity: 0, y: 10, duration: 0.3, onComplete: () => {
                     inputs.style.display = 'none';
-                    content.innerHTML = `<div class="text-6xl mb-4">✨</div><div style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">System Calibrated</div><div class="text-sm text-gray-500 mt-2">Awareness normalized. Heart rate stabilized.</div>`;
+                    content.innerHTML = `<div class="text-6xl mb-4">✨</div><div style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">All Done, Nice and Calm</div><div class="text-sm text-gray-500 mt-2">You noticed the world around you. How steady do you feel now?</div>`;
                     gsap.from(content, { scale: 0.9, opacity: 0, duration: 0.6, ease: "back.out(1.7)" });
-                    btn.textContent = 'Restart Sensory Protocol';
+                    btn.textContent = 'Play Again';
                     groundingStep = 0;
                     itemSubStep = 0;
                 }});

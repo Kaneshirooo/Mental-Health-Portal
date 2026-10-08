@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clinical Report - {{ $student->full_name }}</title>
+    <title>Support Summary - {{ $student->full_name }}</title>
     <style>
         :root {
             --primary-black: #000000;
@@ -154,7 +154,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <button class="no-print" onclick="window.print()">🖨️ Download / Print Clinical File</button>
+    <button class="no-print" onclick="window.print()">🖨️ Download / Print Support File</button>
 
     <div class="confidential-stamp">Strictly Confidential</div>
 
@@ -183,7 +183,7 @@
     </div>
 
     <div class="section">
-        <div class="section-title">Diagnostic History</div>
+        <div class="section-title">Check-in History</div>
         <table>
             <thead>
                 <tr>

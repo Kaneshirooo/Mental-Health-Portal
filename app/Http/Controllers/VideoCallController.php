@@ -179,7 +179,7 @@ class VideoCallController extends Controller
     }
 
     /**
-     * Terminate the current clinical session for either participant.
+     * Terminate the current support session for either participant.
      */
     public function terminate(EmergencyCall $call)
     {

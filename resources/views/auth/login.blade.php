@@ -357,7 +357,7 @@
                     <span class="pill-icon">🧠</span>
                     <div class="pill-info">
                         <div class="pill-name">Wellness Tools</div>
-                        <div class="pill-desc">Clinical Assessments & Insights</div>
+                        <div class="pill-desc">Check-ins & Insights</div>
                     </div>
                 </div>
 

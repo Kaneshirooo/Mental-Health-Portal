@@ -235,7 +235,7 @@
             <div style="display:flex; align-items:center; gap:1rem;">
                 <div style="width: 4px; height: 28px; border-radius: 4px; background: linear-gradient(to bottom, #10b981, #6366f1); flex-shrink: 0;"></div>
                 <div>
-                    <h2 style="font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:900; color:var(--text); margin:0; letter-spacing:-0.03em;">Audited Sessions Registry</h2>
+                    <h2 style="font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:900; color:var(--text); margin:0; letter-spacing:-0.03em;">Past Call Sessions</h2>
                     <p style="color:var(--text-muted); font-size:0.85rem; font-weight:500; margin:0.2rem 0 0;">Browse and audit transcripts of emergency help calls.</p>
                 </div>
             </div>
@@ -370,8 +370,8 @@
                         <tr>
                             <td colspan="6" style="padding:6rem 2rem; text-align:center;">
                                 <div style="width:72px; height:72px; border-radius:24px; background:var(--surface-2); display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:2rem;">📞</div>
-                                <h3 style="font-weight:800; color:var(--text-dim); font-size:1.1rem; margin:0 0 0.5rem;">Audit Registry Empty</h3>
-                                <p style="color:var(--text-muted); font-weight:500; font-size:0.9rem; margin:0;">No emergency call records matching current filters exist in the database.</p>
+                                <h3 style="font-weight:800; color:var(--text-dim); font-size:1.1rem; margin:0 0 0.5rem;">No Past Calls Yet</h3>
+                                <p style="color:var(--text-muted); font-weight:500; font-size:0.9rem; margin:0;">No call records match the current filters.</p>
                             </td>
                         </tr>
                     @endforelse

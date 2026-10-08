@@ -32,7 +32,7 @@
                 ? 'background: #ef444420; color: #ef4444; border: 1.5px solid #ef4444;' 
                 : 'background: #10b98120; color: #10b981; border: 1.5px solid #10b981;' 
             }}">
-                {{ $session->ai_report['risk_level'] ?? 'Low' }} Risk Protocol
+                {{ $session->ai_report['risk_level'] ?? 'Low' }} Priority
             </span>
         </div>
 
@@ -67,7 +67,7 @@
             @endforeach
         </div>
 
-        <!-- Clinical Content -->
+        <!-- Session Content -->
         <div style="display: flex; flex-direction: column; gap: 3.5rem;">
             <div>
                 <h3 style="font-size: 0.75rem; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
@@ -80,7 +80,7 @@
 
             <div>
                 <h3 style="font-size: 0.75rem; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                    <span style="width: 24px; height: 2px; background: var(--primary);"></span> Clinical Observations
+                    <span style="width: 24px; height: 2px; background: var(--primary);"></span> What We Noticed
                 </h3>
                 <div style="background: var(--surface-2); border: 1.5px solid var(--border); border-radius: 28px; padding: 2.5rem; color: var(--text); font-size: 1.15rem; font-weight: 500; line-height: 1.8; font-style: italic;">
                     "{!! $session->ai_report['clinical_observations'] ?? 'No observations recorded.' !!}"
@@ -94,7 +94,7 @@
                 Follow-up Needed: <span style="{{ ($session->ai_report['follow_up_needed'] ?? false) ? 'color: #ef4444;' : 'color: #10b981;' }}">{{ ($session->ai_report['follow_up_needed'] ?? false) ? 'YES' : 'NO' }}</span>
             </div>
             <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
-                Aria AI Protocol v2.1
+                Support Chat Summary
             </div>
         </footer>
     </article>

@@ -57,10 +57,10 @@
     <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem;">
         <div>
             <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                <i class="ph-bold ph-note-pencil" style="font-size: 1.1rem;"></i> Anonymous Transmissions
+                <i class="ph-bold ph-note-pencil" style="font-size: 1.1rem;"></i> Private Messages
             </div>
-            <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Clinical Quick Notes</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Managing direct student inquiries and clinical outreach responses.</p>
+            <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Quick Notes</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Read and reply to messages from students.</p>
         </div>
         <div>
             <div style="background: var(--surface-solid); border: 1px solid var(--border); padding: 1rem 1.5rem; border-radius: 20px; display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-sm);">
@@ -68,8 +68,8 @@
                     <i class="ph-bold ph-shield-check"></i>
                 </div>
                 <div>
-                    <div style="font-size: 0.7rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em;">Security Protocol</div>
-                    <div style="font-size: 0.95rem; font-weight: 900; color: var(--text);">Clinical Oversight</div>
+                    <div style="font-size: 0.7rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em;">Privacy First</div>
+                    <div style="font-size: 0.95rem; font-weight: 900; color: var(--text);">Counselor Review</div>
                 </div>
             </div>
         </div>
@@ -166,7 +166,7 @@
                     <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(99,102,241,0.1); color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 1.25rem;">
                         <i class="ph-bold ph-info"></i>
                     </div>
-                    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 900; color: var(--text); margin-bottom: 0.75rem;">Clinical Protocol</h3>
+                    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 900; color: var(--text); margin-bottom: 0.75rem;">How We Handle Notes</h3>
                     <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; font-weight: 500; margin-bottom: 1.5rem; font-style: italic;">
                         "Quick Notes allow students to provide clinical context outside of sessions. Ensure responses are professional, empathetic, and documented for administrative responsibility."
                     </p>
@@ -177,14 +177,14 @@
                         </div>
                         <div style="display: flex; align-items: center; gap: 0.6rem;">
                             <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary);"></div>
-                            <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase;">Direct Clinical Oversight</span>
+                            <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase;">Direct Counselor Support</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Registry Metrics -->
                 <div style="background: var(--surface-solid); border: 1px solid var(--border); padding: 2rem; border-radius: 28px; box-shadow: var(--shadow-sm);">
-                    <h3 style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-dim); margin-bottom: 1.5rem;">Registry Metrics</h3>
+                    <h3 style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-dim); margin-bottom: 1.5rem;">Notes Overview</h3>
                     <div style="display: flex; flex-direction: column; gap: 1.25rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Total Sequenced</span>

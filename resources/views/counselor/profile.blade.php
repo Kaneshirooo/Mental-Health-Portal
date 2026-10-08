@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'My Profile — Clinical Portal')
+@section('title', 'My Profile — Support Portal')
 
 @section('content')
 <div class="profile-container" style="max-width: 1000px; margin: 0 auto; padding-bottom: 3rem;">
@@ -33,7 +33,7 @@
                 <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;">
                     <span style="background: rgba(16, 185, 129, 0.15); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.8rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em;">
                         <i class="ph-bold ph-shield-check" style="margin-right: 0.25rem;"></i>
-                        {{ strtolower($user->user_type->value ?? (string)$user->user_type) === 'admin' ? 'Head Counselor (Admin)' : 'Clinical Counselor' }}
+                        {{ strtolower($user->user_type->value ?? (string)$user->user_type) === 'admin' ? 'Head Counselor (Admin)' : 'Guidance Counselor' }}
                     </span>
                     <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.35rem;">
                         <i class="ph-bold ph-envelope-simple"></i> {{ $user->email }}

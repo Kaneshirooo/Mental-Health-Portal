@@ -554,7 +554,7 @@
         <div>
             <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem;">
                 <span style="font-weight: 850; background: rgba(16, 185, 129, 0.12); color: #059669; padding: 0.4rem 0.95rem; border-radius: 100px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid rgba(16, 185, 129, 0.25); display: inline-flex; align-items: center; gap: 0.4rem;">
-                    <i class="ph-bold ph-shield-check" style="font-size: 1rem;"></i> Clinical Analytics & Governance
+                    <i class="ph-bold ph-shield-check" style="font-size: 1rem;"></i> Wellness Analytics
                 </span>
             </div>
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.65rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0; line-height: 1.15;">Institutional System Reports</h1>
@@ -940,11 +940,11 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
             <div>
                 <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.35rem; color: var(--text); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="ph-bold ph-heartbeat" style="color: #6366f1;"></i> DASS-21 Clinical Sub-scale Domain Averages
+                    <i class="ph-bold ph-heartbeat" style="color: #6366f1;"></i> Check-in Area Averages (Mood, Worries, Pressure)
                 </h2>
                 <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.2rem; font-weight: 500;">Average score intensity breakdown across evaluated sessions (Max domain score: 42).</p>
             </div>
-            <span style="font-size: 0.72rem; font-weight: 850; background: var(--surface-2); padding: 0.4rem 0.85rem; border-radius: 100px; color: var(--text-dim); border: 1px solid var(--border);">Standard Clinical Benchmark</span>
+            <span style="font-size: 0.72rem; font-weight: 850; background: var(--surface-2); padding: 0.4rem 0.85rem; border-radius: 100px; color: var(--text-dim); border: 1px solid var(--border);">Healthy Range Guide</span>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">

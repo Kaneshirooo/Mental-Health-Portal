@@ -490,7 +490,7 @@
                     </div>
                 </div>
 
-                <div class="section-label staggered">Security Protocol</div>
+                <div class="section-label staggered">Account Security</div>
                 <div class="input-row">
                     <div class="input-group staggered">
                         <label for="password">Create Password</label>

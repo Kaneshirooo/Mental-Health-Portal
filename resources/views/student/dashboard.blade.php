@@ -293,7 +293,7 @@
         <!-- Mood Chart -->
         <div class="chart-container-premium staggered">
             <div class="chart-header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
-                <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem; margin: 0; color: var(--text); letter-spacing: -0.02em;">Emotional Vector Summary</h2>
+                <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem; margin: 0; color: var(--text); letter-spacing: -0.02em;">Mood Summary</h2>
                 <a href="{{ route('student.mood') }}" class="btn-link" style="color: #f59e0b;">Analyze Logs →</a>
             </div>
             <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.25rem; font-weight: 500; line-height: 1.5;">
@@ -421,8 +421,8 @@ Chart.defaults.borderColor = 'rgba(0,0,0,0.05)';
                     padding: 12,
                     callbacks: {
                         label: (ctx) => {
-                            const labels = ['', 'Critical', 'Suboptimal', 'Neutral', 'Vibrant', 'Optimal'];
-                            return ' Vector: ' + (labels[ctx.raw] || ctx.raw);
+                            const labels = ['', 'Tough time', 'A bit low', 'Okay', 'Good', 'Great'];
+                            return ' Mood: ' + (labels[ctx.raw] || ctx.raw);
                         }
                     }
                 }

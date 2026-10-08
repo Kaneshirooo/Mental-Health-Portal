@@ -400,8 +400,8 @@
                 <div class="pulse-ai"></div>
                 AI Core Active &mdash; GPT-4o
             </div>
-            <h1 style="font-family:'Outfit',sans-serif; font-size:2.9rem; font-weight:900; letter-spacing:-0.05em; line-height:1.05; margin:0;">Clinical Triage
-                <span class="hero-sub" style="display:block; font-size:1rem; font-weight:500; letter-spacing:0; margin-top:0.4rem;">Advanced institutional oversight &amp; predictive wellness monitoring</span>
+            <h1 style="font-family:'Outfit',sans-serif; font-size:2.9rem; font-weight:900; letter-spacing:-0.05em; line-height:1.05; margin:0;">Students to Support
+                <span class="hero-sub" style="display:block; font-size:1rem; font-weight:500; letter-spacing:0; margin-top:0.4rem;">See who needs help first &amp; keep track of their progress</span>
             </h1>
         </div>
 
@@ -434,9 +434,9 @@
                 <i class="ph-bold ph-users-four"></i>
             </div>
             <div class="stat-value" style="color:var(--text);">{{ $stats['total_students'] }}</div>
-            <div class="stat-label">Clinical Caseload</div>
+            <div class="stat-label">Students in Care</div>
             <div class="stat-tag" style="background:rgba(16,185,129,0.08); color:#10b981;">
-                <i class="ph-bold ph-dot-outline"></i> Total monitored
+                <i class="ph-bold ph-dot-outline"></i> Total supported
             </div>
         </div>
 
@@ -486,12 +486,12 @@
             <div style="display:flex; align-items:center; gap:1rem;">
                 <div class="section-header-line"></div>
                 <div>
-                    <h2 style="font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:900; color:var(--text); margin:0; letter-spacing:-0.03em;">Triage Priority Queue</h2>
-                    <p style="color:var(--text-muted); font-size:0.85rem; font-weight:500; margin:0.2rem 0 0;">Real-time prioritization of student clinical scores.</p>
+                    <h2 style="font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:900; color:var(--text); margin:0; letter-spacing:-0.03em;">Priority Support Queue</h2>
+                    <p style="color:var(--text-muted); font-size:0.85rem; font-weight:500; margin:0.2rem 0 0;">Students sorted by who needs help first.</p>
                 </div>
             </div>
             <a href="{{ route('counselor.students.index') }}" class="btn-secondary"
-               style="padding:0.7rem 1.5rem; border-radius:14px; font-weight:800; text-transform:uppercase; font-size:0.72rem; letter-spacing:0.05em;">Access Registry</a>
+               style="padding:0.7rem 1.5rem; border-radius:14px; font-weight:800; text-transform:uppercase; font-size:0.72rem; letter-spacing:0.05em;">View Records</a>
         </div>
 
         <div style="overflow-x:auto;">
@@ -500,7 +500,7 @@
                     <tr style="text-transform:uppercase; letter-spacing:0.12em; font-size:0.65rem; color:var(--text-dim); font-weight:900;">
                         <th style="padding:0.75rem 1.25rem; text-align:left;">Student</th>
                         <th style="padding:0.75rem 1.25rem; text-align:left;">Wellness Score</th>
-                        <th style="padding:0.75rem 1.25rem; text-align:left;">Clinical Trend</th>
+                        <th style="padding:0.75rem 1.25rem; text-align:left;">Progress Trend</th>
                         <th style="padding:0.75rem 1.25rem; text-align:left;">Risk Level</th>
                         <th style="padding:0.75rem 1.25rem; text-align:left;">Last Assessment</th>
                         <th style="padding:0.75rem 1.25rem; text-align:right;">Action</th>
@@ -584,8 +584,8 @@
                     <tr>
                         <td colspan="6" style="padding:6rem 2rem; text-align:center;">
                             <div style="width:72px; height:72px; border-radius:24px; background:var(--surface-2); display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:2rem;">🛡️</div>
-                            <h3 style="font-weight:800; color:var(--text-dim); font-size:1.1rem; margin:0 0 0.5rem;">Clinical Buffer Clear</h3>
-                            <p style="color:var(--text-muted); font-weight:500; font-size:0.9rem; margin:0;">No priority escalations in the system matrix.</p>
+                            <h3 style="font-weight:800; color:var(--text-dim); font-size:1.1rem; margin:0 0 0.5rem;">All Clear</h3>
+                            <p style="color:var(--text-muted); font-weight:500; font-size:0.9rem; margin:0;">No students need priority support right now.</p>
                         </td>
                     </tr>
                     @endforelse
@@ -603,11 +603,11 @@
 
         <header style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:3rem;">
             <div>
-                <h2 style="font-family:'Outfit',sans-serif; font-size:2.2rem; font-weight:900; color:var(--text); margin:0; letter-spacing:-0.04em;">Subject Dialogues</h2>
-                <p style="color:var(--text-muted); font-size:1rem; font-weight:500; margin-top:0.4rem;">Identifiable clinical communications and student notes.</p>
+                <h2 style="font-family:'Outfit',sans-serif; font-size:2.2rem; font-weight:900; color:var(--text); margin:0; letter-spacing:-0.04em;">Student Messages</h2>
+                <p style="color:var(--text-muted); font-size:1rem; font-weight:500; margin-top:0.4rem;">Notes from students and your replies.</p>
             </div>
             <div style="background:var(--primary-glow); padding:0.6rem 1.2rem; border-radius:100px; font-weight:900; font-size:0.75rem; color:var(--primary); text-transform:uppercase; letter-spacing:0.08em; border:1px solid rgba(16,185,129,0.2);">
-                {{ count($anon_notes) }} Active Triage Threads
+                {{ count($anon_notes) }} Active Chats
             </div>
         </header>
 
@@ -636,7 +636,7 @@
                     @foreach ($note->messages as $msg)
                     <div style="margin-bottom:2rem; display:flex; flex-direction:column; align-items: {{ ($msg->sender_type === 'student') ? 'flex-start' : 'flex-end' }};">
                         <div style="font-weight:900; font-size:0.65rem; color:var(--text-dim); text-transform:uppercase; margin-bottom:0.4rem; opacity:0.6; letter-spacing:0.06em;">
-                            {{ ($msg->sender_type === 'student') ? 'Subject' : 'Clinical Officer' }}
+                            {{ ($msg->sender_type === 'student') ? 'Student' : 'Counselor' }}
                         </div>
                         <div class="{{ ($msg->sender_type === 'student') ? 'bubble-student' : 'bubble-counselor' }}">
                             {{ $msg->message_text }}

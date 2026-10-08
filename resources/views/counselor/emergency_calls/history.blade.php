@@ -142,7 +142,7 @@
         <div>
             <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.4rem;">
                 <span style="background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.3); padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em;">
-                    Clinical Session Record
+                    Support Call Record
                 </span>
                 <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em;">
                     @php
@@ -222,7 +222,7 @@
     @if($postSessionAssessment)
     <div style="margin-bottom: 1.75rem; background: rgba(16,185,129,0.07); border: 1.5px solid rgba(16,185,129,0.25); border-radius: 24px; padding: 1.5rem 1.75rem; box-shadow: var(--shadow-sm);">
         <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.7rem; color: #059669; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.85rem;">
-            <i class="ph-bold ph-brain" style="font-size: 1.15rem;"></i> AI Post-Session Clinical Analysis
+            <i class="ph-bold ph-brain" style="font-size: 1.15rem;"></i> AI Post-Call Summary
         </div>
         <div style="white-space: pre-wrap; font-family: Inter, sans-serif; color: var(--text); line-height: 1.7; font-size: 0.93rem; font-weight: 500; background: rgba(255,255,255,0.5); padding: 1rem 1.25rem; border-radius: 14px; border: 1px solid rgba(16,185,129,0.15);">{{ $postSessionAssessment->message_text }}</div>
     </div>

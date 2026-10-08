@@ -115,8 +115,8 @@
     </div>
 
     <div style="background: var(--surface-solid); border: 1px dashed #dc2626; border-radius: var(--radius); padding: 2rem; text-align: center;">
-        <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #dc2626; margin-bottom: 0.5rem;">Clinical Support</h3>
-        <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1.5rem;">For non-emergency scheduling, you can book an appointment with our clinic during operating hours.</p>
+        <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #dc2626; margin-bottom: 0.5rem;">Talk to a Counselor</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1.5rem;">For non-urgent talks, you can book a time with your school counselor during office hours.</p>
         <a href="{{ route('student.appointments') }}" style="color: var(--primary); font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--primary-glow);">Go to Appointments →</a>
     </div>
 

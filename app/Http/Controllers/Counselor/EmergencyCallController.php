@@ -278,7 +278,7 @@ class EmergencyCallController extends Controller
         
         $isParticipant = ($call->student_id == $user->user_id) || ($call->counselor_id == $user->user_id) || in_array($userType, ['counselor', 'admin']);
         if (!$isParticipant) {
-            abort(403, 'Unauthorized access to clinical session history.');
+            abort(403, 'You do not have access to these call records.');
         }
 
         $messages = CallMessage::where('call_id', $call->call_id)

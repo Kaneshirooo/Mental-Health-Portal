@@ -33,7 +33,7 @@
             <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Manage authenticated identities and access protocols.</p>
         </div>
         <div style="background: var(--surface-2); padding: 0.75rem 1.5rem; border-radius: 100px; border: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem;">
-            <span style="font-size: 0.75rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Total Registry: {{ count($users) }}</span>
+            <span style="font-size: 0.75rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Total Accounts: {{ count($users) }}</span>
         </div>
     </header>
 
@@ -79,7 +79,7 @@
     <!-- User List Section -->
     <div id="usersContainer" class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 3rem; box-shadow: 0 30px 60px rgba(0,0,0,0.05);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem;">
-            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text); margin: 0;">System Registry</h2>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text); margin: 0;">System Accounts</h2>
             
             <div style="display: flex; gap: 1rem; align-items: center;">
                 <input type="text" id="liveSearch" placeholder="Filter users..." oninput="liveFilter()" 

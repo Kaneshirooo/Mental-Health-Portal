@@ -119,7 +119,7 @@
         <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem;">
             <div>
                 <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="ph-bold ph-calendar-check" style="font-size: 1.1rem;"></i> Intake & Session Manager
+                    <i class="ph-bold ph-calendar-check" style="font-size: 1.1rem;"></i> Appointments & Sessions
                 </div>
                 <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Manage Schedule</h1>
                 <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Active session management. {{ collect($upcoming)->count() }} slot{{ collect($upcoming)->count() !== 1 ? 's' : '' }} requiring attention.</p>
@@ -139,7 +139,7 @@
         </header>
 
         <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--text);">
-            Intake Queue</h2>
+            Upcoming Requests</h2>
         @if (collect($upcoming)->isEmpty())
             <div
                 style="padding: 4rem; text-align: center; background: var(--surface-2); border-radius: var(--radius); border: 1px dashed var(--border);">

@@ -166,7 +166,7 @@
                         <thead>
                             <tr style="text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.65rem; color: var(--text-muted); font-weight: 800;">
                                 <th style="padding: 1rem 0; text-align: left;">Date</th>
-                                <th style="padding: 1rem 0; text-align: center;">Diagnostic Score</th>
+                                <th style="padding: 1rem 0; text-align: center;">Check-in Score</th>
                                 <th style="padding: 1rem 0; text-align: center;">Risk Classification</th>
                                 <th style="padding: 1rem 0; text-align: right;">Answers</th>
                             </tr>
@@ -208,7 +208,7 @@
             @endif
         </div>
 
-        <!-- Clinical Action Panel -->
+        <!-- Support Action Panel -->
         <div style="display: flex; flex-direction: column; gap: 3rem;">
             <div style="background: var(--surface-solid); border: 1px solid var(--border); padding: 2.5rem; border-radius: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.03);">
                 <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.75rem;">
@@ -236,7 +236,7 @@
         </div>
     </div>
 
-    <!-- Clinical Timeline Archive -->
+    <!-- Support History -->
     <div id="timelineContainer" class="staggered" style="background: var(--surface-solid); border: 2px solid var(--border); padding: 3.5rem; border-radius: 40px; margin-bottom: 4rem; box-shadow: var(--shadow-lg); display: {{ count($notes) > 0 ? 'block' : 'none' }}">
         <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem;">
             <div>
@@ -287,7 +287,7 @@
                             @endif
                             @if($note?->follow_up_date)
                                 <div>
-                                    <h4 style="font-size: 0.7rem; font-weight: 900; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">Clinical Follow-up</h4>
+                                    <h4 style="font-size: 0.7rem; font-weight: 900; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">Follow-up</h4>
                                     <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--text); font-weight: 800; font-size: 1rem;">
                                         <i class="ph-bold ph-calendar-check" style="color: #f59e0b;"></i>
                                         {{ $note?->follow_up_date instanceof \DateTimeInterface ? $note?->follow_up_date?->format('M d, Y') : $note?->follow_up_date }}
@@ -399,7 +399,7 @@
     </div>
 
     <a href="{{ route('counselor.students.index') }}" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 0.75rem; padding: 1rem 2rem; border-radius: 16px; text-decoration: none; font-weight: 800; font-size: 0.9rem; margin-top: 2rem;">
-        <i class="ph ph-arrow-left"></i> Return to Registry
+        <i class="ph ph-arrow-left"></i> Back to Student List
     </a>
 </div>
 

@@ -101,7 +101,7 @@
         }
     }
     @media (max-width: 768px) {
-        /* Institutional Triage table → stacked full-width cards */
+        /* Priority table → stacked full-width cards */
         .ai-system-pulse-container table,
         .ai-system-pulse-container tbody,
         .ai-system-pulse-container tr,
@@ -146,9 +146,9 @@
     <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4.5rem;">
         <div>
             <div style="font-weight: 900; color: var(--primary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.25em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.6rem;">
-                <span class="status-orb orb-active"></span> Institutional Administration
+                <span class="status-orb orb-active"></span> School Support Overview
             </div>
-            <p style="color: var(--text-muted); font-size: 1.25rem; font-weight: 500; margin-top: 0.75rem;">System-wide clinical oversight and personnel management.</p>
+            <p style="color: var(--text-muted); font-size: 1.25rem; font-weight: 500; margin-top: 0.75rem;">Care for students and the support team, all in one place.</p>
         </div>
     </header>
 
@@ -156,38 +156,38 @@
     <div class="admin-command-matrix staggered">
         <div class="admin-card-premium">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <div style="font-size: 0.7rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Total Registry</div>
+                <div style="font-size: 0.7rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Total Students</div>
                 <i class="ph-bold ph-users-four" style="font-size: 1.5rem; color: var(--primary); opacity: 0.4;"></i>
             </div>
             <div style="font-size: 3.5rem; font-weight: 950; color: var(--text); line-height: 1; letter-spacing: -0.05em;">{{ $stats['total_users'] }}</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; font-weight: 700;">Managed Identities</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; font-weight: 700;">Registered Students</div>
         </div>
 
         <div class="admin-card-premium">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <div style="font-size: 0.7rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Clinical Staff</div>
+                <div style="font-size: 0.7rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Counselors</div>
                 <i class="ph-bold ph-stethoscope" style="font-size: 1.5rem; color: #6366f1; opacity: 0.4;"></i>
             </div>
             <div style="font-size: 3.5rem; font-weight: 950; color: #6366f1; line-height: 1; letter-spacing: -0.05em;">{{ $stats['counselors_count'] }}</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; font-weight: 700;">Active Providers</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; font-weight: 700;">Support Team Members</div>
         </div>
 
         <div class="admin-card-premium">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <div style="font-size: 0.7rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Interventions</div>
+                <div style="font-size: 0.7rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Appointments</div>
                 <i class="ph-bold ph-calendar-check" style="font-size: 1.5rem; color: #f59e0b; opacity: 0.4;"></i>
             </div>
             <div style="font-size: 3.5rem; font-weight: 950; color: #f59e0b; line-height: 1; letter-spacing: -0.05em;">{{ $stats['total_appointments'] }}</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; font-weight: 700;">Nodes Scheduled</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; font-weight: 700;">Sessions Booked</div>
         </div>
 
         <div class="admin-card-premium" style="background: rgba(239, 68, 68, 0.03); border-color: rgba(239, 68, 68, 0.1);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <div style="font-size: 0.7rem; font-weight: 900; color: #ef4444; text-transform: uppercase; letter-spacing: 0.1em;">Critical Vector</div>
+                <div style="font-size: 0.7rem; font-weight: 900; color: #ef4444; text-transform: uppercase; letter-spacing: 0.1em;">Needs Care Now</div>
                 <i class="ph-bold ph-warning-octagon" style="font-size: 1.5rem; color: #ef4444; opacity: 0.4;"></i>
             </div>
             <div style="font-size: 3.5rem; font-weight: 950; color: #ef4444; line-height: 1; letter-spacing: -0.05em;">{{ $stats['critical_vector'] }}</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; font-weight: 700;">Priority Risk Alerts</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; font-weight: 700;">Students Needing Urgent Support</div>
         </div>
     </div>
 
@@ -198,18 +198,18 @@
             <div class="pulse-ring" style="animation-delay: 2s;"></div>
             
             <header style="position: relative; z-index: 2; margin-bottom: 3.5rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem;">
-                <h2 style="font-family: 'Outfit', sans-serif; font-size: 2.25rem; font-weight: 900; color: var(--text); margin: 0; letter-spacing: -0.04em;">Institutional Triage</h2>
-                <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 600; margin-top: 0.5rem;">Managed overview of clinical priority escalations.</p>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 2.25rem; font-weight: 900; color: var(--text); margin: 0; letter-spacing: -0.04em;">Students to Prioritize</h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 600; margin-top: 0.5rem;">Students who need support first, based on their latest check-in.</p>
             </header>
 
             <div style="position: relative; z-index: 2; overflow: hidden; border-radius: 24px; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px); border: 1px solid var(--border);">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr style="background: var(--surface-2); color: var(--text-dim); font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em;">
-                            <th style="padding: 1.5rem 2rem; text-align: left;">Identity</th>
-                            <th style="padding: 1.5rem 2rem; text-align: left;">Risk Matrix</th>
-                            <th style="padding: 1.5rem 2rem; text-align: left;">Temporal</th>
-                            <th style="padding: 1.5rem 2rem; text-align: right;">Action</th>
+                            <th style="padding: 1.5rem 2rem; text-align: left;">Student</th>
+                            <th style="padding: 1.5rem 2rem; text-align: left;">How They're Doing</th>
+                            <th style="padding: 1.5rem 2rem; text-align: left;">Date</th>
+                            <th style="padding: 1.5rem 2rem; text-align: right;">View</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -237,12 +237,12 @@
                                 {{ $student->latestAssessment?->assessment_date?->format('M d, Y') ?? 'N/A' }}
                             </td>
                             <td style="padding: 1.5rem 2rem; text-align: right;">
-                                <a href="{{ route('counselor.students.show', $student->user_id) }}" style="color: var(--primary); font-weight: 900; font-size: 0.75rem; text-transform: uppercase; text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.3s ease;" onmouseover="this.style.borderBottomColor='var(--primary)'" onmouseout="this.style.borderBottomColor='transparent'">View Detail</a>
+                                <a href="{{ route('counselor.students.show', $student->user_id) }}" style="color: var(--primary); font-weight: 900; font-size: 0.75rem; text-transform: uppercase; text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.3s ease;" onmouseover="this.style.borderBottomColor='var(--primary)'" onmouseout="this.style.borderBottomColor='transparent'">View</a>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" style="padding: 6rem 2rem; text-align: center; color: var(--text-dim); font-weight: 700; font-size: 1.1rem;">Matrix Clean. No priority cases flagged.</td>
+                            <td colspan="4" style="padding: 6rem 2rem; text-align: center; color: var(--text-dim); font-weight: 700; font-size: 1.1rem;">All clear. No students need priority support right now.</td>
                         </tr>
                         @endforelse
                     </tbody>

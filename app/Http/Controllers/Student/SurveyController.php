@@ -86,7 +86,7 @@ class SurveyController extends Controller
             \App\Models\Notification::create([
                 'user_id' => 3,
                 'title' => 'New Feedback Submitted',
-                'message' => "A new clinical survey has been submitted for " . $appointment->counselor->full_name . "'s session with student " . Auth::user()->full_name . ".",
+                'message' => "A new session survey has been submitted for " . $appointment->counselor->full_name . "'s session with student " . Auth::user()->full_name . ".",
                 'type' => 'clinical_feedback',
                 'is_read' => false,
             ]);

@@ -37,7 +37,7 @@
     <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem;">
         <div>
             <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">Personnel Oversight</div>
-            <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Clinical Staff</h1>
+            <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Support Staff</h1>
             <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Manage authorized counselors and clinical responders.</p>
         </div>
         <button onclick="document.getElementById('addStaffModal').style.display='flex'" class="btn-primary" style="padding: 1rem 2rem; border-radius: 16px; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;">
