@@ -51,7 +51,7 @@ class DashboardController extends Controller
             ->get();
 
         // 1. High-risk students (Critical first, then High)
-        $priority_queue = User::where('user_type', 'student')
+        $priority_queue_all = User::where('user_type', 'student')
             ->with(['latestAssessment', 'assessmentScores' => function($q) {
                 $q->orderBy('assessment_date', 'desc')->limit(2);
             }])
@@ -68,11 +68,11 @@ class DashboardController extends Controller
                 $scores = $user->assessmentScores;
                 $user->clinical_shift = 'Stable';
                 $user->shift_direction = 'none';
-                
+
                 if ($scores->count() >= 2) {
                     $latest = $scores[0]->overall_score;
                     $previous = $scores[1]->overall_score;
-                    
+
                     // Note: Higher score usually means higher distress in DASS-21
                     if ($latest > $previous + 3) {
                         $user->clinical_shift = 'Declining';
@@ -90,7 +90,19 @@ class DashboardController extends Controller
                 if ($level === 'Critical') return 0;
                 if ($level === 'High') return 1;
                 return 2;
-            });
+            })
+            ->values();
+
+        // 10 per page so long lists stay manageable.
+        $queuePage = max(1, (int) $request->input('queue_page', 1));
+        $priority_queue = new \Illuminate\Pagination\LengthAwarePaginator(
+            $priority_queue_all->forPage($queuePage, 10),
+            $priority_queue_all->count(),
+            10,
+            $queuePage,
+            ['path' => $request->url(), 'pageName' => 'queue_page']
+        );
+        $priority_queue->appends(['notes_page' => $request->input('notes_page', 1)]);
 
         // 2. Stats
         $latestAssessmentsCount = DB::table('assessment_scores as a1')
@@ -111,13 +123,14 @@ class DashboardController extends Controller
             'active_dialogues' => AnonymousNote::whereIn('status', ['new', 'read', 'replied'])->count(),
         ];
 
-        // 3. Anonymous Notes (Status: new, read, replied)
+        // 3. Anonymous Notes (Status: new, read, replied) — 10 per page.
         $anon_notes = AnonymousNote::whereIn('status', ['new', 'read', 'replied'])
             ->with(['messages' => function($q) {
                 $q->orderBy('created_at', 'asc');
             }])
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10, ['*'], 'notes_page');
+        $anon_notes->appends(['queue_page' => $request->input('queue_page', 1)]);
 
         return view('counselor.dashboard', compact(
             'pending_appointments',

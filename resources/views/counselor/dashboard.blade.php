@@ -600,6 +600,21 @@
                 </tbody>
             </table>
         </div>
+        @if($priority_queue->hasPages())
+            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                @if($priority_queue->onFirstPage())
+                    <span style="padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); color: var(--text-dim); opacity: 0.5;">← Prev</span>
+                @else
+                    <a href="{{ $priority_queue->previousPageUrl() }}" style="padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text); text-decoration: none;">← Prev</a>
+                @endif
+                <span style="font-size: 0.8rem; font-weight: 800; color: var(--text-dim);">Page {{ $priority_queue->currentPage() }} of {{ $priority_queue->lastPage() }} ({{ $priority_queue->total() }} students)</span>
+                @if($priority_queue->hasMorePages())
+                    <a href="{{ $priority_queue->nextPageUrl() }}" style="padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--primary); color: white; text-decoration: none;">Next →</a>
+                @else
+                    <span style="padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); color: var(--text-dim); opacity: 0.5;">Next →</span>
+                @endif
+            </div>
+        @endif
     </div>
 
     <!-- ── Interaction Network ── -->
@@ -615,7 +630,7 @@
                 <p style="color:var(--text-muted); font-size:1rem; font-weight:500; margin-top:0.4rem;">Notes from students and your replies.</p>
             </div>
             <div style="background:var(--primary-glow); padding:0.6rem 1.2rem; border-radius:100px; font-weight:900; font-size:0.75rem; color:var(--primary); text-transform:uppercase; letter-spacing:0.08em; border:1px solid rgba(16,185,129,0.2);">
-                {{ count($anon_notes) }} Active Chats
+                {{ $anon_notes->total() }} Active Chats
             </div>
         </header>
 
@@ -669,6 +684,21 @@
             </div>
             @endforeach
         </div>
+        @if($anon_notes->hasPages())
+            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                @if($anon_notes->onFirstPage())
+                    <span style="padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); color: var(--text-dim); opacity: 0.5;">← Prev</span>
+                @else
+                    <a href="{{ $anon_notes->previousPageUrl() }}" style="padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text); text-decoration: none;">← Prev</a>
+                @endif
+                <span style="font-size: 0.8rem; font-weight: 800; color: var(--text-dim);">Page {{ $anon_notes->currentPage() }} of {{ $anon_notes->lastPage() }} ({{ $anon_notes->total() }} messages)</span>
+                @if($anon_notes->hasMorePages())
+                    <a href="{{ $anon_notes->nextPageUrl() }}" style="padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--primary); color: white; text-decoration: none;">Next →</a>
+                @else
+                    <span style="padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); color: var(--text-dim); opacity: 0.5;">Next →</span>
+                @endif
+            </div>
+        @endif
     </div>
 </div>
 
