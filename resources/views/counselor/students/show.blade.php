@@ -44,7 +44,7 @@
             </div>
             <div>
                 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                    <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em;">Clinical Profile</div>
+                    <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em;">Student Profile</div>
                     <button id="generateAISummary" class="btn-sm" style="padding: 0.4rem 0.85rem; border-radius: 100px; background: var(--primary-glow); border: 1px solid var(--primary-light); color: var(--primary); font-weight: 800; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase;">
                         <i class="ph ph-sparkle"></i> AI Insight
                     </button>
@@ -85,6 +85,36 @@
         </div>
     </header>
 
+    <!-- Contact & Guardian -->
+    <div class="staggered" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem;">
+        <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 24px; padding: 2rem;">
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 1.25rem;">Student Contact</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.92rem; color: var(--text); font-weight: 600;">
+                <div>📧 {{ $student->email ?? 'N/A' }}</div>
+                <div>📱 {{ $student->contact_number ?? 'N/A' }}</div>
+                <div>🎂 {{ $student->date_of_birth ? $student->date_of_birth->format('M d, Y') : 'N/A' }} • {{ $student->gender ?? 'N/A' }}</div>
+                <div>🪪 ID: {{ $student->roll_number ?? 'N/A' }}</div>
+                <div>
+                    @if($student->id_proof_path)
+                        <a href="{{ asset('storage/' . $student->id_proof_path) }}" target="_blank" style="color: var(--primary); font-weight: 800; text-decoration: underline;">View PSU ID / Proof</a>
+                    @else
+                        <span style="color: var(--text-dim);">No ID proof uploaded</span>
+                    @endif
+                    <span style="margin-left: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; background: {{ ($student->verification_status ?? 'pending') === 'verified' ? '#dcfce7' : (($student->verification_status ?? 'pending') === 'rejected' ? '#fee2e2' : '#fef9c3') }}; color: {{ ($student->verification_status ?? 'pending') === 'verified' ? '#166534' : (($student->verification_status ?? 'pending') === 'rejected' ? '#991b1b' : '#854d0e') }};">{{ ucfirst($student->verification_status ?? 'pending') }}</span>
+                </div>
+            </div>
+        </div>
+        <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 24px; padding: 2rem;">
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 1.25rem;">Parent / Guardian</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.92rem; color: var(--text); font-weight: 600;">
+                <div>👤 {{ $student->guardian_name ?? 'Not provided' }} {{ $student->guardian_relationship ? '(' . $student->guardian_relationship . ')' : '' }}</div>
+                <div>📱 {{ $student->guardian_contact ?? 'Not provided' }}</div>
+                <div>📧 {{ $student->guardian_email ?? 'Not provided' }}</div>
+                <p style="font-size: 0.78rem; color: var(--text-dim); font-weight: 500; margin-top: 0.5rem;">Contact the guardian only when needed for the student's safety and support, with care and confidentiality.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- AI Summary -->
     <div id="aiSummaryBox" style="display: none; margin-bottom: 3.5rem; background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.03); position: relative;" class="staggered">
         <button onclick="document.getElementById('aiSummaryBox').style.display='none'" style="position: absolute; top: 1.5rem; right: 1.5rem; background: var(--surface-2); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-dim); cursor: pointer; transition: all 0.2s;">
@@ -95,8 +125,8 @@
                 <i class="ph ph-brain"></i>
             </div>
             <div>
-                <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--text); margin: 0;">AI Clinical Synthesis</h3>
-                <span style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">Neural Assessment Profile</span>
+                <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--text); margin: 0;">AI Wellness Summary</h3>
+                <span style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">Support Overview</span>
             </div>
         </div>
         <div id="aiSummaryContent" style="color: var(--text); line-height: 1.8; font-size: 1.05rem; font-weight: 500; white-space: pre-wrap; padding: 1.5rem; background: var(--surface-2); border-radius: 20px; border: 1px solid var(--border);">
@@ -113,13 +143,13 @@
                     <i class="ph ph-trend-up" style="color: var(--primary);"></i> Wellness Trajectory
                 </h2>
                 <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 2rem; font-weight: 500; line-height: 1.6;">
-                    This visualization tracks the student's longitudinal wellness data derived from self-assessment scores. It helps identify clinical patterns, recovery progress, or potential risks that may require immediate intervention.
+                    This shows the student's check-in history over time. It helps you see progress, tough weeks, or moments that may need a follow-up.
                 </p>
                 <div style="height: 350px; margin-bottom: 3.5rem;">
                     <canvas id="trendChart"></canvas>
                 </div>
 
-                <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--text); margin-bottom: 2rem;">Clinical Evaluation History</h3>
+                <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--text); margin-bottom: 2rem;">Check-in History</h3>
                 <div style="overflow-x: auto;">
                     <table style="width: 100%; border-collapse: separate; border-spacing: 0 0.5rem;">
                         <thead>
@@ -172,12 +202,12 @@
                 <form id="archiveNoteForm" method="POST" action="{{ route('counselor.students.note', $student->user_id ?? 0) }}" style="display: flex; flex-direction: column; gap: 2rem;">
                     @csrf
                     <div>
-                        <label style="display: block; font-weight: 800; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em;">Clinical Observations</label>
-                        <textarea name="note_text" rows="4" required style="width: 100%; padding: 1.25rem; border-radius: 16px; border: 1.5px solid var(--border); font-weight: 500; font-size: 1rem; background: var(--surface-2); color: var(--text); outline: none; transition: all 0.3s;" placeholder="Document assessment findings…" onfocus="this.style.borderColor='var(--primary)'; this.style.background='var(--surface-solid)';"></textarea>
+                        <label style="display: block; font-weight: 800; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em;">Session Notes</label>
+                        <textarea name="note_text" rows="4" required style="width: 100%; padding: 1.25rem; border-radius: 16px; border: 1.5px solid var(--border); font-weight: 500; font-size: 1rem; background: var(--surface-2); color: var(--text); outline: none; transition: all 0.3s;" placeholder="Write what you noticed in this session…" onfocus="this.style.borderColor='var(--primary)'; this.style.background='var(--surface-solid)';"></textarea>
                     </div>
                     <div>
-                        <label style="display: block; font-weight: 800; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em;">Intervention Protocol</label>
-                        <textarea name="recommendation" rows="2" style="width: 100%; padding: 1.25rem; border-radius: 16px; border: 1.5px solid var(--border); font-weight: 500; font-size: 1rem; background: var(--surface-2); color: var(--text); outline: none; transition: all 0.3s;" placeholder="Define next clinical steps…" onfocus="this.style.borderColor='var(--primary)'; this.style.background='var(--surface-solid)';"></textarea>
+                        <label style="display: block; font-weight: 800; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em;">Next Steps</label>
+                        <textarea name="recommendation" rows="2" style="width: 100%; padding: 1.25rem; border-radius: 16px; border: 1.5px solid var(--border); font-weight: 500; font-size: 1rem; background: var(--surface-2); color: var(--text); outline: none; transition: all 0.3s;" placeholder="What should the student focus on next?…" onfocus="this.style.borderColor='var(--primary)'; this.style.background='var(--surface-solid)';"></textarea>
                     </div>
                     <div>
                         <label style="display: block; font-weight: 800; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em;">Follow-up Schedule</label>
@@ -195,8 +225,8 @@
     <div id="timelineContainer" class="staggered" style="background: var(--surface-solid); border: 2px solid var(--border); padding: 3.5rem; border-radius: 40px; margin-bottom: 4rem; box-shadow: var(--shadow-lg); display: {{ count($notes) > 0 ? 'block' : 'none' }}">
         <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem;">
             <div>
-                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Clinical History Timeline</h2>
-                <p style="color: var(--text-muted); font-weight: 600; font-size: 1rem;">Complete medical-style ledger of observations and interventions.</p>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Support History</h2>
+                <p style="color: var(--text-muted); font-weight: 600; font-size: 1rem;">Notes and follow-ups for this student, newest first.</p>
             </div>
             <div id="noteCount" style="background: var(--primary-glow); border: 1px solid var(--primary-light); padding: 0.75rem 1.5rem; border-radius: 100px; font-weight: 900; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em;">
                 {{ count($notes) }} Ledger Entries
@@ -262,8 +292,8 @@
     <div class="staggered" style="background: var(--surface-solid); border: 2px solid var(--border); padding: 3.5rem; border-radius: 40px; margin-bottom: 4rem; box-shadow: var(--shadow-lg);">
         <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem;">
             <div>
-                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Aria AI Session Summaries</h2>
-                <p style="color: var(--text-muted); font-weight: 600; font-size: 1rem;">Automated clinical insights generated during student-AI chat sessions.</p>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 900; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Chat Session Summaries</h2>
+                <p style="color: var(--text-muted); font-weight: 600; font-size: 1rem;">Helpful takeaways from the student's support chats.</p>
             </div>
             <div style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); padding: 0.75rem 1.5rem; border-radius: 100px; font-weight: 900; font-size: 0.8rem; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em;">
                 {{ count($sessions) }} AI Reports
@@ -528,6 +558,32 @@ document.getElementById('archiveNoteForm').addEventListener('submit', async func
                 <div>
                     <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Semester</label>
                     <input type="text" id="edit_semester" name="semester" value="{{ $student->semester }}" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Guardian Name</label>
+                    <input type="text" id="edit_guardian_name" name="guardian_name" value="{{ $student->guardian_name }}" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Guardian Contact</label>
+                    <input type="text" id="edit_guardian_contact" name="guardian_contact" value="{{ $student->guardian_contact }}" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">Guardian Email</label>
+                    <input type="email" id="edit_guardian_email" name="guardian_email" value="{{ $student->guardian_email }}" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">ID Verification</label>
+                    <select id="edit_verification_status" name="verification_status" style="width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 0.9rem; outline: none;">
+                        <option value="pending" {{ ($student->verification_status ?? 'pending') === 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="verified" {{ ($student->verification_status ?? '') === 'verified' ? 'selected' : '' }}>Verified</option>
+                        <option value="rejected" {{ ($student->verification_status ?? '') === 'rejected' ? 'selected' : '' }}>Rejected</option>
+                    </select>
                 </div>
             </div>
 

@@ -221,9 +221,9 @@ class StudentController extends Controller
             return $this->openRouter->generateResponse(
                 [['role' => 'user', 'content' => $prompt]],
                 '',
-                350,
-                0.3,
-                15
+                800,
+                0.4,
+                20
             );
         });
 
@@ -261,11 +261,13 @@ class StudentController extends Controller
             $prompt .= "- Date: {$n->created_at} | Note: {$txt} | Rec: {$rec}\n";
         }
 
-        $prompt .= "\nINSTRUCTIONS:\nProvide a professional, concise clinical summary (max 180 words) including:\n"
-            . "1. **Current Status**: Brief overview of recent trends.\n"
-            . "2. **Key Risk Factors**: Any highlighted symptoms or patterns.\n"
-            . "3. **Clinical Recommendation**: Suggested focus areas for the next session.\n"
-            . "Format using bolding for key terms. Avoid generic advice.";
+        $prompt .= "\nINSTRUCTIONS:\nWrite a thorough, professional support summary for a fellow school counselor (350-450 words) with these sections:\n"
+            . "1. **Current Status**: 4-6 sentences on recent trends across check-ins, mood notes, and past support notes — note any improvement or added strain.\n"
+            . "2. **Patterns Across Low Mood, Worries, and Pressure**: 4-6 sentences linking the D/A/S scores to sleep, focus, energy, and school life.\n"
+            . "3. **Strengths and Protective Factors**: 3-4 sentences on coping habits, support people, and engagement (journaling, appointments, messages) worth reinforcing.\n"
+            . "4. **Areas Needing Attention**: 3-5 sentences on the heaviest signals and what to watch in the next 1-2 weeks.\n"
+            . "5. **Suggested Focus for Next Session**: 4-6 concrete sentences — opening questions, one small homework step, when to follow up, and whether to loop in the guardian for support.\n"
+            . "Use the student's name and kind, student-friendly framing where possible. Format with bolded key terms. Avoid generic advice.";
 
         return $prompt;
     }
@@ -343,6 +345,11 @@ class StudentController extends Controller
             'contact_number' => 'nullable|string|max:255',
             'gender' => 'nullable|string|max:255',
             'date_of_birth' => 'nullable|date',
+            'guardian_name' => 'nullable|string|max:255',
+            'guardian_relationship' => 'nullable|string|max:100',
+            'guardian_contact' => 'nullable|string|max:30',
+            'guardian_email' => 'nullable|email|max:255',
+            'verification_status' => 'nullable|in:pending,verified,rejected',
         ]);
 
         $student->update([
@@ -356,6 +363,11 @@ class StudentController extends Controller
             'contact_number' => $request->contact_number,
             'gender' => $request->gender,
             'date_of_birth' => $request->date_of_birth,
+            'guardian_name' => $request->guardian_name,
+            'guardian_relationship' => $request->guardian_relationship,
+            'guardian_contact' => $request->guardian_contact,
+            'guardian_email' => $request->guardian_email ? strtolower($request->guardian_email) : null,
+            'verification_status' => $request->verification_status ?? $student->verification_status,
         ]);
 
         if ($request->ajax() || $request->wantsJson()) {

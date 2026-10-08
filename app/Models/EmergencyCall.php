@@ -14,6 +14,8 @@ class EmergencyCall extends Model
         'status',
         'started_at',
         'ended_at',
+        'recording_consent',
+        'recording_consent_at',
     ];
 
     protected $casts = [
@@ -21,6 +23,8 @@ class EmergencyCall extends Model
         'counselor_id' => 'integer',
         'started_at'  => 'datetime',
         'ended_at'    => 'datetime',
+        'recording_consent' => 'boolean',
+        'recording_consent_at' => 'datetime',
     ];
 
     public function student()

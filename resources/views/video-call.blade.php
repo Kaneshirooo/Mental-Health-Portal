@@ -3,14 +3,15 @@
 @section('content')
 <div class="video-call-page" style="height: calc(100vh - 8rem); display: flex; flex-direction: column; gap: 1.5rem; max-width: 100vw; overflow-x: hidden;">
     
-    <!-- Header / Clinical Status -->
+    <!-- Header / Session Status -->
     <div class="clinical-header glass" style="padding: 1.25rem 2rem; border-radius: 24px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--glass-border);">
         <div style="display: flex; align-items: center; gap: 1rem;">
             <div id="callStatusIndicator" style="width: 12px; height: 12px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 12px rgba(245,158,11,0.4); animation: pulse-status 2s infinite;"></div>
             <div>
-                <h1 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.25rem; color: var(--text); margin: 0;">Clinical Session: #{{ $call->call_id }}</h1>
+                <h1 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.25rem; color: var(--text); margin: 0;">Support Session #{{ $call->call_id }}</h1>
                 <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.1rem;">
-                    <p id="callStatusLabel" style="font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">Initializing Session...</p>
+                    <p id="callStatusLabel" style="font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">Getting things ready...</p>
+                    <span id="recordingBadge" style="display: none; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 6px;"></span>
                     <div id="transcribingIndicator" style="display: none; align-items: center; gap: 0.35rem; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.2);">
                         <div class="line-wobble"></div>
                         <span style="font-size: 0.6rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em;">LPT Live</span>
@@ -65,7 +66,7 @@
                 <div id="remoteOverlay" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(2,6,23,0.8); z-index: 5;">
                     <div style="text-align: center;">
                         <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--primary); animation: spin 1s linear infinite; margin: 0 auto 1.5rem;"></div>
-                        <p id="overlayMessage" style="color: white; font-weight: 600; font-size: 1.1rem;">Establishing Clinical Link...</p>
+                        <p id="overlayMessage" style="color: white; font-weight: 600; font-size: 1.1rem;">Connecting you securely...</p>
                     </div>
                 </div>
             </div>
@@ -118,11 +119,25 @@
     <div id="chatMessages" style="flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;"></div>
     <div style="padding: 1.5rem; border-top: 1px solid var(--border);">
         <form id="chatForm" onsubmit="sendChatMessage(event)" style="display: flex; gap: 0.75rem;">
-            <input type="text" id="chatInput" placeholder="Type clinical note..." style="flex: 1; background: var(--surface-2); border: 1px solid var(--border); padding: 0.85rem 1.25rem; border-radius: 14px; color: var(--text);">
+            <input type="text" id="chatInput" placeholder="Type a message..." style="flex: 1; background: var(--surface-2); border: 1px solid var(--border); padding: 0.85rem 1.25rem; border-radius: 14px; color: var(--text);">
             <button type="submit" style="background: var(--primary); color: white; border: none; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
                 <i class="ph-bold ph-paper-plane-right"></i>
             </button>
         </form>
+    </div>
+</div>
+
+<!-- Recording Consent (students only, asked once before joining) -->
+<div id="consentModal" style="display: none; position: fixed; inset: 0; z-index: 10001; background: rgba(2,6,23,0.7); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;">
+    <div style="background: var(--surface-solid); border-radius: 28px; padding: 2.5rem; max-width: 480px; width: 100%; border: 1px solid var(--border); box-shadow: 0 25px 50px rgba(0,0,0,0.3); text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎥</div>
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--text); margin-bottom: 0.75rem;">Is it okay to record this conversation?</h2>
+        <p style="color: var(--text-dim); font-size: 0.92rem; line-height: 1.6; margin-bottom: 0.75rem;">Recording helps your counselor remember important details and give you better support. Only your counselor can review it, and it stays private.</p>
+        <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.6; margin-bottom: 2rem; background: var(--surface-2); border-radius: 12px; padding: 0.85rem 1rem;">If you choose <strong>No</strong>, the call will still continue — nothing will be recorded. Only short written safety notes will be kept.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <button id="consentNoBtn" onclick="answerConsent(false)" style="padding: 0.9rem; border-radius: 14px; font-weight: 800; cursor: pointer; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text);">No, continue without recording</button>
+            <button id="consentYesBtn" onclick="answerConsent(true)" style="padding: 0.9rem; border-radius: 14px; font-weight: 800; cursor: pointer; background: var(--primary); border: none; color: white;">Yes, I agree</button>
+        </div>
     </div>
 </div>
 
@@ -251,6 +266,74 @@
     const IS_COUNSELOR = (USER_TYPE === 'counselor' || USER_TYPE === 'admin');
     const IS_STUDENT = (USER_TYPE === 'student');
     const CSRF = document.querySelector('meta[name="csrf-token"]').content;
+    const SAVED_CONSENT = "{{ $call->recording_consent === null ? 'null' : ($call->recording_consent ? 'yes' : 'no') }}";
+    let recordingConsent = SAVED_CONSENT === 'yes' ? true : (SAVED_CONSENT === 'no' ? false : null);
+
+    function updateRecordingBadge() {
+        const badge = document.getElementById('recordingBadge');
+        if (!badge) return;
+        if (recordingConsent === true) {
+            badge.style.display = 'inline-block';
+            badge.textContent = '● REC';
+            badge.style.background = 'rgba(239,68,68,0.12)';
+            badge.style.color = '#ef4444';
+            badge.style.border = '1px solid rgba(239,68,68,0.35)';
+        } else if (recordingConsent === false) {
+            badge.style.display = 'inline-block';
+            badge.textContent = 'Not recorded';
+            badge.style.background = 'rgba(100,116,139,0.12)';
+            badge.style.color = 'var(--text-dim)';
+            badge.style.border = '1px solid var(--border)';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    function maybeShowConsentModal() {
+        updateRecordingBadge();
+        if (IS_STUDENT && recordingConsent === null) {
+            const modal = document.getElementById('consentModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                // Pause the waiting-room timer text until they choose
+                const sub = document.getElementById('waitingSubtext');
+                if (sub) sub.textContent = 'One quick question before we connect you — please choose below.';
+            }
+        }
+    }
+
+    async function answerConsent(agreed) {
+        const yesBtn = document.getElementById('consentYesBtn');
+        const noBtn = document.getElementById('consentNoBtn');
+        if (yesBtn) yesBtn.disabled = true;
+        if (noBtn) noBtn.disabled = true;
+        try {
+            const res = await fetch(`/video-call/${CALL_ID}/consent`, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'X-CSRF-TOKEN': CSRF, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ consent: agreed ? 1 : 0 })
+            });
+            if (res.ok) {
+                recordingConsent = !!agreed;
+            } else {
+                // Still respect the choice locally even if save fails
+                recordingConsent = !!agreed;
+            }
+        } catch (e) {
+            recordingConsent = !!agreed;
+        }
+        const modal = document.getElementById('consentModal');
+        if (modal) modal.style.display = 'none';
+        updateRecordingBadge();
+        if (recordingConsent === false && window.App) {
+            App.toast({ type: 'info', title: 'Not recording', message: 'Got it — this call will continue without recording. Only short written safety notes will be kept.' });
+        } else if (recordingConsent === true && window.App) {
+            App.toast({ type: 'success', title: 'Recording on', message: 'Thank you — this session will be recorded for your care. Only your counselor can review it.' });
+        }
+        if (yesBtn) yesBtn.disabled = false;
+        if (noBtn) noBtn.disabled = false;
+    }
     const RTC_CONFIG = {
         // Multiple STUN servers for faster, more reliable ICE candidate gathering
         iceServers: [
@@ -300,6 +383,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
+        updateRecordingBadge();
+        maybeShowConsentModal();
         if (IS_STUDENT) {
             startWaitingTimer();
         }

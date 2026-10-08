@@ -102,15 +102,15 @@ class AssessmentController extends Controller
 
             // Fast sync AI attempt (short prompt, small token cap) so results page
             // rarely shows pending. Falls back instantly to rule-based insight.
-        $prompt = "You are a kind friend writing for a student. Check-in scores — low mood {$depressionScore}/27, worries {$anxietyScore}/21, pressure {$stressScore}/21, overall feeling: {$riskLevel}. Past check-ins: {$historyJson}. Write in very simple everyday words, no clinical or doctor words. Output exactly: 1. ### A gentle next step (1 sentence) 2. ### What I see in your answers (2 sentences, kindly note if days got heavier or lighter) 3. ### Something to remember (1-2 short kind sentences).";
+        $prompt = "You are a kind friend writing for a student. Check-in scores — low mood {$depressionScore}/27, worries {$anxietyScore}/21, pressure {$stressScore}/21, overall feeling: {$riskLevel}. Past check-ins: {$historyJson}. Write in very simple everyday words, no clinical or doctor words. This must be a LONGER, more detailed insight (not short). Output exactly these 4 sections: 1. ### A gentle next step (3-4 sentences: 2 small doable steps for this week + who to talk to) 2. ### What I see in your answers (4-6 sentences: explain each area — low mood, worries, pressure — plus any shift vs past check-ins and what that may mean day-to-day for sleep, focus, and energy) 3. ### Small habits that can help (4-6 sentences: sleep, breaks, movement, journaling, reaching out — keep each tip tiny and realistic for a student) 4. ### Something to remember (3-4 warm, encouraging sentences). Be specific to their scores, not generic.";
 
             try {
                 $aiAnalysis = $ai->generateResponse(
                     [['role' => 'user', 'content' => $prompt]],
                     '',
-                    300,
-                    0.3,
-                    12
+                    800,
+                    0.4,
+                    20
                 );
                 if (empty(trim((string) $aiAnalysis)) || str_contains($aiAnalysis, "trouble connecting")) {
                     throw new \Exception('AI empty or fallback');
@@ -272,8 +272,8 @@ class AssessmentController extends Controller
 
         if (str_contains((string) $score->ai_analysis, 'pending') || str_contains((string) $score->ai_analysis, 'Processing')) {
             try {
-                $prompt = "You are a kind friend writing for a student. Check-in scores — low mood {$score->depression_score}/27, worries {$score->anxiety_score}/21, pressure {$score->stress_score}/21, overall: {$score->risk_level}. Use very simple everyday words, no clinical words. Output exactly: 1. ### A gentle next step (1 sentence) 2. ### What I see in your answers (2 sentences) 3. ### Something to remember (concise).";
-                $fresh = $ai->generateResponse([['role' => 'user', 'content' => $prompt]], '', 300, 0.3, 10);
+                $prompt = "You are a kind friend writing for a student. Check-in scores — low mood {$score->depression_score}/27, worries {$score->anxiety_score}/21, pressure {$score->stress_score}/21, overall: {$score->risk_level}. Use very simple everyday words, no clinical words. Write a LONGER detailed summary with exactly: 1. ### A gentle next step (3-4 sentences) 2. ### What I see in your answers (4-6 sentences) 3. ### Small habits that can help (4-6 sentences) 4. ### Something to remember (3-4 sentences).";
+                $fresh = $ai->generateResponse([['role' => 'user', 'content' => $prompt]], '', 800, 0.4, 15);
                 if (!empty(trim($fresh)) && !str_contains($fresh, 'trouble connecting')) {
                     $score->update(['ai_analysis' => $fresh, 'ai_summary' => 'AI analysis generated on retry.']);
                     $score->refresh();
@@ -292,11 +292,24 @@ class AssessmentController extends Controller
     private function buildLocalInsight(int $d, int $a, int $s, string $risk): string
     {
         $top = match ($risk) {
-            'Critical' => 'Things sound really heavy right now — please reach out to your counselor soon. You deserve care and you are not alone.',
-            'High' => 'It might really help to set a time to talk with your counselor this week about what has been weighing on you.',
-            default => 'Keep doing small kind things for yourself each day, and jot down your feelings so you can see your brighter days too.',
+            'Critical' => 'Things feel really heavy right now, and you deserve support right away. Please reach out to your counselor as soon as you can — you do not have to carry this alone. If tonight feels hard, tell someone you trust where you are and how you feel. Tomorrow, try booking one short talk with your counselor so you have a steady person beside you.',
+            'High' => 'Things have felt heavy lately, and it makes sense to ask for a hand. It would really help to set one talk with your counselor this week about what has been weighing on you most. Before that talk, jot down 2-3 lines about your sleep and busiest school task so you can start there. After the talk, pick just one tiny follow-up step together.',
+            default => 'Keep doing small kind things for yourself each day. Jot down a few lines about your feelings each night so you can spot your brighter days too. When a day feels heavier, choose one tiny reset — a short walk, slow breathing, or a message to someone you trust.',
         };
-        return "### A gentle next step\n{$top}\n\n### What I see in your answers\nYour recent check-in shows you've had some tougher days with mood and pressure. Small steady steps and talking to someone you trust can help days feel lighter.\n\n### Something to remember\nYou've been carrying a lot lately, and it makes sense to feel tired. Be gentle with yourself and reach out whenever you need a hand.";
+        return "### A gentle next step\n{$top}\n\n### What I see in your answers\n"
+            . "Your low-mood score is {$d} out of 27, your worries score is {$a} out of 21, and your pressure score is {$s} out of 21. "
+            . "Taken together, they suggest your days have asked a lot from you lately. Low days can make mornings feel slow and tasks feel bigger than usual. "
+            . "Worries can make your thoughts race at night, which often shows up as lighter sleep and a tired mind the next day. "
+            . "Pressure from school or home can drain your focus, so even small deadlines may feel heavy. If any of these have grown week by week, that pattern matters — it means your mind and body are asking for more rest and more support, not less.\n\n"
+            . "### Small habits that can help\n"
+            . "Try keeping a steady sleep window and putting your phone away 30 minutes before bed so your mind can slow down. "
+            . "Study in short 25 to 45 minute blocks with a real break in between — stand, stretch, drink water, breathe. "
+            . "Move your body a little each day, even a 10 minute walk, since gentle movement often lifts mood and sleep. "
+            . "Write 3 to 5 lines in your mood notes each evening: what felt heaviest, what felt lightest, and one thing you need tomorrow. "
+            . "And when the load feels big, borrow strength — message a trusted friend, family member, or your counselor instead of carrying it quietly.\n\n"
+            . "### Something to remember\n"
+            . "You have been carrying a lot lately, and feeling tired makes complete sense. One heavy check-in does not define you — it simply shows you had heavier days. "
+            . "Be as gentle with yourself as you would be with a close friend. Small steady steps count, and reaching out is a strong and brave choice. We are here with you, one day at a time.";
     }
 
     private function getWellnessLabel(int $val): array

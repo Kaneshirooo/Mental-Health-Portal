@@ -322,8 +322,16 @@
                                         <span class="appt-status status-{{ $a->status }}">{{ $a->status }}</span>
                                     </div>
                                 </div>
-                                <div style="font-size:0.8rem; color:var(--primary); font-weight:700;">
-                                    {{ $a->scheduled_at->format('M d, Y • g:i A') }}
+                                <div style="display:flex; flex-direction:column; gap:0.2rem; margin-top:0.25rem;">
+                                    <div style="font-size:0.8rem; color:var(--primary); font-weight:700;">
+                                        📅 Date: {{ $a->scheduled_at->format('M d, Y') }}
+                                    </div>
+                                    <div style="font-size:0.8rem; color:var(--primary); font-weight:700;">
+                                        ⏰ Time: {{ $a->scheduled_at->format('g:i A') }}{{ $a->duration_min ? ' (' . $a->duration_min . ' min)' : '' }}
+                                    </div>
+                                    <div style="font-size:0.72rem; color:var(--text-dim); font-weight:600;">
+                                        Requested on {{ $a->created_at ? $a->created_at->format('M d, Y • g:i A') : 'N/A' }}
+                                    </div>
                                 </div>
                                 @if ($a->reason)
                                     <div style="font-size:0.78rem; color:var(--text-dim); margin-top:0.4rem; font-style:italic; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">

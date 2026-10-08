@@ -173,10 +173,18 @@
 
                         <div
                             style="background: var(--surface-2); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 1.5rem;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem;">
                                 <span style="font-size: 1.1rem;">🗓️</span>
                                 <div style="font-weight: 700; font-size: 0.95rem; color: var(--primary);">
-                                    {{ $a->scheduled_at->format('M d, Y @ g:i A') }}</div>
+                                    Date: {{ $a->scheduled_at->format('M d, Y') }}</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem;">
+                                <span style="font-size: 1.1rem;">⏰</span>
+                                <div style="font-weight: 700; font-size: 0.95rem; color: var(--primary);">
+                                    Time: {{ $a->scheduled_at->format('g:i A') }}{{ $a->duration_min ? ' (' . $a->duration_min . ' min)' : '' }}</div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">
+                                Requested on {{ $a->created_at ? $a->created_at->format('M d, Y • g:i A') : 'N/A' }}
                             </div>
                             @if ($a->reason)
                                 <p
@@ -251,9 +259,11 @@
                             </td>
                             <td style="padding: 1.25rem 1.5rem;">
                                 <div style="font-weight: 600; color: var(--text); font-size: 0.9rem;">
-                                    {{ $a->scheduled_at->format('M d, Y') }}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-dim); font-weight: 500;">
-                                    {{ $a->scheduled_at->format('g:i A') }}</div>
+                                    Date: {{ $a->scheduled_at->format('M d, Y') }}</div>
+                                <div style="font-size: 0.85rem; color: var(--text); font-weight: 700;">
+                                    Time: {{ $a->scheduled_at->format('g:i A') }}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-dim); font-weight: 500; margin-top: 0.25rem;">
+                                    Requested: {{ $a->created_at ? $a->created_at->format('M d, Y • g:i A') : 'N/A' }}</div>
                             </td>
                             <td style="padding: 1.25rem 1.5rem;">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">

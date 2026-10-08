@@ -40,13 +40,13 @@ class VideoCallController extends Controller
         
         // Security: Ensure user is part of the call (allows counselors to view/join pending calls)
         if (!$this->isCallParticipant($call, (int) $user->user_id)) {
-            abort(403, 'Unauthorized access to clinical session.');
+            abort(403, 'You do not have access to this support session.');
         }
 
         // Security: Ensure call is active or pending (if counselor hasn't joined yet)
         if (in_array($call->status, ['ended', 'declined', 'missed'], true)) {
             $isStudent = strtolower((string) ($user->user_type->value ?? $user->user_type)) === 'student';
-            $msg = $call->status === 'missed' ? 'This emergency call went unanswered as no counselor was available.' : 'The clinical session has already ended.';
+            $msg = $call->status === 'missed' ? 'This call went unanswered as no counselor was available.' : 'This support session has already ended.';
             return redirect()->route($isStudent ? 'student.dashboard' : 'counselor.dashboard')
                 ->with('error', $msg);
         }
@@ -152,6 +152,33 @@ class VideoCallController extends Controller
     }
 
     /**
+     * Save the student's recording consent choice for this call.
+     * Yes = session may be recorded/kept. No = session continues WITHOUT
+     * recording; only written safety notes are kept.
+     */
+    public function saveConsent(Request $request, EmergencyCall $call)
+    {
+        $user = Auth::user();
+        if ((int) $user->user_id !== (int) $call->student_id) {
+            return response()->json(['error' => 'Only the student can give recording consent.'], 403);
+        }
+
+        $request->validate([
+            'consent' => 'required|boolean',
+        ]);
+
+        $call->update([
+            'recording_consent' => (bool) $request->boolean('consent'),
+            'recording_consent_at' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'consent' => (bool) $call->recording_consent,
+        ]);
+    }
+
+    /**
      * Terminate the current clinical session for either participant.
      */
     public function terminate(EmergencyCall $call)
@@ -173,7 +200,7 @@ class VideoCallController extends Controller
                 'callId' => $call->call_id,
                 'userId' => $user->user_id,
             ]);
-            return response()->json(['error' => 'Unauthorized access to clinical session.'], 403);
+            return response()->json(['error' => 'You do not have access to this support session.'], 403);
         }
 
         if (!in_array($call->status, ['ended', 'declined'], true)) {

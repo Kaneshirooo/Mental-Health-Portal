@@ -378,7 +378,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('register') }}" method="POST" id="registrationForm">
+            <form action="{{ route('register') }}" method="POST" id="registrationForm" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="section-label staggered">Personal Identity</div>
@@ -447,6 +447,43 @@
                         <option value="COA" {{ old('department') === 'COA' ? 'selected' : '' }}>COA</option>
                         <option value="CTE" {{ old('department') === 'CTE' ? 'selected' : '' }}>CTE</option>
                     </select>
+                </div>
+
+                <div class="section-label staggered">PSU Verification</div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Upload a clear photo of your school ID, registration form, or any proof that you study at PSU. Our team will verify it.</p>
+                <div class="input-group staggered" style="margin-bottom: 1.5rem;">
+                    <label for="id_proof">School ID / Proof of Enrollment *</label>
+                    <input type="file" id="id_proof" name="id_proof" accept=".jpg,.jpeg,.png,.pdf" required>
+                </div>
+
+                <div class="section-label staggered">Parent / Guardian Information</div>
+                <div class="input-row">
+                    <div class="input-group staggered">
+                        <label for="guardian_name">Guardian Full Name *</label>
+                        <input type="text" id="guardian_name" name="guardian_name" value="{{ old('guardian_name') }}" required placeholder="e.g. Maria Dela Cruz">
+                    </div>
+                    <div class="input-group staggered">
+                        <label for="guardian_relationship">Relationship *</label>
+                        <select id="guardian_relationship" name="guardian_relationship" required>
+                            <option value="">Select</option>
+                            <option value="Mother" {{ old('guardian_relationship') === 'Mother' ? 'selected' : '' }}>Mother</option>
+                            <option value="Father" {{ old('guardian_relationship') === 'Father' ? 'selected' : '' }}>Father</option>
+                            <option value="Guardian" {{ old('guardian_relationship') === 'Guardian' ? 'selected' : '' }}>Guardian</option>
+                            <option value="Sibling" {{ old('guardian_relationship') === 'Sibling' ? 'selected' : '' }}>Sibling</option>
+                            <option value="Spouse" {{ old('guardian_relationship') === 'Spouse' ? 'selected' : '' }}>Spouse</option>
+                            <option value="Other" {{ old('guardian_relationship') === 'Other' ? 'selected' : '' }}>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group staggered">
+                        <label for="guardian_contact">Guardian Contact Number *</label>
+                        <input type="tel" id="guardian_contact" name="guardian_contact" value="{{ old('guardian_contact') }}" required placeholder="09XXXXXXXXX">
+                    </div>
+                    <div class="input-group staggered">
+                        <label for="guardian_email">Guardian Email (Optional)</label>
+                        <input type="email" id="guardian_email" name="guardian_email" value="{{ old('guardian_email') }}" placeholder="guardian@email.com">
+                    </div>
                 </div>
 
                 <div class="section-label staggered">Security Protocol</div>

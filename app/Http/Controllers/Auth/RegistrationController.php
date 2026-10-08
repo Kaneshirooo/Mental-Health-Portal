@@ -43,16 +43,29 @@ class RegistrationController extends Controller
             'department' => 'nullable|string|max:255',
             'course' => 'nullable|string|max:255',
             'semester' => 'nullable|string|max:100',
+            'id_proof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'guardian_name' => 'required|string|max:255',
+            'guardian_relationship' => 'required|string|max:100',
+            'guardian_contact' => 'required|string|max:30',
+            'guardian_email' => 'nullable|email|max:255',
         ], [
             'student_id.unique' => 'This Student ID / Faculty ID is already registered.',
             'email.unique' => 'This Email Address is already registered. Please sign in instead.',
             'password.min' => 'Password must be at least 6 characters long.',
             'password.confirmed' => 'Password confirmation does not match.',
+            'id_proof.required' => 'Please upload a photo of your school ID or proof of enrollment at PSU.',
+            'guardian_name.required' => 'Please provide the name of your parent or guardian.',
+            'guardian_contact.required' => 'Please provide a contact number for your parent or guardian.',
         ]);
 
 
         try {
             DB::beginTransaction();
+
+            $idProofPath = null;
+            if ($request->hasFile('id_proof')) {
+                $idProofPath = $request->file('id_proof')->store('id_proofs', 'public');
+            }
 
             $user = User::create([
                 'full_name' => trim($request->full_name),
@@ -66,11 +79,17 @@ class RegistrationController extends Controller
                 'department' => $request->department ? $request->department : null,
                 'course' => $request->course ? $request->course : null,
                 'semester' => $request->semester ? $request->semester : null,
+                'id_proof_path' => $idProofPath,
+                'verification_status' => 'pending',
+                'guardian_name' => trim($request->guardian_name),
+                'guardian_relationship' => trim($request->guardian_relationship),
+                'guardian_contact' => trim($request->guardian_contact),
+                'guardian_email' => $request->guardian_email ? strtolower(trim($request->guardian_email)) : null,
             ]);
 
             DB::commit();
 
-            return redirect()->route('login')->with('success', 'Your account has been successfully created! Please log in with your credentials.');
+            return redirect()->route('login')->with('success', 'Your account has been created! Our team will verify your PSU ID shortly. Please log in with your credentials.');
 
         } catch (\Exception $e) {
             DB::rollBack();

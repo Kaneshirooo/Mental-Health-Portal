@@ -160,16 +160,18 @@
 
     <div class="header">
         <h1>PSU Mental Health Portal</h1>
-        <p>Clinical Case Documentation & Longitudinal Trajectory</p>
+        <p>Student Support Summary & Wellness History</p>
     </div>
 
     <div class="section">
-        <div class="section-title">Patient Identification</div>
+        <div class="section-title">Student Information</div>
         <div class="info-grid">
             <div class="info-item"><span class="info-label">Full Name:</span> {{ $student->full_name }}</div>
             <div class="info-item"><span class="info-label">Roll Number:</span> {{ $student->roll_number }}</div>
             <div class="info-item"><span class="info-label">Department:</span> {{ $student->department ?? 'N/A' }}</div>
             <div class="info-item"><span class="info-label">File Generated:</span> {{ now()->format('M d, Y H:i') }}</div>
+            <div class="info-item"><span class="info-label">Guardian:</span> {{ $student->guardian_name ?? 'N/A' }}{{ $student->guardian_relationship ? ' (' . $student->guardian_relationship . ')' : '' }}</div>
+            <div class="info-item"><span class="info-label">Guardian Contact:</span> {{ $student->guardian_contact ?? 'N/A' }}{{ $student->guardian_email ? ' • ' . $student->guardian_email : '' }}</div>
         </div>
     </div>
 

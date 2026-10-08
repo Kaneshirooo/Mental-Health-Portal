@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/video-call/{call}/terminate', [\App\Http\Controllers\VideoCallController::class, 'terminate'])->name('video.call.terminate');
     Route::post('/video-call/{call}/message', [\App\Http\Controllers\VideoCallController::class, 'sendMessage'])->name('video.call.message');
     Route::get('/video-call/{call}/messages', [\App\Http\Controllers\VideoCallController::class, 'getMessages'])->name('video.call.messages');
+    Route::post('/video-call/{call}/consent', [\App\Http\Controllers\VideoCallController::class, 'saveConsent'])->name('video.call.consent');
 
     // Student Routes
     Route::prefix('student')->name('student.')->middleware('role:student')->group(function () {

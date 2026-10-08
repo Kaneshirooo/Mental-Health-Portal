@@ -36,6 +36,12 @@ class User extends Authenticatable
         'semester',
         'is_emergency_available',
         'profile_picture',
+        'id_proof_path',
+        'verification_status',
+        'guardian_name',
+        'guardian_relationship',
+        'guardian_contact',
+        'guardian_email',
     ];
 
     /**

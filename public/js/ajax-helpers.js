@@ -250,7 +250,9 @@ window.AjaxHelpers = {
                     <div style="font-weight:800;color:var(--text);font-size:0.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.counselor_name || 'Counselor'}</div>
                     <span class="appt-status status-${status}">${status}</span>
                 </div>
-                <div style="font-size:0.8rem;color:var(--primary);font-weight:700;">${a.scheduled_at_formatted || a.scheduled_at}</div>
+                <div style="font-size:0.8rem;color:var(--primary);font-weight:700;">📅 Date: ${a.scheduled_date || a.scheduled_at_formatted || a.scheduled_at}</div>
+                ${a.scheduled_time ? `<div style="font-size:0.8rem;color:var(--primary);font-weight:700;">⏰ Time: ${a.scheduled_time}</div>` : ''}
+                ${a.requested_at ? `<div style="font-size:0.72rem;color:var(--text-dim);font-weight:600;">Requested on ${a.requested_at}</div>` : ''}
                 ${reasonHtml}
                 ${cancelBtn}
             </div>`;

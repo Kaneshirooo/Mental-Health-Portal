@@ -1036,12 +1036,12 @@
         @endif
     </div>
 
-    <!-- Clinical Intelligence Log (Table) -->
+    <!-- Student Wellness Records (Table) -->
     <div id="intelligenceFeed" class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
             <div>
                 <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text); margin: 0; display: flex; align-items: center; gap: 0.6rem;">
-                    <i class="ph-bold ph-list-bullets" style="color: var(--primary);"></i> Clinical Intelligence Log
+                    <i class="ph-bold ph-list-bullets" style="color: var(--primary);"></i> Student Wellness Records
                 </h2>
                 <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.2rem; font-weight: 500;">Recent student evaluation records and risk classifications.</p>
             </div>
@@ -1113,7 +1113,7 @@
                     <td style="padding: 1.1rem 1.5rem; text-align: right; border-top-right-radius: 16px; border-bottom-right-radius: 16px;">
                         @if($r->user_id)
                             <a href="{{ route('counselor.students.show', $r->user_id) }}" class="btn-action-small" style="font-size: 0.72rem; padding: 0.45rem 0.9rem; border-radius: 10px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;">
-                                <i class="ph ph-user-focus"></i> View Profile
+                                <i class="ph ph-user-focus"></i> View
                             </a>
                         @else
                             <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">N/A</span>
@@ -1755,7 +1755,7 @@ function renderKpiDrawerRows(filterFn, avatarBg, accent) {
                 <div style="font-size: 1.1rem; font-weight: 900; color: ${accent}; font-family: 'Outfit', sans-serif;">${score}%</div>
                 <span style="font-size: 0.6rem; font-weight: 900; padding: 0.2rem 0.6rem; border-radius: 100px; background: ${riskColor}18; color: ${riskColor}; border: 1px solid ${riskColor}40; text-transform: uppercase; letter-spacing: 0.06em;">${risk}</span>
             </div>
-            ${userId ? `<a href="/counselor/students/${userId}" style="width: 36px; height: 36px; border-radius: 10px; background: var(--surface-solid); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; flex-shrink: 0; transition: all 0.2s ease;" title="View Profile" onmouseover="this.style.borderColor='${accent}'; this.style.color='${accent}'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-muted)'"><i class="ph ph-arrow-square-out" style="font-size: 1rem;"></i></a>` : ''}
+            ${userId ? `<a href="/counselor/students/${userId}" style="width: 36px; height: 36px; border-radius: 10px; background: var(--surface-solid); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; flex-shrink: 0; transition: all 0.2s ease;" title="View" onmouseover="this.style.borderColor='${accent}'; this.style.color='${accent}'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-muted)'"><i class="ph ph-arrow-square-out" style="font-size: 1rem;"></i></a>` : ''}
         `;
         body.appendChild(row);
     });

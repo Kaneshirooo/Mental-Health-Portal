@@ -253,12 +253,12 @@
 
     </div>
 
-    <!-- Patient Voice Feed Integration -->
+    <!-- Student Voice Feed -->
     <div class="staggered" style="margin-top: 4rem;">
         <header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
-                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 900; color: var(--text); margin: 0; letter-spacing: -0.04em;">Patient Voice Feed</h2>
-                <p style="color: var(--text-muted); font-size: 1rem; font-weight: 500; margin-top: 0.35rem;">Direct student check-ins and clinical inquiries.</p>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 900; color: var(--text); margin: 0; letter-spacing: -0.04em;">Student Voice</h2>
+                <p style="color: var(--text-muted); font-size: 1rem; font-weight: 500; margin-top: 0.35rem;">Direct student check-ins and support messages.</p>
             </div>
             <div style="background: var(--surface-2); padding: 0.5rem 1rem; border-radius: 100px; font-weight: 800; font-size: 0.75rem; color: var(--primary);">
                 {{ count($anon_notes) }} ACTIVE DIALOGS
