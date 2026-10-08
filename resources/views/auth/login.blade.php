@@ -418,7 +418,9 @@
             </form>
 
             <div class="signup-prompt staggered">
-                Need an account? <a href="{{ route('register') }}" class="signup-link">Register an account</a>
+                Need an account? <a href="{{ route('register') }}" class="signup-link">Register as a student</a>
+                <span style="opacity: 0.5; margin: 0 0.4rem;">•</span>
+                <a href="{{ route('register.counselor') }}" class="signup-link">Register as a counselor</a>
             </div>
 
             <div class="or-divider staggered">Or Sign In With</div>

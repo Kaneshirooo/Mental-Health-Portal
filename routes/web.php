@@ -22,6 +22,8 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::get('/register', [\App\Http\Controllers\Auth\RegistrationController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [\App\Http\Controllers\Auth\RegistrationController::class, 'register']);
+Route::get('/register/counselor', [\App\Http\Controllers\Auth\RegistrationController::class, 'showCounselorForm'])->name('register.counselor');
+Route::post('/register/counselor', [\App\Http\Controllers\Auth\RegistrationController::class, 'registerCounselor']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // OTP Verification
