@@ -316,6 +316,23 @@
     </div>
 </div>
 
+<!-- Student Offline Notice -->
+<div id="offlineModal" style="display: none; position: fixed; inset: 0; z-index: 10001; background: rgba(2,6,23,0.7); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;" onclick="if(event.target===this)document.getElementById('offlineModal').style.display='none'">
+    <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.5rem; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(100,116,139,0.12); color: #64748b; display: flex; align-items: center; justify-content: center; font-size: 2.25rem; margin: 0 auto 1.25rem;">
+            <i class="ph-bold ph-user-minus"></i>
+        </div>
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: #b91c1c; margin: 0 0 0.5rem;">Student Is Not Online</h3>
+        <p style="color: var(--text); font-weight: 700; margin: 0 0 0.75rem;" id="offlineModalName">This student</p>
+        <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; margin: 0 0 0.5rem;">They haven't opened the portal recently, so the call can't connect right now — just like students see "No Counselor Currently Online" when no counselor is around.</p>
+        <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; margin: 0 0 2rem;">We've already notified them by email and in-app alert. Meanwhile you can send them a Quick Note or set an appointment.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <button onclick="document.getElementById('offlineModal').style.display='none'" style="padding: 0.9rem; border-radius: 14px; font-weight: 800; cursor: pointer; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text);">Close</button>
+            <a href="{{ route('counselor.notes.index') }}" style="padding: 0.9rem; border-radius: 14px; font-weight: 800; background: var(--primary); color: white; text-decoration: none; display: flex; align-items: center; justify-content: center;">Send a Quick Note</a>
+        </div>
+    </div>
+</div>
+
 <script>
 let pendingCall = { studentId: null, studentName: '', risk: '' };
 
@@ -354,6 +371,12 @@ async function confirmCallStudent() {
         const data = await res.json();
         if (data.success && data.redirect) {
             window.location.href = data.redirect;
+        } else if (data.offline) {
+            closeCallModal();
+            document.getElementById('offlineModalName').textContent = pendingCall.studentName || 'This student';
+            document.getElementById('offlineModal').style.display = 'flex';
+            btn.disabled = false;
+            btn.innerHTML = original;
         } else {
             App.toast({ type: 'error', title: 'Cannot Call', message: data.error || 'Could not start the call.' });
             btn.disabled = false;

@@ -97,6 +97,31 @@ class EmergencyCallController extends Controller
 
         $counselor = Auth::user();
 
+        // Same courtesy students get when no counselor is online:
+        // don't open a dead call — tell the counselor plainly instead.
+        if (!$student->isOnline()) {
+            Notification::create([
+                'user_id' => $student->user_id,
+                'title' => '📞 Your Counselor Tried to Reach You',
+                'message' => "{$counselor->full_name} tried to start a video call with you while you were away. Please log in soon — they want to check how you're doing.",
+                'type' => 'emergency',
+            ]);
+
+            \App\Services\CounselorMailer::send(
+                [$student],
+                'Your counselor tried to reach you',
+                "{$counselor->full_name} tried to start a video call with you while you were offline. Please log in to the portal soon — they want to check how you're doing.",
+                route('student.dashboard'),
+                'Open Portal'
+            );
+
+            return response()->json([
+                'success' => false,
+                'offline' => true,
+                'error' => "{$student->full_name} is not online right now.",
+            ]);
+        }
+
         // Reuse an existing live call between this pair if there is one.
         $existing = EmergencyCall::where('student_id', $student->user_id)
             ->where('counselor_id', $counselor->user_id)
