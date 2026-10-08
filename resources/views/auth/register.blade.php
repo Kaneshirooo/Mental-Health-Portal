@@ -450,10 +450,14 @@
                 </div>
 
                 <div class="section-label staggered">PSU Verification</div>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Upload a clear photo of your school ID, registration form, or any proof that you study at PSU. Our team will verify it.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.6;">To confirm you study at PSU, please upload a clear photo of your <strong>school ID, registration form, or certificate of enrollment</strong>. Our guidance team will verify it after you register.</p>
                 <div class="input-group staggered" style="margin-bottom: 1.5rem;">
                     <label for="id_proof">School ID / Proof of Enrollment *</label>
-                    <input type="file" id="id_proof" name="id_proof" accept=".jpg,.jpeg,.png,.pdf" required>
+                    <label for="id_proof" id="idProofBox" style="display: flex; align-items: center; gap: 1rem; width: 100%; padding: 1.1rem 1.25rem; border-radius: 14px; border: 2px dashed var(--primary-light); background: var(--primary-glow); cursor: pointer; transition: var(--transition-fast);">
+                        <span style="flex-shrink: 0; background: var(--primary); color: white; font-weight: 800; font-size: 0.8rem; padding: 0.6rem 1.1rem; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.05em;">📤 Choose file</span>
+                        <span id="idProofName" style="font-size: 0.88rem; color: var(--text-dim); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">No file chosen — JPG, PNG, or PDF (max 5MB)</span>
+                    </label>
+                    <input type="file" id="id_proof" name="id_proof" accept=".jpg,.jpeg,.png,.pdf" required style="display: none;">
                 </div>
 
                 <div class="section-label staggered">Parent / Guardian Information</div>
@@ -561,6 +565,17 @@
                 regBtn.style.alignItems = 'center';
                 regBtn.style.justifyContent = 'center';
                 regBtn.style.gap = '1rem';
+            });
+        }
+
+        // ID proof filename display
+        const idProofInput = document.getElementById('id_proof');
+        const idProofName = document.getElementById('idProofName');
+        if (idProofInput && idProofName) {
+            idProofInput.addEventListener('change', () => {
+                const file = idProofInput.files && idProofInput.files[0];
+                idProofName.textContent = file ? ('✅ ' + file.name) : 'No file chosen — JPG, PNG, or PDF (max 5MB)';
+                idProofName.style.color = file ? 'var(--primary)' : '';
             });
         }
 
