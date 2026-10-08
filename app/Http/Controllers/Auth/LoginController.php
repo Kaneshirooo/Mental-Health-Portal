@@ -147,33 +147,17 @@ class LoginController extends Controller
         $googleEmail = strtolower(trim($googleUser->getEmail()));
 
         $user = User::where('email', $googleEmail)->first();
-        $isNewUser = false;
 
         if (!$user) {
-            $isNewUser = true;
-
-            // Generate a strong, human-readable temporary password
-            $tempPassword = ucfirst(Str::lower(Str::random(5)))
-                . rand(100, 999)
-                . Str::upper(Str::random(2))
-                . '!';
-
-            // Auto-registration for Google users
-            $user = User::create([
-                'full_name'          => $googleUser->getName() ?? 'Google User',
-                'email'              => $googleEmail,
-                'password'           => Hash::make($tempPassword),
-                'user_type'          => 'student',
-                'roll_number'        => 'G-' . substr(md5($googleEmail . time()), 0, 8),
-                'email_verified_at'  => now(),
-            ]);
-
-            // Send credentials email so the user can also log in via email+password
-            try {
-                $this->sendCredentialsEmail($googleEmail, $tempPassword);
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Credentials mail error: ' . $e->getMessage());
-            }
+            // No account yet — do NOT auto-register. Required fields (PSU ID
+            // proof, guardian info, staff ID) can only be collected by the
+            // registration forms, so send them there first.
+            return redirect()->route('register')
+                ->withInput([
+                    'full_name' => $googleUser->getName(),
+                    'email' => $googleEmail,
+                ])
+                ->withErrors(['email' => 'No account found for this Google email. Please register first — students and counselors must complete the registration form (including ID verification) before signing in with Google.']);
         }
 
         // Google already verified the user's identity — log in directly (no OTP needed)
