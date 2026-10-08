@@ -234,16 +234,20 @@
     .btn-google:hover { background: var(--surface-2); border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--shadow); }
 
     .signup-prompt { text-align: center; margin-top: 1.75rem; margin-bottom: 0.5rem; font-size: 1rem; color: var(--text-muted); }
-    .signup-link {
-        color: var(--primary);
-        font-weight: 800;
-        text-decoration: none;
-        position: relative;
-        padding-bottom: 2px;
-        border-bottom: 2px solid var(--primary);
+    .role-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.85rem; }
+    .role-card {
+        display: flex; align-items: center; gap: 0.75rem; text-decoration: none;
+        background: var(--surface-2); border: 2px solid var(--border);
+        border-radius: 16px; padding: 0.9rem 1rem; transition: var(--transition-fast);
     }
-    .signup-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--primary); transition: width 0.3s; }
-    .signup-link:hover::after { width: 100%; }
+    .role-card:hover { border-color: var(--primary); background: var(--primary-glow); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .role-icon {
+        width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+    }
+    .role-card b { display: block; color: var(--text); font-size: 0.92rem; }
+    .role-card small { display: block; color: var(--text-dim); font-size: 0.72rem; font-weight: 600; }
+    @media (max-width: 480px) { .role-pick { grid-template-columns: 1fr; } }
 
     .error-alert {
         background: rgba(239, 68, 68, 0.1); border: 2px solid rgba(239, 68, 68, 0.2); color: #ef4444;
@@ -418,9 +422,17 @@
             </form>
 
             <div class="signup-prompt staggered">
-                Need an account? <a href="{{ route('register') }}" class="signup-link">Register as a student</a>
-                <span style="opacity: 0.5; margin: 0 0.4rem;">•</span>
-                <a href="{{ route('register.counselor') }}" class="signup-link">Register as a counselor</a>
+                <div style="font-weight: 700;">New here? Choose how to join 👇</div>
+                <div class="role-pick">
+                    <a href="{{ route('register') }}" class="role-card">
+                        <span class="role-icon" style="background: rgba(16,185,129,0.12);">🎒</span>
+                        <span><b>I'm a Student</b><small>Check-ins, chats & support</small></span>
+                    </a>
+                    <a href="{{ route('register.counselor') }}" class="role-card">
+                        <span class="role-icon" style="background: rgba(99,102,241,0.12);">💼</span>
+                        <span><b>I'm a Counselor</b><small>Guide & support students</small></span>
+                    </a>
+                </div>
             </div>
 
             <div class="or-divider staggered">Or Sign In With</div>
