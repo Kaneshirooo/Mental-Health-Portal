@@ -236,7 +236,13 @@
                             <td style="padding: 1.5rem 2rem; color: var(--text-dim); font-size: 0.95rem; font-weight: 750; font-family: 'Outfit', sans-serif;">
                                 {{ $student->latestAssessment?->assessment_date?->format('M d, Y') ?? 'N/A' }}
                             </td>
-                            <td style="padding: 1.5rem 2rem; text-align: right;">
+                            <td style="padding: 1.5rem 2rem; text-align: right; white-space: nowrap;">
+                                @php $rowRisk = $student->latestAssessment?->risk_level ?? ''; @endphp
+                                @if(in_array($rowRisk, ['High', 'Critical'], true))
+                                    <button onclick="callStudent({{ $student->user_id }}, '{{ e($student->full_name) }}', this)" title="Start a video call with this student now" style="background: #ef4444; color: white; border: none; padding: 0.55rem 1rem; border-radius: 10px; font-weight: 800; font-size: 0.72rem; text-transform: uppercase; cursor: pointer; margin-right: 0.5rem;">
+                                        📞 Call
+                                    </button>
+                                @endif
                                 <a href="{{ route('counselor.students.show', $student->user_id) }}" style="color: var(--primary); font-weight: 900; font-size: 0.75rem; text-transform: uppercase; text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.3s ease;" onmouseover="this.style.borderBottomColor='var(--primary)'" onmouseout="this.style.borderBottomColor='transparent'">View</a>
                             </td>
                         </tr>
@@ -289,6 +295,34 @@
 </div>
 
 <script>
+async function callStudent(studentId, studentName, btn) {
+    if (!confirm('Start a video call with ' + studentName + ' now? They will be notified to join.')) return;
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Calling…';
+    try {
+        const res = await fetch("{{ url('/counselor/emergency-calls/call-student') }}/" + studentId, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            }
+        });
+        const data = await res.json();
+        if (data.success && data.redirect) {
+            window.location.href = data.redirect;
+        } else {
+            App.toast({ type: 'error', title: 'Cannot Call', message: data.error || 'Could not start the call.' });
+            btn.disabled = false;
+            btn.innerHTML = original;
+        }
+    } catch (e) {
+        App.toast({ type: 'error', title: 'Network Error', message: 'Could not reach the server.' });
+        btn.disabled = false;
+        btn.innerHTML = original;
+    }
+}
 document.addEventListener('DOMContentLoaded', () => {
     if (window.gsap) {
         gsap.from('.staggered', { y: 60, opacity: 0, duration: 1.4, stagger: 0.2, ease: "expo.out", clearProps: "all" });

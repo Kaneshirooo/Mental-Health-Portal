@@ -150,6 +150,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/emergency-calls/logs', [CounselorEmergencyCall::class, 'logs'])->name('emergency.calls.logs');
         Route::get('/emergency-calls/pending', [CounselorEmergencyCall::class, 'pending'])->name('emergency.calls.pending');
         Route::post('/emergency-calls/{call}/accept', [CounselorEmergencyCall::class, 'accept'])->name('emergency.calls.accept');
+        Route::post('/emergency-calls/call-student/{student}', [CounselorEmergencyCall::class, 'callStudent'])->name('emergency.calls.initiate');
         Route::post('/emergency-calls/{call}/decline', [CounselorEmergencyCall::class, 'decline'])->name('emergency.calls.decline');
         Route::post('/emergency-calls/{call}/end', [CounselorEmergencyCall::class, 'end'])->name('emergency.calls.end');
         Route::get('/emergency-calls/{call}/status', [CounselorEmergencyCall::class, 'status'])->name('emergency.calls.status');

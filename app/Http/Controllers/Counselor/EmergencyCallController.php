@@ -81,6 +81,69 @@ class EmergencyCallController extends Controller
     }
 
     /**
+     * Counselor starts a call to a student who needs urgent support.
+     * Only allowed when the student's latest check-in is High or Critical.
+     */
+    public function callStudent(Request $request, User $student)
+    {
+        if (!$student->isStudent()) {
+            return response()->json(['error' => 'Only student accounts can be called.'], 403);
+        }
+
+        $risk = $student->latestAssessment?->risk_level;
+        if (!in_array($risk, ['High', 'Critical'], true)) {
+            return response()->json(['error' => 'Calls can only be started for students whose latest check-in is High or Critical.'], 403);
+        }
+
+        $counselor = Auth::user();
+
+        // Reuse an existing live call between this pair if there is one.
+        $existing = EmergencyCall::where('student_id', $student->user_id)
+            ->where('counselor_id', $counselor->user_id)
+            ->whereIn('status', ['pending', 'active'])
+            ->latest('call_id')
+            ->first();
+
+        if ($existing) {
+            $call = $existing;
+        } else {
+            // Close any stale live calls for this student first.
+            EmergencyCall::where('student_id', $student->user_id)
+                ->whereIn('status', ['pending', 'active'])
+                ->update(['status' => 'ended', 'ended_at' => now()]);
+
+            $call = EmergencyCall::create([
+                'student_id' => $student->user_id,
+                'counselor_id' => $counselor->user_id,
+                'status' => 'active',
+                'started_at' => now(),
+            ]);
+        }
+
+        Notification::create([
+            'user_id' => $student->user_id,
+            'title' => '📞 Your Counselor Is Calling You',
+            'message' => "{$counselor->full_name} is starting a support video call with you now. Please join.",
+            'type' => 'emergency',
+        ]);
+
+        \App\Services\CounselorMailer::send(
+            [$student],
+            'Your counselor is calling you now',
+            "{$counselor->full_name} is starting a support video call with you now because your recent check-in shows you may need extra support. Please log in and join the call.",
+            route('student.video.call', $call->call_id),
+            'Join the Call'
+        );
+
+        $url = route('counselor.video.call', $call->call_id);
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'redirect' => $url, 'call_id' => $call->call_id]);
+        }
+
+        return redirect($url);
+    }
+
+    /**
      * Counselor declines a pending call.
      */
     public function decline(EmergencyCall $call)
