@@ -9,10 +9,30 @@
             Back to My Progress
         </a>
         <div class="flex items-center gap-3">
+            @isset($prevScore)
+                @if($prevScore)
+                    <a href="{{ route('student.reports.show', $prevScore) }}" class="export-btn font-black px-6 py-3 rounded-2xl uppercase tracking-widest text-[9px] flex items-center gap-2 no-print">
+                        <i class="ph ph-arrow-left"></i>
+                        Prev
+                    </a>
+                @endif
+            @endisset
+            <button onclick="window.print()" class="export-btn font-black px-8 py-3 rounded-2xl uppercase tracking-widest text-[9px] flex items-center gap-3 no-print">
+                <i class="ph ph-printer"></i>
+                Print
+            </button>
             <button onclick="exportPDF()" class="export-btn font-black px-8 py-3 rounded-2xl uppercase tracking-widest text-[9px] flex items-center gap-3">
                 <i class="ph ph-file-pdf"></i>
                 Export PDF
             </button>
+            @isset($nextScore)
+                @if($nextScore)
+                    <a href="{{ route('student.reports.show', $nextScore) }}" class="export-btn font-black px-6 py-3 rounded-2xl uppercase tracking-widest text-[9px] flex items-center gap-2 no-print">
+                        Next
+                        <i class="ph ph-arrow-right"></i>
+                    </a>
+                @endif
+            @endisset
             @if(in_array(strtolower($score->risk_level), ['high', 'critical']))
             <button id="callCounselorBtn" onclick="requestEmergencyCall()" class="call-btn font-black px-8 py-3 rounded-2xl uppercase tracking-widest text-[9px] flex items-center gap-3">
                 <i class="ph ph-phone-call"></i>

@@ -47,7 +47,7 @@ class DashboardController extends Controller
                 return 2;
             });
 
-        // 3. Anonymous Clinical Feedback (Patient Voice)
+        // 3. Anonymous Student Feedback (Student Voice)
         $anon_notes = AnonymousNote::whereIn('status', ['new', 'read', 'replied'])
             ->with(['messages' => function($q) {
                 $q->orderBy('created_at', 'asc');

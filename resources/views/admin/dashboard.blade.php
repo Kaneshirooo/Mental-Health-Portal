@@ -280,7 +280,7 @@
                             @php $c = count($note->messages); @endphp
                             <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-muted);">{{ $c }} msg</span>
                         </div>
-                        <a href="{{ route('counselor.dashboard') }}" style="font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; text-decoration: none;">Join Thread →</a>
+                        <a href="{{ route('counselor.dashboard') }}" style="font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; text-decoration: none;">Message →</a>
                     </div>
                 </div>
             @endforeach

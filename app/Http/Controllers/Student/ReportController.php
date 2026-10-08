@@ -33,7 +33,16 @@ class ReportController extends Controller
             ->latest('created_at')
             ->first();
 
-        return view('student.reports.show', compact('score', 'counselorNote'));
+        $prevScore = AssessmentScore::where('user_id', auth()->id())
+            ->where('assessment_date', '<', $score->assessment_date)
+            ->latest('assessment_date')
+            ->first();
+        $nextScore = AssessmentScore::where('user_id', auth()->id())
+            ->where('assessment_date', '>', $score->assessment_date)
+            ->oldest('assessment_date')
+            ->first();
+
+        return view('student.reports.show', compact('score', 'counselorNote', 'prevScore', 'nextScore'));
     }
 
     public function showSession($pre_id)
@@ -42,6 +51,15 @@ class ReportController extends Controller
             ->where('student_id', auth()->id())
             ->firstOrFail();
 
-        return view('student.reports.session_show', compact('session'));
+        $prevSession = AiPreassessment::where('student_id', auth()->id())
+            ->where('created_at', '<', $session->created_at)
+            ->latest('created_at')
+            ->first();
+        $nextSession = AiPreassessment::where('student_id', auth()->id())
+            ->where('created_at', '>', $session->created_at)
+            ->oldest('created_at')
+            ->first();
+
+        return view('student.reports.session_show', compact('session', 'prevSession', 'nextSession'));
     }
 }

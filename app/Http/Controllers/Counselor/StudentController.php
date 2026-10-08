@@ -319,7 +319,16 @@ class StudentController extends Controller
             ->where('student_id', $student->user_id)
             ->firstOrFail();
 
-        return view('counselor.students.session_show', compact('student', 'session'));
+        $prevSession = \App\Models\AiPreassessment::where('student_id', $student->user_id)
+            ->where('created_at', '<', $session->created_at)
+            ->latest('created_at')
+            ->first();
+        $nextSession = \App\Models\AiPreassessment::where('student_id', $student->user_id)
+            ->where('created_at', '>', $session->created_at)
+            ->oldest('created_at')
+            ->first();
+
+        return view('counselor.students.session_show', compact('student', 'session', 'prevSession', 'nextSession'));
     }
 
     /**

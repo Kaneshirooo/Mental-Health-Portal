@@ -12,6 +12,11 @@ class AssessmentQuestion extends Model
     protected $primaryKey = 'question_id';
     public $timestamps = false;
 
+    public function getRouteKeyName(): string
+    {
+        return 'question_id';
+    }
+
     protected $fillable = [
         'category',
         'question_text',

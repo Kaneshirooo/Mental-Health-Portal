@@ -373,7 +373,7 @@
             padding: 1.25rem 1rem !important;
             border-radius: 24px !important;
         }
-        .patient-voice-grid {
+        .student-voice-grid {
             grid-template-columns: 1fr !important;
             gap: 1.25rem !important;
         }
@@ -611,7 +611,7 @@
             </div>
         </header>
 
-        <div class="patient-voice-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(550px, 1fr)); gap:2.5rem;">
+        <div class="student-voice-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(550px, 1fr)); gap:2.5rem;">
             @foreach ($anon_notes as $note)
             <div class="note-card staggered">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; border-bottom:1px solid var(--border); padding-bottom:1.5rem;">

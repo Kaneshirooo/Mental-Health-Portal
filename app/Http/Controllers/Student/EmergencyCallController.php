@@ -54,6 +54,14 @@ class EmergencyCallController extends Controller
             ]);
         }
 
+        \App\Services\CounselorMailer::send(
+            $counselors,
+            'Student trying to call you now',
+            "{$student->full_name} is requesting an immediate video call. Please open your dashboard and accept the call.",
+            route('counselor.dashboard'),
+            'Open Dashboard'
+        );
+
         return response()->json([
             'success' => true,
             'call_id' => $call->call_id,

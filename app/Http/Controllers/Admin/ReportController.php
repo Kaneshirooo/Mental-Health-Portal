@@ -86,13 +86,88 @@ class ReportController extends Controller
         $top_risk_course = $high_risk_by_course->sortByDesc(fn($group) => $group->count())->keys()->first() ?? 'None';
         $top_risk_count = $high_risk_by_course->get($top_risk_course)?->count() ?? 0;
 
+        // ── Period comparison (this month vs last month) ──
+        $now = Carbon::now();
+        $thisMonth = AssessmentScore::whereYear('assessment_date', $now->year)
+            ->whereMonth('assessment_date', $now->month)->get();
+        $lastMonthDate = $now->copy()->subMonth();
+        $lastMonth = AssessmentScore::whereYear('assessment_date', $lastMonthDate->year)
+            ->whereMonth('assessment_date', $lastMonthDate->month)->get();
+        $comparison = [
+            'this_label' => $now->format('M Y'),
+            'last_label' => $lastMonthDate->format('M Y'),
+            'this_total' => $thisMonth->count(),
+            'last_total' => $lastMonth->count(),
+            'this_high' => $thisMonth->whereIn('risk_level', ['High', 'Critical'])->count(),
+            'last_high' => $lastMonth->whereIn('risk_level', ['High', 'Critical'])->count(),
+        ];
+        $comparison['total_change'] = $comparison['this_total'] - $comparison['last_total'];
+        $comparison['high_change'] = $comparison['this_high'] - $comparison['last_high'];
+
+        // ── Plain-language interpretation ──
+        $dominantArea = 'low mood';
+        $dominantScore = $avg_depression;
+        if ($avg_anxiety >= $dominantScore && $avg_anxiety >= $avg_stress) {
+            $dominantArea = 'worries';
+            $dominantScore = $avg_anxiety;
+        } elseif ($avg_stress >= $dominantScore) {
+            $dominantArea = 'pressure';
+            $dominantScore = $avg_stress;
+        }
+        $interpretation = [];
+        $interpretation[] = "Across {$total_assessments} check-ins from {$total_students} students, {$wellness_index}% are doing okay (Low), while " . (($risk_counts['High'] ?? 0) + ($risk_counts['Critical'] ?? 0)) . " results need care or urgent support (High/Critical).";
+        $interpretation[] = "The heaviest area on average is {$dominantArea} ({$dominantScore}), so support activities should focus there first.";
+        if ($top_risk_course !== 'None') {
+            $interpretation[] = "{$top_risk_course} has the most students needing care ({$top_risk_count}), and should be first in line for group sessions.";
+        }
+        if ($comparison['high_change'] > 0) {
+            $interpretation[] = "Students needing urgent support rose from {$comparison['last_high']} ({$comparison['last_label']}) to {$comparison['this_high']} ({$comparison['this_label']}) — counselors should add extra slots this month.";
+        } elseif ($comparison['high_change'] < 0) {
+            $interpretation[] = "Students needing urgent support fell from {$comparison['last_high']} ({$comparison['last_label']}) to {$comparison['this_high']} ({$comparison['this_label']}) — current support steps appear to be helping.";
+        } else {
+            $interpretation[] = "Students needing urgent support held steady at {$comparison['this_high']} versus last month — keep the current support rhythm.";
+        }
+
+        // ── Priority programs per course ──
+        $priority_programs = $high_risk_by_course
+            ->sortByDesc(fn($group) => $group->count())
+            ->take(5)
+            ->map(function ($group, $courseName) {
+                $count = $group->count();
+                $crit = $group->where('risk_level', 'Critical')->count();
+                return [
+                    'course' => $courseName ?: 'General',
+                    'count' => $count,
+                    'critical' => $crit,
+                    'program' => $crit > 0
+                        ? 'Priority 1: one-on-one reach-outs + small group check-in this week.'
+                        : 'Priority 2: study-pressure workshop + weekly mood check-ins.',
+                ];
+            })->values();
+
+        // ── Risk matrix (risk level × course) ──
+        $matrix_courses = $filtered_assessments
+            ->groupBy(fn($a) => optional($a->user)->course ?? 'General')
+            ->keys()->sort()->values();
+        $risk_matrix = [];
+        foreach (['Low', 'Moderate', 'High', 'Critical'] as $lvl) {
+            $row = ['level' => $lvl, 'cells' => [], 'total' => 0];
+            foreach ($matrix_courses as $c) {
+                $n = $filtered_assessments->filter(fn($a) => (optional($a->user)->course ?? 'General') === $c && $a->risk_level === $lvl)->count();
+                $row['cells'][] = $n;
+                $row['total'] += $n;
+            }
+            $risk_matrix[] = $row;
+        }
+
         return view('admin.reports.index', compact(
-            'total_assessments', 'total_students', 'risk_counts', 
+            'total_assessments', 'total_students', 'risk_counts',
             'monthly_labels', 'monthly_counts', 'recent_assessments',
             'start_date', 'end_date', 'course', 'semester', 'risk_level', 'courses', 'semesters', 'high_risk_by_course',
             'avg_depression', 'avg_anxiety', 'avg_stress',
             'depression_severity', 'anxiety_severity', 'stress_severity',
-            'wellness_index', 'top_risk_course', 'top_risk_count'
+            'wellness_index', 'top_risk_course', 'top_risk_count',
+            'comparison', 'interpretation', 'priority_programs', 'risk_matrix', 'matrix_courses'
         ));
     }
 

@@ -71,6 +71,9 @@
             <a href="{{ route('counselor.students.index') }}" class="sidebar-link {{ request()->routeIs('counselor.students.*') ? 'active' : '' }}">
                 <div class="link-icon"><i class="ph ph-users"></i></div> <span>Student Records</span>
             </a>
+            <a href="{{ route('counselor.questions.index') }}" class="sidebar-link {{ request()->routeIs('counselor.questions.*') ? 'active' : '' }}">
+                <div class="link-icon"><i class="ph ph-clipboard-text"></i></div> <span>Check-in Questions</span>
+            </a>
             <a href="{{ route('counselor.emergency.calls.logs') }}" class="sidebar-link {{ request()->routeIs('counselor.emergency.calls.logs') || request()->routeIs('counselor.emergency.calls.history') ? 'active' : '' }}">
                 <div class="link-icon"><i class="ph ph-phone-call"></i></div> <span>Call History</span>
             </a>
@@ -87,6 +90,9 @@
             </a>
             <a href="{{ route('counselor.students.index') }}" class="sidebar-link {{ request()->routeIs('counselor.students.*') ? 'active' : '' }}">
                 <div class="link-icon"><i class="ph ph-users"></i></div> <span>Student Records</span>
+            </a>
+            <a href="{{ route('counselor.questions.index') }}" class="sidebar-link {{ request()->routeIs('counselor.questions.*') ? 'active' : '' }}">
+                <div class="link-icon"><i class="ph ph-clipboard-text"></i></div> <span>Check-in Questions</span>
             </a>
             <a href="{{ route('counselor.appointments.index') }}" class="sidebar-link no-magnetic {{ request()->routeIs('counselor.appointments.*') ? 'active' : '' }}">
                 <div class="link-icon"><i class="ph ph-calendar-blank"></i></div> <span>My Appointments</span>

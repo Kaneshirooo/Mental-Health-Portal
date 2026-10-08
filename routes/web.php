@@ -122,6 +122,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/students/{student}/session/{pre_id}', [\App\Http\Controllers\Counselor\StudentController::class, 'showSession'])->name('students.session.show');
         Route::get('/students/{student}/export', [\App\Http\Controllers\Counselor\StudentController::class, 'export'])->name('students.export');
 
+        Route::get('/questions', [\App\Http\Controllers\Counselor\AssessmentQuestionController::class, 'index'])->name('questions.index');
+        Route::post('/questions', [\App\Http\Controllers\Counselor\AssessmentQuestionController::class, 'store'])->name('questions.store');
+        Route::put('/questions/{question}', [\App\Http\Controllers\Counselor\AssessmentQuestionController::class, 'update'])->name('questions.update');
+        Route::delete('/questions/{question}', [\App\Http\Controllers\Counselor\AssessmentQuestionController::class, 'destroy'])->name('questions.destroy');
+
         Route::get('/ledger', [\App\Http\Controllers\Counselor\LedgerController::class, 'index'])->name('ledger.index');
         Route::get('/ledger/export', [\App\Http\Controllers\Counselor\LedgerController::class, 'export'])->name('ledger.export');
         

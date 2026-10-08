@@ -134,6 +134,18 @@ class AssessmentController extends Controller
                 'activity' => 'Completed AI-based assessment with risk: ' . $riskLevel,
             ]);
 
+            // Email counselors when a student needs attention (High/Critical).
+            if (in_array($riskLevel, ['High', 'Critical'], true)) {
+                $studentName = \App\Models\User::find($userId)?->full_name ?? 'A student';
+                \App\Services\CounselorMailer::send(
+                    \App\Services\CounselorMailer::allStaff(),
+                    "Student needs assessment review ({$riskLevel})",
+                    "{$studentName} completed a check-in with a {$riskLevel} result (low mood {$depressionScore}/27, worries {$anxietyScore}/21, pressure {$stressScore}/21). Please review their record and reach out.",
+                    route('admin.reports.index'),
+                    'Review Records'
+                );
+            }
+
             DB::commit();
             $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment stored successfully', [
                 'overallScore' => $overallScore,

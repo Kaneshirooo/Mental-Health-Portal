@@ -3,13 +3,25 @@
 @section('content')
 <div class="container" style="max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
     <!-- Header -->
-    <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3.5rem;">
+    <header class="no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1rem;">
         <a href="{{ route('counselor.students.show', $student->user_id) }}" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text-dim); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">
             <i class="ph ph-arrow-left"></i> Back to Student Profile
         </a>
-        <button onclick="window.print()" class="btn-secondary" style="padding: 0.75rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem;">
-            <i class="ph ph-printer"></i> Export Summary
-        </button>
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+            @if(!empty($prevSession))
+                <a href="{{ route('counselor.students.session.show', [$student->user_id, $prevSession->pre_id]) }}" class="btn-secondary" style="padding: 0.75rem 1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    <i class="ph ph-arrow-left"></i> Prev
+                </a>
+            @endif
+            <button onclick="window.print()" class="btn-secondary" style="padding: 0.75rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="ph ph-printer"></i> Print Report
+            </button>
+            @if(!empty($nextSession))
+                <a href="{{ route('counselor.students.session.show', [$student->user_id, $nextSession->pre_id]) }}" class="btn-secondary" style="padding: 0.75rem 1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    Next <i class="ph ph-arrow-right"></i>
+                </a>
+            @endif
+        </div>
     </header>
 
     <article style="background: var(--surface-solid); border: 2px solid var(--border); border-radius: 40px; padding: 4rem; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;">
@@ -30,7 +42,7 @@
             </div>
             <div>
                 <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.25rem; font-weight: 900; color: var(--text); margin: 0; letter-spacing: -0.02em;">{{ $session->created_at->format('F d, Y') }}</h1>
-                <p style="color: var(--text-muted); font-weight: 600; font-size: 1rem; margin-top: 0.25rem;">Clinical Session Summary • Logged at {{ $session->created_at->format('h:i A') }}</p>
+                <p style="color: var(--text-muted); font-weight: 600; font-size: 1rem; margin-top: 0.25rem;">Support Chat Summary • {{ $session->created_at->format('l, M d, Y') }} at {{ $session->created_at->format('h:i A') }}</p>
             </div>
         </div>
 

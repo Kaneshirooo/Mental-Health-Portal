@@ -1036,6 +1036,84 @@
         @endif
     </div>
 
+    <!-- Risk Matrix (risk level x program) -->
+    <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); margin-bottom: 2rem;">
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text); margin: 0; display: flex; align-items: center; gap: 0.6rem;">
+            <i class="ph-bold ph-grid-four" style="color: var(--primary);"></i> Risk Matrix
+        </h2>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.2rem; font-weight: 500;">Check-in counts by result and program. Red cells need urgent support.</p>
+        <div style="overflow-x: auto; margin-top: 1.25rem;">
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0 0.4rem; min-width: 560px;">
+                <thead>
+                    <tr style="text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.7rem; color: var(--text-dim); font-weight: 850;">
+                        <th style="padding: 0.6rem 1rem; text-align: left;">Result</th>
+                        @foreach($matrix_courses as $mc)
+                            <th style="padding: 0.6rem 1rem; text-align: center;">{{ \Illuminate\Support\Str::limit($mc, 18) }}</th>
+                        @endforeach
+                        <th style="padding: 0.6rem 1rem; text-align: center;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($risk_matrix as $mrow)
+                        <tr>
+                            <td style="padding: 0.6rem 1rem; font-weight: 800; font-size: 0.8rem;">
+                                <span style="display: inline-block; padding: 0.25rem 0.7rem; border-radius: 100px; font-size: 0.68rem; text-transform: uppercase; {{ $mrow['level'] === 'Critical' ? 'background: #fee2e2; color: #991b1b; border: 1.5px solid #ef4444;' : ($mrow['level'] === 'High' ? 'background: #ffedd5; color: #9a3412;' : ($mrow['level'] === 'Moderate' ? 'background: #fef9c3; color: #854d0e;' : 'background: #dcfce7; color: #166534;')) }}">{{ $mrow['level'] }}</span>
+                            </td>
+                            @foreach($mrow['cells'] as $cell)
+                                <td style="padding: 0.6rem 1rem; text-align: center; font-weight: 800; {{ $mrow['level'] === 'Critical' && $cell > 0 ? 'background: rgba(239,68,68,0.1); color: #b91c1c; border-radius: 8px;' : '' }}">{{ $cell }}</td>
+                            @endforeach
+                            <td style="padding: 0.6rem 1rem; text-align: center; font-weight: 900;">{{ $mrow['total'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Comparison + Interpretation + Priority Programs -->
+    <div class="staggered" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+        <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.25rem;">
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--text); margin: 0 0 0.25rem;">Month Comparison</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">{{ $comparison['last_label'] }} vs {{ $comparison['this_label'] }}</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="background: var(--surface-2); border-radius: 16px; padding: 1.25rem; text-align: center;">
+                    <div style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; color: var(--text-dim);">Check-ins</div>
+                    <div style="font-size: 1.8rem; font-weight: 900;">{{ $comparison['this_total'] }}</div>
+                    <div style="font-size: 0.78rem; font-weight: 700; color: {{ $comparison['total_change'] >= 0 ? '#059669' : '#dc2626' }};">{{ $comparison['total_change'] >= 0 ? '+' : '' }}{{ $comparison['total_change'] }} vs {{ $comparison['last_label'] }} ({{ $comparison['last_total'] }})</div>
+                </div>
+                <div style="background: {{ $comparison['this_high'] > 0 ? 'rgba(239,68,68,0.06)' : 'var(--surface-2)' }}; border-radius: 16px; padding: 1.25rem; text-align: center; border: {{ $comparison['this_high'] > 0 ? '1.5px solid rgba(239,68,68,0.3)' : 'none' }};">
+                    <div style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; color: var(--text-dim);">Needing care / urgent</div>
+                    <div style="font-size: 1.8rem; font-weight: 900; color: {{ $comparison['this_high'] > 0 ? '#dc2626' : 'var(--text)' }};">{{ $comparison['this_high'] }}</div>
+                    <div style="font-size: 0.78rem; font-weight: 700; color: {{ $comparison['high_change'] <= 0 ? '#059669' : '#dc2626' }};">{{ $comparison['high_change'] > 0 ? '+' : '' }}{{ $comparison['high_change'] }} vs {{ $comparison['last_label'] }} ({{ $comparison['last_high'] }})</div>
+                </div>
+            </div>
+        </div>
+        <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.25rem;">
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--text); margin: 0 0 1rem;">What This Means</h2>
+            <ul style="margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem; color: var(--text); line-height: 1.6;">
+                @foreach($interpretation as $line)
+                    <li>{{ $line }}</li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+
+    <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.25rem; margin-bottom: 2rem;">
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--text); margin: 0 0 0.25rem;">Priority Programs</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Which programs to serve first, based on students needing care right now.</p>
+        @forelse($priority_programs as $i => $pp)
+            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border);">
+                <div style="width: 36px; height: 36px; border-radius: 12px; background: {{ $pp['critical'] > 0 ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)' }}; color: {{ $pp['critical'] > 0 ? '#dc2626' : '#d97706' }}; display: flex; align-items: center; justify-content: center; font-weight: 900;">{{ $i + 1 }}</div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 800; color: var(--text);">{{ $pp['course'] }} <span style="font-weight: 600; color: var(--text-dim); font-size: 0.8rem;">— {{ $pp['count'] }} needing care{{ $pp['critical'] > 0 ? " ({$pp['critical']} urgent)" : '' }}</span></div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">{{ $pp['program'] }}</div>
+                </div>
+            </div>
+        @empty
+            <p style="color: var(--text-dim); font-weight: 600;">No program needs priority attention right now. Keep the regular wellness activities going.</p>
+        @endforelse
+    </div>
+
     <!-- Student Wellness Records (Table) -->
     <div id="intelligenceFeed" class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
@@ -1044,6 +1122,13 @@
                     <i class="ph-bold ph-list-bullets" style="color: var(--primary);"></i> Student Wellness Records
                 </h2>
                 <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.2rem; font-weight: 500;">Recent student evaluation records and risk classifications.</p>
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 0.75rem; font-size: 0.7rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em;">
+                    <span>Legend:</span>
+                    <span style="display: inline-flex; align-items: center; gap: 0.3rem;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #10b981; display: inline-block;"></span> Low</span>
+                    <span style="display: inline-flex; align-items: center; gap: 0.3rem;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #f59e0b; display: inline-block;"></span> Moderate</span>
+                    <span style="display: inline-flex; align-items: center; gap: 0.3rem;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #f97316; display: inline-block;"></span> High</span>
+                    <span style="display: inline-flex; align-items: center; gap: 0.3rem;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #ef4444; display: inline-block;"></span> Red = Critical, needs urgent support</span>
+                </div>
             </div>
             
             <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
@@ -1057,10 +1142,13 @@
                 </div>
 
                 <!-- Search Input -->
-                <div style="position: relative;">
+                <div style="position: relative;" class="no-print">
                     <i class="ph ph-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 1.1rem;"></i>
                     <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="Search student records..." class="search-input-box" style="padding-left: 2.75rem; width: 260px;">
                 </div>
+                <button onclick="window.print()" class="no-print" style="padding: 0.6rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <i class="ph-bold ph-printer"></i> Print Reports
+                </button>
             </div>
         </div>
         
@@ -1109,7 +1197,10 @@
                             {{ $r->risk_level }}
                         </span>
                     </td>
-                    <td style="padding: 1.1rem 1.5rem; font-weight: 700; color: var(--text-muted); font-size: 0.85rem;">{{ $r->assessment_date->format('M d, Y') }}</td>
+                    <td style="padding: 1.1rem 1.5rem; font-weight: 700; color: var(--text-muted); font-size: 0.85rem;">
+                        <div>{{ $r->assessment_date->format('M d, Y') }}</div>
+                        <div style="font-size: 0.75rem; font-weight: 600;">{{ $r->assessment_date->format('l • g:i A') }}</div>
+                    </td>
                     <td style="padding: 1.1rem 1.5rem; text-align: right; border-top-right-radius: 16px; border-bottom-right-radius: 16px;">
                         @if($r->user_id)
                             <a href="{{ route('counselor.students.show', $r->user_id) }}" class="btn-action-small" style="font-size: 0.72rem; padding: 0.45rem 0.9rem; border-radius: 10px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;">

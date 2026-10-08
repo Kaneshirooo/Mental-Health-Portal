@@ -6,12 +6,30 @@
     <header class="mb-12 flex justify-between items-center no-print">
         <a href="{{ route('student.reports.index') }}" class="flex items-center gap-3 text-gray-500 hover:text-white transition-all font-black uppercase text-[10px] tracking-widest">
             <i class="ph ph-arrow-left"></i>
-            Return to Vault
+            Back to My Progress
         </a>
-        <button onclick="exportPDF()" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black px-8 py-3 rounded-2xl transition-all uppercase tracking-widest text-[9px] flex items-center gap-3" id="exportBtn">
-            <i class="ph ph-file-pdf"></i>
-            Export PDF
-        </button>
+        <div class="flex items-center gap-3">
+            @if(!empty($prevSession))
+                <a href="{{ route('student.reports.session.show', $prevSession->pre_id) }}" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black px-6 py-3 rounded-2xl transition-all uppercase tracking-widest text-[9px] flex items-center gap-2 no-print">
+                    <i class="ph ph-arrow-left"></i>
+                    Prev
+                </a>
+            @endif
+            <button onclick="window.print()" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black px-8 py-3 rounded-2xl transition-all uppercase tracking-widest text-[9px] flex items-center gap-3">
+                <i class="ph ph-printer"></i>
+                Print Summary
+            </button>
+            <button onclick="exportPDF()" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black px-8 py-3 rounded-2xl transition-all uppercase tracking-widest text-[9px] flex items-center gap-3" id="exportBtn">
+                <i class="ph ph-file-pdf"></i>
+                Export PDF
+            </button>
+            @if(!empty($nextSession))
+                <a href="{{ route('student.reports.session.show', $nextSession->pre_id) }}" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black px-6 py-3 rounded-2xl transition-all uppercase tracking-widest text-[9px] flex items-center gap-2 no-print">
+                    Next
+                    <i class="ph ph-arrow-right"></i>
+                </a>
+            @endif
+        </div>
     </header>
 
     <article class="glass-card p-16 relative overflow-hidden">

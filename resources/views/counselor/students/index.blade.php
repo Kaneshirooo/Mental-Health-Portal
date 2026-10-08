@@ -69,15 +69,15 @@
     <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem;">
         <div>
             <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                <i class="ph-bold ph-users-three" style="font-size: 1.1rem;"></i> Clinical Directory
+                <i class="ph-bold ph-users-three" style="font-size: 1.1rem;"></i> Student Directory
             </div>
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Student Registry</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Comprehensive registry of student wellness nodes and clinical data.</p>
+            <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Complete list of students and their wellness check-in history.</p>
         </div>
         <div style="display: flex; gap: 1.25rem; align-items: center;">
             <div style="text-align: right; padding-right: 1.5rem; border-right: 1px solid var(--border);">
                 <div style="font-size: 1.65rem; font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif;">{{ count($students) }}</div>
-                <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em;">Total Nodes</div>
+                <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em;">Total Students</div>
             </div>
             <button onclick="exportCSV()" class="btn-secondary" style="padding: 0.85rem 1.5rem; border-radius: 14px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem;">
                 <i class="ph-bold ph-file-csv" style="font-size: 1.1rem;"></i> Export Dataset
@@ -89,7 +89,7 @@
     <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 1.5rem 1.75rem; margin-bottom: 2.5rem; display: flex; gap: 1.25rem; align-items: center; box-shadow: var(--shadow-sm); flex-wrap: wrap;">
         <div style="flex: 1; min-width: 280px; position: relative;">
             <i class="ph-bold ph-magnifying-glass" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
-            <input type="text" id="liveSearch" oninput="liveFilter()" placeholder="Identify student by name, ID, or clinical token..." style="width: 100%; padding: 0.85rem 1.25rem 0.85rem 3.25rem; border-radius: 14px; border: 1.5px solid var(--border); font-size: 0.92rem; font-weight: 500; background: var(--surface-2); color: var(--text); outline: none; transition: all 0.25s ease;" onfocus="this.style.borderColor='var(--primary)'; this.style.background='var(--surface-solid)'; this.style.boxShadow='0 0 0 4px var(--primary-glow)';" onblur="this.style.borderColor='var(--border)'; this.style.background='var(--surface-2)'; this.style.boxShadow='none';">
+            <input type="text" id="liveSearch" oninput="liveFilter()" placeholder="Search by student name or ID..." style="width: 100%; padding: 0.85rem 1.25rem 0.85rem 3.25rem; border-radius: 14px; border: 1.5px solid var(--border); font-size: 0.92rem; font-weight: 500; background: var(--surface-2); color: var(--text); outline: none; transition: all 0.25s ease;" onfocus="this.style.borderColor='var(--primary)'; this.style.background='var(--surface-solid)'; this.style.boxShadow='0 0 0 4px var(--primary-glow)';" onblur="this.style.borderColor='var(--border)'; this.style.background='var(--surface-2)'; this.style.boxShadow='none';">
         </div>
         
         <form method="GET" id="filterForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
@@ -205,6 +205,15 @@
 
     <!-- Table -->
     <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: var(--shadow-md);">
+        <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 1.5rem; font-size: 0.72rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em;">
+            <span>Legend:</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.35rem;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #10b981; display: inline-block;"></span> Green = Doing Okay</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.35rem;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #f59e0b; display: inline-block;"></span> Yellow = A Bit Tough</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.35rem;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #f97316; display: inline-block;"></span> Orange = Needs Care</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.35rem;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #ef4444; display: inline-block;"></span> Red = Critical, needs urgent support</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.35rem;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Active now</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.35rem;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; display: inline-block;"></span> Inactive</span>
+        </div>
         <div style="overflow-x: auto;">
             <table id="studentsTable" style="width: 100%; border-collapse: separate; border-spacing: 0 0.65rem;">
                 <thead>
@@ -214,13 +223,14 @@
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Department</th>
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Wellness Index</th>
                         <th style="padding: 1.25rem 1.5rem; text-align: left;">Risk Classification</th>
+                        <th style="padding: 1.25rem 1.5rem; text-align: left;">Status</th>
                         <th style="padding: 1.25rem 1.5rem; text-align: right;">Action</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                     @foreach ($students as $student)
                     @php
-                        $s_name = $student->full_name ?? 'Anonymous Node';
+                        $s_name = $student->full_name ?? 'Anonymous Student';
                         $initial = strtoupper(substr($s_name, 0, 1));
                     @endphp
                     <tr class="student-row"
@@ -273,6 +283,17 @@
                                 </span>
                             @else
                                 <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-dim); opacity: 0.6;">UNCATEGORIZED</span>
+                            @endif
+                        </td>
+                        <td style="padding: 1.25rem 1.5rem;">
+                            @if ($student->isOnline())
+                                <span style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: #059669;">
+                                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981; display: inline-block;"></span> Active
+                                </span>
+                            @else
+                                <span style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-dim);">
+                                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; display: inline-block;"></span> Inactive
+                                </span>
                             @endif
                         </td>
                         <td style="padding: 1.25rem 1.5rem; text-align: right; border-top-right-radius: 18px; border-bottom-right-radius: 18px;">

@@ -50,6 +50,17 @@
                     </button>
                 </div>
                 <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">{{ $student->full_name ?? 'N/A' }}</h1>
+                <div style="margin-top: 0.5rem;">
+                    @if ($student->isOnline())
+                        <span style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #059669; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); padding: 0.3rem 0.8rem; border-radius: 100px;">
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981; display: inline-block;"></span> Active now
+                        </span>
+                    @else
+                        <span style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--text-dim); background: var(--surface-2); border: 1px solid var(--border); padding: 0.3rem 0.8rem; border-radius: 100px;">
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; display: inline-block;"></span> Inactive
+                        </span>
+                    @endif
+                </div>
                 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin-top: 0.75rem;">
                     <span style="font-weight: 800; color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
                         <i class="ph-bold ph-identification-badge" style="color: var(--primary);"></i> {{ $student->roll_number ?? 'N/A' }}
