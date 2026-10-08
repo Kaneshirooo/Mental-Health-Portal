@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // 1. Basic Admin Stats
         $stats = [
@@ -28,7 +28,7 @@ class DashboardController extends Controller
         ];
 
         // 2. Clinical Priority Queue (Shared with Counselors)
-        $priority_queue = User::where('user_type', 'student')
+        $priority_all = User::where('user_type', 'student')
             ->with('latestAssessment')
             ->whereHas('assessmentScores', function($query) {
                 $query->whereIn('risk_level', ['High', 'Critical'])
@@ -45,7 +45,18 @@ class DashboardController extends Controller
                 if ($level === 'Critical') return 0;
                 if ($level === 'High') return 1;
                 return 2;
-            });
+            })
+            ->values();
+
+        // 10 per page so the list stays manageable as data grows.
+        $page = max(1, (int) $request->input('page', 1));
+        $priority_queue = new \Illuminate\Pagination\LengthAwarePaginator(
+            $priority_all->forPage($page, 10),
+            $priority_all->count(),
+            10,
+            $page,
+            ['path' => $request->url(), 'pageName' => 'page']
+        );
 
         // 3. Anonymous Student Feedback (Student Voice)
         $anon_notes = AnonymousNote::whereIn('status', ['new', 'read', 'replied'])

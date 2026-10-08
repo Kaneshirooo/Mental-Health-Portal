@@ -600,28 +600,7 @@
                 </tbody>
             </table>
         </div>
-        @if($priority_queue->total() > 0)
-            <div style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; margin-top: 2rem; flex-wrap: wrap;">
-                @if($priority_queue->onFirstPage())
-                    <span style="padding: 0.6rem 1.1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); color: var(--text-dim); opacity: 0.5;">← Prev</span>
-                @else
-                    <a href="{{ $priority_queue->previousPageUrl() }}" style="padding: 0.6rem 1.1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text); text-decoration: none;">← Prev</a>
-                @endif
-                @for($qp = 1; $qp <= $priority_queue->lastPage(); $qp++)
-                    @if($qp === $priority_queue->currentPage())
-                        <span style="min-width: 38px; text-align: center; padding: 0.6rem 0.8rem; border-radius: 12px; font-weight: 900; font-size: 0.8rem; background: var(--primary); color: white;">{{ $qp }}</span>
-                    @else
-                        <a href="{{ $priority_queue->url($qp) }}" style="min-width: 38px; text-align: center; padding: 0.6rem 0.8rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text); text-decoration: none;">{{ $qp }}</a>
-                    @endif
-                @endfor
-                @if($priority_queue->hasMorePages())
-                    <a href="{{ $priority_queue->nextPageUrl() }}" style="padding: 0.6rem 1.1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--primary); color: white; text-decoration: none;">Next →</a>
-                @else
-                    <span style="padding: 0.6rem 1.1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); color: var(--text-dim); opacity: 0.5;">Next →</span>
-                @endif
-            </div>
-            <div style="text-align: center; font-size: 0.78rem; font-weight: 800; color: var(--text-dim); margin-top: 0.75rem;">Page {{ $priority_queue->currentPage() }} of {{ $priority_queue->lastPage() }} ({{ $priority_queue->total() }} students)</div>
-        @endif
+        @include('components.simple-pager', ['paginator' => $priority_queue, 'label' => 'students'])
     </div>
 
     <!-- ── Interaction Network ── -->
@@ -691,28 +670,7 @@
             </div>
             @endforeach
         </div>
-        @if($anon_notes->total() > 0)
-            <div style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; margin-top: 2rem; flex-wrap: wrap;">
-                @if($anon_notes->onFirstPage())
-                    <span style="padding: 0.6rem 1.1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); color: var(--text-dim); opacity: 0.5;">← Prev</span>
-                @else
-                    <a href="{{ $anon_notes->previousPageUrl() }}" style="padding: 0.6rem 1.1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text); text-decoration: none;">← Prev</a>
-                @endif
-                @for($np = 1; $np <= $anon_notes->lastPage(); $np++)
-                    @if($np === $anon_notes->currentPage())
-                        <span style="min-width: 38px; text-align: center; padding: 0.6rem 0.8rem; border-radius: 12px; font-weight: 900; font-size: 0.8rem; background: var(--primary); color: white;">{{ $np }}</span>
-                    @else
-                        <a href="{{ $anon_notes->url($np) }}" style="min-width: 38px; text-align: center; padding: 0.6rem 0.8rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text); text-decoration: none;">{{ $np }}</a>
-                    @endif
-                @endfor
-                @if($anon_notes->hasMorePages())
-                    <a href="{{ $anon_notes->nextPageUrl() }}" style="padding: 0.6rem 1.1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--primary); color: white; text-decoration: none;">Next →</a>
-                @else
-                    <span style="padding: 0.6rem 1.1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; background: var(--surface-2); color: var(--text-dim); opacity: 0.5;">Next →</span>
-                @endif
-            </div>
-            <div style="text-align: center; font-size: 0.78rem; font-weight: 800; color: var(--text-dim); margin-top: 0.75rem;">Page {{ $anon_notes->currentPage() }} of {{ $anon_notes->lastPage() }} ({{ $anon_notes->total() }} messages)</div>
-        @endif
+        @include('components.simple-pager', ['paginator' => $anon_notes, 'label' => 'messages'])
     </div>
 </div>
 

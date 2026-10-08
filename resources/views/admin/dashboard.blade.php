@@ -259,6 +259,7 @@
                     </tbody>
                 </table>
             </div>
+            @include('components.simple-pager', ['paginator' => $priority_queue, 'label' => 'students'])
         </div>
 
 
