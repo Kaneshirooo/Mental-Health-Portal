@@ -263,7 +263,8 @@ async function markAllRead() {
 }
 
 async function clearAll() {
-    if (!confirm('Permanently clear all notifications?')) return;
+    const ok = await App.confirm({ title: 'Clear all notifications?', message: 'This permanently removes every notification in your feed.', confirmText: 'Yes, Clear All', danger: true });
+    if (!ok) return;
     try {
         const res = await fetch('{{ route("notifications.clear") }}', {
             method: 'POST',

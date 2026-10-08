@@ -368,15 +368,70 @@
                     }
                 };
                 return $.ajax({ ...defaults, ...options });
+            },
+
+            /**
+             * Styled confirm dialog (replaces native confirm()).
+             * Returns a Promise<boolean>. Usage:
+             *   if (await App.confirm({ title: 'Delete?', message: '...' })) { ... }
+             */
+            confirm: function({ title = 'Are you sure?', message = '', confirmText = 'Yes, Continue', cancelText = 'Cancel', danger = false } = {}) {
+                return new Promise((resolve) => {
+                    let overlay = document.getElementById('app-confirm-overlay');
+                    if (!overlay) {
+                        overlay = document.createElement('div');
+                        overlay.id = 'app-confirm-overlay';
+                        overlay.style.cssText = 'display:none; position:fixed; inset:0; z-index:100000; background:rgba(15,23,42,0.55); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:1.5rem;';
+                        overlay.innerHTML = `
+                            <div id="app-confirm-box" style="background:var(--surface-solid, #fff); border:1px solid var(--border, #e2e8f0); border-radius:24px; padding:2.25rem; max-width:420px; width:100%; text-align:center; box-shadow:0 25px 50px -12px rgba(0,0,0,0.3);">
+                                <div id="app-confirm-icon" style="width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.75rem; margin:0 auto 1.25rem;"></div>
+                                <h3 id="app-confirm-title" style="font-family:Outfit,sans-serif; font-size:1.3rem; font-weight:900; color:var(--text, #0f172a); margin:0 0 0.5rem;"></h3>
+                                <p id="app-confirm-msg" style="color:var(--text-dim, #64748b); font-size:0.9rem; line-height:1.6; margin:0 0 1.75rem;"></p>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+                                    <button id="app-confirm-no" style="padding:0.85rem; border-radius:14px; font-weight:800; cursor:pointer; background:var(--surface-2, #f1f5f9); border:1.5px solid var(--border, #e2e8f0); color:var(--text, #0f172a);"></button>
+                                    <button id="app-confirm-yes" style="padding:0.85rem; border-radius:14px; font-weight:800; cursor:pointer; border:none; color:white;"></button>
+                                </div>
+                            </div>`;
+                        document.body.appendChild(overlay);
+                        overlay.addEventListener('click', (e) => { if (e.target === overlay) done(false); });
+                        document.addEventListener('keydown', (e) => {
+                            if (overlay.style.display === 'flex' && e.key === 'Escape') done(false);
+                        });
+                    }
+                    const cleanup = () => { overlay.style.display = 'none'; };
+                    const done = (val) => { cleanup(); resolve(val); };
+                    overlay.querySelector('#app-confirm-title').textContent = title;
+                    overlay.querySelector('#app-confirm-msg').textContent = message;
+                    const icon = overlay.querySelector('#app-confirm-icon');
+                    icon.innerHTML = danger ? '⚠️' : '❓';
+                    icon.style.background = danger ? 'rgba(239,68,68,0.1)' : 'rgba(59,130,246,0.1)';
+                    const yes = overlay.querySelector('#app-confirm-yes');
+                    const no = overlay.querySelector('#app-confirm-no');
+                    yes.textContent = confirmText;
+                    yes.style.background = danger ? '#ef4444' : 'var(--primary, #10b981)';
+                    no.textContent = cancelText;
+                    yes.onclick = () => done(true);
+                    no.onclick = () => done(false);
+                    overlay.style.display = 'flex';
+                });
+            },
+
+            /**
+             * Styled confirm for plain form submits:
+             * onsubmit="App.confirmSubmit(event, {...}); return false;"
+             */
+            confirmSubmit: async function(event, opts) {
+                event.preventDefault();
+                if (await App.confirm(opts)) event.target.submit();
             }
         };
 
         // Blade fallback for session flash messages
         @if(session('success'))
-            App.toast({ type: 'success', title: 'Process Complete', message: "{{ session('success') }}" });
+            App.toast({ type: 'success', title: 'Done', message: "{{ session('success') }}" });
         @endif
         @if(session('error'))
-            App.toast({ type: 'error', title: 'System Warning', message: "{{ session('error') }}" });
+            App.toast({ type: 'error', title: 'Heads Up', message: "{{ session('error') }}" });
         @endif
     </script>
 

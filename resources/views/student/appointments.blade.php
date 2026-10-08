@@ -600,7 +600,8 @@
     document.addEventListener('submit', async function(e) {
         if (e.target.classList.contains('cancel-form')) {
             e.preventDefault();
-            if (!confirm('Are you sure you want to cancel this appointment?')) return;
+            const ok = await App.confirm({ title: 'Cancel this appointment?', message: 'Your counselor will be told you cancelled. You can always book again later.', confirmText: 'Yes, Cancel It', danger: true });
+            if (!ok) return;
 
             const form = e.target;
             const btn  = form.querySelector('button[type="submit"]');

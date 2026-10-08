@@ -352,7 +352,7 @@
                                         <a href="{{ route('counselor.video.call', $call->call_id) }}" class="btn-action-premium" style="background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: #10b981;">
                                             <i class="ph-bold ph-video-camera"></i> Join
                                         </a>
-                                        <form action="{{ route('counselor.emergency.calls.end', $call->call_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to end this emergency call session?');">
+                                        <form action="{{ route('counselor.emergency.calls.end', $call->call_id) }}" method="POST" style="display: inline;" onsubmit="App.confirmSubmit(event, { title: 'End this call?', message: 'The student will be disconnected and the session will be saved to history.', confirmText: 'Yes, End Call', danger: true }); return false;">
                                             @csrf
                                             <button type="submit" class="btn-action-premium" style="background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #ef4444; cursor: pointer;">
                                                 <i class="ph-bold ph-phone-x"></i> End

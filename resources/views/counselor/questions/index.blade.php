@@ -54,7 +54,7 @@
                 <input type="text" name="question_text" value="{{ $q->question_text }}" required maxlength="2000" style="padding: 0.6rem 0.9rem; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text);">
                 <div style="display: flex; gap: 0.5rem;">
                     <button type="submit" title="Save changes" style="background: rgba(16,185,129,0.1); color: #059669; border: 1.5px solid rgba(16,185,129,0.3); padding: 0.55rem 0.9rem; border-radius: 10px; font-weight: 800; cursor: pointer;">Save</button>
-                    <button type="button" title="Remove question" onclick="if(confirm('Remove this question from the check-in?')){ document.getElementById('del-q-{{ $q->question_id }}').submit(); }" style="background: rgba(239,68,68,0.08); color: #ef4444; border: 1.5px solid rgba(239,68,68,0.25); padding: 0.55rem 0.9rem; border-radius: 10px; font-weight: 800; cursor: pointer;">Remove</button>
+                    <button type="button" title="Remove question" onclick="removeQuestion({{ $q->question_id }})" style="background: rgba(239,68,68,0.08); color: #ef4444; border: 1.5px solid rgba(239,68,68,0.25); padding: 0.55rem 0.9rem; border-radius: 10px; font-weight: 800; cursor: pointer;">Remove</button>
                 </div>
             </form>
             <form id="del-q-{{ $q->question_id }}" method="POST" action="{{ route('counselor.questions.destroy', $q->question_id) }}" style="display: none;">
@@ -67,4 +67,11 @@
         <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 1.25rem;">Note: removing questions changes future scoring ranges. Past check-ins keep their saved scores.</p>
     </div>
 </div>
+
+<script>
+async function removeQuestion(id) {
+    const ok = await App.confirm({ title: 'Remove this question?', message: 'Students will no longer answer it in new check-ins. Past results keep their scores.', confirmText: 'Yes, Remove', danger: true });
+    if (ok) document.getElementById('del-q-' + id).submit();
+}
+</script>
 @endsection
