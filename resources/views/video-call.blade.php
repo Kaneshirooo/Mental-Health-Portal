@@ -31,6 +31,13 @@
         </div>
     </div>
 
+    <!-- Mic/Camera status bar (hidden unless media fails) -->
+    <div id="mediaAlertBar" style="display: none; align-items: center; gap: 0.75rem; padding: 0.85rem 1.25rem; border-radius: 16px; background: rgba(239,68,68,0.08); border: 1.5px solid rgba(239,68,68,0.35); color: #b91c1c; font-size: 0.88rem; font-weight: 600;">
+        <span style="font-size: 1.2rem;">🎙️</span>
+        <span id="mediaAlertText" style="flex: 1;">Microphone/camera unavailable.</span>
+        <button onclick="retryMedia()" style="background: #ef4444; color: white; border: none; padding: 0.55rem 1.1rem; border-radius: 10px; font-weight: 800; font-size: 0.78rem; cursor: pointer; white-space: nowrap;">Retry mic/camera</button>
+    </div>
+
     <!-- Main View Area -->
     <div id="mainViewContainer" style="flex: 1; position: relative; border-radius: 32px; overflow: hidden; background: #020617; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 40px 100px rgba(0,0,0,0.4);">
         
@@ -333,6 +340,8 @@
         }
         if (yesBtn) yesBtn.disabled = false;
         if (noBtn) noBtn.disabled = false;
+        // Now that the question is answered, start mic/camera + call flow.
+        startSessionMedia();
     }
     const RTC_CONFIG = {
         // Multiple STUN servers for faster, more reliable ICE candidate gathering
@@ -394,17 +403,50 @@
         if (overlayEl) {
             overlayEl.addEventListener('click', () => {
                 const remoteVid = document.getElementById('remoteVideo');
-                if (remoteVid) remoteVid.play().catch(() => {});
+                if (remoteVid) {
+                    remoteVid.muted = false;
+                    remoteVid.play().catch(() => {});
+                }
             });
         }
-        
+
+        // One-time unlock: browsers block remote AUDIO until the user interacts.
+        // The first click/tap anywhere unmutes the remote stream.
+        const unlockRemoteAudio = () => {
+            const remoteVid = document.getElementById('remoteVideo');
+            if (remoteVid && remoteVid.srcObject) {
+                remoteVid.muted = false;
+                remoteVid.volume = 1.0;
+                remoteVid.play().catch(() => {});
+            }
+        };
+        window.addEventListener('click', unlockRemoteAudio, { once: true, passive: true });
+        window.addEventListener('touchstart', unlockRemoteAudio, { once: true, passive: true });
+
         // Start real-time chat & signal polling immediately (do not block on local media permissions)
         startPolling();
-        
-        // Init media (mic + camera)
-        mediaInitPromise = initLocalMedia();
+
+        // Students who haven't answered the recording question yet choose first —
+        // the browser mic/camera prompt would otherwise pop up behind the modal.
+        if (IS_STUDENT && recordingConsent === null) {
+            return;
+        }
+
+        await startSessionMedia();
+    });
+
+    // Shared entry point for local media + call flow (called on load, after
+    // consent, and on retry). Safe to call multiple times.
+    let sessionMediaStarted = false;
+    async function startSessionMedia() {
+        if (!mediaInitPromise) {
+            mediaInitPromise = initLocalMedia();
+        }
         await mediaInitPromise;
-        
+
+        if (sessionMediaStarted) return;
+        sessionMediaStarted = true;
+
         // If already active or counselor/admin joining, start call flow immediately
         if ("{{ $call->status }}" === 'active' || IS_COUNSELOR) {
             await startCallFlow();
@@ -412,7 +454,7 @@
                 sendSignal({ signal_type: 'peer_joined' });
             }, 100);
         }
-    });
+    }
 
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
@@ -429,7 +471,56 @@
         }, 1000);
     }
 
-    async function initLocalMedia() {
+    // ── Mic/Camera status bar ──
+    function showMediaAlert(text) {
+        const bar = document.getElementById('mediaAlertBar');
+        const label = document.getElementById('mediaAlertText');
+        if (label) label.textContent = text;
+        if (bar) bar.style.display = 'flex';
+    }
+    function hideMediaAlert() {
+        const bar = document.getElementById('mediaAlertBar');
+        if (bar) bar.style.display = 'none';
+    }
+    async function retryMedia() {
+        hideMediaAlert();
+        mediaInitPromise = null;
+        mediaInitPromise = initLocalMedia(true);
+        await mediaInitPromise;
+        // If the call is already live, push the recovered tracks to the other side.
+        renegotiateIfNeeded();
+    }
+
+    // If our mic/camera arrived AFTER the peer connection was created (slow
+    // permission, retry), the other side won't get them without a fresh offer.
+    // Only the student sends offers in this call design.
+    async function renegotiateIfNeeded() {
+        if (!IS_STUDENT || !peerConnection || !localStream) return;
+        if (!peerConnection.localDescription) return;
+        if (!['connected', 'completed', 'stable'].includes(peerConnection.iceConnectionState) &&
+            peerConnection.signalingState !== 'stable') return;
+        try {
+            ensureLocalTracksAdded();
+            const offer = await peerConnection.createOffer({
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: true
+            });
+            await peerConnection.setLocalDescription(offer);
+            sendSignal({ signal_type: 'offer', sdp: offer.sdp });
+        } catch (e) {
+            console.log('Renegotiation info:', e?.message || e);
+        }
+    }
+
+    async function initLocalMedia(isRetry = false) {
+        // getUserMedia only exists in secure contexts (HTTPS or localhost).
+        // On plain HTTP it is undefined and calls can never work.
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            const msg = 'Mic/camera are blocked because this page is not on a secure (HTTPS) connection. Please open the site with https:// and try again.';
+            showMediaAlert(msg);
+            if (window.App) App.toast({ type: 'error', title: 'Insecure Connection', message: msg });
+            return;
+        }
         try {
             const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 900;
             const stream = await navigator.mediaDevices.getUserMedia({
@@ -443,16 +534,27 @@
                 }
             });
             localStream = stream;
-            
+
             // Ensure audio tracks are explicitly enabled
             localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+
+            const hasMic = localStream.getAudioTracks().length > 0;
+            const hasCam = localStream.getVideoTracks().length > 0;
+            if (!hasMic) {
+                showMediaAlert('No microphone found — the other person cannot hear you. Connect a mic and press Retry.');
+            } else if (!hasCam) {
+                showMediaAlert('Camera not found — continuing with microphone only. You can still talk and hear.');
+                setTimeout(hideMediaAlert, 6000);
+            } else {
+                hideMediaAlert();
+            }
 
             const localVid = document.getElementById('localVideo');
             if (localVid) localVid.srcObject = localStream;
 
             // If peer connection already exists, add tracks
             if (peerConnection) {
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+                ensureLocalTracksAdded();
             }
 
             // Setup mic audio level meter for visual confirmation
@@ -460,13 +562,23 @@
 
         } catch (err) {
             console.error('Media permission error:', err);
-            const errMsg = err.name === 'NotAllowedError'
-                ? 'Microphone/camera permission was denied. Please allow access in your browser settings and reload.'
-                : err.name === 'NotFoundError'
-                ? 'No microphone or camera detected. Please connect a device.'
-                : 'Could not access media: ' + err.message;
-
-            if (window.App) App.toast({ type: 'error', title: 'Media Access Error', message: errMsg });
+            if (err && err.name === 'NotAllowedError') {
+                const msg = 'Microphone/camera permission was denied, so there is no mic or sound. Click the camera/mic icon in your browser address bar, allow access, then press Retry mic/camera.';
+                showMediaAlert(msg);
+                if (window.App) App.toast({ type: 'error', title: 'Permission Needed', message: msg });
+            } else if (err && err.name === 'NotFoundError') {
+                const msg = 'No microphone or camera detected on this device. Please connect one and press Retry.';
+                showMediaAlert(msg);
+                if (window.App) App.toast({ type: 'error', title: 'No Device Found', message: msg });
+            } else if (err && (err.name === 'NotReadableError' || err.name === 'AbortError')) {
+                const msg = 'Your mic/camera is busy in another app (Zoom, Meet, TikTok). Close the other app, then press Retry mic/camera.';
+                showMediaAlert(msg);
+                if (window.App) App.toast({ type: 'error', title: 'Device Busy', message: msg });
+            } else {
+                const msg = 'Could not access mic/camera: ' + (err?.message || err);
+                showMediaAlert(msg);
+                if (window.App) App.toast({ type: 'error', title: 'Media Access Error', message: msg });
+            }
 
             // Fallback: Try audio-only if video failed
             try {
@@ -474,13 +586,14 @@
                 localStream = audioStream;
                 localStream.getAudioTracks().forEach(t => t.enabled = micOn);
                 if (peerConnection) {
-                    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+                    ensureLocalTracksAdded();
                 }
                 setupMicAudioMeter(localStream);
-                if (window.App) App.toast({ type: 'info', title: 'Audio Mode Active', message: 'Camera failed, connected with Microphone only.' });
+                showMediaAlert('Camera unavailable — connected with microphone only. The other person can hear you.');
+                setTimeout(hideMediaAlert, 6000);
+                if (window.App) App.toast({ type: 'info', title: 'Audio Mode Active', message: 'Camera failed, connected with microphone only.' });
             } catch (e2) {
                 console.error('Audio-only fallback error:', e2);
-                if (window.App) App.toast({ type: 'error', title: 'Microphone Failed', message: 'Could not access microphone device.' });
             }
         }
     }
@@ -604,7 +717,11 @@
                 remoteVideo.muted = false; // Ensure remote audio is UNMUTED
                 remoteVideo.volume = 1.0;
                 remoteVideo.setAttribute('playsinline', 'true');
-                remoteVideo.play().catch(err => console.log("Remote play error:", err));
+                remoteVideo.play().catch(() => {
+                    // Autoplay with sound is blocked until the user taps —
+                    // tell them once instead of staying silent.
+                    if (window.App) App.toast({ type: 'info', title: 'Tap for Sound', message: 'Tap the video once to enable sound.' });
+                });
             }
             const overlay = document.getElementById('remoteOverlay');
             if (overlay) overlay.style.display = 'none';
