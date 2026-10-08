@@ -113,7 +113,7 @@ class AppointmentController extends Controller
                 'New appointment request',
                 auth()->user()->full_name . ' has requested an appointment on ' . $scheduledAt->format('l, F d, Y \a\t g:i A') . '.'
                     . "\nReason: " . ($request->reason ?: 'Not specified'),
-                route('counselor.appointments.index'),
+                route('counselor.dashboard'),
                 'Review Appointments'
             );
         }

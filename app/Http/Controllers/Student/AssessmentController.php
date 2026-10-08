@@ -141,7 +141,7 @@ class AssessmentController extends Controller
                     \App\Services\CounselorMailer::allStaff(),
                     "Student needs assessment review ({$riskLevel})",
                     "{$studentName} completed a check-in with a {$riskLevel} result (low mood {$depressionScore}/27, worries {$anxietyScore}/21, pressure {$stressScore}/21). Please review their record and reach out.",
-                    route('admin.reports.index'),
+                    route('counselor.dashboard'),
                     'Review Records'
                 );
             }
