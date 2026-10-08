@@ -573,11 +573,19 @@
                             {{ $latest?->assessment_date?->format('M d, Y') ?? '—' }}
                         </td>
                         <td style="padding:1.1rem 1.25rem; text-align:right; border-radius:0 20px 20px 0;">
+                            <div style="display: inline-flex; gap: 0.5rem; align-items: center;">
+                            @if(in_array($risk, ['High', 'Critical'], true))
+                            <button onclick="openCallModal({{ $student->user_id }}, '{{ e($student->full_name) }}', '{{ $risk }}')"
+                               title="Start a video call with this student now"
+                               style="display:inline-flex; align-items:center; gap:0.4rem; background:#ef4444; color:white; border:none; font-weight:800; font-size:0.72rem; text-transform:uppercase; padding:0.55rem 1rem; border-radius:12px; cursor:pointer; letter-spacing:0.04em;"
+                               ><i class="ph-bold ph-phone-call"></i> Call</button>
+                            @endif
                             <a href="{{ route('counselor.students.show', $student->user_id) }}"
                                style="display:inline-flex; align-items:center; gap:0.4rem; background:var(--primary-glow); color:var(--primary); border:1.5px solid rgba(16,185,129,0.3); font-weight:800; font-size:0.72rem; text-transform:uppercase; padding:0.55rem 1.1rem; border-radius:12px; text-decoration:none; transition:all 0.2s ease; letter-spacing:0.04em;"
                                onmouseover="this.style.background='var(--primary)';this.style.color='white';"
                                onmouseout="this.style.background='var(--primary-glow)';this.style.color='var(--primary)';"
                                ><i class="ph-bold ph-arrow-square-out"></i> View</a>
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -664,10 +672,97 @@
     </div>
 </div>
 
+<!-- Call Student Confirm Modal -->
+<div id="callModal" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(15,23,42,0.55); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;" onclick="if(event.target===this)closeCallModal()">
+    <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.5rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);">
+        <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(239,68,68,0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem;">
+            <i class="ph-bold ph-phone-call"></i>
+        </div>
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--text); margin: 0 0 0.5rem;">Call this student now?</h3>
+        <p style="color: var(--text); font-weight: 800; font-size: 1.05rem; margin: 0 0 0.25rem;" id="callModalName">Student</p>
+        <p style="margin: 0 0 1rem;"><span id="callModalRisk" style="padding: 0.3rem 0.85rem; border-radius: 100px; font-weight: 800; font-size: 0.68rem; text-transform: uppercase;">Critical</span></p>
+        <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; margin: 0 0 2rem;">They will be notified immediately and asked to join your video call.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <button onclick="closeCallModal()" style="padding: 0.9rem; border-radius: 14px; font-weight: 800; cursor: pointer; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text);">Cancel</button>
+            <button id="callModalConfirm" onclick="confirmCallStudent()" style="padding: 0.9rem; border-radius: 14px; font-weight: 800; cursor: pointer; background: #ef4444; border: none; color: white;">📞 Call Now</button>
+        </div>
+    </div>
+</div>
+
+<!-- Student Offline Notice -->
+<div id="offlineModal" style="display: none; position: fixed; inset: 0; z-index: 10001; background: rgba(2,6,23,0.7); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;" onclick="if(event.target===this)document.getElementById('offlineModal').style.display='none'">
+    <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.5rem; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(100,116,139,0.12); color: #64748b; display: flex; align-items: center; justify-content: center; font-size: 2.25rem; margin: 0 auto 1.25rem;">
+            <i class="ph-bold ph-user-minus"></i>
+        </div>
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: #b91c1c; margin: 0 0 0.5rem;">Student Is Not Online</h3>
+        <p style="color: var(--text); font-weight: 700; margin: 0 0 0.75rem;" id="offlineModalName">This student</p>
+        <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; margin: 0 0 2rem;">They haven't opened the portal recently, so the call can't connect right now. We've already notified them by email and in-app alert — try again later or send them a Quick Note.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <button onclick="document.getElementById('offlineModal').style.display='none'" style="padding: 0.9rem; border-radius: 14px; font-weight: 800; cursor: pointer; background: var(--surface-2); border: 1.5px solid var(--border); color: var(--text);">Close</button>
+            <a href="{{ route('counselor.notes.index') }}" style="padding: 0.9rem; border-radius: 14px; font-weight: 800; background: var(--primary); color: white; text-decoration: none; display: flex; align-items: center; justify-content: center;">Send a Quick Note</a>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script>
+let pendingCall = { studentId: null, studentName: '', risk: '' };
+
+function openCallModal(studentId, studentName, risk) {
+    pendingCall = { studentId, studentName, risk };
+    document.getElementById('callModalName').textContent = studentName;
+    const riskBadge = document.getElementById('callModalRisk');
+    riskBadge.textContent = risk;
+    riskBadge.style.background = risk === 'Critical' ? 'rgba(239,68,68,0.12)' : 'rgba(249,115,22,0.12)';
+    riskBadge.style.color = risk === 'Critical' ? '#ef4444' : '#f97316';
+    riskBadge.style.border = '1px solid ' + (risk === 'Critical' ? 'rgba(239,68,68,0.35)' : 'rgba(249,115,22,0.35)');
+    document.getElementById('callModal').style.display = 'flex';
+}
+
+function closeCallModal() {
+    document.getElementById('callModal').style.display = 'none';
+    pendingCall = { studentId: null, studentName: '', risk: '' };
+}
+
+async function confirmCallStudent() {
+    const { studentId } = pendingCall;
+    if (!studentId) return;
+    const btn = document.getElementById('callModalConfirm');
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Calling…';
+    try {
+        const res = await fetch("{{ url('/counselor/emergency-calls/call-student') }}/" + studentId, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            }
+        });
+        const data = await res.json();
+        if (data.success && data.redirect) {
+            window.location.href = data.redirect;
+        } else if (data.offline) {
+            closeCallModal();
+            document.getElementById('offlineModalName').textContent = pendingCall.studentName || 'This student';
+            document.getElementById('offlineModal').style.display = 'flex';
+            btn.disabled = false;
+            btn.innerHTML = original;
+        } else {
+            App.toast({ type: 'error', title: 'Cannot Call', message: data.error || 'Could not start the call.' });
+            btn.disabled = false;
+            btn.innerHTML = original;
+        }
+    } catch (e) {
+        App.toast({ type: 'error', title: 'Network Error', message: 'Could not reach the server.' });
+        btn.disabled = false;
+        btn.innerHTML = original;
+    }
+}
 document.addEventListener('DOMContentLoaded', () => {
     // GSAP Entrance Animations
     if (window.gsap) {
