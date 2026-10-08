@@ -307,6 +307,49 @@ class StudentController extends Controller
     }
 
     /**
+     * Show one check-in with the exact answers the student gave.
+     */
+    public function showAssessment(User $student, $score_id): View
+    {
+        if (!$student->isStudent()) {
+            abort(404);
+        }
+
+        $score = AssessmentScore::where('score_id', $score_id)
+            ->where('user_id', $student->user_id)
+            ->firstOrFail();
+
+        $responses = \App\Models\StudentResponse::with('question')
+            ->where('user_id', $student->user_id)
+            ->where('score_id', $score->score_id)
+            ->get();
+
+        // Fallback for check-ins taken before answers were linked:
+        // use answers saved closest to this result's date.
+        if ($responses->isEmpty() && $score->assessment_date) {
+            $target = $score->assessment_date->timestamp;
+            $responses = \App\Models\StudentResponse::with('question')
+                ->where('user_id', $student->user_id)
+                ->whereNull('score_id')
+                ->orderBy('assessment_date', 'desc')
+                ->limit(80)
+                ->get()
+                ->sortBy(fn($r) => abs(optional($r->assessment_date)->timestamp - $target))
+                ->take(40)
+                ->values();
+        }
+
+        $scaleLabels = [
+            0 => 'Not at all',
+            1 => 'Several days',
+            2 => 'More than half the days',
+            3 => 'Nearly every day',
+        ];
+
+        return view('counselor.students.assessment_show', compact('student', 'score', 'responses', 'scaleLabels'));
+    }
+
+    /**
      * Display a specific AI session summary.
      */
     public function showSession(User $student, $pre_id): View

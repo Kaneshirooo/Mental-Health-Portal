@@ -17,6 +17,7 @@ class StudentResponse extends Model
     protected $fillable = [
         'user_id',
         'question_id',
+        'score_id',
         'response_value',
         'assessment_date',
     ];

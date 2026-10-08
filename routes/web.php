@@ -120,6 +120,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/students/{student}/note', [\App\Http\Controllers\Counselor\StudentController::class, 'addNote'])->name('students.note');
         Route::post('/students/{student}/ai-summary', [\App\Http\Controllers\Counselor\StudentController::class, 'aiSummary'])->name('students.ai-summary');
         Route::get('/students/{student}/session/{pre_id}', [\App\Http\Controllers\Counselor\StudentController::class, 'showSession'])->name('students.session.show');
+        Route::get('/students/{student}/assessment/{score}', [\App\Http\Controllers\Counselor\StudentController::class, 'showAssessment'])->name('students.assessment.show');
         Route::get('/students/{student}/export', [\App\Http\Controllers\Counselor\StudentController::class, 'export'])->name('students.export');
 
         Route::get('/questions', [\App\Http\Controllers\Counselor\AssessmentQuestionController::class, 'index'])->name('questions.index');

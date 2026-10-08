@@ -167,7 +167,8 @@
                             <tr style="text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.65rem; color: var(--text-muted); font-weight: 800;">
                                 <th style="padding: 1rem 0; text-align: left;">Date</th>
                                 <th style="padding: 1rem 0; text-align: center;">Diagnostic Score</th>
-                                <th style="padding: 1rem 0; text-align: right;">Risk Classification</th>
+                                <th style="padding: 1rem 0; text-align: center;">Risk Classification</th>
+                                <th style="padding: 1rem 0; text-align: right;">Answers</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -181,7 +182,7 @@
                                         {{ $r?->overall_score ?? 0 }}<span style="font-size: 0.75rem; opacity: 0.4; font-weight: 700;">/100</span>
                                     </div>
                                 </td>
-                                <td style="padding: 1.25rem 1rem; text-align: right; border-top-right-radius: 12px; border-bottom-right-radius: 12px;">
+                                <td style="padding: 1.25rem 1rem; text-align: center;">
                                     @php
                                         $riskClass = strtolower($r?->risk_level ?? 'low');
                                         $riskColor = $riskClass === 'critical' ? '#ef4444' : ($riskClass === 'high' ? '#f97316' : ($riskClass === 'moderate' ? '#f59e0b' : '#10b981'));
@@ -189,6 +190,9 @@
                                     <span style="padding: 0.4rem 0.85rem; border-radius: 100px; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; background: var(--surface-3); color: {{ $riskColor }}; border: 1.5px solid currentColor;">
                                         {{ $r?->risk_level ?? 'LOW' }}
                                     </span>
+                                </td>
+                                <td style="padding: 1.25rem 1rem; text-align: right; border-top-right-radius: 12px; border-bottom-right-radius: 12px;">
+                                    <a href="{{ route('counselor.students.assessment.show', [$student->user_id, $r?->score_id]) }}" style="display: inline-block; padding: 0.45rem 0.9rem; border-radius: 10px; background: var(--primary-glow); border: 1.5px solid var(--primary-light); color: var(--primary); font-weight: 800; font-size: 0.68rem; text-transform: uppercase; text-decoration: none;">View</a>
                                 </td>
                             </tr>
                             @endforeach

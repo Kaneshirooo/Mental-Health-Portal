@@ -36,6 +36,7 @@ class AssessmentController extends Controller
 
         DB::beginTransaction();
         try {
+            $createdResponseIds = [];
             foreach ($questions as $question) {
                 $key = 'q_' . $question->question_id;
                 if ($request->has($key)) {
@@ -43,12 +44,13 @@ class AssessmentController extends Controller
                     $totalScoreAll += $val;
 
                     // Save individual response
-                    StudentResponse::create([
+                    $resp = StudentResponse::create([
                         'user_id' => $userId,
                         'question_id' => $question->question_id,
                         'response_value' => $val,
                         'assessment_date' => now(),
                     ]);
+                    $createdResponseIds[] = $resp->response_id;
 
                     $cat = strtolower(trim($question->category));
                     if ($cat === 'depression') $depressionScore += $val;
@@ -86,6 +88,13 @@ class AssessmentController extends Controller
                 'ai_summary' => "Getting your summary ready...",
                 'assessment_date' => now(),
             ]);
+
+            // Link this check-in's answers to the saved result so counselors
+            // can view exactly what the student answered.
+            if (!empty($createdResponseIds)) {
+                StudentResponse::whereIn('response_id', $createdResponseIds)
+                    ->update(['score_id' => $score->score_id]);
+            }
 
             // -- NEW: AI CLINICAL ANALYSIS (JUSTIFYING CAPSTONE TITLE) --
             // Fetch historical data for Longitudinal Analysis
