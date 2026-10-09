@@ -22,6 +22,29 @@ class EmergencyCallController extends Controller
 
         // Check if at least one counselor is available AND currently online in the system
         if (!User::hasAvailableOnlineCounselors()) {
+            // No one online — still tell the counselors (in-app + Gmail) so they
+            // see the missed attempt when they return.
+            $offlineStaff = User::whereIn('user_type', ['counselor', 'admin'])
+                ->where('is_emergency_available', true)
+                ->get();
+
+            foreach ($offlineStaff as $member) {
+                Notification::create([
+                    'user_id' => $member->user_id,
+                    'title' => '📞 Missed Call Attempt',
+                    'message' => "{$student->full_name} tried to call while no counselor was online. Please check in with them soon.",
+                    'type' => 'emergency',
+                ]);
+            }
+
+            \App\Services\CounselorMailer::send(
+                $offlineStaff,
+                'A student tried to call while you were away',
+                "{$student->full_name} tried to start a video call, but no counselor was online. Please check in with them when you're back.",
+                route('counselor.dashboard'),
+                'Open Dashboard'
+            );
+
             return response()->json([
                 'success' => false,
                 'message' => 'No counselors are currently online or using the system. Please schedule an appointment or reach out to emergency hotlines.',
