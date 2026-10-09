@@ -423,7 +423,6 @@
             </form>
 
             <div class="signup-prompt staggered">
-                <div style="font-weight: 700;">New here? Choose how to join 👇</div>
                 <div class="role-pick">
                     <a href="{{ route('register') }}" class="role-card">
                         <span class="role-icon" style="background: rgba(16,185,129,0.12);">🎒</span>
