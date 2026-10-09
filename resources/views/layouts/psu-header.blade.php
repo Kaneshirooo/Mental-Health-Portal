@@ -23,11 +23,11 @@
     .psu-header {
         position: relative;
         overflow: hidden;
-        border-radius: 20px;
-        background: linear-gradient(100deg, #141b5c 0%, #232f86 45%, #31409f 75%, #3d4fb4 100%);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        box-shadow: var(--shadow-sm, 0 4px 12px rgba(0,0,0,0.06));
-        margin-bottom: 1.75rem;
+        border-radius: 28px;
+        background: linear-gradient(100deg, #10175a 0%, #232f86 42%, #33419f 72%, #4555c2 100%);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 18px 45px rgba(28, 37, 110, 0.28);
+        margin-bottom: 2rem;
     }
     .psu-waves {
         position: absolute;
@@ -35,41 +35,48 @@
         width: 100%;
         height: 100%;
         pointer-events: none;
+        animation: psu-drift 14s ease-in-out infinite alternate;
+    }
+    @keyframes psu-drift {
+        from { transform: translateX(-1.5%); }
+        to { transform: translateX(1.5%); }
     }
     .psu-header-inner {
         position: relative;
         z-index: 1;
         display: flex;
         align-items: center;
-        gap: 1rem;
-        padding: 0.85rem 1.5rem;
+        gap: 1.35rem;
+        padding: 1.4rem 2rem;
     }
     .psu-seal {
-        width: 54px;
-        height: 54px;
+        width: 84px;
+        height: 84px;
         border-radius: 50%;
         object-fit: cover;
-        border: 2px solid rgba(255, 255, 255, 0.85);
-        box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.55);
+        border: 3px solid rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.55), 0 10px 25px rgba(0, 0, 0, 0.35);
         background: white;
         flex-shrink: 0;
     }
     .psu-names { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
     .psu-uni {
         font-family: Georgia, 'Times New Roman', serif;
-        font-size: 1.35rem;
-        letter-spacing: 0.06em;
+        font-size: 2rem;
+        letter-spacing: 0.08em;
         color: #ffffff;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
     .psu-sub {
-        font-size: 0.68rem;
+        font-size: 0.78rem;
         font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 0.28em;
+        letter-spacing: 0.34em;
         color: #ffd54f;
+        margin-top: 0.25rem;
     }
     .psu-header::after {
         content: '';
@@ -77,13 +84,13 @@
         left: 0;
         right: 0;
         bottom: 0;
-        height: 4px;
+        height: 5px;
         background: linear-gradient(90deg, #ffc107, #ffca28 60%, #ffe082);
     }
     @media (max-width: 640px) {
-        .psu-uni { font-size: 1rem; }
-        .psu-seal { width: 44px; height: 44px; }
-        .psu-header-inner { padding: 0.7rem 1rem; }
-        .psu-sub { letter-spacing: 0.18em; }
+        .psu-uni { font-size: 1.15rem; white-space: normal; }
+        .psu-seal { width: 58px; height: 58px; }
+        .psu-header-inner { padding: 1rem 1.25rem; gap: 0.9rem; }
+        .psu-sub { letter-spacing: 0.2em; font-size: 0.65rem; }
     }
 </style>
