@@ -273,7 +273,7 @@
                 <p style="color: var(--text-muted); font-size: 1rem; font-weight: 500; margin-top: 0.35rem;">Direct student check-ins and support messages.</p>
             </div>
             <div style="background: var(--surface-2); padding: 0.5rem 1rem; border-radius: 100px; font-weight: 800; font-size: 0.75rem; color: var(--primary);">
-                {{ count($anon_notes) }} ACTIVE DIALOGS
+                {{ $anon_notes->total() }} ACTIVE DIALOGS
             </div>
         </header>
 
@@ -297,6 +297,7 @@
                 </div>
             @endforeach
         </div>
+        @include('components.simple-pager', ['paginator' => $anon_notes, 'label' => 'messages'])
     </div>
 </div>
 

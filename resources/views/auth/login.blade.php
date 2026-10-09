@@ -423,6 +423,7 @@
             </form>
 
             <div class="signup-prompt staggered">
+                <div style="font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--text); margin-bottom: 0.15rem;">Register here</div>
                 <div class="role-pick">
                     <a href="{{ route('register') }}" class="role-card">
                         <span class="role-icon" style="background: rgba(16,185,129,0.12);">🎒</span>

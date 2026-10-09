@@ -58,13 +58,21 @@ class DashboardController extends Controller
             ['path' => $request->url(), 'pageName' => 'page']
         );
 
-        // 3. Anonymous Student Feedback (Student Voice)
-        $anon_notes = AnonymousNote::whereIn('status', ['new', 'read', 'replied'])
+        // 3. Anonymous Student Feedback (Student Voice) — 9 per page (3×3 grid).
+        $voicePage = max(1, (int) $request->input('voice_page', 1));
+        $voiceAll = AnonymousNote::whereIn('status', ['new', 'read', 'replied'])
             ->with(['messages' => function($q) {
                 $q->orderBy('created_at', 'asc');
             }])
             ->orderBy('created_at', 'desc')
             ->get();
+        $anon_notes = new \Illuminate\Pagination\LengthAwarePaginator(
+            $voiceAll->forPage($voicePage, 9),
+            $voiceAll->count(),
+            9,
+            $voicePage,
+            ['path' => $request->url(), 'pageName' => 'voice_page']
+        );
 
         // 4. Clinical Stats for Admin Overview
         $latestAssessmentsCount = DB::table('assessment_scores as a1')
