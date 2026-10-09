@@ -145,6 +145,7 @@
 @endpush
 
 @section('content')
+@include('components.note-card-styles')
 <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 2.5rem 2rem 5rem;">
     
     <!-- Admin Header -->
@@ -277,24 +278,9 @@
             </div>
         </header>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(550px, 1fr)); gap: 2.5rem;">
             @foreach($anon_notes as $note)
-                <div style="background: white; border: 1px solid var(--border); border-radius: 24px; padding: 1.75rem; box-shadow: 0 10px 20px rgba(0,0,0,0.02);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                        <span style="font-size: 0.65rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em;">{{ $note->student?->full_name ?? 'SYSTEM' }}</span>
-                        <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700;">{{ $note->created_at->diffForHumans() }}</span>
-                    </div>
-                    <div style="font-size: 0.92rem; line-height: 1.6; color: var(--text); font-weight: 500; min-height: 3.2rem;">
-                        {{ \Illuminate\Support\Str::limit($note->messages->where('sender_type', 'student')->last()?->message_text, 120) }}
-                    </div>
-                    <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; gap: 0.4rem;">
-                            @php $c = count($note->messages); @endphp
-                            <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-muted);">{{ $c }} msg</span>
-                        </div>
-                        <a href="{{ route('counselor.dashboard') }}" style="font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; text-decoration: none;">Message →</a>
-                    </div>
-                </div>
+                @include('components.note-card', ['note' => $note])
             @endforeach
         </div>
         @include('components.simple-pager', ['paginator' => $anon_notes, 'label' => 'messages'])
@@ -393,7 +379,7 @@ async function confirmCallStudent() {
 document.addEventListener('DOMContentLoaded', () => {
     if (window.gsap) {
         gsap.from('.staggered', { y: 60, opacity: 0, duration: 1.4, stagger: 0.2, ease: "expo.out", clearProps: "all" });
-        
+
         // Premium Card Interaction
         document.querySelectorAll('.admin-card-premium').forEach(card => {
             card.addEventListener('mouseenter', () => {
@@ -405,5 +391,132 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+/** Read a card's student messages aloud **/
+async function speakMessage(elementId, btn) {
+    if (!btn) return;
+    const container = document.getElementById(elementId);
+    if (!container) return;
+
+    const studentMessages = Array.from(container.querySelectorAll('.bubble-student'))
+        .map(el => el.textContent.trim())
+        .join(". ");
+
+    if (!studentMessages) return;
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(studentMessages);
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+    if (voice) utterance.voice = voice;
+
+    window.speechSynthesis.speak(utterance);
+
+    const originalIcon = btn.innerHTML;
+    btn.innerHTML = '<i class="ph-bold ph-wave-sine"></i>';
+    utterance.onend = () => { btn.innerHTML = originalIcon; };
+}
+
+async function suggestReply(noteId, event) {
+    const textarea = document.getElementById('reply_textarea_' + noteId);
+    if (!textarea) return;
+
+    const btn = event.currentTarget;
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = 'Analyzing...';
+    btn.disabled = true;
+
+    const card = textarea.closest('.note-card');
+    const studentMessages = Array.from(card.querySelectorAll('.bubble-student'));
+    let studentMsg = studentMessages.length > 0 ? studentMessages[studentMessages.length-1].textContent.trim() : "";
+
+    if (!studentMsg) {
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+        return;
+    }
+
+    try {
+        const res = await fetch("{{ route('counselor.ai.suggest') }}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': "{{ csrf_token() }}" },
+            body: JSON.stringify({ note_text: studentMsg })
+        });
+        const data = await res.json();
+
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+
+        if (data.success) {
+            let i = 0;
+            textarea.value = "";
+            const text = data.suggestion;
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    textarea.value += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                }
+            }, 8);
+            textarea.focus();
+        }
+    } catch(err) {
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+    }
+}
+
+async function submitReply(noteId, event) {
+    event.preventDefault();
+    const form = event.target;
+    const btn = form.querySelector('button[type="submit"]');
+    const btnText = btn.querySelector('.btn-text');
+    const textarea = form.querySelector('textarea');
+    const fd = new FormData(form);
+
+    btn.disabled = true;
+    btnText.textContent = 'Sending...';
+
+    try {
+        const response = await fetch("{{ url('counselor/notes') }}/" + noteId + "/reply", {
+            method: 'POST',
+            body: fd,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            App.toast({ type: 'success', title: 'Reply Sent', message: 'Added to the conversation.' });
+            textarea.value = '';
+
+            const res = await fetch("{{ route('admin.dashboard') }}");
+            const html = await res.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const newContent = doc.querySelector('#note_content_' + noteId);
+            const oldContent = document.querySelector('#note_content_' + noteId);
+            if (newContent && oldContent) {
+                oldContent.innerHTML = newContent.innerHTML;
+                oldContent.scrollTop = oldContent.scrollHeight;
+            }
+        } else {
+            App.toast({ type: 'error', title: 'Send Failed', message: data.error || 'Check content.' });
+        }
+    } catch (err) {
+        App.toast({ type: 'error', title: 'Network Error', message: 'Connection failed.' });
+    } finally {
+        btn.disabled = false;
+        btnText.textContent = 'Send Reply';
+    }
+}
 </script>
 @endsection
