@@ -426,11 +426,11 @@
                 <div class="role-pick">
                     <a href="{{ route('register') }}" class="role-card">
                         <span class="role-icon" style="background: rgba(16,185,129,0.12);">🎒</span>
-                        <span><b>I'm a Student</b><small>Check-ins, chats & support</small></span>
+                        <span><b>I'm a Student</b></span>
                     </a>
                     <a href="{{ route('register.counselor') }}" class="role-card">
                         <span class="role-icon" style="background: rgba(99,102,241,0.12);">💼</span>
-                        <span><b>I'm a Counselor</b><small>Guide & support students</small></span>
+                        <span><b>I'm a Counselor</b></span>
                     </a>
                 </div>
             </div>
