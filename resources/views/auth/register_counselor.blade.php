@@ -3,6 +3,7 @@
 @section('title', 'Counselor Registration — Mental Health Portal')
 
 @section('content')
+@include('auth.psu-theme')
 <style>
     .creg-wrap { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
     .creg-card { background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2.5rem; box-shadow: var(--shadow-lg); }

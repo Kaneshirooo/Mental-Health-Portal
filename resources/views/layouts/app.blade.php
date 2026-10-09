@@ -202,6 +202,7 @@
     @auth
         @include('layouts.navigation')
         <main class="main-content">
+            @include('layouts.psu-header')
             <div id="content-reveal">
                 @yield('content')
             </div>

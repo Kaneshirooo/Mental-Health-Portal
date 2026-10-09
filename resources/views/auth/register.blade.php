@@ -3,6 +3,7 @@
 @section('title', 'Register — Mental Health Portal')
 
 @section('content')
+@include('auth.psu-theme')
 <style>
     body {
         background: var(--bg);
