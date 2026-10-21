@@ -177,7 +177,7 @@ class AssessmentController extends Controller
             $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment store failed', [
                 'error' => $e->getMessage(),
             ]);
-            return back()->with('error', 'Failed to save assessment: ' . $e->getMessage());
+            return back()->with('error', 'Failed to save your assessment. Please check your answers and try again.');
         }
     }
 

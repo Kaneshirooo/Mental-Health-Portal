@@ -33,12 +33,13 @@
         <form action="{{ route('register.counselor') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <label for="full_name">Full Name *</label>
-            <input type="text" id="full_name" name="full_name" value="{{ old('full_name') }}" required placeholder="Juan Dela Cruz">
+            <input type="text" id="full_name" name="full_name" value="{{ old('full_name') }}" maxlength="255" required placeholder="Juan Dela Cruz">
 
             <div class="creg-row">
                 <div>
                     <label for="staff_id">Staff / Faculty ID *</label>
-                    <input type="text" id="staff_id" name="staff_id" value="{{ old('staff_id') }}" required placeholder="e.g. EMP-2024-001">
+                    <input type="text" id="staff_id" name="staff_id" value="{{ old('staff_id') }}" maxlength="50" required placeholder="e.g. EMP-2024-001">
+                    <p style="font-size: 0.78rem; color: var(--text-dim); margin: -0.75rem 0 1.1rem; font-weight: 600;">Up to 50 characters.</p>
                 </div>
                 <div>
                     <label for="department">Department / College</label>
@@ -54,11 +55,11 @@
             <div class="creg-row">
                 <div>
                     <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="your@email.com">
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" maxlength="255" required placeholder="your@email.com">
                 </div>
                 <div>
                     <label for="contact_number">Contact Number *</label>
-                    <input type="tel" id="contact_number" name="contact_number" value="{{ old('contact_number') }}" required placeholder="09XXXXXXXXX">
+                    <input type="tel" id="contact_number" name="contact_number" value="{{ old('contact_number') }}" maxlength="20" required placeholder="09XXXXXXXXX">
                 </div>
             </div>
 

@@ -10,10 +10,28 @@ use Illuminate\Support\Facades\Hash;
 use App\Enums\UserRole;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
 use Carbon\Carbon;
 
 class RegistrationController extends Controller
 {
+    /**
+     * Normalize a user supplied string before it is stored:
+     * trim, drop control characters (newlines, NUL bytes, ...) and
+     * collapse repeated whitespace.
+     */
+    protected function clean(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $value) ?? '';
+        $value = preg_replace('/\s+/u', ' ', $value) ?? '';
+
+        return trim($value);
+    }
+
     public function showRegistrationForm()
     {
         return view('auth.register');
@@ -39,6 +57,11 @@ class RegistrationController extends Controller
             'password.min' => 'Password must be at least 6 characters long.',
             'password.confirmed' => 'Password confirmation does not match.',
             'contact_number.required' => 'Please provide your contact number.',
+            'full_name.max' => 'Your name must be 255 characters or fewer.',
+            'staff_id.max' => 'Your Staff / Faculty ID must be 50 characters or fewer.',
+            'email.max' => 'Your email address must be 255 characters or fewer.',
+            'contact_number.max' => 'Your contact number must be 20 characters or fewer.',
+            'department.max' => 'Your department must be 255 characters or fewer.',
         ]);
 
         try {
@@ -50,13 +73,13 @@ class RegistrationController extends Controller
             }
 
             User::create([
-                'full_name' => trim($request->full_name),
-                'roll_number' => trim($request->staff_id),
-                'email' => strtolower(trim($request->email)),
+                'full_name' => $this->clean($request->full_name),
+                'roll_number' => $this->clean($request->staff_id),
+                'email' => strtolower($this->clean($request->email)),
                 'password' => Hash::make($request->password),
                 'user_type' => UserRole::COUNSELOR->value,
-                'contact_number' => trim($request->contact_number),
-                'department' => $request->department ? trim($request->department) : null,
+                'contact_number' => $this->clean($request->contact_number),
+                'department' => $this->clean($request->department),
                 'id_proof_path' => $idProofPath,
                 'verification_status' => 'verified',
             ]);
@@ -64,11 +87,18 @@ class RegistrationController extends Controller
             DB::commit();
 
             return redirect()->route('login')->with('success', 'Counselor account created! You will be taken to the counselor dashboard when you log in.');
+        } catch (QueryException $e) {
+            DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Counselor Registration Database Error: ' . $e->getMessage(), ['exception' => $e]);
+
+            return back()->withInput()->withErrors([
+                'email' => 'We could not save your account because one of the details is too long or invalid. Please shorten the highlighted fields and try again.',
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             \Illuminate\Support\Facades\Log::error('Counselor Registration Error: ' . $e->getMessage());
 
-            return back()->withInput()->withErrors(['email' => 'Registration failed: ' . $e->getMessage()]);
+            return back()->withInput()->withErrors(['email' => 'Registration failed. Please check your details and try again.']);
         }
     }
 
@@ -109,6 +139,17 @@ class RegistrationController extends Controller
             'id_proof.required' => 'Please upload a photo of your school ID or proof of enrollment at PSU.',
             'guardian_name.required' => 'Please provide the name of your parent or guardian.',
             'guardian_contact.required' => 'Please provide a contact number for your parent or guardian.',
+            'full_name.max' => 'Your name must be 255 characters or fewer.',
+            'student_id.max' => 'Your Student / Faculty ID must be 50 characters or fewer.',
+            'email.max' => 'Your email address must be 255 characters or fewer.',
+            'contact_number.max' => 'Your contact number must be 20 characters or fewer.',
+            'department.max' => 'Your department must be 255 characters or fewer.',
+            'course.max' => 'Your course must be 255 characters or fewer.',
+            'semester.max' => 'Your semester must be 100 characters or fewer.',
+            'guardian_name.max' => 'Your guardian name must be 255 characters or fewer.',
+            'guardian_relationship.max' => 'Your guardian relationship must be 100 characters or fewer.',
+            'guardian_contact.max' => 'Your guardian contact number must be 30 characters or fewer.',
+            'guardian_email.max' => 'Your guardian email address must be 255 characters or fewer.',
         ]);
 
 
@@ -121,36 +162,45 @@ class RegistrationController extends Controller
             }
 
             $user = User::create([
-                'full_name' => trim($request->full_name),
-                'roll_number' => trim($request->student_id),
-                'email' => strtolower(trim($request->email)),
+                'full_name' => $this->clean($request->full_name),
+                'roll_number' => $this->clean($request->student_id),
+                'email' => strtolower($this->clean($request->email)),
                 'password' => Hash::make($request->password),
                 'user_type' => UserRole::STUDENT->value,
-                'contact_number' => $request->contact_number ? trim($request->contact_number) : null,
+                'contact_number' => $this->clean($request->contact_number),
                 'date_of_birth' => $request->date_of_birth ? $request->date_of_birth : null,
                 'gender' => $request->gender ? $request->gender : null,
-                'department' => $request->department ? $request->department : null,
-                'course' => $request->course ? $request->course : null,
-                'semester' => $request->semester ? $request->semester : null,
+                'department' => $this->clean($request->department),
+                'course' => $this->clean($request->course),
+                'semester' => $this->clean($request->semester),
                 'id_proof_path' => $idProofPath,
                 'verification_status' => 'pending',
-                'guardian_name' => trim($request->guardian_name),
-                'guardian_relationship' => trim($request->guardian_relationship),
-                'guardian_contact' => trim($request->guardian_contact),
-                'guardian_email' => $request->guardian_email ? strtolower(trim($request->guardian_email)) : null,
+                'guardian_name' => $this->clean($request->guardian_name),
+                'guardian_relationship' => $this->clean($request->guardian_relationship),
+                'guardian_contact' => $this->clean($request->guardian_contact),
+                'guardian_email' => $request->guardian_email ? strtolower($this->clean($request->guardian_email)) : null,
             ]);
 
             DB::commit();
 
             return redirect()->route('login')->with('success', 'Your account has been created! Our team will verify your PSU ID shortly. Please log in with your credentials.');
 
+        } catch (QueryException $e) {
+            DB::rollBack();
+            \Illuminate\Support\Facades\Log::error("Registration Database Error: " . $e->getMessage(), [
+                'exception' => $e
+            ]);
+
+            return back()->withInput()->withErrors([
+                'email' => 'We could not save your account because one of the details is too long or invalid. Please shorten the highlighted fields and try again.',
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             \Illuminate\Support\Facades\Log::error("Registration Error: " . $e->getMessage(), [
                 'exception' => $e
             ]);
-            
-            return back()->withInput()->withErrors(['email' => 'Registration failed: ' . $e->getMessage()]);
+
+            return back()->withInput()->withErrors(['email' => 'Registration failed. Please check your details and try again.']);
         }
     }
 }

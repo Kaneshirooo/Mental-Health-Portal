@@ -386,22 +386,23 @@
                 <div class="input-row">
                     <div class="input-group staggered">
                         <label for="full_name">Full Name</label>
-                        <input type="text" id="full_name" name="full_name" value="{{ old('full_name') }}" required placeholder="Juan Dela Cruz">
+                        <input type="text" id="full_name" name="full_name" value="{{ old('full_name') }}" maxlength="255" required placeholder="Juan Dela Cruz">
                     </div>
                     <div class="input-group staggered">
                         <label for="student_id">Student ID / Faculty ID</label>
-                        <input type="text" id="student_id" name="student_id" value="{{ old('student_id') }}" required placeholder="2024-XXXXX">
+                        <input type="text" id="student_id" name="student_id" value="{{ old('student_id') }}" maxlength="50" required placeholder="2024-XXXXX">
+                        <small style="display:block; font-size:0.75rem; color:var(--text-dim); margin-top:0.3rem; font-weight:600;">Up to 50 characters.</small>
                     </div>
                 </div>
 
                 <div class="input-row">
                     <div class="input-group staggered">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="your@email.com">
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" maxlength="255" required placeholder="your@email.com">
                     </div>
                     <div class="input-group staggered">
                         <label for="contact_number">Mobile Number</label>
-                        <input type="tel" id="contact_number" name="contact_number" value="{{ old('contact_number') }}" placeholder="09XXXXXXXXX">
+                        <input type="tel" id="contact_number" name="contact_number" value="{{ old('contact_number') }}" maxlength="20" placeholder="09XXXXXXXXX">
                     </div>
                 </div>
 
@@ -427,7 +428,7 @@
                 <div class="input-row">
                     <div class="input-group staggered">
                         <label for="course">Academic Course</label>
-                        <input type="text" id="course" name="course" value="{{ old('course') }}" required placeholder="e.g. BS Information Technology">
+                        <input type="text" id="course" name="course" value="{{ old('course') }}" maxlength="255" required placeholder="e.g. BS Information Technology">
                     </div>
                     <div class="input-group staggered">
                         <label for="semester">Current Semester</label>
@@ -465,7 +466,7 @@
                 <div class="input-row">
                     <div class="input-group staggered">
                         <label for="guardian_name">Guardian Full Name *</label>
-                        <input type="text" id="guardian_name" name="guardian_name" value="{{ old('guardian_name') }}" required placeholder="e.g. Maria Dela Cruz">
+                        <input type="text" id="guardian_name" name="guardian_name" value="{{ old('guardian_name') }}" maxlength="255" required placeholder="e.g. Maria Dela Cruz">
                     </div>
                     <div class="input-group staggered">
                         <label for="guardian_relationship">Relationship *</label>
@@ -483,11 +484,11 @@
                 <div class="input-row">
                     <div class="input-group staggered">
                         <label for="guardian_contact">Guardian Contact Number *</label>
-                        <input type="tel" id="guardian_contact" name="guardian_contact" value="{{ old('guardian_contact') }}" required placeholder="09XXXXXXXXX">
+                        <input type="tel" id="guardian_contact" name="guardian_contact" value="{{ old('guardian_contact') }}" maxlength="30" required placeholder="09XXXXXXXXX">
                     </div>
                     <div class="input-group staggered">
                         <label for="guardian_email">Guardian Email (Optional)</label>
-                        <input type="email" id="guardian_email" name="guardian_email" value="{{ old('guardian_email') }}" placeholder="guardian@email.com">
+                        <input type="email" id="guardian_email" name="guardian_email" value="{{ old('guardian_email') }}" maxlength="255" placeholder="guardian@email.com">
                     </div>
                 </div>
 
