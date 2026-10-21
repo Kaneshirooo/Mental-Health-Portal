@@ -23,8 +23,16 @@
         <p style="margin-bottom: 2rem;">Already have an account? <a href="{{ route('login') }}" style="color: var(--primary); font-weight: 800;">Sign in here</a> · <a href="{{ route('register') }}" style="color: var(--primary); font-weight: 800;">Register as a student instead</a></p>
 
         @if($errors->any())
+            @php
+                // Never expose raw database/driver errors to the user.
+                $friendlyErrors = collect($errors->all())
+                    ->map(fn ($error) => \Illuminate\Support\Str::contains($error, ['SQLSTATE', 'PDOException', 'pg_', 'QueryException', 'INSERT INTO'])
+                        ? 'We could not save your account just now. Please check your details and try again.'
+                        : $error)
+                    ->unique();
+            @endphp
             <div class="error-alert">
-                @foreach($errors->all() as $error)
+                @foreach($friendlyErrors as $error)
                     <div>{{ $error }}</div>
                 @endforeach
             </div>

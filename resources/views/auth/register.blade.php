@@ -369,10 +369,18 @@
             </div>
 
             @if($errors->any())
+                @php
+                    // Never expose raw database/driver errors to the user.
+                    $friendlyErrors = collect($errors->all())
+                        ->map(fn ($error) => \Illuminate\Support\Str::contains($error, ['SQLSTATE', 'PDOException', 'pg_', 'QueryException', 'INSERT INTO'])
+                            ? 'We could not save your account just now. Please check your details and try again.'
+                            : $error)
+                        ->unique();
+                @endphp
                 <div class="error-alert staggered">
                     <span style="font-size: 1.4rem;">⚠️</span>
                     <div style="display: flex; flex-direction: column;">
-                        @foreach($errors->all() as $error)
+                        @foreach($friendlyErrors as $error)
                             <span>{{ $error }}</span>
                         @endforeach
                     </div>
