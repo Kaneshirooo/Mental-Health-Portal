@@ -19,7 +19,7 @@
     <div class="creg-card">
         <div style="font-weight: 800; color: var(--primary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">Counselor Registration</div>
         <h1 style="font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 900; color: var(--text); margin: 0 0 0.5rem;">Join as a Counselor</h1>
-        <p style="color: var(--text-muted); margin-bottom: 2rem;">Create a counselor account to support students. A <strong>staff ID is required</strong> — our team will verify it after you register. When you log in, you will be taken straight to the <strong>counselor dashboard</strong>.</p>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Create a counselor account to support students. A <strong>staff ID is required</strong>. When you log in, you will be taken straight to the <strong>counselor dashboard</strong>.</p>
         <p style="margin-bottom: 2rem;">Already have an account? <a href="{{ route('login') }}" style="color: var(--primary); font-weight: 800;">Sign in here</a> · <a href="{{ route('register') }}" style="color: var(--primary); font-weight: 800;">Register as a student instead</a></p>
 
         @if($errors->any())
@@ -62,10 +62,6 @@
                 </div>
             </div>
 
-            <label for="id_proof">Staff ID / Proof of Employment *</label>
-            <p style="font-size: 0.82rem; color: var(--text-muted); margin: -0.25rem 0 0.75rem;">Upload a clear photo of your staff ID or appointment paper (JPG, PNG, or PDF, max 5MB).</p>
-            <input type="file" id="id_proof" name="id_proof" accept=".jpg,.jpeg,.png,.pdf" required>
-
             <div class="creg-row">
                 <div>
                     <label for="password">Create Password *</label>
@@ -78,7 +74,7 @@
             </div>
 
             <button type="submit" class="btn-primary" style="width: 100%; padding: 1.1rem; border-radius: 16px; font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.5rem;">Register as Counselor</button>
-            <p style="text-align: center; margin-top: 1.25rem; font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">Counselor accounts are verified by the head counselor before full access.</p>
+            <p style="text-align: center; margin-top: 1.25rem; font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">You will receive access to the counselor dashboard once you log in.</p>
         </form>
     </div>
 </div>

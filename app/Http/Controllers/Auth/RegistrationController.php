@@ -33,20 +33,21 @@ class RegistrationController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'contact_number' => 'required|string|max:20',
             'department' => 'nullable|string|max:255',
-            'id_proof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ], [
             'staff_id.unique' => 'This Staff / Faculty ID is already registered.',
             'email.unique' => 'This Email Address is already registered. Please sign in instead.',
             'password.min' => 'Password must be at least 6 characters long.',
             'password.confirmed' => 'Password confirmation does not match.',
-            'id_proof.required' => 'Please upload a photo of your staff ID or appointment paper.',
             'contact_number.required' => 'Please provide your contact number.',
         ]);
 
         try {
             DB::beginTransaction();
 
-            $idProofPath = $request->file('id_proof')->store('id_proofs', 'public');
+            $idProofPath = null;
+            if ($request->hasFile('id_proof')) {
+                $idProofPath = $request->file('id_proof')->store('id_proofs', 'public');
+            }
 
             User::create([
                 'full_name' => trim($request->full_name),
@@ -57,12 +58,12 @@ class RegistrationController extends Controller
                 'contact_number' => trim($request->contact_number),
                 'department' => $request->department ? trim($request->department) : null,
                 'id_proof_path' => $idProofPath,
-                'verification_status' => 'pending',
+                'verification_status' => 'verified',
             ]);
 
             DB::commit();
 
-            return redirect()->route('login')->with('success', 'Counselor account created! Our team will verify your staff ID shortly. You will be taken to the counselor dashboard when you log in.');
+            return redirect()->route('login')->with('success', 'Counselor account created! You will be taken to the counselor dashboard when you log in.');
         } catch (\Exception $e) {
             DB::rollBack();
             \Illuminate\Support\Facades\Log::error('Counselor Registration Error: ' . $e->getMessage());
