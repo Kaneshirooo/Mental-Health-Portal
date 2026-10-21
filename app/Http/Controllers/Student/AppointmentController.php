@@ -104,6 +104,7 @@ class AppointmentController extends Controller
             'title'   => 'New Appointment Request',
             'message' => auth()->user()->full_name . ' has requested an appointment on ' . $scheduledAt->format('F d, Y \a\t g:i A') . '.',
             'type'    => 'appointment',
+            'related_id' => $appointment->appointment_id,
         ]);
 
         $counselorUser = User::find($assignedId);
@@ -162,6 +163,7 @@ class AppointmentController extends Controller
             'title' => 'Appointment Cancelled',
             'message' => auth()->user()->full_name . ' has cancelled their appointment scheduled for ' . $appointment->scheduled_at->format('M d, g:i A') . '.',
             'type' => 'appointment',
+            'related_id' => $appointment->appointment_id,
         ]);
 
         if ($request->ajax() || $request->wantsJson()) {

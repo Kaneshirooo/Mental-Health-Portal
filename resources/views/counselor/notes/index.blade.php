@@ -14,6 +14,11 @@
         border-color: var(--primary-light);
         box-shadow: var(--shadow-lg);
     }
+    .note-card:target {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px var(--primary-glow), var(--shadow-lg);
+        scroll-margin-top: 6rem;
+    }
     
     .msg-bubble-counselor {
         background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -85,7 +90,7 @@
             </div>
 
             @forelse($notes as $note)
-                <div class="note-card">
+                <div class="note-card" id="note-{{ $note->note_id }}">
                     <!-- Identity Header -->
                     <div style="padding: 1.75rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--surface-2); flex-wrap: wrap; gap: 1rem;">
                         <div style="display: flex; align-items: center; gap: 1rem;">

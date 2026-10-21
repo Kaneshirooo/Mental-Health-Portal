@@ -157,7 +157,7 @@ class LoginController extends Controller
                     'full_name' => $googleUser->getName(),
                     'email' => $googleEmail,
                 ])
-                ->withErrors(['email' => 'No account found for this Google email. Please register first — students and counselors must complete the registration form (including ID verification) before signing in with Google.']);
+                ->withErrors(['email' => 'No account found for this Google email. Please register first — students and counselors must complete the registration form before signing in with Google.']);
         }
 
         // Google already verified the user's identity — log in directly (no OTP needed)

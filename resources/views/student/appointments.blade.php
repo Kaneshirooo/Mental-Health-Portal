@@ -56,6 +56,11 @@
         transition: var(--transition);
     }
     .timeline-card:hover { border-color: var(--primary-light); box-shadow: var(--shadow-sm); }
+    .timeline-card:target {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px var(--primary-glow), var(--shadow-md);
+        scroll-margin-top: 6rem;
+    }
 
     .conflict-popup-overlay {
         position: fixed; inset: 0; z-index: 9999;
@@ -308,7 +313,7 @@
             @else
                 <div style="display:flex; flex-direction:column; gap:1rem;">
                     @foreach ($appointments as $a)
-                        <div class="timeline-card">
+                        <div class="timeline-card" id="appt-card-{{ $a->appointment_id }}">
                             <div style="width:44px; height:44px; border-radius:14px; background:var(--primary-glow); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">
                                 @php
                                     $icons = ['requested' => '⏳', 'confirmed' => '✅', 'completed' => '🎓', 'declined' => '❌', 'cancelled' => '🚫'];

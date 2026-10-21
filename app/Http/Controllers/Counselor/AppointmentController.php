@@ -72,6 +72,7 @@ class AppointmentController extends Controller
                     'title' => 'Counselor Emergency Reassignment 🚨',
                     'message' => "Your counselor had an emergency. Your session on {$scheduledAt->format('F d, g:i A')} has been reassigned to Counselor {$replacement->full_name}.",
                     'type' => 'appointment',
+                    'related_id' => $appointment->appointment_id,
                 ]);
 
                 // Notify New Counselor
@@ -80,6 +81,7 @@ class AppointmentController extends Controller
                     'title' => 'Emergency Reassignment ⚠️',
                     'message' => "You have been reassigned an emergency session with " . ($appointment->student?->full_name ?? 'a student') . " on {$scheduledAt->format('F d, g:i A')}.",
                     'type' => 'appointment',
+                    'related_id' => $appointment->appointment_id,
                 ]);
 
                 $reassignedCount++;
@@ -95,6 +97,7 @@ class AppointmentController extends Controller
                     'title' => 'Appointment Cancelled 🚨',
                     'message' => "Your counselor had an emergency, and no others were available. Please reschedule your session for another time.",
                     'type' => 'appointment',
+                    'related_id' => $appointment->appointment_id,
                 ]);
 
                 $cancelledCount++;
@@ -137,6 +140,7 @@ class AppointmentController extends Controller
                 'title' => 'Appointment Rescheduled',
                 'message' => 'Your session with ' . auth()->user()->full_name . ' has been moved to ' . $appointment->scheduled_at->format('F d, Y \a\t g:i A') . '.',
                 'type' => 'appointment',
+                'related_id' => $appointment->appointment_id,
             ]);
 
             return response()->json(['success' => true]);
@@ -176,6 +180,7 @@ class AppointmentController extends Controller
             'title' => $notifData[$newStatus][0],
             'message' => $notifData[$newStatus][1],
             'type' => 'appointment',
+            'related_id' => $appointment->appointment_id,
         ]);
 
         return response()->json(['success' => true, 'newStatus' => $newStatus]);

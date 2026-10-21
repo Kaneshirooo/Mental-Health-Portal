@@ -6,6 +6,13 @@
 
 @push('styles')
     <style>
+        #appt-card-:target,
+        div[id^="appt-card-"]:target {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 4px var(--primary-glow), var(--shadow-lg) !important;
+            scroll-margin-top: 6rem;
+        }
+
         .appt-pill {
             font-size: .65rem;
             padding: .35rem .75rem;

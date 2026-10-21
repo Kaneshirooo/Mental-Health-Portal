@@ -37,34 +37,35 @@ class ClinicalAlertService
 
         if ($counselorIds->isNotEmpty()) {
             foreach ($counselorIds as $id) {
-                $this->createNotification((int) $id, $alertTitle, $alertMsg);
+                $this->createNotification((int) $id, $alertTitle, $alertMsg, $student->user_id);
             }
         } else {
-            $this->notifyAdmins("[Global] {$alertTitle}", "Unassigned Student: {$alertMsg}");
+            $this->notifyAdmins("[Global] {$alertTitle}", "Unassigned Student: {$alertMsg}", $student->user_id);
         }
     }
 
     /**
      * Notify all administrators.
      */
-    private function notifyAdmins(string $title, string $message): void
+    private function notifyAdmins(string $title, string $message, ?int $studentId = null): void
     {
         $admins = User::where('user_type', UserRole::ADMIN)->get();
         foreach ($admins as $admin) {
-            $this->createNotification($admin->user_id, $title, $message);
+            $this->createNotification($admin->user_id, $title, $message, $studentId);
         }
     }
 
     /**
      * Internal helper to create a clinical notification.
      */
-    private function createNotification(int $userId, string $title, string $message): void
+    private function createNotification(int $userId, string $title, string $message, ?int $studentId = null): void
     {
         Notification::create([
             'user_id' => $userId,
             'title' => $title,
             'message' => $message,
-            'type' => 'mood_alert'
+            'type' => 'mood_alert',
+            'related_id' => $studentId,
         ]);
     }
 }

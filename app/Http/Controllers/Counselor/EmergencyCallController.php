@@ -66,6 +66,7 @@ class EmergencyCallController extends Controller
             'title'   => '✅ Counselor Accepted Your Call',
             'message' => "{$counselor->full_name} has accepted your emergency call request. The chat is now open.",
             'type'    => 'emergency',
+            'related_id' => $call->call_id,
         ]);
 
         return response()->json([
@@ -105,6 +106,7 @@ class EmergencyCallController extends Controller
                 'title' => '📞 Your Counselor Tried to Reach You',
                 'message' => "{$counselor->full_name} tried to start a video call with you while you were away. Please log in soon — they want to check how you're doing.",
                 'type' => 'emergency',
+                'related_id' => $student->user_id,
             ]);
 
             \App\Services\CounselorMailer::send(
@@ -150,6 +152,7 @@ class EmergencyCallController extends Controller
             'title' => '📞 Your Counselor Is Calling You',
             'message' => "{$counselor->full_name} is starting a support video call with you now. Please join.",
             'type' => 'emergency',
+            'related_id' => $call->call_id,
         ]);
 
         \App\Services\CounselorMailer::send(
@@ -180,6 +183,7 @@ class EmergencyCallController extends Controller
             'title'   => 'Call Unavailable',
             'message' => 'The counselor is currently unable to take your call. Please try again or visit the appointments page.',
             'type'    => 'emergency',
+            'related_id' => $call->call_id,
         ]);
 
         return response()->json(['success' => true]);
@@ -208,6 +212,7 @@ class EmergencyCallController extends Controller
             'title'   => 'Call Ended',
             'message' => "Your emergency counseling call has been ended. You may book a follow-up appointment anytime.",
             'type'    => 'emergency',
+            'related_id' => $call->call_id,
         ]);
 
         // Notify next queued student and available counselors
@@ -441,6 +446,7 @@ class EmergencyCallController extends Controller
             'title'   => '✅ A Counselor is Now Available',
             'message' => 'A counselor has finished their previous session and is now available. A counselor will connect with you shortly — please stay on the line.',
             'type'    => 'emergency',
+            'related_id' => $nextCall->call_id,
         ]);
 
         $counselors = User::whereIn('user_type', ['counselor', 'admin'])
@@ -454,6 +460,7 @@ class EmergencyCallController extends Controller
                 'title'   => '🚨 Queued Student Waiting',
                 'message' => ($student?->full_name ?? 'A student') . ' is next in the emergency queue and is waiting for a counselor. Please accept the call from your dashboard.',
                 'type'    => 'emergency',
+                'related_id' => $nextCall->call_id,
             ]);
         }
     }

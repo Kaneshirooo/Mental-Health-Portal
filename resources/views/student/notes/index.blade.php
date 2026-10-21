@@ -17,6 +17,10 @@
     </div>
 
     <style>
+    .history-card:target {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px var(--primary-glow), var(--shadow-lg);
+    }
     .notes-grid {
         display: grid;
         grid-template-columns: 380px 1fr;
@@ -83,7 +87,7 @@
             @else
                 <div style="display: flex; flex-direction: column; gap: 1.25rem;">
                     @foreach ($notes as $note)
-                        <div class="history-card" style="background: var(--surface-solid); border-radius: var(--radius); padding: 1.75rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition);">
+                        <div class="history-card" id="note-{{ $note->note_id }}" style="background: var(--surface-solid); border-radius: var(--radius); padding: 1.75rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); scroll-margin-top: 6rem;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
                                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                                     <span style="font-weight: 600; font-size: 0.82rem; color: var(--text-dim);">Note #{{ str_pad($note->note_id, 3, '0', STR_PAD_LEFT) }}</span>

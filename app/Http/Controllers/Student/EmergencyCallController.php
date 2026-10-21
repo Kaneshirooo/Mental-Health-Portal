@@ -34,6 +34,7 @@ class EmergencyCallController extends Controller
                     'title' => '📞 Missed Call Attempt',
                     'message' => "{$student->full_name} tried to call while no counselor was online. Please check in with them soon.",
                     'type' => 'emergency',
+                    'related_id' => $student->user_id,
                 ]);
             }
 
@@ -74,6 +75,7 @@ class EmergencyCallController extends Controller
                 'title'   => '🚨 Emergency Call Request',
                 'message' => "{$student->full_name} is requesting an immediate counseling call. Please respond on your dashboard.",
                 'type'    => 'emergency',
+                'related_id' => $call->call_id,
             ]);
         }
 
@@ -162,6 +164,7 @@ class EmergencyCallController extends Controller
                 'title'   => 'Call Ended',
                 'message' => "The emergency call with {$call->student->full_name} has ended.",
                 'type'    => 'emergency',
+                'related_id' => $call->call_id,
             ]);
         }
 

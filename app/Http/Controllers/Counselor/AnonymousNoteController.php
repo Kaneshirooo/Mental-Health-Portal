@@ -45,6 +45,7 @@ class AnonymousNoteController extends Controller
                 'title' => 'Counselor Note Reply 💬',
                 'message' => 'A counselor has replied to your Note #' . str_pad($note->note_id, 3, '0', STR_PAD_LEFT) . '.',
                 'type' => 'note',
+                'related_id' => $note->note_id,
             ]);
         }
 

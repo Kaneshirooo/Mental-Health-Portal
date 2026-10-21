@@ -395,6 +395,7 @@ class VideoCallController extends Controller
             'title'   => '✅ A Counselor is Now Available',
             'message' => 'A counselor has finished their previous session and is now available. A counselor will connect with you shortly — please stay on the line.',
             'type'    => 'emergency',
+            'related_id' => $nextCall->call_id,
         ]);
 
         // Notify all emergency-available counselors so they see the queued student
@@ -409,6 +410,7 @@ class VideoCallController extends Controller
                 'title'   => '🚨 Queued Student Waiting',
                 'message' => ($student?->full_name ?? 'A student') . ' is next in the emergency queue and is waiting for a counselor. Please accept the call from your dashboard.',
                 'type'    => 'emergency',
+                'related_id' => $nextCall->call_id,
             ]);
         }
     }

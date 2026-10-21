@@ -48,7 +48,8 @@ class AnonymousNoteController extends Controller
                     'user_id' => $member->user_id,
                     'title' => 'New Student Note',
                     'message' => "{$studentName} shared a new note.",
-                    'type' => 'note'
+                    'type' => 'note',
+                    'related_id' => $note->note_id,
                 ]);
             }
         });
@@ -90,7 +91,8 @@ class AnonymousNoteController extends Controller
                 'user_id' => $note->counselor_id,
                 'title' => 'Note Follow-up',
                 'message' => auth()->user()->full_name . " replied to Note #" . str_pad($note->note_id, 3, '0', STR_PAD_LEFT),
-                'type' => 'note'
+                'type' => 'note',
+                'related_id' => $note->note_id,
             ]);
         }
 

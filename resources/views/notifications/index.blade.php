@@ -155,22 +155,14 @@
                         'mood_alert'  => ['icon' => 'ph-activity', 'bg' => 'rgba(239, 68, 68, 0.12)', 'color' => '#dc2626', 'label' => 'Mood Alert'],
                         'emergency'   => ['icon' => 'ph-phone-call', 'bg' => 'rgba(239, 68, 68, 0.15)', 'color' => '#dc2626', 'label' => 'Emergency Call'],
                         'assessment'  => ['icon' => 'ph-clipboard-text', 'bg' => 'rgba(16, 185, 129, 0.15)', 'color' => '#059669', 'label' => 'Assessment'],
+                        'clinical_feedback' => ['icon' => 'ph-star', 'bg' => 'rgba(245, 158, 11, 0.15)', 'color' => '#d97706', 'label' => 'Session Feedback'],
                         'system'      => ['icon' => 'ph-bell', 'bg' => 'rgba(107, 114, 128, 0.12)', 'color' => '#4b5563', 'label' => 'System Alert'],
                     ];
                     $m = $styleMap[$n->type] ?? $styleMap['system'];
 
-                    $contextUrl = '#';
-                    if ($n->type === 'appointment') {
-                        $contextUrl = $userRole === 'student' ? route('student.appointments') : route('counselor.appointments.index');
-                    } elseif ($n->type === 'note') {
-                        $contextUrl = $userRole === 'student' ? route('student.notes.index') : route('counselor.dashboard');
-                    } elseif ($n->type === 'emergency') {
-                        $contextUrl = $userRole === 'student' ? route('emergency') : route('counselor.emergency.calls.logs');
-                    } elseif ($n->type === 'mood_alert') {
-                        $contextUrl = $userRole === 'admin' ? route('admin.dashboard') : route('counselor.dashboard');
-                    } elseif ($n->type === 'assessment') {
-                        $contextUrl = $userRole === 'student' ? route('student.reports.index') : route('counselor.students.index');
-                    }
+                    // Destination of the record this notification is about
+                    // (falls back to the matching list page, never the dashboard).
+                    $contextUrl = $n->contextUrl($userRole);
                 @endphp
                 <div class="notif-card {{ !$n->is_read ? 'unread' : '' }}" id="notif-{{ $n->notification_id }}">
                     <div class="notif-icon-box" style="background: {{ $m['bg'] }}; color: {{ $m['color'] }};">
@@ -193,8 +185,8 @@
                             @if(!$n->is_read)
                                 <button onclick="markRead({{ $n->notification_id }})" class="btn-action-small" style="background: rgba(16, 185, 129, 0.12) !important; color: #059669 !important; border-color: rgba(16, 185, 129, 0.3) !important;">Mark Read</button>
                             @endif
-                            @if($contextUrl !== '#')
-                                <a href="{{ $contextUrl }}" class="btn-action-small">View Details</a>
+                            @if($contextUrl)
+                                <a href="{{ $contextUrl }}" class="btn-action-small js-view-details" data-notification-id="{{ $n->notification_id }}">View Details</a>
                             @endif
                         </div>
                     </div>
@@ -213,7 +205,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-async function markRead(id) {
+async function markRead(id, options = {}) {
+    const silent = options.silent === true;
     try {
         const res = await fetch(`/notifications/${id}/read`, {
             method: 'POST',
@@ -222,18 +215,45 @@ async function markRead(id) {
         const data = await res.json();
         if (data.success) {
             const card = document.getElementById(`notif-${id}`);
-            card.classList.remove('unread');
-            card.style.background = 'var(--surface-solid)';
-            card.style.borderColor = 'var(--border)';
-            const btn = Array.from(card.querySelectorAll('.btn-action-small')).find(b => b.textContent.toLowerCase().includes('mark read'));
-            if (btn) btn.remove();
+            if (card) {
+                card.classList.remove('unread');
+                const btn = Array.from(card.querySelectorAll('.btn-action-small')).find(b => b.textContent.toLowerCase().includes('mark read'));
+                if (btn) btn.remove();
+            }
             if (window.updateNotifCount) window.updateNotifCount();
-            App.toast({ type: 'success', title: 'Read', message: 'Notification marked as read.' });
+            if (!silent) {
+                App.toast({ type: 'success', title: 'Read', message: 'Notification marked as read.' });
+            }
+            return true;
         }
+        return false;
     } catch(e) {
-        App.toast({ type: 'error', title: 'Error', message: 'Failed to update notification.' });
+        if (!silent) {
+            App.toast({ type: 'error', title: 'Error', message: 'Failed to update notification.' });
+        }
+        return false;
     }
 }
+
+// "View Details" — flag the notification as read, then open the record it is about.
+document.addEventListener('click', async function (e) {
+    const link = e.target.closest('.js-view-details');
+    if (!link) return;
+
+    const id = link.getAttribute('data-notification-id');
+    const href = link.getAttribute('href');
+    if (!href) return;
+
+    e.preventDefault();
+    link.style.opacity = '0.6';
+    link.style.pointerEvents = 'none';
+
+    if (id) {
+        await markRead(id, { silent: true });
+    }
+
+    window.location.href = href;
+});
 
 async function markAllRead() {
     try {
@@ -245,8 +265,6 @@ async function markAllRead() {
         if (data.success) {
             document.querySelectorAll('.notif-card').forEach(card => {
                 card.classList.remove('unread');
-                card.style.background = 'var(--surface-solid)';
-                card.style.borderColor = 'var(--border)';
                 const btn = card.querySelector('.btn-action-small');
                 if (btn && btn.textContent.toLowerCase().includes('mark read')) {
                     btn.remove();

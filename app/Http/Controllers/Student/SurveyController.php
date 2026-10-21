@@ -78,6 +78,7 @@ class SurveyController extends Controller
             'title' => 'New Feedback Submitted',
             'message' => "Student " . Auth::user()->full_name . " has submitted a satisfaction survey for their session on " . $appointment->scheduled_at->format('M d, Y') . ".",
             'type' => 'clinical_feedback',
+            'related_id' => $appointment->appointment_id,
             'is_read' => false,
         ]);
 
@@ -88,6 +89,7 @@ class SurveyController extends Controller
                 'title' => 'New Feedback Submitted',
                 'message' => "A new session survey has been submitted for " . $appointment->counselor->full_name . "'s session with student " . Auth::user()->full_name . ".",
                 'type' => 'clinical_feedback',
+                'related_id' => $appointment->appointment_id,
                 'is_read' => false,
             ]);
         }

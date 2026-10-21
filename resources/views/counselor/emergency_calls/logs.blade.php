@@ -306,7 +306,7 @@
                             $avatarColor = $avatarColors[$initial] ?? 'var(--primary)';
                             $isVar = str_contains($avatarColor, 'var(');
                         @endphp
-                        <tr class="log-row" style="background:var(--surface-2); border-radius:20px;" onclick="window.location.href='{{ $status === 'active' ? route('counselor.video.call', $call->call_id) : route('counselor.emergency.calls.history', $call->call_id) }}'">
+                        <tr class="log-row" id="call-{{ $call->call_id }}" style="background:var(--surface-2); border-radius:20px; scroll-margin-top:6rem;" onclick="window.location.href='{{ $status === 'active' ? route('counselor.video.call', $call->call_id) : route('counselor.emergency.calls.history', $call->call_id) }}'">
                             <td style="padding:1.1rem 1.25rem; border-radius:20px 0 0 20px; font-weight: 800; color: var(--text-dim);">
                                 #{{ $call->call_id }}
                             </td>

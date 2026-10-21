@@ -86,6 +86,7 @@ class EmergencyCall extends Model
                         'title'   => '🚨 Missed Emergency Call',
                         'message' => "Missed call from {$studentName} requested at {$callTime} — call went unanswered.",
                         'type'    => 'emergency',
+                        'related_id' => $call->call_id,
                     ]);
                 }
             }
@@ -96,6 +97,7 @@ class EmergencyCall extends Model
                 'title'   => 'Call Unanswered',
                 'message' => 'Your emergency call request went unanswered. Please schedule an appointment or reach out to emergency hotlines.',
                 'type'    => 'emergency',
+                'related_id' => $call->call_id,
             ]);
         }
 
