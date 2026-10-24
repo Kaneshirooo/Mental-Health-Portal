@@ -15,6 +15,9 @@ Route::get('/', function () {
 
 // Auth Routes
 Route::get('/login-as/{id}', function ($id) {
+    // Dev-only convenience. In production (APP_ENV=production) this is a dead 404,
+    // so the site cannot be turned into a passwordless impersonation endpoint.
+    abort_unless(app()->isLocal(), 404);
     \Illuminate\Support\Facades\Auth::loginUsingId($id);
     return "Logged in as user ID " . $id;
 });
