@@ -76,9 +76,6 @@
                         <div>
                             <div style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--text); margin-bottom: 0.25rem;">{{ $c->full_name }}</div>
                             <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-                                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); background: var(--surface-3); padding: 0.3rem 0.75rem; border-radius: 100px; display: flex; align-items: center; gap: 0.4rem; border: 1px solid var(--border);">
-                                    <i class="ph ph-envelope-simple"></i> {{ $c->email }}
-                                </span>
                                 @if ($c->department)
                                 <span style="font-size: 0.8rem; font-weight: 700; color: #6366f1; background: rgba(99, 102, 241, 0.08); padding: 0.3rem 0.75rem; border-radius: 100px; display: flex; align-items: center; gap: 0.4rem; border: 1px solid rgba(99, 102, 241, 0.15);">
                                     <i class="ph ph-buildings"></i> {{ $c->department }}
