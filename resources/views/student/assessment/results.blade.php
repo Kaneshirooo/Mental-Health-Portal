@@ -6,8 +6,19 @@
         .sidebar, .action-buttons, .no-print, footer { display:none!important; }
         .main-content { margin-left: 0 !important; padding: 0 !important; }
         body { background:#fff; }
-        .pdf-only-header { display: block !important; }
-        .pdf-only-footer { display: block !important; }
+
+        /* Print ONLY the score sheet: drop the card's decorative bar, the AI
+           insight, the breakdown and the call-to-action entirely. */
+        .container > *:not(#printableCardArea) { display: none !important; }
+        #printableCardArea {
+            border: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            padding: 0 !important;
+            background: #fff !important;
+        }
+        #printableCardArea > *:not(#scoreOnly) { display: none !important; }
+        .score-only { display: block !important; }
     }
     .score-fill {
         background: var(--primary);
@@ -45,6 +56,63 @@
 
     <div id="printableCardArea" style="background: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 2.5rem; position: relative; overflow: hidden;">
         <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }};"></div>
+
+        {{-- Score-only sheet: hidden on screen, but the ONLY thing in a print or PDF --}}
+        <div id="scoreOnly" class="score-only" style="display:none; background:#ffffff; color:#0f172a;">
+            <div style="border-bottom: 3px solid #0f766e; padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
+                <div style="font-size: 0.62rem; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.16em;">Pangasinan State University</div>
+                <div style="font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 800; color: #0f172a;">Student Mental Health &amp; Wellness Center</div>
+                <div style="font-size: 0.75rem; color: #475569; font-weight: 600;">Assessment Score Report</div>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: 0.75rem; color: #334155; font-weight: 600; margin-bottom: 1.5rem;">
+                <div><strong style="color:#0f172a;">Student:</strong> {{ auth()->user()->full_name }}</div>
+                <div><strong style="color:#0f172a;">Course:</strong> {{ auth()->user()->course ?? '—' }}</div>
+                <div><strong style="color:#0f172a;">Date:</strong> {{ $score->assessment_date->format('F d, Y') }}</div>
+                <div><strong style="color:#0f172a;">Report ID:</strong> #PAS-{{ sprintf('%05d', $score->score_id) }}</div>
+            </div>
+
+            <div style="text-align: center; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
+                <div style="font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.14em;">Overall Result</div>
+                <div style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800; color: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }}; margin: 0.2rem 0 0.6rem;">
+                    {{ ['Low' => 'Doing Okay', 'Moderate' => 'A Bit Tough', 'High' => 'Need Extra Care', 'Critical' => 'Need Extra Care'][$score->risk_level] ?? $score->risk_level }}
+                </div>
+                <div style="font-size: 2.5rem; font-weight: 800; color: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }}; line-height: 1;">{{ $wellness_index }}<span style="font-size: 1rem; color:#64748b;">/100</span></div>
+                <div style="font-size: 0.78rem; color: #475569; font-weight: 600; margin-top: 0.25rem;">{{ $wellness_info['label'] }}</div>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                <thead>
+                    <tr style="background: #f1f5f9;">
+                        <th style="text-align: left; padding: 0.55rem 0.75rem; font-weight: 800; text-transform: uppercase; font-size: 0.62rem; letter-spacing: 0.08em; color: #475569;">Dimension</th>
+                        <th style="text-align: left; padding: 0.55rem 0.75rem; font-weight: 800; text-transform: uppercase; font-size: 0.62rem; letter-spacing: 0.08em; color: #475569;">Result</th>
+                        <th style="text-align: right; padding: 0.55rem 0.75rem; font-weight: 800; text-transform: uppercase; font-size: 0.62rem; letter-spacing: 0.08em; color: #475569;">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach([
+                        ['name' => 'Low Mood', 'info' => $dep_info, 'score' => $score->depression_score, 'max' => $max_scores['depression']],
+                        ['name' => 'Worries',  'info' => $anx_info, 'score' => $score->anxiety_score,    'max' => $max_scores['anxiety']],
+                        ['name' => 'Pressure', 'info' => $str_info, 'score' => $score->stress_score,     'max' => $max_scores['stress']],
+                    ] as $row)
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 0.6rem 0.75rem; font-weight: 700;">{{ $row['name'] }}</td>
+                            <td style="padding: 0.6rem 0.75rem; font-weight: 700; color: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }};">{{ $row['info']['label'] }}</td>
+                            <td style="padding: 0.6rem 0.75rem; text-align: right; font-weight: 800;">{{ $row['score'] }} / {{ $row['max'] }}</td>
+                        </tr>
+                    @endforeach
+                    <tr style="border-top: 2px solid #cbd5e1;">
+                        <td style="padding: 0.6rem 0.75rem; font-weight: 800;">Total</td>
+                        <td style="padding: 0.6rem 0.75rem;"></td>
+                        <td style="padding: 0.6rem 0.75rem; text-align: right; font-weight: 800;">{{ $raw_total }} / {{ $max_total }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="font-size: 0.6rem; color: #94a3b8; font-weight: 600; margin-top: 1.25rem; border-top: 1px solid #e2e8f0; padding-top: 0.6rem;">
+                Generated {{ now()->format('F d, Y \a\t g:i A') }} • Pangasinan State University — Student Mental Health &amp; Wellness Center
+            </div>
+        </div>
 
         {{-- Overall Result summary --}}
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: center; background: {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}0D; border: 1px solid {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}33; border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
@@ -292,17 +360,13 @@ async function exportPDF() {
         btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Generating PDF...';
     }
 
-    const pdfHeaders = document.querySelectorAll('.pdf-only-header');
-    const pdfFooters = document.querySelectorAll('.pdf-only-footer');
-    const noPrintEls = document.querySelectorAll('.no-print');
-
-    // Display PDF header & footer for snapshot
-    pdfHeaders.forEach(el => el.style.display = 'block');
-    pdfFooters.forEach(el => el.style.display = 'block');
-    noPrintEls.forEach(el => el.style.display = 'none');
+    // Reveal only the score sheet for the snapshot. Everything else in the
+    // card (AI insight, dimension breakdown, call-to-action) is left out.
+    const scoreSheet = document.getElementById('scoreOnly');
+    if (scoreSheet) scoreSheet.style.display = 'block';
 
     try {
-        const element = document.getElementById('printableCardArea');
+        const element = scoreSheet || document.getElementById('printableCardArea');
         const canvas = await html2canvas(element, {
             scale: 2,
             useCORS: true,
@@ -339,9 +403,7 @@ async function exportPDF() {
         console.error('PDF export error:', err);
         window.print();
     } finally {
-        pdfHeaders.forEach(el => el.style.display = 'none');
-        pdfFooters.forEach(el => el.style.display = 'none');
-        noPrintEls.forEach(el => el.style.display = '');
+        if (scoreSheet) scoreSheet.style.display = 'none';
         if (btn) {
             btn.disabled = false;
             btn.innerHTML = originalHTML;
