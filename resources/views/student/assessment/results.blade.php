@@ -3,22 +3,67 @@
 @push('styles')
 <style>
     @media print {
+        @page {
+            size: A4;
+            margin: 12mm;
+        }
+
         .sidebar, .action-buttons, .no-print, footer { display:none!important; }
-        .main-content { margin-left: 0 !important; padding: 0 !important; }
-        body { background:#fff; }
+
+        html, body {
+            background: #fff !important;
+            width: auto !important;
+        }
+
+        /* The responsive breakpoints below also set padding with !important,
+           and they match in print as well because an A4 page is under 1024px.
+           Outrank them on specificity rather than relying on source order. */
+        html .main-content {
+            margin-left: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .main-content .container.container {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
 
         /* Print ONLY the score sheet: drop the card's decorative bar, the AI
            insight, the breakdown and the call-to-action entirely. */
         .container > *:not(#printableCardArea) { display: none !important; }
+
         #printableCardArea {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
             border: none !important;
             box-shadow: none !important;
             border-radius: 0 !important;
-            padding: 0 !important;
+            background: #fff !important;
+            overflow: visible !important;
+        }
+
+        #printableCardArea > *:not(#scoreOnly) { display: none !important; }
+
+        .score-only {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
             background: #fff !important;
         }
-        #printableCardArea > *:not(#scoreOnly) { display: none !important; }
-        .score-only { display: block !important; }
+
+        /* Keep the coloured risk text and the table header instead of letting
+           the browser flatten them to white. */
+        .score-only, .score-only * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
     }
     .score-fill {
         background: var(--primary);
