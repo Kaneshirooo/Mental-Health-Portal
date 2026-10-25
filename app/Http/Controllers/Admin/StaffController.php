@@ -64,7 +64,7 @@ class StaffController extends Controller
 
     public function destroy(Request $request, User $staff)
     {
-        if ($staff->user_type !== 'counselor') {
+        if (! $staff->isCounselor()) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json(['success' => false, 'error' => 'Only counselor accounts can be removed from this page.'], 403);
             }
