@@ -45,7 +45,34 @@
 
     <div id="printableCardArea" style="background: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 2.5rem; position: relative; overflow: hidden;">
         <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }};"></div>
-        
+
+        {{-- Overall Result summary --}}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: center; background: {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}0D; border: 1px solid {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}33; border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
+            <div>
+                <div style="font-size: 0.68rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.5rem;">Overall Result</div>
+                <div style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }}; line-height: 1.15; margin-bottom: 0.5rem;">
+                    {{ ['Low' => 'Doing Okay', 'Moderate' => 'A Bit Tough', 'High' => 'Need Extra Care', 'Critical' => 'Need Extra Care'][$score->risk_level] ?? $score->risk_level }}
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
+                    Wellness Index <strong style="color: var(--text);">{{ $wellness_index }}/100</strong> — {{ $wellness_info['label'] }}
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                @foreach([
+                    ['label' => 'Low Mood', 'info' => $dep_info, 'score' => $score->depression_score, 'max' => $max_scores['depression']],
+                    ['label' => 'Worries',  'info' => $anx_info, 'score' => $score->anxiety_score,    'max' => $max_scores['anxiety']],
+                    ['label' => 'Pressure', 'info' => $str_info, 'score' => $score->stress_score,     'max' => $max_scores['stress']],
+                ] as $row)
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 0.55rem 0.85rem;">
+                        <span style="font-size: 0.78rem; font-weight: 700; color: var(--text);">{{ $row['label'] }}</span>
+                        <span style="font-size: 0.72rem; font-weight: 800; color: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }};">
+                            {{ $row['info']['label'] }} <span style="color: var(--text-dim); font-weight: 600;">({{ $row['score'] }}/{{ $row['max'] }})</span>
+                        </span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         {{-- Official PSU PDF Report Header (Visible in exported PDF & Print) --}}
         <div class="pdf-only-header" style="display: none; border-bottom: 2px solid #0f766e; padding-bottom: 1.25rem; margin-bottom: 2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center;">

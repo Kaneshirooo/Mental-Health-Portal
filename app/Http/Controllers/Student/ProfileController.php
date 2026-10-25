@@ -19,21 +19,37 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         
-        $request->validate([
+        $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'contact_number' => 'nullable|string|max:20',
             'course' => 'required|string|max:255',
             'semester' => 'required|string|max:100',
             'department' => 'nullable|string|max:255',
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+
+            // In case of emergency
+            'guardian_name' => 'nullable|string|max:255',
+            'guardian_relationship' => 'nullable|string|max:100',
+            'guardian_contact' => 'nullable|string|max:30',
+            'guardian_email' => 'nullable|email|max:255',
+        ], [
+            'profile_picture.image' => 'Please upload an image file (JPG, PNG or WebP).',
+            'profile_picture.mimes' => 'Please upload a JPG, PNG or WebP image.',
+            'profile_picture.max' => 'That photo is too large. Please use one under 5MB.',
+            'guardian_email.email' => 'Please enter a valid emergency email address.',
         ]);
 
         $data = [
-            'full_name' => $request->full_name,
-            'contact_number' => $request->contact_number,
-            'course' => $request->course,
-            'semester' => $request->semester,
-            'department' => $request->department,
+            'full_name' => $validated['full_name'],
+            'contact_number' => $validated['contact_number'],
+            'course' => $validated['course'],
+            'semester' => $validated['semester'],
+            'department' => $validated['department'],
+
+            'guardian_name' => $validated['guardian_name'],
+            'guardian_relationship' => $validated['guardian_relationship'],
+            'guardian_contact' => $validated['guardian_contact'],
+            'guardian_email' => $validated['guardian_email'],
         ];
 
         if ($request->hasFile('profile_picture')) {

@@ -12,6 +12,12 @@ php artisan view:cache
 # Run migrations (Optional depending on your preference, but highly recommended)
 php artisan migrate --force
 
+# Create the public/storage symlink so uploaded profile pictures are actually
+# served. Without this, uploads land in storage/app/public and 404.
+php artisan storage:link
+mkdir -p storage/app/public/profiles
+chown -R www-data:www-data storage/app/public
+
 # Start php-fpm in background
 php-fpm -D
 

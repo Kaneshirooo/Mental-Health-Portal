@@ -225,11 +225,42 @@
         <div class="stat-card-premium staggered">
             <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.1em;">Identity</div>
             <div style="font-size: 1.15rem; font-weight: 800; color: var(--text); margin-bottom: 0.25rem;">{{ $user->full_name }}</div>
-            <div style="font-size: 0.85rem; color: var(--primary); font-weight: 700;">
+            <div style="font-size: 0.85rem; color: var(--primary); font-weight: 700; margin-bottom: 0.85rem;">
                 @if($user->roll_number)
                     {{ $user->roll_number }} • 
                 @endif
                 {{ $user->course ?? $user->department ?? 'Student' }}
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.75rem; color: var(--text-dim); font-weight: 600; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.45rem; min-width: 0;">
+                    <i class="ph ph-envelope" style="flex-shrink: 0;"></i>
+                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $user->email }}</span>
+                </div>
+                @if($user->department)
+                    <div style="display: flex; align-items: center; gap: 0.45rem;">
+                        <i class="ph ph-buildings" style="flex-shrink: 0;"></i> {{ $user->department }}
+                    </div>
+                @endif
+                @if($user->year_section)
+                    <div style="display: flex; align-items: center; gap: 0.45rem;">
+                        <i class="ph ph-graduation-cap" style="flex-shrink: 0;"></i> {{ $user->year_section }}
+                    </div>
+                @endif
+                @if($user->semester)
+                    <div style="display: flex; align-items: center; gap: 0.45rem;">
+                        <i class="ph ph-calendar-blank" style="flex-shrink: 0;"></i> {{ $user->semester }}
+                    </div>
+                @endif
+                @if($user->contact_number)
+                    <div style="display: flex; align-items: center; gap: 0.45rem;">
+                        <i class="ph ph-phone" style="flex-shrink: 0;"></i> {{ $user->contact_number }}
+                    </div>
+                @endif
+                @if($user->guardian_contact)
+                    <div style="display: flex; align-items: center; gap: 0.45rem;">
+                        <i class="ph ph-first-aid-kit" style="flex-shrink: 0;"></i> Emergency: {{ $user->guardian_name }} ({{ $user->guardian_contact }})
+                    </div>
+                @endif
             </div>
         </div>
         <div class="stat-card-premium staggered">

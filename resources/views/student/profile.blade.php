@@ -39,7 +39,7 @@
                     </div>
                     <div class="mt-4 text-center">
                         <p class="section-label text-sm font-bold">Profile Picture</p>
-                        <p class="text-xs text-slate-500">JPG, PNG up to 2MB</p>
+                        <p class="text-xs text-slate-500">JPG, PNG or WebP up to 5MB</p>
                     </div>
                 </div>
 
@@ -108,6 +108,44 @@
                                 <option value="COA" {{ old('department', $user->department) === 'COA' ? 'selected' : '' }}>COA</option>
                                 <option value="CTE" {{ old('department', $user->department) === 'CTE' ? 'selected' : '' }}>CTE</option>
                             </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- In Case of Emergency -->
+                <div class="pt-10 border-t divider-line mt-10">
+                    <h3 class="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 mb-3 flex items-center gap-2">
+                        <i class="ph-fill ph-first-aid-kit"></i> In Case of Emergency
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-8">If we ever need to reach someone on your behalf, who should we call?</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="input-label text-[10px] font-black uppercase tracking-widest">Contact Person</label>
+                            <input type="text" name="guardian_name" value="{{ old('guardian_name', $user->guardian_name) }}"
+                                class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none"
+                                placeholder="e.g. Maria Aquino">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="input-label text-[10px] font-black uppercase tracking-widest">Relationship</label>
+                            <input type="text" name="guardian_relationship" value="{{ old('guardian_relationship', $user->guardian_relationship) }}"
+                                class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none"
+                                placeholder="e.g. Parent, Sibling, Guardian">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="input-label text-[10px] font-black uppercase tracking-widest">Contact Number</label>
+                            <input type="text" name="guardian_contact" value="{{ old('guardian_contact', $user->guardian_contact) }}"
+                                class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none"
+                                placeholder="09xxxxxxxxx">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="input-label text-[10px] font-black uppercase tracking-widest">Email Address</label>
+                            <input type="email" name="guardian_email" value="{{ old('guardian_email', $user->guardian_email) }}"
+                                class="profile-input w-full px-5 py-4 rounded-2xl font-bold transition-all outline-none"
+                                placeholder="optional@example.com">
                         </div>
                     </div>
                 </div>
@@ -260,7 +298,12 @@ document.getElementById('profileForm').addEventListener('submit', async function
             const fileInput = document.getElementById('profile_picture');
             if (fileInput) fileInput.value = '';
         } else {
-            App.toast({ type: 'error', title: 'Update Failed', message: data.error || 'Check your information and try again.' });
+            // Surface the real validation message instead of a generic one
+            let msg = data.error || 'Check your information and try again.';
+            if (data.errors) {
+                msg = Object.values(data.errors).flat().join(' ');
+            }
+            App.toast({ type: 'error', title: 'Update Failed', message: msg });
         }
     } catch (error) {
         App.toast({ type: 'error', title: 'Connection Error', message: 'Failed to reach server. Please try again.' });
