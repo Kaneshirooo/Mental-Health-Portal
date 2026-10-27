@@ -45,7 +45,6 @@ class StudentController extends Controller
         $search = $request->search;
 
         $query = User::where('user_type', 'student')
-            ->whereNull('archived_at')
             ->with('latestAssessment')
             ->orderBy('full_name');
 
