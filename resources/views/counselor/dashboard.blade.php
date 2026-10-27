@@ -11,6 +11,11 @@
         --clinical-amber:  #f59e0b;
     }
 
+    /* The ambient orb bleeds past the right edge by design; clip the page so that
+       decorative bleed never turns into a horizontal scrollbar. `clip` (not
+       `hidden`) is used so no scroll container is created and sticky/fixed stay put. */
+    html { overflow-x: clip; }
+
     /* ── Ambient orb background ── */
     .dash-orb {
         position: fixed;
@@ -475,7 +480,7 @@
             <div class="stat-value" style="color:#f59e0b;">{{ $stats['active_dialogues'] }}</div>
             <div class="stat-label">Interaction Feed</div>
             <div class="stat-tag" style="background:rgba(245,158,11,0.08); color:#f59e0b;">
-                <i class="ph-bold ph-chat-dots"></i> Active threads
+                <i class="ph-bold ph-chat-dots"></i> Active Chat
             </div>
         </div>
     </div>

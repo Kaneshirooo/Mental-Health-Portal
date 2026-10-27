@@ -246,10 +246,10 @@
                     <tr style="background: var(--surface-2); border-bottom: 1px solid var(--border);">
                         <th
                             style="padding: 1.25rem 1.5rem; font-size: 0.65rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">
-                            Student Identity</th>
+                            Student Information</th>
                         <th
                             style="padding: 1.25rem 1.5rem; font-size: 0.65rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">
-                            Timing</th>
+                            Schedule</th>
                         <th
                             style="padding: 1.25rem 1.5rem; font-size: 0.65rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">
                             Status</th>

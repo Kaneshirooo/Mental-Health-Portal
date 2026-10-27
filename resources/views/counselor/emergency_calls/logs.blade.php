@@ -2,6 +2,11 @@
 
 @push('styles')
 <style>
+    /* The ambient orb bleeds past the right edge by design; clip the page so that
+       decorative bleed never turns into a horizontal scrollbar. `clip` (not
+       `hidden`) is used so no scroll container is created and sticky/fixed stay put. */
+    html { overflow-x: clip; }
+
     .dash-orb {
         position: fixed;
         border-radius: 50%;
