@@ -165,7 +165,7 @@
                 <div style="font-size: 0.7rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Total Students</div>
                 <i class="ph-bold ph-users-four" style="font-size: 1.5rem; color: var(--primary); opacity: 0.4;"></i>
             </div>
-            <div style="font-size: 3.5rem; font-weight: 950; color: var(--text); line-height: 1; letter-spacing: -0.05em;">{{ $stats['total_users'] }}</div>
+            <div style="font-size: 3.5rem; font-weight: 950; color: var(--text); line-height: 1; letter-spacing: -0.05em;">{{ $stats['students_count'] }}</div>
             <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; font-weight: 700;">Registered Students</div>
         </div>
 
