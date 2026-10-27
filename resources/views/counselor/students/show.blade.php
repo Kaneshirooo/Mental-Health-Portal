@@ -30,7 +30,6 @@
 @endpush
 
 @section('content')
-@section('content')
 <div class="container" style="max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
     
     <!-- Profile Header -->
@@ -82,8 +81,8 @@
                 <button type="button" onclick="openEditModal({{ json_encode($student) }})" class="btn-secondary" style="padding: 0.85rem 1.25rem; border-radius: 16px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; background: rgba(99, 102, 241, 0.1); color: #6366f1; border: 1.5px solid rgba(99, 102, 241, 0.25); text-transform: uppercase; cursor: pointer;">
                     <i class="ph-bold ph-pencil-simple" style="font-size: 1.1rem;"></i> Edit Profile
                 </button>
-                <button type="button" onclick="openDeleteModal('{{ $student->user_id }}', '{{ e($student->full_name) }}')" class="btn-secondary" style="padding: 0.85rem 1.25rem; border-radius: 16px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1.5px solid rgba(239, 68, 68, 0.25); text-transform: uppercase; cursor: pointer;">
-                    <i class="ph-bold ph-trash" style="font-size: 1.1rem;"></i> Delete Student
+                <button type="button" onclick="openArchiveModal('{{ $student->user_id }}', '{{ e($student->full_name) }}')" class="btn-secondary" style="padding: 0.85rem 1.25rem; border-radius: 16px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1.5px solid rgba(245, 158, 11, 0.25); text-transform: uppercase; cursor: pointer;">
+                    <i class="ph-bold ph-archive-box" style="font-size: 1.1rem;"></i> Archive Student
                 </button>
                 <a href="{{ route('counselor.students.export', $student->user_id) }}" target="_blank" class="btn-secondary" style="padding: 0.85rem 1.25rem; border-radius: 16px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; background: var(--surface-solid); border: 1px solid var(--border); text-transform: uppercase;">
                     <i class="ph ph-file-pdf" style="font-size: 1.1rem;"></i> Export File
@@ -406,7 +405,6 @@
 <footer class="footer">
     <p>© {{ date('Y') }} PSU Mental Health Portal</p>
 </footer>
-@endsection
 
 @push('scripts')
 <script>
@@ -517,6 +515,10 @@ document.getElementById('archiveNoteForm').addEventListener('submit', async func
         }
     } catch (err) {
         App.toast({ type: 'error', title: 'Error', message: 'Could not reach server.' });
+    }
+});
+</script>
+
 <!-- Edit Student Modal -->
 <div id="editStudentModal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;">
     <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; width: 100%; max-width: 600px; padding: 2.25rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative;">
@@ -611,23 +613,22 @@ document.getElementById('archiveNoteForm').addEventListener('submit', async func
 </div>
 
 <!-- Delete Student Modal -->
-<div id="deleteStudentModal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;">
+<div id="archiveStudentModal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;">
     <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; width: 100%; max-width: 480px; padding: 2.25rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative; text-align: center;">
-        <div style="width: 60px; height: 60px; border-radius: 20px; background: rgba(239, 68, 68, 0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem;">
-            <i class="ph-bold ph-warning-octagon"></i>
+        <div style="width: 60px; height: 60px; border-radius: 20px; background: rgba(245, 158, 11, 0.12); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem;">
+            <i class="ph-bold ph-archive-box"></i>
         </div>
 
-        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--text); margin: 0 0 0.5rem;">Delete Student Account?</h3>
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--text); margin: 0 0 0.5rem;">Archive this student?</h3>
         <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0 0 1.5rem; font-weight: 500; line-height: 1.5;">
-            Are you sure you want to delete <strong id="deleteStudentName" style="color: var(--text);">{{ $student->full_name }}</strong>? This will permanently remove their records, assessment history, and clinical notes. This action cannot be undone.
+            <strong id="archiveStudentName" style="color: var(--text);">{{ $student->full_name }}</strong> will be moved to Archived Students and hidden from the active registry. Nothing is deleted — assessments, notes and chat history are kept, and you can restore them at any time.
         </p>
 
-        <form id="deleteStudentForm" onsubmit="submitDeleteStudent(event)" style="display: flex; gap: 0.75rem; justify-content: center;">
+        <form id="archiveStudentForm" onsubmit="submitArchiveStudent(event)" style="display: flex; gap: 0.75rem; justify-content: center;">
             @csrf
-            @method('DELETE')
-            <input type="hidden" id="delete_student_id" name="student_id" value="{{ $student->user_id }}">
-            <button type="button" onclick="closeDeleteModal()" class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Cancel</button>
-            <button type="submit" id="btnDeleteSubmit" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; background: #ef4444; color: white; border: none; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#dc2626';" onmouseout="this.style.background='#ef4444';">Delete Permanently</button>
+            <input type="hidden" id="archive_student_id" name="student_id" value="{{ $student->user_id }}">
+            <button type="button" onclick="closeArchiveModal()" class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Cancel</button>
+            <button type="submit" id="btnArchiveSubmit" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; background: #f59e0b; color: white; border: none; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#d97706';" onmouseout="this.style.background='#f59e0b';">Archive</button>
         </form>
     </div>
 </div>
@@ -693,32 +694,28 @@ async function submitEditStudent(e) {
     }
 }
 
-function openDeleteModal(id, name) {
-    document.getElementById('delete_student_id').value = id;
-    if (name) document.getElementById('deleteStudentName').innerText = name;
-    document.getElementById('deleteStudentModal').style.display = 'flex';
+function openArchiveModal(id, name) {
+    document.getElementById('archive_student_id').value = id;
+    if (name) document.getElementById('archiveStudentName').innerText = name;
+    document.getElementById('archiveStudentModal').style.display = 'flex';
 }
 
-function closeDeleteModal() {
-    document.getElementById('deleteStudentModal').style.display = 'none';
+function closeArchiveModal() {
+    document.getElementById('archiveStudentModal').style.display = 'none';
 }
 
-async function submitDeleteStudent(e) {
+async function submitArchiveStudent(e) {
     e.preventDefault();
-    const studentId = document.getElementById('delete_student_id').value;
-    const btn = document.getElementById('btnDeleteSubmit');
+    const studentId = document.getElementById('archive_student_id').value;
+    const btn = document.getElementById('btnArchiveSubmit');
     const originalText = btn.innerHTML;
-    
-    btn.disabled = true;
-    btn.innerHTML = 'Deleting...';
 
-    const formData = new FormData();
-    formData.append('_method', 'DELETE');
+    btn.disabled = true;
+    btn.innerHTML = 'Archiving...';
 
     try {
-        const res = await fetch(`/counselor/students/${studentId}`, {
-            method: 'POST',
-            body: formData,
+        const res = await fetch(`/counselor/students/${studentId}/archive`, {
+            method: 'PATCH',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -727,18 +724,18 @@ async function submitDeleteStudent(e) {
         const data = await res.json();
         if (data.success) {
             if (window.App && window.App.toast) {
-                App.toast({ type: 'success', title: 'Deleted', message: data.message });
+                App.toast({ type: 'success', title: 'Archived', message: data.message });
             } else {
                 alert(data.message);
             }
-            closeDeleteModal();
+            closeArchiveModal();
             window.location.href = "{{ route('counselor.students.index') }}";
         } else {
-            alert(data.error || 'Failed to delete student.');
+            alert(data.error || 'Failed to archive student.');
         }
     } catch (err) {
         console.error(err);
-        alert('An error occurred while deleting student.');
+        alert('An error occurred while archiving the student.');
     } finally {
         btn.disabled = false;
         btn.innerHTML = originalText;

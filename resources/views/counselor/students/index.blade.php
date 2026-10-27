@@ -43,6 +43,40 @@
         border-color: var(--primary);
         box-shadow: 0 0 0 3px var(--primary-glow);
     }
+
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+    .pagination-wrapper .pagination {
+        display: flex;
+        gap: 0.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .pagination-wrapper .page-item .page-link {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--surface-solid);
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+    .pagination-wrapper .page-item .page-link:hover { border-color: var(--primary); }
+    .pagination-wrapper .page-item.active .page-link {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    .pagination-wrapper .page-item.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
     @media (max-width: 768px) {
         .container { padding: 0.5rem 0.6rem 4rem !important; }
         header.staggered { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; margin-bottom: 1.5rem !important; }
@@ -76,7 +110,7 @@
         </div>
         <div style="display: flex; gap: 1.25rem; align-items: center;">
             <div style="text-align: right; padding-right: 1.5rem; border-right: 1px solid var(--border);">
-                <div style="font-size: 1.65rem; font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif;">{{ count($students) }}</div>
+                <div id="totalStudentsCount" style="font-size: 1.65rem; font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif;">{{ $students->total() }}</div>
                 <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em;">Total Students</div>
             </div>
             <button onclick="exportCSV()" class="btn-secondary" style="padding: 0.85rem 1.5rem; border-radius: 14px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem;">
@@ -89,7 +123,7 @@
     <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 1.5rem 1.75rem; margin-bottom: 2.5rem; display: flex; gap: 1.25rem; align-items: center; box-shadow: var(--shadow-sm); flex-wrap: wrap;">
         <div style="flex: 1; min-width: 280px; position: relative;">
             <i class="ph-bold ph-magnifying-glass" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
-            <input type="text" id="liveSearch" oninput="liveFilter()" placeholder="Search by student name or ID..." style="width: 100%; padding: 0.85rem 1.25rem 0.85rem 3.25rem; border-radius: 14px; border: 1.5px solid var(--border); font-size: 0.92rem; font-weight: 500; background: var(--surface-2); color: var(--text); outline: none; transition: all 0.25s ease;" onfocus="this.style.borderColor='var(--primary)'; this.style.background='var(--surface-solid)'; this.style.boxShadow='0 0 0 4px var(--primary-glow)';" onblur="this.style.borderColor='var(--border)'; this.style.background='var(--surface-2)'; this.style.boxShadow='none';">
+            <input type="text" id="liveSearch" placeholder="Search by student name or ID..." style="width: 100%; padding: 0.85rem 1.25rem 0.85rem 3.25rem; border-radius: 14px; border: 1.5px solid var(--border); font-size: 0.92rem; font-weight: 500; background: var(--surface-2); color: var(--text); outline: none; transition: all 0.25s ease;" onfocus="this.style.borderColor='var(--primary)'; this.style.background='var(--surface-solid)'; this.style.boxShadow='0 0 0 4px var(--primary-glow)';" onblur="this.style.borderColor='var(--border)'; this.style.background='var(--surface-2)'; this.style.boxShadow='none';">
         </div>
         
         <form method="GET" id="filterForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
@@ -162,7 +196,7 @@
     @endif
 
     <!-- Analytics Section -->
-    <div class="staggered" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3.5rem;">
+    <div class="staggered" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 2rem; margin-bottom: 3.5rem;">
         {{-- Risk Distribution Card --}}
         <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 2rem 2.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.04); position: relative; overflow: hidden;">
             <div style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgba(16,185,129,0.06); pointer-events: none;"></div>
@@ -195,7 +229,7 @@
                     </div>
                     <p style="font-size: 0.78rem; color: var(--text-muted); font-weight: 500; margin: 0.3rem 0 0 0;">Enrollment breakdown per academic program</p>
                 </div>
-                <span id="totalStudentsBadge" style="font-size: 0.72rem; font-weight: 850; background: rgba(99,102,241,0.1); color: #6366f1; padding: 0.3rem 0.75rem; border-radius: 100px; border: 1px solid rgba(99,102,241,0.2); white-space:nowrap;">{{ count($students) }} Total</span>
+                <span id="totalStudentsBadge" style="font-size: 0.72rem; font-weight: 850; background: rgba(99,102,241,0.1); color: #6366f1; padding: 0.3rem 0.75rem; border-radius: 100px; border: 1px solid rgba(99,102,241,0.2); white-space:nowrap;">{{ $students->total() }} Total</span>
             </div>
             <div style="height: 230px; position: relative;">
                 <canvas id="courseChart"></canvas>
@@ -305,8 +339,8 @@
                                 <button type="button" onclick="openEditModal({{ json_encode($student) }})" style="background: rgba(99, 102, 241, 0.1); color: #6366f1; border: 1.5px solid rgba(99, 102, 241, 0.25); font-weight: 800; font-size: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.2s ease;" title="Edit Student Profile">
                                     <i class="ph-bold ph-pencil-simple"></i>
                                 </button>
-                                <button type="button" onclick="openDeleteModal('{{ $student->user_id }}', '{{ e($s_name) }}')" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1.5px solid rgba(239, 68, 68, 0.25); font-weight: 800; font-size: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.2s ease;" title="Delete Student Record">
-                                    <i class="ph-bold ph-trash"></i>
+                                <button type="button" onclick="openArchiveModal('{{ $student->user_id }}', '{{ e($s_name) }}')" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1.5px solid rgba(245, 158, 11, 0.25); font-weight: 800; font-size: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.2s ease;" title="Archive Student">
+                                    <i class="ph-bold ph-archive-box"></i>
                                 </button>
                             </div>
                         </td>
@@ -315,6 +349,12 @@
                 </tbody>
             </table>
         </div>
+
+        @if ($students->hasPages())
+            <div id="paginationBar" class="pagination-wrapper" style="margin-top: 2rem;">
+                {{ $students->appends(request()->query())->links() }}
+            </div>
+        @endif
     </div>
 </div>
 
@@ -390,24 +430,23 @@
     </div>
 </div>
 
-<!-- Delete Student Modal -->
-<div id="deleteStudentModal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;">
+<!-- Archive Student Modal -->
+<div id="archiveStudentModal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1.5rem;">
     <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; width: 100%; max-width: 480px; padding: 2.25rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative; text-align: center;">
-        <div style="width: 60px; height: 60px; border-radius: 20px; background: rgba(239, 68, 68, 0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem;">
-            <i class="ph-bold ph-warning-octagon"></i>
+        <div style="width: 60px; height: 60px; border-radius: 20px; background: rgba(245, 158, 11, 0.12); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem;">
+            <i class="ph-bold ph-archive-box"></i>
         </div>
 
-        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--text); margin: 0 0 0.5rem;">Delete Student Account?</h3>
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--text); margin: 0 0 0.5rem;">Archive this student?</h3>
         <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0 0 1.5rem; font-weight: 500; line-height: 1.5;">
-            Are you sure you want to delete <strong id="deleteStudentName" style="color: var(--text);">Student</strong>? This will permanently remove their records, assessment history, and clinical notes. This action cannot be undone.
+            <strong id="archiveStudentName" style="color: var(--text);">Student</strong> will be moved to Archived Students and hidden from the active registry. Nothing is deleted — assessments, notes and chat history are kept, and you can restore them at any time.
         </p>
 
-        <form id="deleteStudentForm" onsubmit="submitDeleteStudent(event)" style="display: flex; gap: 0.75rem; justify-content: center;">
+        <form id="archiveStudentForm" onsubmit="submitArchiveStudent(event)" style="display: flex; gap: 0.75rem; justify-content: center;">
             @csrf
-            @method('DELETE')
-            <input type="hidden" id="delete_student_id" name="student_id">
-            <button type="button" onclick="closeDeleteModal()" class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Cancel</button>
-            <button type="submit" id="btnDeleteSubmit" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; background: #ef4444; color: white; border: none; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#dc2626';" onmouseout="this.style.background='#ef4444';">Delete Permanently</button>
+            <input type="hidden" id="archive_student_id" name="student_id">
+            <button type="button" onclick="closeArchiveModal()" class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Cancel</button>
+            <button type="submit" id="btnArchiveSubmit" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; background: #f59e0b; color: white; border: none; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#d97706';" onmouseout="this.style.background='#f59e0b';">Archive</button>
         </form>
     </div>
 </div>
@@ -579,15 +618,20 @@ const refreshRegistry = async () => {
     const form = document.querySelector('#filterForm');
     const fd = new FormData(form);
     const params = new URLSearchParams(fd);
-    
+
     // Add live search to params if exists
     const q = document.getElementById('liveSearch').value;
     if (q) params.set('search', q);
-    
+
     const url = new URL(window.location.href);
+
+    // Drop every filter up front, otherwise clearing a field leaves a stale
+    // value (typically ?search=) pinned in the URL and the table stays empty.
+    ['search', 'semester', 'course', 'filter', 'start_date', 'end_date']
+        .forEach(key => url.searchParams.delete(key));
+
     for (const [key, value] of params) {
         if (value) url.searchParams.set(key, value);
-        else url.searchParams.delete(key);
     }
     
     history.pushState({}, '', url);
@@ -608,6 +652,15 @@ const refreshRegistry = async () => {
                 gsap.from('#tableBody tr', { x: -20, opacity: 0, duration: 0.5, stagger: 0.04, ease: "power2.out" });
             }
         }
+
+        // Keep the page numbers and the totals in step with the filtered result
+        ['#paginationBar', '#totalStudentsCount', '#totalStudentsBadge'].forEach(sel => {
+            const live = document.querySelector(sel);
+            if (!live) return;
+            const fresh = doc.querySelector(sel);
+            if (sel === '#paginationBar') live.style.display = fresh ? '' : 'none';
+            live.innerHTML = fresh ? fresh.innerHTML : '';
+        });
     } catch (err) {
         console.error(err);
         if (window.App && window.App.toast) {
@@ -704,32 +757,28 @@ async function submitEditStudent(e) {
     }
 }
 
-function openDeleteModal(id, name) {
-    document.getElementById('delete_student_id').value = id;
-    document.getElementById('deleteStudentName').innerText = name;
-    document.getElementById('deleteStudentModal').style.display = 'flex';
+function openArchiveModal(id, name) {
+    document.getElementById('archive_student_id').value = id;
+    if (name) document.getElementById('archiveStudentName').innerText = name;
+    document.getElementById('archiveStudentModal').style.display = 'flex';
 }
 
-function closeDeleteModal() {
-    document.getElementById('deleteStudentModal').style.display = 'none';
+function closeArchiveModal() {
+    document.getElementById('archiveStudentModal').style.display = 'none';
 }
 
-async function submitDeleteStudent(e) {
+async function submitArchiveStudent(e) {
     e.preventDefault();
-    const studentId = document.getElementById('delete_student_id').value;
-    const btn = document.getElementById('btnDeleteSubmit');
+    const studentId = document.getElementById('archive_student_id').value;
+    const btn = document.getElementById('btnArchiveSubmit');
     const originalText = btn.innerHTML;
-    
-    btn.disabled = true;
-    btn.innerHTML = 'Deleting...';
 
-    const formData = new FormData();
-    formData.append('_method', 'DELETE');
+    btn.disabled = true;
+    btn.innerHTML = 'Archiving...';
 
     try {
-        const res = await fetch(`/counselor/students/${studentId}`, {
-            method: 'POST',
-            body: formData,
+        const res = await fetch(`/counselor/students/${studentId}/archive`, {
+            method: 'PATCH',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -738,18 +787,18 @@ async function submitDeleteStudent(e) {
         const data = await res.json();
         if (data.success) {
             if (window.App && window.App.toast) {
-                App.toast({ type: 'success', title: 'Deleted', message: data.message });
+                App.toast({ type: 'success', title: 'Archived', message: data.message });
             } else {
                 alert(data.message);
             }
-            closeDeleteModal();
+            closeArchiveModal();
             refreshRegistry();
         } else {
-            alert(data.error || 'Failed to delete student.');
+            alert(data.error || 'Failed to archive student.');
         }
     } catch (err) {
         console.error(err);
-        alert('An error occurred while deleting student.');
+        alert('An error occurred while archiving the student.');
     } finally {
         btn.disabled = false;
         btn.innerHTML = originalText;

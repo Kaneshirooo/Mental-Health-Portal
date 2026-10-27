@@ -119,6 +119,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/notes/{note}/status', [\App\Http\Controllers\Counselor\AnonymousNoteController::class, 'updateStatus'])->name('notes.status');
 
         Route::get('/students', [\App\Http\Controllers\Counselor\StudentController::class, 'index'])->name('students.index');
+        Route::get('/students/archived', [\App\Http\Controllers\Counselor\StudentController::class, 'archived'])->name('students.archived');
+        Route::patch('/students/{student}/archive', [\App\Http\Controllers\Counselor\StudentController::class, 'archive'])->name('students.archive');
+        Route::patch('/students/{student}/restore', [\App\Http\Controllers\Counselor\StudentController::class, 'restore'])->name('students.restore');
         Route::get('/students/{student}', [\App\Http\Controllers\Counselor\StudentController::class, 'show'])->name('students.show');
         Route::put('/students/{student}', [\App\Http\Controllers\Counselor\StudentController::class, 'update'])->name('students.update');
         Route::delete('/students/{student}', [\App\Http\Controllers\Counselor\StudentController::class, 'destroy'])->name('students.destroy');

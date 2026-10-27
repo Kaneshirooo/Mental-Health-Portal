@@ -45,6 +45,7 @@ class StudentController extends Controller
         $search = $request->search;
 
         $query = User::where('user_type', 'student')
+            ->whereNull('archived_at')
             ->with('latestAssessment')
             ->orderBy('full_name');
 
@@ -79,21 +80,25 @@ class StudentController extends Controller
             });
         }
 
-        $students = $query->get();
+        // The charts describe the whole filtered registry, so read the full
+        // set first — then paginate only the table shown underneath.
+        $allStudents = $query->get();
+        $students = $query->paginate(15);
 
         // Get unique courses and semesters for filters
-        $courses = User::where('user_type', 'student')->whereNotNull('course')->distinct()->pluck('course');
-        $semesters = User::where('user_type', 'student')->whereNotNull('semester')->distinct()->pluck('semester');
+        $courses = User::where('user_type', 'student')->whereNull('archived_at')->whereNotNull('course')->distinct()->pluck('course');
+        $semesters = User::where('user_type', 'student')->whereNull('archived_at')->whereNotNull('semester')->distinct()->pluck('semester');
 
         // Analytics Data
-        $risk_distribution = $students->groupBy(fn($s) => $s->latestAssessment->risk_level ?? 'Uncategorized')
+        $risk_distribution = $allStudents->groupBy(fn($s) => $s->latestAssessment->risk_level ?? 'Uncategorized')
             ->map(fn($group) => $group->count());
             
-        $course_distribution = $students->groupBy('course')
+        $course_distribution = $allStudents->groupBy('course')
             ->map(fn($group) => $group->count());
 
         // High Risk per Course (considering ANY assessment in the range if provided)
         $high_risk_query = User::where('user_type', 'student')
+            ->whereNull('archived_at')
             ->whereHas('assessmentScores', function($q) use ($start_date, $end_date) {
                 if ($start_date && $end_date) {
                     $q->whereBetween('assessment_date', [
@@ -115,6 +120,74 @@ class StudentController extends Controller
             'students', 'search', 'filter', 'course', 'semester', 'start_date', 'end_date',
             'courses', 'semesters', 'risk_distribution', 'course_distribution', 'high_risk_by_course'
         ));
+    }
+
+    /**
+     * List students that have been moved out of the active registry.
+     */
+    public function archived(Request $request): View
+    {
+        $search = $request->search;
+
+        $archived = User::where('user_type', 'student')
+            ->whereNotNull('archived_at')
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q2) use ($search) {
+                    $q2->where('full_name', 'like', "%$search%")
+                       ->orWhere('email', 'like', "%$search%");
+                });
+            })
+            ->with('latestAssessment')
+            ->orderByDesc('archived_at')
+            ->paginate(15);
+
+        return view('counselor.students.archived', compact('archived', 'search'));
+    }
+
+    /**
+     * Archive a student: removed from the registry, records fully preserved.
+     */
+    public function archive(Request $request, User $student): JsonResponse|RedirectResponse
+    {
+        if (!$student->isStudent()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'error' => 'Only student accounts can be archived.'], 403);
+            }
+            abort(404);
+        }
+
+        $student->forceFill(['archived_at' => now()])->save();
+
+        $message = "{$student->full_name} is now archived. Their records are kept and can be restored.";
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return back()->with('success', $message);
+    }
+
+    /**
+     * Restore an archived student back into the active registry.
+     */
+    public function restore(Request $request, User $student): JsonResponse|RedirectResponse
+    {
+        if (!$student->isStudent()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'error' => 'Only student accounts can be restored.'], 403);
+            }
+            abort(404);
+        }
+
+        $student->forceFill(['archived_at' => null])->save();
+
+        $message = "{$student->full_name} was restored to the active registry.";
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return back()->with('success', $message);
     }
 
     /**

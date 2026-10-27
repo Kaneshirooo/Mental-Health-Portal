@@ -63,6 +63,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'archived_at' => 'datetime',
             'password' => 'hashed',
             'date_of_birth' => 'date',
             'user_type' => UserRole::class,
