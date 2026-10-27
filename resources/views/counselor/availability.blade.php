@@ -162,6 +162,41 @@
         border-color: var(--primary);
     }
 
+    .slots-empty {
+        text-align: center;
+        padding: 3.5rem 2rem;
+        background: var(--surface-2);
+        border: 2px dashed var(--border);
+        border-radius: 24px;
+        transition: border-color 0.25s ease;
+    }
+    .slots-empty:hover { border-color: var(--primary); }
+    .slots-empty-icon {
+        width: 64px; height: 64px;
+        margin: 0 auto 1.25rem;
+        border-radius: 20px;
+        background: var(--primary-glow);
+        color: var(--primary);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.85rem;
+    }
+    .slots-empty h4 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.25rem;
+        font-weight: 900;
+        color: var(--text);
+        margin: 0 0 0.5rem;
+    }
+    .slots-empty p {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+        font-weight: 500;
+        margin: 0 auto 1.75rem;
+        max-width: 34rem;
+        line-height: 1.6;
+    }
+    .slots-empty .btn-add { display: inline-flex; }
+
     @media (max-width: 900px) {
         div[style*="grid-template-columns: 360px 1fr"] {
             grid-template-columns: 1fr !important;
@@ -234,7 +269,7 @@
             <form method="POST" action="{{ route('counselor.availability') }}">
                 @csrf
                 <div id="slotsContainer">
-                    @foreach($slots as $idx => $s)
+                    @forelse($slots as $idx => $s)
                     <div class="slot-card" id="slot-{{ $idx }}">
                         <div>
                             <label class="field-label">Institutional Day</label>
@@ -255,14 +290,25 @@
                         </div>
                         <button type="button" class="btn-trash" onclick="removeSlot('slot-{{ $idx }}')"><i class="ph-bold ph-trash"></i></button>
                     </div>
-                    @endforeach
+                    @empty
+                        <div class="slots-empty" id="slotsEmptyState">
+                            <div class="slots-empty-icon">
+                                <i class="ph-bold ph-calendar-blank"></i>
+                            </div>
+                            <h4>No service windows yet</h4>
+                            <p>Set the days and hours you take student appointments. This is what students see when they pick a time to book.</p>
+                            <button type="button" class="btn-add" onclick="addSlot()">
+                                <i class="ph-bold ph-plus-circle" style="font-size: 1.25rem;"></i> Add Your First Window
+                            </button>
+                        </div>
+                    @endforelse
                 </div>
 
-                <button type="button" class="btn-add" onclick="addSlot()">
+                <button type="button" class="btn-add" id="addSlotBtn" onclick="addSlot()">
                     <i class="ph-bold ph-plus-circle" style="font-size: 1.25rem;"></i> Add Service Window
                 </button>
 
-                <div style="margin-top: 3rem; display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;">
+                <div id="availabilityActions" style="margin-top: 3rem; display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;">
                     <button type="submit" class="btn-primary" id="saveAvailabilityBtn" style="padding: 1.1rem; border-radius: 16px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase;">
                         Commit Changes
                     </button>
@@ -281,6 +327,21 @@
 <script>
 const dayNames = @json($finalDays);
 let slotIndex = {{ count($slots) }};
+
+// The commit row and the plain "Add" button only make sense once a window
+// exists — until then the panel shows a proper empty state instead.
+function updateAvailabilityUi() {
+    const count = document.querySelectorAll('#slotsContainer .slot-card').length;
+    const emptyState = document.getElementById('slotsEmptyState');
+    const addBtn = document.getElementById('addSlotBtn');
+    const actions = document.getElementById('availabilityActions');
+
+    if (emptyState) emptyState.style.display = count === 0 ? '' : 'none';
+    if (addBtn) addBtn.style.display = count === 0 ? 'none' : '';
+    if (actions) actions.style.display = count === 0 ? 'none' : '';
+}
+
+updateAvailabilityUi();
 
 function addSlot() {
     const idx = slotIndex++;
@@ -308,6 +369,7 @@ function addSlot() {
         <button type="button" class="btn-trash" onclick="removeSlot('slot-${idx}')"><i class="ph-bold ph-trash"></i></button>
     `;
     container.appendChild(div);
+    updateAvailabilityUi();
     if (window.gsap) {
         gsap.from(div, { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" });
     }
@@ -321,10 +383,11 @@ function selectDay(idx, dayId, btn) {
 
 function removeSlot(id) {
     const el = document.getElementById(id);
+    const drop = () => { el.remove(); updateAvailabilityUi(); };
     if (window.gsap) {
-        gsap.to(el, { opacity: 0, height: 0, marginBottom: 0, duration: 0.3, onComplete: () => el.remove() });
+        gsap.to(el, { opacity: 0, height: 0, marginBottom: 0, duration: 0.3, onComplete: drop });
     } else {
-        el.remove();
+        drop();
     }
 }
 
