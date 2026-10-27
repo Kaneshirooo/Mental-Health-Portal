@@ -22,13 +22,7 @@
                             @if($user->profile_picture)
                                 <img id="avatar-preview" src="{{ asset('storage/' . $user->profile_picture) }}" class="w-full h-full object-cover">
                             @else
-                                <div id="avatar-placeholder" class="w-full h-full bg-emerald-500 flex items-center justify-center text-white text-4xl font-black">
-                                    @php
-                                        $nameParts = explode(' ', $user->full_name);
-                                        echo strtoupper(substr($nameParts[0], 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : ''));
-                                    @endphp
-                                </div>
-                                <img id="avatar-preview" src="#" class="w-full h-full object-cover hidden">
+                                <img id="avatar-preview" src="{{ asset('images/default-avatar.svg') }}" alt="Default profile picture" class="w-full h-full object-cover">
                             @endif
                             
                             <label for="profile_picture" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
