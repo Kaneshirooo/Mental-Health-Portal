@@ -77,13 +77,37 @@
         cursor: not-allowed;
     }
 
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+        gap: 0.9rem;
+        align-items: end;
+    }
+    .filter-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        min-width: 0;
+    }
+    .filter-label {
+        font-size: 0.66rem;
+        font-weight: 900;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    .filter-field .filter-control {
+        width: 100%;
+        min-height: 46px;
+    }
+
     @media (max-width: 768px) {
         .container { padding: 0.5rem 0.6rem 4rem !important; }
         header.staggered { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; margin-bottom: 1.5rem !important; }
         header.staggered h1 { font-size: 1.8rem !important; }
-        #filterForm { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.6rem !important; width: 100% !important; }
-        #filterForm > div:first-child { grid-column: 1 / -1 !important; display: grid !important; grid-template-columns: auto 1fr auto 1fr !important; gap: 0.4rem !important; align-items: center !important; }
-        #filterForm .filter-control { width: 100% !important; min-height: 48px !important; font-size: 16px !important; }
+        .filter-grid { grid-template-columns: 1fr !important; }
+        /* 16px stops iOS Safari from auto-zooming on focus */
+        #filterForm .filter-control, #filterForm input[type="date"] { width: 100% !important; min-height: 48px !important; font-size: 16px !important; }
         #liveSearch { font-size: 16px !important; min-height: 48px !important; }
         div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 1rem !important; }
         div[style*="grid-template-columns: repeat(auto-fill, minmax(270px, 1fr))"] { grid-template-columns: 1fr !important; }
@@ -120,50 +144,78 @@
     </header>
 
     <!-- Controls -->
-    <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 1.5rem 1.75rem; margin-bottom: 2.5rem; display: flex; gap: 1.25rem; align-items: center; box-shadow: var(--shadow-sm); flex-wrap: wrap;">
-        <div style="flex: 1; min-width: 280px; position: relative;">
-            <i class="ph-bold ph-magnifying-glass" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
-            <input type="text" id="liveSearch" placeholder="Search by student name or ID..." style="width: 100%; padding: 0.85rem 1.25rem 0.85rem 3.25rem; border-radius: 14px; border: 1.5px solid var(--border); font-size: 0.92rem; font-weight: 500; background: var(--surface-2); color: var(--text); outline: none; transition: all 0.25s ease;" onfocus="this.style.borderColor='var(--primary)'; this.style.background='var(--surface-solid)'; this.style.boxShadow='0 0 0 4px var(--primary-glow)';" onblur="this.style.borderColor='var(--border)'; this.style.background='var(--surface-2)'; this.style.boxShadow='none';">
+    <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 1.5rem 1.75rem; margin-bottom: 2.5rem; box-shadow: var(--shadow-sm);">
+        <div style="display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.25rem;">
+            <div style="flex: 1; min-width: 280px; position: relative;">
+                <i class="ph-bold ph-magnifying-glass" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
+                <input type="text" id="liveSearch" placeholder="Search by student name or ID..." style="width: 100%; padding: 0.85rem 1.25rem 0.85rem 3.25rem; border-radius: 14px; border: 1.5px solid var(--border); font-size: 0.92rem; font-weight: 500; background: var(--surface-2); color: var(--text); outline: none; transition: all 0.25s ease;" onfocus="this.style.borderColor='var(--primary)'; this.style.background='var(--surface-solid)'; this.style.boxShadow='0 0 0 4px var(--primary-glow)';" onblur="this.style.borderColor='var(--border)'; this.style.background='var(--surface-2)'; this.style.boxShadow='none';">
+            </div>
+            @if ($search || $filter || $course || $semester || $school_year || $start_date || $end_date)
+                <a href="{{ route('counselor.students.index') }}" style="padding: 0.85rem 1.4rem; border-radius: 14px; background: rgba(239, 68, 68, 0.08); color: #ef4444; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; border: 1px solid rgba(239, 68, 68, 0.2); white-space: nowrap;"><i class="ph-bold ph-arrow-counter-clockwise"></i> Reset All</a>
+            @endif
         </div>
-        
-        <form method="GET" id="filterForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--surface-2); padding: 0.4rem 0.85rem; border-radius: 14px; border: 1.5px solid var(--border);">
-                <span style="font-size: 0.68rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase;">From</span>
-                <input type="date" name="start_date" value="{{ $start_date }}" style="background: transparent; border: none; color: var(--text); font-weight: 700; font-size: 0.85rem; outline: none; cursor: pointer;">
-                <span style="font-size: 0.68rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase;">To</span>
-                <input type="date" name="end_date" value="{{ $end_date }}" style="background: transparent; border: none; color: var(--text); font-weight: 700; font-size: 0.85rem; outline: none; cursor: pointer;">
+
+        <form method="GET" id="filterForm">
+            <div style="font-size: 0.68rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.45rem;">
+                <i class="ph-bold ph-funnel" style="font-size: 0.9rem;"></i> Filter Registry
             </div>
 
-            <select name="semester" class="filter-control">
-                <option value="">All Semesters</option>
-                @foreach ($semesters as $s)
-                    <option value="{{ $s }}" {{ $semester === $s ? 'selected' : '' }}>{{ $s }}</option>
-                @endforeach
-            </select>
+            <div class="filter-grid">
+                <label class="filter-field">
+                    <span class="filter-label">School Year</span>
+                    <select name="school_year" class="filter-control">
+                        <option value="">All School Years</option>
+                        @foreach ($schoolYears as $sy)
+                            <option value="{{ $sy }}" {{ $school_year === $sy ? 'selected' : '' }}>SY {{ $sy }}</option>
+                        @endforeach
+                    </select>
+                </label>
 
-            <select name="course" class="filter-control">
-                <option value="">All Courses</option>
-                @foreach ($courses as $c)
-                    <option value="{{ $c }}" {{ $course === $c ? 'selected' : '' }}>{{ $c }}</option>
-                @endforeach
-            </select>
+                <label class="filter-field">
+                    <span class="filter-label">Semester</span>
+                    <select name="semester" class="filter-control">
+                        <option value="">All Semesters</option>
+                        @foreach ($semesters as $s)
+                            <option value="{{ $s }}" {{ $semester === $s ? 'selected' : '' }}>{{ $s }}</option>
+                        @endforeach
+                    </select>
+                </label>
 
-            <select name="filter" class="filter-control">
-                <option value="">All Risk Tiers</option>
-                @foreach (['Low', 'Moderate', 'High', 'Critical'] as $lvl)
-                    <option value="{{ $lvl }}" {{ $filter === $lvl ? 'selected' : '' }}>{{ $lvl }} Priority</option>
-                @endforeach
-            </select>
+                <label class="filter-field">
+                    <span class="filter-label">Course</span>
+                    <select name="course" class="filter-control">
+                        <option value="">All Courses</option>
+                        @foreach ($courses as $c)
+                            <option value="{{ $c }}" {{ $course === $c ? 'selected' : '' }}>{{ $c }}</option>
+                        @endforeach
+                    </select>
+                </label>
 
-            @if ($search || $filter || $course || $semester || $start_date || $end_date)
-                <a href="{{ route('counselor.students.index') }}" style="padding: 0.8rem 1.25rem; border-radius: 14px; background: rgba(239, 68, 68, 0.08); color: #ef4444; font-weight: 800; text-decoration: none; display: flex; align-items: center; font-size: 0.8rem; border: 1px solid rgba(239, 68, 68, 0.2);">Reset All</a>
-            @endif
+                <label class="filter-field">
+                    <span class="filter-label">Risk Tier</span>
+                    <select name="filter" class="filter-control">
+                        <option value="">All Risk Tiers</option>
+                        @foreach (['Low', 'Moderate', 'High', 'Critical'] as $lvl)
+                            <option value="{{ $lvl }}" {{ $filter === $lvl ? 'selected' : '' }}>{{ $lvl }} Priority</option>
+                        @endforeach
+                    </select>
+                </label>
+
+                <div class="filter-field">
+                    <span class="filter-label">Assessment Date Range</span>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--surface-2); border: 1.5px solid var(--border); border-radius: 14px; padding: 0 0.85rem; min-height: 46px;">
+                        <input type="date" name="start_date" value="{{ $start_date }}" style="background: transparent; border: none; color: var(--text); font-weight: 700; font-size: 0.85rem; outline: none; cursor: pointer; width: 100%;">
+                        <span style="font-size: 0.68rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; flex-shrink: 0;">to</span>
+                        <input type="date" name="end_date" value="{{ $end_date }}" style="background: transparent; border: none; color: var(--text); font-weight: 700; font-size: 0.85rem; outline: none; cursor: pointer; width: 100%;">
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 
     <!-- High Risk Alert Section -->
     @if($high_risk_by_course->isNotEmpty())
-    <div class="staggered" style="margin-bottom: 3.5rem;">
+    <div id="riskConcentrationWrap" class="staggered" style="margin-bottom: 3.5rem;">
         <div style="background: rgba(239, 68, 68, 0.04); border: 1.5px solid rgba(239, 68, 68, 0.2); border-radius: 32px; padding: 2.25rem; box-shadow: 0 15px 35px rgba(239, 68, 68, 0.05);">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
                 <div>
@@ -193,7 +245,7 @@
             </div>
 
             <!-- AI Counselor Insight -->
-            <div id="riskAiInsight" data-url="{{ route('counselor.students.risk-insights', request()->only('course', 'semester', 'start_date', 'end_date')) }}"
+            <div id="riskAiInsight" data-url="{{ route('counselor.students.risk-insights', request()->only('course', 'semester', 'school_year', 'start_date', 'end_date')) }}"
                 style="margin-top: 1.75rem; background: var(--surface-solid); border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem 1.6rem; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.05);">
                 <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.9rem;">
                     <div style="width: 34px; height: 34px; border-radius: 10px; background: rgba(239, 68, 68, 0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0;">
@@ -641,7 +693,7 @@ const refreshRegistry = async () => {
 
     // Drop every filter up front, otherwise clearing a field leaves a stale
     // value (typically ?search=) pinned in the URL and the table stays empty.
-    ['search', 'semester', 'course', 'filter', 'start_date', 'end_date']
+    ['search', 'semester', 'course', 'filter', 'start_date', 'end_date', 'school_year']
         .forEach(key => url.searchParams.delete(key));
 
     for (const [key, value] of params) {
@@ -675,6 +727,21 @@ const refreshRegistry = async () => {
             if (sel === '#paginationBar') live.style.display = fresh ? '' : 'none';
             live.innerHTML = fresh ? fresh.innerHTML : '';
         });
+
+        // The High Risk block (cards + AI insight) is filter-dependent too, so
+        // swap the whole thing. The fresh markup carries the new insight URL.
+        const freshRisk = doc.querySelector('#riskConcentrationWrap');
+        const liveRisk = document.querySelector('#riskConcentrationWrap');
+        if (freshRisk && liveRisk) {
+            liveRisk.replaceWith(freshRisk);
+        } else if (freshRisk && !liveRisk) {
+            // Filter revealed high-risk cases that weren't there before.
+            const anchor = document.querySelector('.filter-grid')?.closest('.staggered');
+            if (anchor) anchor.insertAdjacentElement('afterend', freshRisk);
+        } else if (!freshRisk && liveRisk) {
+            liveRisk.remove();
+        }
+        if (document.querySelector('#riskAiInsight')) loadRiskAiInsight();
     } catch (err) {
         console.error(err);
         if (window.App && window.App.toast) {

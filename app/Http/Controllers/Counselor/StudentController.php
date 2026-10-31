@@ -42,6 +42,7 @@ class StudentController extends Controller
         $end_date = $request->end_date;
         $course = $request->course;
         $semester = $request->semester;
+        $school_year = $request->school_year;
         $filter = $request->filter;
         $search = $request->search;
 
@@ -71,6 +72,8 @@ class StudentController extends Controller
             $query->where('semester', $semester);
         }
 
+        $this->applySchoolYear($query, $school_year);
+
         if ($start_date && $end_date) {
             $query->whereHas('assessmentScores', function($q) use ($start_date, $end_date) {
                 $q->whereBetween('assessment_date', [
@@ -87,7 +90,11 @@ class StudentController extends Controller
 
         // Get unique courses and semesters for filters
         $courses = User::where('user_type', 'student')->whereNull('archived_at')->whereNotNull('course')->distinct()->pluck('course');
-        $semesters = User::where('user_type', 'student')->whereNull('archived_at')->whereNotNull('semester')->distinct()->pluck('semester');
+        $semesters = $this->availableSemesters();
+
+        // School Years are derived from enrollment date (see applySchoolYear),
+        // so they are computed rather than read from a column.
+        $schoolYears = $this->availableSchoolYears();
 
         // Analytics Data
         $risk_distribution = $allStudents->groupBy(fn($s) => $s->latestAssessment->risk_level ?? 'Uncategorized')
@@ -100,9 +107,92 @@ class StudentController extends Controller
         $high_risk_by_course = $this->highRiskByCourse($request);
 
         return view('counselor.students.index', compact(
-            'students', 'search', 'filter', 'course', 'semester', 'start_date', 'end_date',
-            'courses', 'semesters', 'risk_distribution', 'course_distribution', 'high_risk_by_course'
+            'students', 'search', 'filter', 'course', 'semester', 'school_year', 'start_date', 'end_date',
+            'courses', 'semesters', 'schoolYears', 'risk_distribution', 'course_distribution', 'high_risk_by_course'
         ));
+    }
+
+    /**
+     * The Philippine academic year runs 1 June → 31 May, so "2025-2026" covers
+     * 2025-06-01 to 2026-05-31 inclusive.
+     */
+    private function schoolYearRange(string $sy): array
+    {
+        $start = (int) substr($sy, 0, 4);
+
+        return [
+            Carbon::create($start, 6, 1)->startOfDay(),
+            Carbon::create($start + 1, 5, 31)->endOfDay(),
+        ];
+    }
+
+    /**
+     * Narrow a student query to one academic year, based on enrollment date.
+     *
+     * There is no school_year column, so the year is derived from created_at —
+     * the date the student joined the portal.
+     */
+    private function applySchoolYear($query, ?string $sy): void
+    {
+        if (!$sy || !preg_match('/^\d{4}-\d{4}$/', $sy)) {
+            return;
+        }
+
+        [$from, $to] = $this->schoolYearRange($sy);
+
+        $query->whereBetween('created_at', [$from, $to]);
+    }
+
+    /**
+     * Every academic year any active student enrolled in, newest first.
+     */
+    private function availableSchoolYears(): array
+    {
+        $years = User::where('user_type', 'student')
+            ->whereNull('archived_at')
+            ->whereNotNull('created_at')
+            ->pluck('created_at')
+            ->map(fn ($d) => $this->labelForDate($d))
+            ->unique()
+            ->sort()
+            ->reverse()
+            ->values()
+            ->all();
+
+        // Always offer the current year, even before anyone has enrolled in it.
+        $current = $this->labelForDate(now());
+
+        return in_array($current, $years, true) ? $years : array_merge([$current], $years);
+    }
+
+    /**
+     * "2025-06-01" → "2025-2026". June starts the year, so a date before June
+     * belongs to the year that is about to end.
+     */
+    private function labelForDate($date): string
+    {
+        $d = Carbon::parse($date);
+        $start = $d->month >= 6 ? $d->year : $d->year - 1;
+
+        return $start . '-' . ($start + 1);
+    }
+
+    /**
+     * Semester options: the standard set the school uses, plus any other value
+     * already stored on a student so nothing existing becomes unreachable.
+     */
+    private function availableSemesters(): array
+    {
+        $standard = ['1st Semester', '2nd Semester', 'Summer'];
+
+        $stored = User::where('user_type', 'student')
+            ->whereNull('archived_at')
+            ->whereNotNull('semester')
+            ->distinct()
+            ->pluck('semester')
+            ->all();
+
+        return array_values(array_unique(array_merge($standard, $stored)));
     }
 
     /**
@@ -137,6 +227,8 @@ class StudentController extends Controller
             $query->where('semester', $semester);
         }
 
+        $this->applySchoolYear($query, $request->school_year);
+
         return $query->get()
             ->groupBy('course')
             ->map(fn ($group) => $group->count());
@@ -164,6 +256,7 @@ class StudentController extends Controller
             ->whereNull('archived_at')
             ->when($request->course, fn ($q, $c) => $q->where('course', $c))
             ->when($request->semester, fn ($q, $s) => $q->where('semester', $s))
+            ->tap(fn ($q) => $this->applySchoolYear($q, $request->school_year))
             ->count();
 
         $riskDistribution = User::where('user_type', 'student')
@@ -171,6 +264,7 @@ class StudentController extends Controller
             ->with('latestAssessment')
             ->when($request->course, fn ($q, $c) => $q->where('course', $c))
             ->when($request->semester, fn ($q, $s) => $q->where('semester', $s))
+            ->tap(fn ($q) => $this->applySchoolYear($q, $request->school_year))
             ->get()
             ->groupBy(fn ($s) => $s->latestAssessment->risk_level ?? 'Uncategorized')
             ->map(fn ($group) => $group->count());
@@ -190,6 +284,7 @@ class StudentController extends Controller
             . "FOLLOW-UP FILTER CONTEXT: "
             . 'Course filter: ' . ($request->course ?: 'all courses') . '; '
             . 'Semester filter: ' . ($request->semester ?: 'all semesters') . '; '
+            . 'School Year filter: ' . ($request->school_year ?: 'all school years') . '; '
             . 'Date range: ' . (($request->start_date && $request->end_date) ? $request->start_date . ' to ' . $request->end_date : 'no date range (all records)') . ".\n\n"
             . "### HIGH-RISK CONCENTRATION BY COURSE (students whose latest DASS-21 reading is High or Critical):\n"
             . implode("\n", $lines) . "\n\n"
@@ -204,7 +299,7 @@ class StudentController extends Controller
             . "Use a warm, direct, professional tone. Do NOT invent student names, counts, or percentages beyond the figures given. Do NOT use markdown headings or bullet symbols; plain paragraphs only.";
 
         $cacheKey = 'risk_insight_' . md5(implode('|', [
-            $request->course, $request->semester, $request->start_date, $request->end_date,
+            $request->course, $request->semester, $request->school_year, $request->start_date, $request->end_date,
             $highRisk->toJson(), $totalStudents,
         ]));
 
