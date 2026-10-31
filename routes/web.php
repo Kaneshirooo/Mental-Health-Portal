@@ -119,6 +119,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/notes/{note}/status', [\App\Http\Controllers\Counselor\AnonymousNoteController::class, 'updateStatus'])->name('notes.status');
 
         Route::get('/students', [\App\Http\Controllers\Counselor\StudentController::class, 'index'])->name('students.index');
+        Route::get('/students/risk-insights', [\App\Http\Controllers\Counselor\StudentController::class, 'riskInsights'])->name('students.risk-insights');
         Route::get('/students/archived', [\App\Http\Controllers\Counselor\StudentController::class, 'archived'])->name('students.archived');
         Route::patch('/students/{student}/archive', [\App\Http\Controllers\Counselor\StudentController::class, 'archive'])->name('students.archive');
         Route::patch('/students/{student}/restore', [\App\Http\Controllers\Counselor\StudentController::class, 'restore'])->name('students.restore');

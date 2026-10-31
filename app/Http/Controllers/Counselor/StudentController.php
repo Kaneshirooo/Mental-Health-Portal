@@ -24,6 +24,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 class StudentController extends Controller
@@ -96,29 +97,170 @@ class StudentController extends Controller
             ->map(fn($group) => $group->count());
 
         // High Risk per Course (considering ANY assessment in the range if provided)
-        $high_risk_query = User::where('user_type', 'student')
-            ->whereNull('archived_at')
-            ->whereHas('assessmentScores', function($q) use ($start_date, $end_date) {
-                if ($start_date && $end_date) {
-                    $q->whereBetween('assessment_date', [
-                        Carbon::parse($start_date)->startOfDay(), 
-                        Carbon::parse($end_date)->endOfDay()
-                    ]);
-                }
-                $q->whereIn('risk_level', ['High', 'Critical']);
-            });
-        
-        if ($course) $high_risk_query->where('course', $course);
-        if ($semester) $high_risk_query->where('semester', $semester);
-
-        $high_risk_by_course = $high_risk_query->get()
-            ->groupBy('course')
-            ->map(fn($group) => $group->count());
+        $high_risk_by_course = $this->highRiskByCourse($request);
 
         return view('counselor.students.index', compact(
             'students', 'search', 'filter', 'course', 'semester', 'start_date', 'end_date',
             'courses', 'semesters', 'risk_distribution', 'course_distribution', 'high_risk_by_course'
         ));
+    }
+
+    /**
+     * Count High/Critical students per course for the current filter set.
+     *
+     * Shared by the page (the "High Risk Concentration" card) and the AI
+     * insight endpoint, so both always describe the exact same numbers.
+     */
+    private function highRiskByCourse(Request $request)
+    {
+        $start_date = $request->start_date;
+        $end_date   = $request->end_date;
+        $course     = $request->course;
+        $semester   = $request->semester;
+
+        $query = User::where('user_type', 'student')
+            ->whereNull('archived_at')
+            ->whereHas('assessmentScores', function ($q) use ($start_date, $end_date) {
+                if ($start_date && $end_date) {
+                    $q->whereBetween('assessment_date', [
+                        Carbon::parse($start_date)->startOfDay(),
+                        Carbon::parse($end_date)->endOfDay(),
+                    ]);
+                }
+                $q->whereIn('risk_level', ['High', 'Critical']);
+            });
+
+        if ($course) {
+            $query->where('course', $course);
+        }
+        if ($semester) {
+            $query->where('semester', $semester);
+        }
+
+        return $query->get()
+            ->groupBy('course')
+            ->map(fn ($group) => $group->count());
+    }
+
+    /**
+     * AI reading of the "High Risk Concentration" panel.
+     *
+     * Served as JSON and rendered into the panel client-side, so the page load
+     * never waits on the AI. Cached per filter combination for 30 minutes.
+     */
+    public function riskInsights(Request $request): JsonResponse
+    {
+        $highRisk = $this->highRiskByCourse($request);
+
+        if ($highRisk->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'insight' => null,
+                'status'  => 'empty',
+            ]);
+        }
+
+        $totalStudents = User::where('user_type', 'student')
+            ->whereNull('archived_at')
+            ->when($request->course, fn ($q, $c) => $q->where('course', $c))
+            ->when($request->semester, fn ($q, $s) => $q->where('semester', $s))
+            ->count();
+
+        $riskDistribution = User::where('user_type', 'student')
+            ->whereNull('archived_at')
+            ->with('latestAssessment')
+            ->when($request->course, fn ($q, $c) => $q->where('course', $c))
+            ->when($request->semester, fn ($q, $s) => $q->where('semester', $s))
+            ->get()
+            ->groupBy(fn ($s) => $s->latestAssessment->risk_level ?? 'Uncategorized')
+            ->map(fn ($group) => $group->count());
+
+        $lines = [];
+        foreach ($highRisk as $name => $count) {
+            $share = $totalStudents > 0 ? round(($count / $totalStudents) * 100) : 0;
+            $lines[] = '- ' . ($name ?: 'Unassigned course') . ': ' . $count
+                . ' high/critical student(s), ' . $share . '% of the filtered registry';
+        }
+
+        $totalHigh = $highRisk->sum();
+        $overallShare = $totalStudents > 0 ? round(($totalHigh / $totalStudents) * 100) : 0;
+        $topCourse = $highRisk->sortDesc()->keys()->first();
+
+        $prompt = "You are the senior guidance counselor at a Philippine university, writing for a fellow school counselor.\n\n"
+            . "FOLLOW-UP FILTER CONTEXT: "
+            . 'Course filter: ' . ($request->course ?: 'all courses') . '; '
+            . 'Semester filter: ' . ($request->semester ?: 'all semesters') . '; '
+            . 'Date range: ' . (($request->start_date && $request->end_date) ? $request->start_date . ' to ' . $request->end_date : 'no date range (all records)') . ".\n\n"
+            . "### HIGH-RISK CONCENTRATION BY COURSE (students whose latest DASS-21 reading is High or Critical):\n"
+            . implode("\n", $lines) . "\n\n"
+            . "Registry size under the same filters: {$totalStudents} students. "
+            . "Total high/critical: {$totalHigh} ({$overallShare}% of the registry).\n"
+            . "Overall risk spread: " . $riskDistribution->map(fn ($n, $lvl) => "{$lvl}={$n}")->implode(', ') . ".\n\n"
+            . "INSTRUCTIONS:\n"
+            . "Write 3 short paragraphs (about 90-120 words total) for the counselor viewing this panel:\n"
+            . "1. Name the course that carries the heaviest share ({$topCourse}) and state its percentage clearly, in plain numbers.\n"
+            . "2. Explain what that concentration likely means for that course right now — workload, exams, retention, or a cohort under sustained strain. One or two sentences.\n"
+            . "3. Give 2-3 concrete, realistic actions the counselor should take next (e.g. targeted group session for that course, coordinate with the department chair, proactively reach out to the flagged students, review the next screening round). Be specific to this data.\n"
+            . "Use a warm, direct, professional tone. Do NOT invent student names, counts, or percentages beyond the figures given. Do NOT use markdown headings or bullet symbols; plain paragraphs only.";
+
+        $cacheKey = 'risk_insight_' . md5(implode('|', [
+            $request->course, $request->semester, $request->start_date, $request->end_date,
+            $highRisk->toJson(), $totalStudents,
+        ]));
+
+        // "Retry" from the panel: drop the cached answer so we really re-ask.
+        if ($request->boolean('fresh')) {
+            Cache::forget($cacheKey);
+        }
+
+        $insight = Cache::get($cacheKey);
+
+        if ($insight === null) {
+            $text = trim($this->openRouter->generateResponse(
+                [['role' => 'user', 'content' => $prompt]],
+                'You are a school guidance counselor. Be concise, specific, and grounded strictly in the data provided.',
+                400,
+                0.5,
+                25
+            ));
+
+            $isOutage = $text === '' || str_contains($text, 'trouble connecting to my brain');
+
+            // The service returns a canned apology when the API is down — show the
+            // data-only summary but never cache it, so the next load retries live.
+            if ($isOutage) {
+                $insight = $this->fallbackRiskInsight($highRisk, $totalStudents);
+            } else {
+                Cache::put($cacheKey, $text, now()->addMinutes(30));
+                $insight = $text;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'status'  => 'ok',
+            'insight' => $insight,
+        ]);
+    }
+
+    /**
+     * Template insight used when the AI service is unreachable.
+     *
+     * Keeps the panel useful (and honest) instead of showing an empty box —
+     * but never fabricates a recommendation it cannot reason about.
+     */
+    private function fallbackRiskInsight($highRisk, int $totalStudents): string
+    {
+        $topCourse  = $highRisk->sortDesc()->keys()->first();
+        $topCount   = $highRisk->max();
+        $totalHigh  = $highRisk->sum();
+        $share      = $totalStudents > 0 ? round(($topCount / $totalStudents) * 100) : 0;
+
+        return ($topCourse ?: 'Unassigned course') . ' carries the heaviest share of high/critical readings at '
+            . $topCount . ' student(s) — ' . $share . '% of the filtered registry. Across all courses, '
+            . $totalHigh . ' of ' . $totalStudents . ' students are currently flagged.\n\n'
+            . "Recommended next step: prioritise outreach to that course first, then review its recent assessment dates to see whether the spike is new or ongoing.\n\n"
+            . "(Live AI recommendations are temporarily unavailable — this is a data-only summary.)";
     }
 
     /**

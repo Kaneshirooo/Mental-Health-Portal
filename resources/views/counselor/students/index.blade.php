@@ -191,6 +191,20 @@
                 </div>
                 @endforeach
             </div>
+
+            <!-- AI Counselor Insight -->
+            <div id="riskAiInsight" data-url="{{ route('counselor.students.risk-insights', request()->only('course', 'semester', 'start_date', 'end_date')) }}"
+                style="margin-top: 1.75rem; background: var(--surface-solid); border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem 1.6rem; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.05);">
+                <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.9rem;">
+                    <div style="width: 34px; height: 34px; border-radius: 10px; background: rgba(239, 68, 68, 0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0;">
+                        <i class="ph-bold ph-sparkle"></i>
+                    </div>
+                    <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 900; color: var(--text); margin: 0;">Counselor's AI Insight</h4>
+                    <span id="riskAiBadge" style="font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 0.28rem 0.6rem; border-radius: 100px; white-space: nowrap;">Generating…</span>
+                </div>
+                <div id="riskAiBody" style="font-size: 0.88rem; line-height: 1.75; color: var(--text-muted); font-weight: 500; white-space: pre-line;">Reading the numbers…</div>
+                <button type="button" id="riskAiRetry" onclick="loadRiskAiInsight(true)" style="display: none; margin-top: 1rem; padding: 0.55rem 1.1rem; border-radius: 12px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; font-weight: 800; font-size: 0.75rem; cursor: pointer;">Retry</button>
+            </div>
         </div>
     </div>
     @endif
@@ -804,6 +818,51 @@ async function submitArchiveStudent(e) {
         btn.innerHTML = originalText;
     }
 }
+
+/* AI reading of the High Risk Concentration panel.
+   Fetched separately so the page never blocks on the AI. */
+async function loadRiskAiInsight(force = false) {
+    const box = document.getElementById('riskAiInsight');
+    if (!box) return;
+
+    const body = document.getElementById('riskAiBody');
+    const badge = document.getElementById('riskAiBadge');
+    const retry = document.getElementById('riskAiRetry');
+
+    if (box.dataset.loading === '1') return;
+    box.dataset.loading = '1';
+    retry.style.display = 'none';
+    badge.textContent = 'Generating…';
+    badge.style.background = 'rgba(239, 68, 68, 0.1)';
+    badge.style.color = '#ef4444';
+    body.textContent = 'Reading the numbers…';
+
+    try {
+        const sep = box.dataset.url.includes('?') ? '&' : '?';
+        const url = box.dataset.url + sep + '_ts=' + Date.now() + (force ? '&fresh=1' : '');
+        const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        const data = await res.json();
+
+        if (data.success && data.insight) {
+            body.textContent = data.insight;
+            badge.textContent = 'AI Generated';
+        } else if (data.status === 'empty') {
+            body.textContent = 'No high or critical cases under the current filters — nothing needs prioritising here right now.';
+            badge.textContent = 'All Clear';
+        } else {
+            throw new Error(data.error || 'Unable to load insight');
+        }
+    } catch (err) {
+        console.error('riskAiInsight failed:', err);
+        body.textContent = 'The AI insight could not be loaded right now. Please try again in a moment.';
+        badge.textContent = 'Unavailable';
+        retry.style.display = 'inline-block';
+    } finally {
+        box.dataset.loading = '0';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadRiskAiInsight);
 </script>
 @endpush
 @endsection
