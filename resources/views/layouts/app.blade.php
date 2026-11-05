@@ -10,6 +10,15 @@
     <link rel="icon" type="image/jpeg" href="{{ asset('logo/system_logo.jpg') }}">
     <link rel="shortcut icon" type="image/jpeg" href="{{ asset('logo/system_logo.jpg') }}">
 
+    <!-- PWA / Installable app -->
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <meta name="theme-color" content="#059669">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MH Portal">
+    <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
+
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
@@ -492,6 +501,15 @@
         });
         observer.observe(document.body, { childList: true, subtree: true });
     })();
+    </script>
+
+    <!-- PWA: register service worker (required for installability) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('{{ asset('sw.js') }}', { scope: '/' }).catch(() => {});
+            });
+        }
     </script>
 
     @stack('scripts')
