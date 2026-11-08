@@ -202,6 +202,17 @@
             grid-template-columns: 1fr !important;
             gap: 1.25rem !important;
         }
+        .availability-layout > * { min-width: 0 !important; }
+        .availability-page { padding-bottom: 3rem !important; }
+        .availability-page > header { margin-bottom: 1.75rem !important; }
+        .availability-page > header h1 { font-size: 1.8rem !important; line-height: 1.15 !important; }
+        .availability-page > header p { font-size: 0.95rem !important; }
+        .availability-panel {
+            padding: 1.5rem 1rem !important;
+            border-radius: 22px !important;
+        }
+        .availability-panel h2 { font-size: 1.2rem !important; }
+        #availabilityActions { grid-template-columns: 1fr !important; margin-top: 2rem !important; }
         .slot-card {
             grid-template-columns: 1fr 1fr !important;
             gap: 0.75rem !important;
@@ -217,10 +228,9 @@
 @endpush
 
 @section('content')
-<main style="min-height: 100vh; padding: 2rem 0 5rem;">
-<div class="container" style="max-width: 1180px; margin: 0 auto; padding: 0 1.5rem;">
+<div class="container availability-page" style="max-width: 1240px; margin: 0 auto; padding-bottom: 4rem;">
     
-    <header class="staggered" style="margin-bottom: 3.5rem;">
+    <header class="staggered" style="margin-bottom: 2.5rem;">
         <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
             <i class="ph-bold ph-clock" style="font-size: 1.1rem;"></i> Schedule Configuration
         </div>
@@ -228,7 +238,7 @@
         <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Configure your weekly clinical service windows and student appointment slots.</p>
     </header>
 
-    <div style="display: grid; grid-template-columns: 360px 1fr; gap: 2.5rem;" class="staggered">
+    <div class="availability-layout staggered" style="display: grid; grid-template-columns: 360px 1fr; gap: 2.5rem;">
         
         <!-- Active Schedule Sidebar -->
         <aside id="activeScheduleAside">
@@ -255,7 +265,7 @@
         </aside>
 
         <!-- Slot Editor Panel -->
-        <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.75rem; box-shadow: var(--shadow-lg);">
+        <div class="availability-panel" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.75rem; box-shadow: var(--shadow-lg);">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
                 <div style="width: 44px; height: 44px; border-radius: 14px; background: var(--primary-glow); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
                     <i class="ph-bold ph-sliders-horizontal"></i>
@@ -321,7 +331,6 @@
 
     </div>
 </div>
-</main>
 
 @push('scripts')
 <script>

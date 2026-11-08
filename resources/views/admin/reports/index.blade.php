@@ -488,13 +488,18 @@
         z-index: 99990;
         background: var(--surface-solid);
         box-shadow: -16px 0 60px rgba(0,0,0,0.14);
-        transform: translateX(110%);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        display: flex;
+        display: none;
         flex-direction: column;
         border-left: 1px solid var(--border);
     }
-    #kpiDrawer.open { transform: translateX(0); }
+    #kpiDrawer.open {
+        display: flex;
+        animation: kpiDrawerIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes kpiDrawerIn {
+        from { transform: translateX(110%); }
+        to { transform: translateX(0); }
+    }
     #kpiDrawerBackdrop {
         position: fixed;
         inset: 0;
@@ -543,6 +548,23 @@
     .kpi-progress-ring { transform: rotate(-90deg); }
     .kpi-progress-ring circle.track { stroke-width: 4; fill: none; stroke: rgba(255,255,255,0.12); }
     .kpi-progress-ring circle.fill { stroke-width: 4; fill: none; stroke-dasharray: 100; transition: stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1); stroke-linecap: round; }
+
+    @media (max-width: 1024px) {
+        #chartsContainer {
+            grid-template-columns: 1fr !important;
+            gap: 1.25rem !important;
+        }
+        #chartsContainer > * { min-width: 0 !important; }
+    }
+    @media (max-width: 768px) {
+        .reports-container { padding-bottom: 3rem !important; }
+        #analyticsMatrix { gap: 1rem !important; }
+        .kpi-card-v2 { padding: 1.5rem 1.25rem !important; }
+        .drawer-header { padding: 1.5rem 1.25rem 1rem !important; }
+        .drawer-body { padding: 1rem 1.25rem 1.5rem !important; }
+        .drawer-row { padding: 0.85rem !important; gap: 0.75rem !important; }
+        .drawer-row:hover { transform: none !important; }
+    }
 </style>
 @endpush
 

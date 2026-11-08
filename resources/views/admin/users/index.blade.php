@@ -19,14 +19,24 @@
     
     .filter-bar { display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; }
     .filter-bar input { flex:1; min-width:200px; }
+    @media (max-width: 768px) {
+        .container { padding: 0 0 3.5rem !important; }
+        header.staggered { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; margin-bottom: 1.5rem !important; }
+        header.staggered h1 { font-size: 1.85rem !important; }
+        .add-user-form { grid-template-columns: 1fr !important; }
+        .add-user-card { padding: 1.75rem 1.25rem !important; margin-bottom: 2.5rem !important; }
+        .users-card { padding: 1.75rem 1.25rem !important; }
+        .users-card-header { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; margin-bottom: 1.5rem !important; padding-bottom: 1.25rem !important; }
+        .users-card-header input { width: 100% !important; }
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
+<div class="container" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
     
     <!-- Header -->
-    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem;">
+    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.25rem;">
         <div>
             <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">System Personnel</div>
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">User Management</h1>
@@ -38,10 +48,10 @@
     </header>
 
     <!-- Provisioning Section (Add User) -->
-    <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 3rem; margin-bottom: 4rem; box-shadow: 0 20px 40px rgba(0,0,0,0.03);">
-        <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 2rem;">Add New User</h2>
+    <div class="staggered add-user-card" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; margin-bottom: 3rem; box-shadow: 0 20px 40px rgba(0,0,0,0.03);">
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--text); margin-bottom: 1.75rem;">Add New User</h2>
         
-        <form id="addUserForm" method="POST" action="{{ route('admin.users.store') }}" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+        <form id="addUserForm" method="POST" action="{{ route('admin.users.store') }}" class="add-user-form" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
             @csrf
             <div class="form-group">
                 <label style="display:block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; letter-spacing: 0.05em;">Full Name</label>
@@ -77,8 +87,8 @@
     </div>
 
     <!-- User List Section -->
-    <div id="usersContainer" class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 3rem; box-shadow: 0 30px 60px rgba(0,0,0,0.05);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem;">
+    <div id="usersContainer" class="staggered users-card" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: 0 30px 60px rgba(0,0,0,0.05);">
+        <div class="users-card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem;">
             <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text); margin: 0;">System Accounts</h2>
             
             <div style="display: flex; gap: 1rem; align-items: center;">

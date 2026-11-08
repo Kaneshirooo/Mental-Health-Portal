@@ -140,16 +140,22 @@
             border-radius: 12px !important;
             padding: 0.7rem !important;
         }
+        .container {
+            padding: 0 0 3.5rem !important;
+        }
+        header.staggered {
+            margin-bottom: 1.5rem !important;
+        }
     }
 </style>
 @endpush
 
 @section('content')
 @include('components.note-card-styles')
-<div class="container" style="max-width: 1400px; margin: 0 auto; padding: 2.5rem 2rem 5rem;">
+<div class="container" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
     
     <!-- Admin Header -->
-    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4.5rem;">
+    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
         <div>
             <div style="font-weight: 900; color: var(--primary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.25em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.6rem;">
                 <span class="status-orb orb-active"></span> School Support Overview

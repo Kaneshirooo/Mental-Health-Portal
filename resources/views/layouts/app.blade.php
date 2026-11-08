@@ -130,36 +130,52 @@
             transform: translateY(-50%) scale(1.1);
         }
 
-        /* ── Mobile parity: both roles share student-friendly phone layout ── */
-        @media (max-width: 768px) {
-            .main-content,
-            .main-content .container,
-            .main-content .dash-content {
+        /* ── Unified Mobile & Tablet Responsiveness ── */
+        @media (max-width: 1024px) {
+            .main-content {
                 width: 100% !important;
                 max-width: 100% !important;
                 margin-left: 0 !important;
                 margin-right: 0 !important;
-                padding-left: 0.6rem !important;
-                padding-right: 0.6rem !important;
-                padding-top: 0.5rem !important;
+                padding: calc(60px + 1.25rem) 1.25rem 3.5rem !important;
                 box-sizing: border-box !important;
             }
-            /* Collapse large grids to 1 col to use full width */
+            .main-content .container,
+            .main-content .dash-content,
+            .main-content .reports-container,
+            .main-content .profile-container,
+            .main-content .notif-container,
+            .main-content .chat-layout {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                padding-top: 0 !important;
+                box-sizing: border-box !important;
+            }
+            /* Collapse large multi-column grids gracefully */
             .main-content div[style*="grid-template-columns: 1fr 1fr"],
             .main-content div[style*="grid-template-columns: 1fr 2fr"],
             .main-content div[style*="grid-template-columns: 2fr 1fr"],
+            .main-content div[style*="grid-template-columns: 1.2fr 0.8fr"],
+            .main-content div[style*="grid-template-columns: 380px 1fr"],
+            .main-content div[style*="grid-template-columns: 320px 1fr"],
+            .main-content div[style*="grid-template-columns: 360px 1fr"],
             .main-content div[style*="grid-template-columns: repeat(auto-fit"],
             .main-content div[style*="grid-template-columns: repeat(auto-fill"] {
                 grid-template-columns: 1fr !important;
-                gap: 0.85rem !important;
+                gap: 1rem !important;
             }
-            /* Keep quick/choice tiles at 2 per row like student — better space use */
+            /* Keep quick/choice tiles at 2 per row for better space use on phones */
             .main-content .quick-actions-grid,
             .main-content .stats-grid,
             .main-content .choice-matrix,
-            .main-content div[style*="grid-template-columns: repeat(3, 1fr)"] {
+            .main-content div[style*="grid-template-columns: repeat(3, 1fr)"],
+            .main-content div[style*="grid-template-columns: repeat(4, 1fr)"] {
                 grid-template-columns: repeat(2, 1fr) !important;
-                gap: 0.7rem !important;
+                gap: 0.75rem !important;
             }
             .main-content table {
                 display: block;
@@ -171,27 +187,34 @@
             .main-content div[style*="display: flex; justify-content: space-between"] {
                 flex-direction: column !important;
                 align-items: stretch !important;
-                gap: 0.85rem !important;
+                gap: 1rem !important;
             }
             .main-content .card,
             .main-content .stat-card,
             .main-content .stat-card-premium,
             .main-content .form-card,
-            .main-content .quick-action-premium {
-                border-radius: 16px !important;
-                padding: 1rem 0.9rem !important;
+            .main-content .quick-action-premium,
+            .main-content .clinical-control-panel {
+                border-radius: 20px !important;
+                padding: 1.25rem 1rem !important;
             }
             .main-content .wellness-banner,
             .main-content .page-header,
-            .main-content .dashboard-header {
-                padding: 1.25rem 1rem !important;
-                border-radius: 18px !important;
+            .main-content .dashboard-header,
+            .main-content .counselor-hero {
+                padding: 1.35rem 1.15rem !important;
+                border-radius: 20px !important;
+                margin-bottom: 1.5rem !important;
             }
         }
         @media (max-width: 480px) {
+            .main-content {
+                padding: calc(60px + 1rem) 0.85rem 2.5rem !important;
+            }
             .main-content .quick-actions-grid,
             .main-content .stats-grid {
                 grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.6rem !important;
             }
         }
     </style>
@@ -211,14 +234,18 @@
     @auth
         @include('layouts.navigation')
         <main class="main-content">
-            @include('layouts.psu-header')
+            @if(!request()->is('*video-call*'))
+                @include('layouts.psu-header')
+            @endif
             <div id="content-reveal">
                 @yield('content')
             </div>
 
-            <footer class="footer mt-12 py-8 border-t border-white/5 opacity-50 text-center text-sm">
-                <p>© {{ date('Y') }} Mental Health Pre-Assessment System. All rights reserved.</p>
-            </footer>
+            @if(!request()->is('*video-call*'))
+                <footer class="footer mt-12 py-8 border-t border-white/5 opacity-50 text-center text-sm">
+                    <p>© {{ date('Y') }} Mental Health Pre-Assessment System. All rights reserved.</p>
+                </footer>
+            @endif
         </main>
     @else
         @yield('content')

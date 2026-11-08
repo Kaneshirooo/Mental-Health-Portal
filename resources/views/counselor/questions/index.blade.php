@@ -1,7 +1,39 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+    @media (max-width: 768px) {
+        .questions-page { padding: 0 0 3rem !important; }
+        .questions-page header { margin-bottom: 1.5rem !important; }
+        .questions-page > header h1 { font-size: 1.8rem !important; }
+        .questions-page > header p { font-size: 0.92rem !important; }
+        .question-panel {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+        }
+        .add-question-form {
+            grid-template-columns: 1fr !important;
+            gap: 0.75rem !important;
+        }
+        .add-question-form button[type="submit"] { width: 100%; }
+        .question-edit-form {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0.6rem !important;
+            align-items: stretch !important;
+        }
+        .question-edit-form .q-text { grid-column: 1 / -1 !important; }
+        .question-edit-form .q-actions {
+            grid-column: 1 / -1 !important;
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+        }
+        .question-edit-form .q-actions button { width: 100%; }
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="container" style="max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
+<div class="container questions-page" style="max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
     <header style="margin-bottom: 2.5rem;">
         <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">Pre-Assessment Builder</div>
         <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.25rem; font-weight: 900; color: var(--text); margin: 0;">Check-in Questions</h1>
@@ -19,9 +51,9 @@
         @endforeach
     </div>
 
-    <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm);">
+    <div class="question-panel" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm);">
         <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 1.25rem;">+ Add a question</h2>
-        <form method="POST" action="{{ route('counselor.questions.store') }}" style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 0.75rem; align-items: end;">
+        <form method="POST" action="{{ route('counselor.questions.store') }}" class="add-question-form" style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 0.75rem; align-items: end;">
             @csrf
             <div>
                 <label style="display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem;">Area</label>
@@ -39,10 +71,10 @@
         </form>
     </div>
 
-    <div style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; box-shadow: var(--shadow-sm);">
+    <div class="question-panel" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; box-shadow: var(--shadow-sm);">
         <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 1.25rem;">Questions ({{ $questions->count() }})</h2>
         @forelse($questions as $q)
-            <form method="POST" action="{{ route('counselor.questions.update', $q->question_id) }}" style="display: grid; grid-template-columns: 50px 140px 1fr auto; gap: 0.75rem; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid var(--border);">
+            <form method="POST" action="{{ route('counselor.questions.update', $q->question_id) }}" class="question-edit-form" style="display: grid; grid-template-columns: 50px 140px 1fr auto; gap: 0.75rem; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid var(--border);">
                 @csrf
                 @method('PUT')
                 <input type="number" name="question_number" value="{{ $q->question_number }}" min="1" title="Order" style="padding: 0.6rem; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-weight: 800; text-align: center;">
@@ -51,8 +83,8 @@
                         <option value="{{ $val }}" {{ strtolower($q->category) === $val ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
-                <input type="text" name="question_text" value="{{ $q->question_text }}" required maxlength="2000" style="padding: 0.6rem 0.9rem; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text);">
-                <div style="display: flex; gap: 0.5rem;">
+                <input type="text" name="question_text" value="{{ $q->question_text }}" required maxlength="2000" class="q-text" style="padding: 0.6rem 0.9rem; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text);">
+                <div class="q-actions" style="display: flex; gap: 0.5rem;">
                     <button type="submit" title="Save changes" style="background: rgba(16,185,129,0.1); color: #059669; border: 1.5px solid rgba(16,185,129,0.3); padding: 0.55rem 0.9rem; border-radius: 10px; font-weight: 800; cursor: pointer;">Save</button>
                     <button type="button" title="Remove question" onclick="removeQuestion({{ $q->question_id }})" style="background: rgba(239,68,68,0.08); color: #ef4444; border: 1.5px solid rgba(239,68,68,0.25); padding: 0.55rem 0.9rem; border-radius: 10px; font-weight: 800; cursor: pointer;">Remove</button>
                 </div>

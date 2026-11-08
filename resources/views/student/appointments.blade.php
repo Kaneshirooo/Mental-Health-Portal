@@ -74,10 +74,43 @@
     }
 
     @media (max-width: 768px) {
+        .container {
+            padding: 0 0 3rem !important;
+        }
+        .page-header {
+            padding: 1.5rem 1.25rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        .page-header h1 {
+            font-size: 1.5rem !important;
+        }
+        .form-card {
+            padding: 1.25rem 1rem !important;
+        }
+        .timeline-card {
+            padding: 1.25rem 1rem !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1rem !important;
+        }
+        .timeline-card > div:last-child {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+        }
         /* Stack the 2-column grid on mobile */
         .appt-grid {
             grid-template-columns: 1fr !important;
             gap: 1.5rem !important;
+        }
+        .appt-grid > * { min-width: 0 !important; }
+        .calendar-container {
+            padding: 1rem 0.85rem !important;
+        }
+        .calendar-grid { gap: 0.3rem !important; }
+        .calendar-day { border-radius: 9px !important; }
+        .time-slots-grid {
+            grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)) !important;
         }
         /* Choice cards: 2 per row on phones */
         .choice-matrix {
@@ -228,7 +261,7 @@
 @endpush
 
 @section('content')
-<div class="container" style="max-width:1100px; padding-top:1.5rem; padding-bottom:3rem;">
+<div class="container" style="max-width: 1240px; margin: 0 auto; padding-bottom: 3rem;">
 
     <div class="page-header">
         <div style="font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; opacity:0.8; margin-bottom:0.5rem;">Counseling Services</div>

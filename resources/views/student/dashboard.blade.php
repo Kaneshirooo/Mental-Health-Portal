@@ -168,7 +168,7 @@
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 1200px; padding-top: 1rem; padding-bottom: 4rem;">
+<div class="container" style="max-width: 1320px; margin: 0 auto; padding-bottom: 4rem;">
     
     <!-- Page Header -->
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;" class="staggered">

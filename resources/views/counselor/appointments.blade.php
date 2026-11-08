@@ -117,19 +117,35 @@
             background: #dc2626;
             transform: translateY(-2px);
         }
+        @media (max-width: 768px) {
+            header.staggered {
+                margin-bottom: 1.5rem !important;
+            }
+            header.staggered h1 {
+                font-size: 1.85rem !important;
+            }
+            header.staggered > div:last-child {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .modal-glass {
+                padding: 1.75rem 1.25rem !important;
+                border-radius: 20px !important;
+            }
+        }
     </style>
 @endpush
 
 @section('content')
-    <div class="container" style="max-width: 1320px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
+    <div class="container" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
 
-        <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem;">
+        <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.5rem;">
             <div>
                 <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="ph-bold ph-calendar-check" style="font-size: 1.1rem;"></i> Appointments & Sessions
                 </div>
-                <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Manage Schedule</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Active session management. {{ collect($upcoming)->count() }} slot{{ collect($upcoming)->count() !== 1 ? 's' : '' }} requiring attention.</p>
+                <h1 style="font-family: 'Outfit', sans-serif; font-size: clamp(1.85rem, 3.5vw, 2.75rem); font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Manage Schedule</h1>
+                <p style="color: var(--text-muted); font-size: 1.05rem; font-weight: 500; margin-top: 0.5rem;">Active session management. {{ collect($upcoming)->count() }} slot{{ collect($upcoming)->count() !== 1 ? 's' : '' }} requiring attention.</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
                 <div style="text-align: right; padding-right: 1.5rem; border-right: 1px solid var(--border);">
@@ -156,7 +172,7 @@
                     moment.</p>
             </div>
         @else
-        <div id="intakeQueueGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.25rem;">
+        <div id="intakeQueueGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 1.25rem;">
                 @foreach ($upcoming as $a)
                     <div id="appt-card-{{ $a->appointment_id }}"
                         style="background: var(--surface-solid); border-radius: var(--radius); padding: 2rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm); position: relative; transition: var(--transition);">
@@ -240,7 +256,7 @@
         <h2
             style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1.5rem; color: var(--text);">
             Session Archive</h2>
-        <div id="sessionArchiveTable" style="background: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm);">
+        <div id="sessionArchiveTable" style="background: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); overflow-x: auto; box-shadow: var(--shadow-sm);">
             <table style="width: 100%; border-collapse: collapse; text-align: left;" class="table">
                 <thead>
                     <tr style="background: var(--surface-2); border-bottom: 1px solid var(--border);">

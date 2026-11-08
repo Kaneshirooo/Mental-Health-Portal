@@ -52,11 +52,27 @@
         border-color: var(--primary);
         box-shadow: 0 0 0 3px var(--primary-glow);
     }
+
+    @media (max-width: 900px) {
+        .notes-layout { grid-template-columns: 1fr !important; gap: 1.75rem !important; }
+        .notes-layout > * { min-width: 0 !important; }
+    }
+    @media (max-width: 768px) {
+        .notes-page { padding: 0 0 3rem !important; }
+        .notes-page > header { margin-bottom: 1.75rem !important; gap: 1rem !important; }
+        .notes-page h1 { font-size: 1.9rem !important; }
+        .notes-page > header p { font-size: 0.95rem !important; }
+        .note-card { border-radius: 20px !important; }
+        .note-head { padding: 1.25rem 1rem !important; }
+        .note-conversation { padding: 1.25rem 1rem !important; gap: 1.25rem !important; }
+        .note-reply { padding: 1.25rem 1rem !important; }
+        .note-reply textarea { min-height: 140px !important; padding: 1rem 1rem 3.5rem !important; }
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
+<div class="container notes-page" style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
     
     <!-- Header -->
     <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem;">
@@ -80,7 +96,7 @@
         </div>
     </header>
 
-    <div style="display: grid; grid-template-columns: 1fr 340px; gap: 2.5rem;" class="staggered">
+    <div class="notes-layout staggered" style="display: grid; grid-template-columns: 1fr 340px; gap: 2.5rem;">
         
         <!-- Dashboard / Feed -->
         <div id="notesContainer" style="display: flex; flex-direction: column; gap: 2rem;">
@@ -92,7 +108,7 @@
             @forelse($notes as $note)
                 <div class="note-card" id="note-{{ $note->note_id }}">
                     <!-- Identity Header -->
-                    <div style="padding: 1.75rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--surface-2); flex-wrap: wrap; gap: 1rem;">
+                    <div class="note-head" style="padding: 1.75rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--surface-2); flex-wrap: wrap; gap: 1rem;">
                         <div style="display: flex; align-items: center; gap: 1rem;">
                             <div style="width: 46px; height: 46px; border-radius: 14px; background: var(--surface-solid); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.25rem;">
                                 <i class="ph-bold ph-student"></i>
@@ -120,7 +136,7 @@
                     </div>
 
                     <!-- Conversation -->
-                    <div style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; background: var(--surface-solid);">
+                    <div class="note-conversation" style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; background: var(--surface-solid);">
                         @foreach($note->messages as $msg)
                             <div style="display: flex; flex-direction: column; align-items: {{ $msg->sender_type === 'counselor' ? 'flex-end' : 'flex-start' }};">
                                 <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-direction: {{ $msg->sender_type === 'counselor' ? 'row-reverse' : 'row' }};">
@@ -138,7 +154,7 @@
 
                     <!-- Reply Area -->
                     @if($note->status !== 'closed')
-                        <div style="padding: 1.75rem 2rem; border-top: 1px solid var(--border); background: var(--surface-2);">
+                        <div class="note-reply" style="padding: 1.75rem 2rem; border-top: 1px solid var(--border); background: var(--surface-2);">
                             <form action="{{ route('counselor.notes.reply', $note) }}" method="POST" class="reply-form">
                                 @csrf
                                 <div style="position: relative;">

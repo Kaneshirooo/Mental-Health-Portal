@@ -102,12 +102,15 @@
     }
 
     @media (max-width: 768px) {
-        .container { padding: 0.5rem 0.6rem 4rem !important; }
+        .container { padding: 0 0 3.5rem !important; }
         header.staggered { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; margin-bottom: 1.5rem !important; }
         header.staggered h1 { font-size: 1.8rem !important; }
         .filter-grid { grid-template-columns: 1fr !important; }
         /* 16px stops iOS Safari from auto-zooming on focus */
         #filterForm .filter-control, #filterForm input[type="date"] { width: 100% !important; min-height: 48px !important; font-size: 16px !important; }
+        .date-range-box { padding: 0 0.6rem !important; gap: 0.35rem !important; }
+        .date-range-box input[type="date"] { min-width: 0 !important; }
+        .date-range-box span { font-size: 0.6rem !important; }
         #liveSearch { font-size: 16px !important; min-height: 48px !important; }
         div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 1rem !important; }
         div[style*="grid-template-columns: repeat(auto-fill, minmax(270px, 1fr))"] { grid-template-columns: 1fr !important; }
@@ -121,10 +124,10 @@
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 1320px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
+<div class="container" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
     
     <!-- Header -->
-    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem;">
+    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.5rem;">
         <div>
             <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
                 <i class="ph-bold ph-users-three" style="font-size: 1.1rem;"></i> Student Directory
@@ -203,7 +206,7 @@
 
                 <div class="filter-field">
                     <span class="filter-label">Assessment Date Range</span>
-                    <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--surface-2); border: 1.5px solid var(--border); border-radius: 14px; padding: 0 0.85rem; min-height: 46px;">
+                    <div class="date-range-box" style="display: flex; align-items: center; gap: 0.5rem; background: var(--surface-2); border: 1.5px solid var(--border); border-radius: 14px; padding: 0 0.85rem; min-height: 46px;">
                         <input type="date" name="start_date" value="{{ $start_date }}" style="background: transparent; border: none; color: var(--text); font-weight: 700; font-size: 0.85rem; outline: none; cursor: pointer; width: 100%;">
                         <span style="font-size: 0.68rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; flex-shrink: 0;">to</span>
                         <input type="date" name="end_date" value="{{ $end_date }}" style="background: transparent; border: none; color: var(--text); font-weight: 700; font-size: 0.85rem; outline: none; cursor: pointer; width: 100%;">

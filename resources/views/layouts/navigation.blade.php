@@ -5,26 +5,30 @@
     $currentRoute = Route::currentRouteName();
 @endphp
 
-<aside class="sidebar glass" id="sidebar" style="margin: 1rem; height: calc(100vh - 2rem); border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: var(--shadow-lg); left: 0; top: 0; position: fixed; z-index: 1000;">
-    <div class="sidebar-header" style="padding: 1.5rem 1.25rem;">
+<aside class="sidebar glass" id="sidebar">
+    <div class="sidebar-header" style="padding: 1.25rem 1.15rem 1rem; display: flex; align-items: center; justify-content: space-between;">
         <div class="sidebar-brand" style="display: flex; align-items: center;">
-        <div class="sidebar-logo-container" style="position: relative; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center;" onmouseover="this.style.transform='scale(1.05) rotate(-1deg)'" onmouseout="this.style.transform='scale(1) rotate(0)'">
-            <div class="w-14 h-14 rounded-xl bg-white flex items-center justify-center shadow-[0_8px_20px_rgba(0,0,0,0.08)] border border-slate-200 relative group overflow-hidden">
-                <img src="{{ asset('logo/system_logo.jpg') }}" alt="PSU Logo" class="w-full h-full object-cover relative z-10 transition-transform duration-500 group-hover:scale-110">
+            <div class="sidebar-logo-container" style="position: relative; cursor: pointer; transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center;">
+                <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-slate-200 relative group overflow-hidden flex-shrink-0">
+                    <img src="{{ asset('logo/system_logo.jpg') }}" alt="PSU Logo" class="w-full h-full object-cover relative z-10 transition-transform duration-500 group-hover:scale-105">
+                </div>
+                <div class="absolute -bottom-1 -left-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full shadow-md z-20"></div>
             </div>
-            <div class="absolute -bottom-1 -left-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full shadow-lg z-20"></div>
-        </div>
-            <div class="sidebar-title" style="margin-left: 0.85rem;">
-                <span style="font-weight: 900; font-size: 1.4rem; letter-spacing: -0.04em; color: var(--text); line-height: 1.1;">PSU <span style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;">Portal</span></span><br>
-                <span style="font-size: 0.65rem; opacity: 0.6; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim);">Mental Health System</span>
+            <div class="sidebar-title" style="margin-left: 0.8rem;">
+                <span style="font-weight: 900; font-size: 1.25rem; letter-spacing: -0.03em; color: var(--text); line-height: 1.1;">PSU <span style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;">Portal</span></span><br>
+                <span style="font-size: 0.62rem; opacity: 0.7; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim);">Mental Health System</span>
             </div>
         </div>
+        <!-- Mobile close button (shown on <= 1024px) -->
+        <button type="button" class="sidebar-close-btn" onclick="closeSidebar()" aria-label="Close navigation menu">
+            <i class="ph-bold ph-x"></i>
+        </button>
     </div>
 
     <!-- Emergency Help Button (Premium Style) -->
-    <div class="emergency-container" style="padding: 0 1.25rem 1.5rem;">
-        <a href="{{ route('emergency') }}" class="btn-emergency" style="background: #dc2626; color: #ffffff; padding: 0.85rem; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 0.75rem; text-decoration: none; font-weight: 800; font-size: 0.85rem; border: none; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25); transition: all 0.3s ease;">
-            <i class="ph-bold ph-warning-octagon" style="font-size: 1.25rem;"></i> <span>Emergency Help</span>
+    <div class="emergency-container" style="padding: 0 1rem 1.15rem;">
+        <a href="{{ route('emergency') }}" class="btn-emergency" style="background: #dc2626; color: #ffffff; padding: 0.8rem 1rem; border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 0.65rem; text-decoration: none; font-weight: 800; font-size: 0.82rem; border: none; box-shadow: 0 4px 14px rgba(220, 38, 38, 0.28); transition: all 0.3s ease;">
+            <i class="ph-bold ph-warning-octagon" style="font-size: 1.2rem;"></i> <span>Emergency Help</span>
         </a>
     </div>
 
@@ -180,89 +184,59 @@
 </aside>
 
 <!-- Mobile Top Navigation Bar -->
-<style>
-/* ── Mobile Nav: always visible on phones, hidden on desktop ── */
-.mobile-nav {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 56px;
-    z-index: 1050;
-    background: var(--surface-solid);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 1rem;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-}
-@media (max-width: 1024px) {
-    .mobile-nav { display: flex !important; }
-    .sidebar {
-        /* sidebar is off-screen on mobile; only slides in when .open class is added */
-        transform: translateX(-110%);
-        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        z-index: 1040;
-        margin: 0 !important;
-        height: 100vh !important;
-        border-radius: 0 24px 24px 0 !important;
-        top: 0 !important;
-    }
-    .sidebar.open {
-        transform: translateX(0);
-    }
-    .main-content {
-        margin-left: 0 !important;
-        width: 100% !important;
-        padding-top: 56px !important;
-    }
-}
-@media (min-width: 1025px) {
-    .mobile-nav { display: none !important; }
-}
-</style>
 <div class="mobile-nav" id="mobileNav">
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" onclick="toggleSidebar()" style="background:none; border:none; cursor:pointer; padding:0.5rem; color:var(--text); font-size:1.5rem; display:flex; align-items:center;">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" onclick="toggleSidebar()">
         <i class="ph ph-list" id="navToggleIcon"></i>
     </button>
-    <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <img src="{{ asset('logo/system_logo.jpg') }}" alt="PSU Logo" style="width:28px; height:28px; border-radius:8px; object-fit:cover;">
-        <span style="font-family:'Outfit',sans-serif; font-weight:800; font-size:0.95rem; color:var(--text);">PSU <span style="color:var(--primary);">Portal</span></span>
+    <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <img src="{{ asset('logo/system_logo.jpg') }}" alt="PSU Logo" style="width:30px; height:30px; border-radius:8px; object-fit:cover; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+        <span style="font-family:'Outfit',sans-serif; font-weight:800; font-size:1rem; color:var(--text); letter-spacing:-0.02em;">PSU <span style="color:var(--primary);">Portal</span></span>
     </div>
-    <a href="{{ route('emergency') }}" style="background:#dc2626; color:white; padding:0.4rem 0.75rem; border-radius:10px; font-size:0.72rem; font-weight:800; text-decoration:none; display:flex; align-items:center; gap:0.3rem;">
-        <i class="ph-bold ph-warning-octagon"></i> SOS
+    <a href="{{ route('emergency') }}" class="mobile-sos-btn" style="background:#dc2626; color:white; padding:0.45rem 0.85rem; border-radius:12px; font-size:0.75rem; font-weight:800; text-decoration:none; display:flex; align-items:center; gap:0.35rem; box-shadow: 0 2px 8px rgba(220,38,38,0.3);">
+        <i class="ph-bold ph-warning-octagon"></i> <span>SOS</span>
     </a>
 </div>
 
-<!-- Mobile Sidebar Overlay -->
-<div id="sidebarOverlay" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); z-index:999;" onclick="closeSidebar()"></div>
+<!-- Mobile Sidebar Backdrop Overlay -->
+<div id="sidebarOverlay" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:1055;" onclick="closeSidebar()"></div>
 
 <script>
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     const icon    = document.getElementById('navToggleIcon');
+    if (!sidebar) return;
     const isOpen  = sidebar.classList.toggle('open');
-    overlay.style.display = isOpen ? 'block' : 'none';
-    icon.className = isOpen ? 'ph ph-x' : 'ph ph-list';
+    if (overlay) overlay.style.display = isOpen ? 'block' : 'none';
+    if (icon) icon.className = isOpen ? 'ph ph-x' : 'ph ph-list';
+    if (isOpen) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
 }
 function closeSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     const icon    = document.getElementById('navToggleIcon');
-    sidebar.classList.remove('open');
-    overlay.style.display = 'none';
-    icon.className = 'ph ph-list';
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.style.display = 'none';
+    if (icon) icon.className = 'ph ph-list';
+    document.body.style.overflow = '';
 }
 // Close sidebar when a nav link is clicked on mobile
 document.addEventListener('DOMContentLoaded', () => {
-    if (window.innerWidth <= 1024) {
-        document.querySelectorAll('.sidebar-link, .btn-emergency').forEach(link => {
-            link.addEventListener('click', closeSidebar);
+    document.querySelectorAll('.sidebar-link, .btn-emergency').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 1024) {
+                closeSidebar();
+            }
         });
-    }
+    });
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeSidebar();
+    });
 });
 </script>
 

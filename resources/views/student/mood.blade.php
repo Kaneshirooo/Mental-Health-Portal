@@ -119,13 +119,27 @@
             position: static !important;
         }
     }
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 0 3rem !important;
+        }
+        .page-header-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        .page-header-row > div:last-child {
+            text-align: left !important;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 1100px; padding-top: 1.5rem; padding-bottom: 3rem;">
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding-bottom: 3rem;">
     
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+    <div class="page-header-row" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <div>
             <div style="font-weight: 600; color: var(--primary); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;">Emotional Tracking</div>
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Mood Journal</h1>

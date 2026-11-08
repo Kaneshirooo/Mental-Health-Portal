@@ -3,45 +3,36 @@
 @push('styles')
 <style>
     .assessment-header {
-        position: fixed;
-        top: 0;
-        left: 260px;
-        right: 0;
-        height: 64px;
-        background: var(--surface);
+        position: sticky;
+        top: 1rem;
+        z-index: 100;
+        background: var(--surface-solid);
         backdrop-filter: var(--glass-blur);
-        z-index: 1000;
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow-sm);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 2.5rem;
-        border-bottom: 1px solid var(--border);
+        padding: 0.85rem 1.75rem;
+        margin-bottom: 2rem;
     }
     @media (max-width: 1024px) {
-        /* On mobile, sidebar is hidden; header spans full width */
         .assessment-header {
-            left: 0;
-            padding: 0 1.25rem;
-            height: 56px;
-            /* Shift below the mobile nav bar */
-            top: 56px;
+            top: calc(var(--mobile-nav-height, 60px) + 0.75rem);
+            padding: 0.75rem 1.15rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
         }
         .assessment-header .progress-indicator {
             gap: 0.75rem;
         }
         .step-node {
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             font-size: 0.75rem;
         }
-        /* Push assessment content below both bars */
-        .container[style*="padding-top: 6rem"] {
-            padding-top: 8rem !important;
-        }
-    }
-    /* Show global mobile-nav hamburger on assessment page */
-    #mobileNav {
-        display: flex !important;
     }
     .progress-indicator {
         display: flex;
@@ -334,7 +325,7 @@
     </div>
 </div>
 
-<div class="container" style="max-width: 820px; margin: 0 auto; padding-top: 6rem; padding-bottom: 6rem;">
+<div class="container" style="max-width: 860px; margin: 0 auto; padding-top: 0.5rem; padding-bottom: 6rem;">
 
     <div style="text-align: center; margin-bottom: 3.5rem;">
         <div style="font-weight: 600; color: var(--primary); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem;">Pre-Assessment</div>

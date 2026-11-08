@@ -32,11 +32,11 @@
 @endpush
 
 @section('content')
-<div class="p-8 max-w-5xl mx-auto mindfulness-container">
+<div class="container mindfulness-container" style="max-width: 1040px; margin: 0 auto; padding-bottom: 4rem;">
     <!-- Header -->
-    <div class="text-center mb-16">
-        <h1 class="text-6xl font-black text-white tracking-tighter italic uppercase mb-4 mindfulness-title">Mindfulness</h1>
-        <p class="text-gray-500 font-medium italic">"Deep stillness starts with one intentional breath."</p>
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter italic uppercase mb-3 mindfulness-title" style="color: var(--text); font-family: 'Outfit', sans-serif;">Mindfulness</h1>
+        <p style="color: var(--text-dim);" class="font-medium italic">"Deep stillness starts with one intentional breath."</p>
     </div>
 
     <!-- Gentle tip for you -->

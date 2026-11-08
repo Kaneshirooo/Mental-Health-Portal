@@ -168,6 +168,14 @@
     }
 
     @media (max-width: 600px) {
+        .survey-container { padding: 1.25rem 0 2.5rem; }
+        .survey-header { margin-bottom: 2rem !important; }
+        .survey-header h1 { font-size: 1.9rem !important; }
+        .survey-header p { font-size: 0.95rem !important; }
+        .glass-card { padding: 1.5rem 1rem; border-radius: 20px; margin-bottom: 1.25rem; }
+        .section-title { font-size: 1rem; letter-spacing: 0.05em; margin-bottom: 1rem; }
+        .question-label { font-size: 0.95rem; }
+        .cc-option-content { padding: 1rem; gap: 0.75rem; font-size: 0.88rem; }
         .likert-scale { gap: 0.25rem; }
         .likert-box { height: 44px; font-size: 1rem; border-radius: 8px; }
         .likert-label { font-size: 0.55rem; letter-spacing: -0.02em; }
@@ -178,7 +186,7 @@
 @section('content')
 <div class="survey-container">
     {{-- Header --}}
-    <div style="text-align: center; margin-bottom: 4rem;" class="reveal-up">
+    <div class="survey-header reveal-up" style="text-align: center; margin-bottom: 4rem;">
         <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 20px; background: var(--primary-glow); color: var(--primary); font-size: 2rem; margin-bottom: 1.5rem;">
             <i class="ph-fill ph-chat-circle-dots"></i>
         </div>

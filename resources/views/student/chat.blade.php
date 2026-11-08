@@ -4,36 +4,26 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
 <style>
     .chat-layout {
-        max-width: 1300px;
+        max-width: 1320px;
         margin: 0 auto;
-        padding: 2rem 2.5rem 4rem;
+        padding: 0 0 3.5rem;
         display: grid;
         grid-template-columns: 320px 1fr;
-        gap: 2.5rem;
+        gap: 2rem;
         align-items: start;
         perspective: 1000px;
         width: 100%;
         box-sizing: border-box;
     }
 
-    /* Override main-content padding on mobile so chat fills screen */
+    /* Mobile Chat View */
     @media (max-width: 1024px) {
-        .main-content {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            box-sizing: border-box !important;
-            display: block !important;
-        }
         .chat-layout {
             display: flex !important;
             flex-direction: column !important;
-            padding: 1rem 0 4rem !important;
+            padding: 0 0 3rem !important;
             gap: 1.25rem !important;
-            align-items: center !important;
+            align-items: stretch !important;
             justify-content: flex-start !important;
             margin: 0 auto !important;
             box-sizing: border-box !important;
@@ -48,18 +38,18 @@
         }
         .aria-panel {
             position: static !important;
-            padding: 1.5rem !important;
-            border-radius: 24px !important;
-            width: 90% !important;
-            max-width: 450px !important;
-            margin: 0 auto !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04) !important;
+            padding: 1.25rem 1.15rem !important;
+            border-radius: 20px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important;
         }
         .aria-panel .aria-avatar {
-            width: 58px !important;
-            height: 58px !important;
+            width: 52px !important;
+            height: 52px !important;
             margin-bottom: 0.4rem !important;
-            border-radius: 18px !important;
+            border-radius: 16px !important;
         }
         .aria-panel h2 {
             font-size: 1.2rem !important;
@@ -77,16 +67,17 @@
             max-height: 90px !important;
         }
         .chat-interface {
-            height: calc(100vh - 250px) !important;
-            min-height: 500px !important;
+            height: calc(100vh - 240px) !important;
+            height: calc(100dvh - 240px) !important;
+            min-height: 480px !important;
             max-height: 720px !important;
-            width: 90% !important;
-            max-width: 450px !important;
-            margin: 0 auto !important;
-            border-radius: 28px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            border-radius: 24px !important;
             display: flex !important;
             flex-direction: column !important;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.08) !important;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08) !important;
             overflow: hidden !important;
         }
         .message-stream {

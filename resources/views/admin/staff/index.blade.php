@@ -27,27 +27,69 @@
         from { opacity: 0; transform: translateY(20px) scale(0.98); }
         to { opacity: 1; transform: translateY(0) scale(1); }
     }
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 0 3.5rem !important;
+        }
+        header.staggered {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            margin-bottom: 1.5rem !important;
+        }
+        header.staggered h1 {
+            font-size: 1.85rem !important;
+        }
+        header.staggered .btn-primary {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+        .staff-card-wrapper {
+            padding: 1.5rem 1.25rem !important;
+            border-radius: 20px !important;
+        }
+        .staff-card-header {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1rem !important;
+            margin-bottom: 1.5rem !important;
+            padding-bottom: 1.25rem !important;
+        }
+        .staff-card-header input {
+            width: 100% !important;
+        }
+        .counselor-card {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1rem !important;
+            padding: 1.25rem 1rem !important;
+            border-radius: 18px !important;
+        }
+        .counselor-card > div:last-child {
+            width: 100% !important;
+            justify-content: flex-end !important;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
+<div class="container" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
     
     <!-- Header -->
-    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem;">
+    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.25rem;">
         <div>
             <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">Personnel Oversight</div>
-            <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Support Staff</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Manage authorized counselors and clinical responders.</p>
+            <h1 style="font-family: 'Outfit', sans-serif; font-size: clamp(1.85rem, 3.5vw, 2.75rem); font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Support Staff</h1>
+            <p style="color: var(--text-muted); font-size: 1.05rem; font-weight: 500; margin-top: 0.5rem;">Manage authorized counselors and clinical responders.</p>
         </div>
-        <button onclick="document.getElementById('addStaffModal').style.display='flex'" class="btn-primary" style="padding: 1rem 2rem; border-radius: 16px; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;">
+        <button onclick="document.getElementById('addStaffModal').style.display='flex'" class="btn-primary" style="padding: 0.85rem 1.75rem; border-radius: 16px; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem;">
             <i class="ph ph-user-plus"></i> Add Staff Member
         </button>
     </header>
 
     <!-- Staff List Section -->
-    <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 3rem; box-shadow: 0 30px 60px rgba(0,0,0,0.05);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem;">
+    <div class="staggered staff-card-wrapper" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: 0 30px 60px rgba(0,0,0,0.05);">
+        <div class="staff-card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem;">
             <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text); margin: 0;">Active Personnel</h2>
             
             <div style="display: flex; gap: 1rem; align-items: center;">

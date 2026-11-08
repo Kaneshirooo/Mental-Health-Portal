@@ -339,10 +339,10 @@
     @media (max-width: 1200px) { .triage-matrix-container { grid-template-columns: repeat(2,1fr); } }
     .counselor-hero #liveClock { color: rgba(255,255,255,0.9); }
     @media (max-width: 768px) {
-        .counselor-hero { padding: 1.5rem 1.25rem !important; border-radius: 20px !important; }
-        .counselor-hero h1 { font-size: 2rem !important; }
+        .counselor-hero { padding: 1.5rem 1.25rem !important; border-radius: 20px !important; margin-bottom: 1.5rem !important; }
+        .counselor-hero h1 { font-size: 1.85rem !important; }
         .dash-content {
-            padding: 1rem 0.75rem 4rem !important;
+            padding: 0 0 3rem !important;
         }
         header.staggered {
             flex-direction: column !important;
@@ -396,7 +396,7 @@
 <div class="dash-orb dash-orb-1"></div>
 <div class="dash-orb dash-orb-2"></div>
 
-<div class="container dash-content" style="max-width: 1400px; margin: 0 auto; padding: 2rem 2rem 5rem;">
+<div class="container dash-content" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
 
     <!-- ── Premium Header ── -->
     <header class="staggered counselor-hero">

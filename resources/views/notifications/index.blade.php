@@ -4,14 +4,35 @@
 <style>
     .notif-container {
         max-width: 850px;
-        margin: 2rem auto 5rem;
-        padding: 0 1.5rem;
+        margin: 0 auto 3.5rem;
+        padding: 0;
     }
     .notif-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        margin-bottom: 3rem;
+        margin-bottom: 1.75rem;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+    }
+    @media (max-width: 768px) {
+        .notif-container {
+            margin: 0 auto 3rem;
+            padding: 0;
+        }
+        .notif-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .notif-header h1 {
+            font-size: 1.85rem !important;
+        }
+        .notif-card {
+            padding: 1.25rem 1rem;
+            border-radius: 16px;
+        }
     }
     .notif-card {
         background: #ffffff !important;

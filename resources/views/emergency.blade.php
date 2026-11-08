@@ -72,11 +72,32 @@
         display: block;
         cursor: default;
     }
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 0 3rem !important;
+        }
+        .hero-emergency {
+            padding: 2rem 1.25rem !important;
+            border-radius: 20px !important;
+            margin-bottom: 1.5rem !important;
+        }
+        .hero-emergency h1 {
+            font-size: 1.85rem !important;
+        }
+        .contact-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+        .contact-card {
+            padding: 1.25rem 1rem !important;
+            border-radius: 18px !important;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 1000px; padding-top: 2rem; padding-bottom: 4rem;">
+<div class="container" style="max-width: 1100px; margin: 0 auto; padding-bottom: 3.5rem;">
     
     <div class="hero-emergency">
         <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">You Are Not Alone.</h1>
