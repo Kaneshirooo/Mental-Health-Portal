@@ -422,7 +422,7 @@ class EmergencyCallController extends Controller
             }
         }
 
-        $calls = $query->paginate(15);
+        $calls = $query->paginate(4);
 
         return view('counselor.emergency_calls.logs', compact('calls'));
     }

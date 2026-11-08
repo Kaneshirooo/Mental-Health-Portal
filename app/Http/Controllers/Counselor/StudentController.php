@@ -86,7 +86,7 @@ class StudentController extends Controller
         // The charts describe the whole filtered registry, so read the full
         // set first — then paginate only the table shown underneath.
         $allStudents = $query->get();
-        $students = $query->paginate(5);
+        $students = $query->paginate(4);
 
         // Get unique courses and semesters for filters
         $courses = User::where('user_type', 'student')->whereNull('archived_at')->whereNotNull('course')->distinct()->pluck('course');
@@ -375,7 +375,7 @@ class StudentController extends Controller
             })
             ->with('latestAssessment')
             ->orderByDesc('archived_at')
-            ->paginate(5);
+            ->paginate(4);
 
         return view('counselor.students.archived', compact('archived', 'search'));
     }

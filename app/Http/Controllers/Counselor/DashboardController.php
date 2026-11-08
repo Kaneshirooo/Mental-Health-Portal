@@ -93,12 +93,12 @@ class DashboardController extends Controller
             })
             ->values();
 
-        // 10 per page so long lists stay manageable.
+        // 4 per page so long lists stay manageable.
         $queuePage = max(1, (int) $request->input('queue_page', 1));
         $priority_queue = new \Illuminate\Pagination\LengthAwarePaginator(
-            $priority_queue_all->forPage($queuePage, 10),
+            $priority_queue_all->forPage($queuePage, 4),
             $priority_queue_all->count(),
-            10,
+            4,
             $queuePage,
             ['path' => $request->url(), 'pageName' => 'queue_page']
         );
@@ -123,13 +123,13 @@ class DashboardController extends Controller
             'active_dialogues' => AnonymousNote::whereIn('status', ['new', 'read', 'replied'])->count(),
         ];
 
-        // 3. Anonymous Notes (Status: new, read, replied) — 10 per page.
+        // 3. Anonymous Notes (Status: new, read, replied) — 4 per page.
         $anon_notes = AnonymousNote::whereIn('status', ['new', 'read', 'replied'])
             ->with(['messages' => function($q) {
                 $q->orderBy('created_at', 'asc');
             }])
             ->orderBy('created_at', 'desc')
-            ->paginate(10, ['*'], 'notes_page');
+            ->paginate(4, ['*'], 'notes_page');
         $anon_notes->appends(['queue_page' => $request->input('queue_page', 1)]);
 
         return view('counselor.dashboard', compact(

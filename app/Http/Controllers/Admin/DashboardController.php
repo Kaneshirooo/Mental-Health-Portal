@@ -48,17 +48,17 @@ class DashboardController extends Controller
             })
             ->values();
 
-        // 10 per page so the list stays manageable as data grows.
+        // 4 per page so the list stays manageable as data grows.
         $page = max(1, (int) $request->input('page', 1));
         $priority_queue = new \Illuminate\Pagination\LengthAwarePaginator(
-            $priority_all->forPage($page, 10),
+            $priority_all->forPage($page, 4),
             $priority_all->count(),
-            10,
+            4,
             $page,
             ['path' => $request->url(), 'pageName' => 'page']
         );
 
-        // 3. Anonymous Student Feedback (Student Voice) — 9 per page (3×3 grid).
+        // 3. Anonymous Student Feedback (Student Voice) — 4 per page.
         $voicePage = max(1, (int) $request->input('voice_page', 1));
         $voiceAll = AnonymousNote::whereIn('status', ['new', 'read', 'replied'])
             ->with(['messages' => function($q) {
@@ -67,9 +67,9 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
         $anon_notes = new \Illuminate\Pagination\LengthAwarePaginator(
-            $voiceAll->forPage($voicePage, 9),
+            $voiceAll->forPage($voicePage, 4),
             $voiceAll->count(),
-            9,
+            4,
             $voicePage,
             ['path' => $request->url(), 'pageName' => 'voice_page']
         );
