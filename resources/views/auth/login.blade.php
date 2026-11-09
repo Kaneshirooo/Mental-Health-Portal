@@ -270,6 +270,123 @@
     .install-note { margin: 0.85rem 0 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; text-align: center; }
     .install-note b { color: var(--text); }
 
+    /* iOS "Add to Home Screen" guide — iOS never fires beforeinstallprompt,
+       so Safari users get explicit step-by-step instructions instead. */
+    .ios-install-sheet {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 0.75rem;
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+    .ios-install-sheet.open { display: flex; }
+    .ios-install-card {
+        width: 100%;
+        max-width: 440px;
+        background: var(--surface-solid, #fff);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 1.5rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom));
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+        animation: iosSheetIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes iosSheetIn {
+        from { transform: translateY(28px); opacity: 0; }
+        to { transform: none; opacity: 1; }
+    }
+    .ios-install-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.1rem;
+    }
+    .ios-install-head h3 {
+        margin: 0;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 900;
+        color: var(--text);
+        line-height: 1.25;
+    }
+    .ios-install-close {
+        flex: 0 0 auto;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--surface-2);
+        color: var(--text-muted);
+        font-size: 1rem;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .ios-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        margin-bottom: 0.95rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+    .ios-step b { color: var(--text); }
+    .ios-step-num {
+        flex: 0 0 auto;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--primary-glow, rgba(16, 185, 129, 0.12));
+        color: var(--primary, #059669);
+        font-size: 0.75rem;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .ios-share-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin: 0 0.15rem;
+        border-radius: 7px;
+        background: var(--primary-glow, rgba(16, 185, 129, 0.12));
+        color: var(--primary, #059669);
+        vertical-align: -6px;
+    }
+    .ios-install-tip {
+        margin: 0.9rem 0 0;
+        padding-top: 0.85rem;
+        border-top: 1px dashed var(--border);
+        font-size: 0.8rem;
+        line-height: 1.5;
+        font-weight: 600;
+        color: var(--text-dim);
+    }
+    .ios-install-tip.warn {
+        padding: 0.7rem 0.85rem;
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        border-radius: 12px;
+        background: rgba(245, 158, 11, 0.1);
+        color: #b45309;
+        margin-bottom: 1rem;
+    }
+    @media (min-width: 641px) {
+        .ios-install-sheet { align-items: center; }
+    }
+
     @media (max-width: 1024px) {
         .login-card { flex-direction: column; min-height: auto; border-radius: var(--radius-lg); }
         .login-hero { padding: 3rem 2rem; }
@@ -472,12 +589,42 @@
                     <span id="pwa-install-label">Install on this device</span>
                 </button>
                 <p id="pwa-ios-note" class="install-note" style="display:none;">
-                    <b>On iPhone/iPad:</b> tap the <span style="white-space:nowrap;">Share <span aria-hidden="true">⎋</span></span> button in Safari, then choose <b>Add to Home Screen</b>.
+                    <b>iPhone / iPad:</b> installation uses Safari's Share menu. Tap the button above for the 3-step guide.
                 </p>
                 <p id="pwa-installed-note" class="install-note" style="display:none;">
                     The app is installed on this device. Open it from your home screen.
                 </p>
                 <p class="install-note" style="margin-top:.5rem; opacity:.75;">Adds the MH Portal to your home screen &mdash; opens full screen, just like a regular app.</p>
+            </div>
+
+            <div id="ios-install-sheet" class="ios-install-sheet" role="dialog" aria-modal="true" aria-labelledby="ios-install-title">
+                <div class="ios-install-card">
+                    <div class="ios-install-head">
+                        <h3 id="ios-install-title">Add MH Portal to your Home Screen</h3>
+                        <button type="button" id="ios-install-close" class="ios-install-close" aria-label="Close install guide">&times;</button>
+                    </div>
+                    <p id="ios-install-browser-hint" class="ios-install-tip warn" style="display:none;">
+                        You're using a non-Safari browser. On iPhone and iPad, open this page in <b>Safari</b> first.
+                    </p>
+                    <div class="ios-step">
+                        <span class="ios-step-num">1</span>
+                        <span>Tap the <b>Share</b> button
+                            <span class="ios-share-icon" aria-hidden="true">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m8 7 4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
+                            </span>
+                            in Safari's toolbar.
+                        </span>
+                    </div>
+                    <div class="ios-step">
+                        <span class="ios-step-num">2</span>
+                        <span>Scroll down and choose <b>Add to Home Screen</b>.</span>
+                    </div>
+                    <div class="ios-step">
+                        <span class="ios-step-num">3</span>
+                        <span>Tap <b>Add</b> &mdash; the MH Portal icon appears on your home screen.</span>
+                    </div>
+                    <p class="ios-install-tip">The app opens full screen without browser controls, just like a native app.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -532,19 +679,46 @@
             });
         }
 
-        // PWA install ("Download / Get the app")
+        // PWA install ("Get the app")
         (function () {
             const area = document.getElementById('pwa-install-area');
             const btn = document.getElementById('pwa-install-btn');
             const label = document.getElementById('pwa-install-label');
             const iosNote = document.getElementById('pwa-ios-note');
             const installedNote = document.getElementById('pwa-installed-note');
+            const iosSheet = document.getElementById('ios-install-sheet');
+            const iosClose = document.getElementById('ios-install-close');
+            const iosBrowserHint = document.getElementById('ios-install-browser-hint');
             if (!area || !btn) return;
 
+            const ua = navigator.userAgent || '';
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-
+            // iPadOS 13+ reports a desktop "Macintosh" UA, so also treat a
+            // touch-capable Mac as an iPad.
+            const isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isIOSNonSafari = isIOS && /crios|fxios|edgios|opios/i.test(ua);
             const show = () => { area.style.display = 'block'; };
+
+            const openSheet = () => {
+                if (!iosSheet) return;
+                iosSheet.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                if (iosClose) iosClose.focus({ preventScroll: true });
+            };
+            const closeSheet = () => {
+                if (!iosSheet) return;
+                iosSheet.classList.remove('open');
+                document.body.style.overflow = '';
+                btn.focus({ preventScroll: true });
+            };
+
+            if (iosSheet) {
+                iosSheet.addEventListener('click', (e) => { if (e.target === iosSheet) closeSheet(); });
+                if (iosClose) iosClose.addEventListener('click', closeSheet);
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && iosSheet.classList.contains('open')) closeSheet();
+                });
+            }
 
             if (isStandalone) {
                 show();
@@ -559,16 +733,17 @@
                 deferredPrompt = e;
                 window.__pwaPrompt = e;
                 label.textContent = 'Download & install the app';
-                iosNote.style.display = 'none';
                 btn.style.display = 'flex';
                 show();
             });
 
             window.addEventListener('appinstalled', () => {
                 deferredPrompt = null;
+                window.__pwaPrompt = null;
                 btn.style.display = 'none';
                 iosNote.style.display = 'none';
                 installedNote.style.display = 'block';
+                if (iosSheet) { iosSheet.classList.remove('open'); document.body.style.overflow = ''; }
                 show();
             });
 
@@ -581,10 +756,12 @@
                     return;
                 }
                 if (isIOS) {
-                    iosNote.style.display = iosNote.style.display === 'none' ? 'block' : 'none';
+                    // iOS Safari never fires beforeinstallprompt; walk the user
+                    // through the Share > Add to Home Screen flow instead.
+                    openSheet();
                     return;
                 }
-                // Fallback: show the most helpful hint available.
+                // Android/desktop fallback when the browser hasn't offered a prompt.
                 iosNote.style.display = 'block';
                 iosNote.innerHTML = 'To install: open this site in <b>Chrome</b> (Android) and use the browser menu &rarr; <b>Install app</b>, or in <b>Safari</b> (iPhone/iPad) tap Share &rarr; <b>Add to Home Screen</b>.';
             });
@@ -592,8 +769,9 @@
             // Always show the area so users can discover the app. Tailor the message.
             show();
             if (isIOS) {
-                label.textContent = 'Install on iPhone / iPad';
+                label.textContent = 'How to install on iPhone / iPad';
                 iosNote.style.display = 'block';
+                if (isIOSNonSafari && iosBrowserHint) iosBrowserHint.style.display = 'block';
             } else if (!deferredPrompt) {
                 label.textContent = 'Install the app';
             }
