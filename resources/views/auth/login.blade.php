@@ -472,6 +472,28 @@
         .btn-google { padding: 1.05rem; font-size: 0.95rem; border-radius: 14px; }
         .btn-google svg { width: 22px; height: 22px; }
     }
+
+    /* Installed app: keep the login card inside the iOS safe areas
+       (notch / Dynamic Island on top, home indicator at the bottom). */
+    body {
+        padding-top: calc(1.5rem + var(--safe-top, 0px));
+        padding-right: calc(1rem + var(--safe-right, 0px));
+        padding-bottom: calc(1.5rem + var(--safe-bottom, 0px));
+        padding-left: calc(1rem + var(--safe-left, 0px));
+    }
+    @media (max-width: 640px) {
+        body {
+            padding-top: calc(0.75rem + var(--safe-top, 0px));
+            padding-right: calc(0.75rem + var(--safe-right, 0px));
+            padding-bottom: calc(0.75rem + var(--safe-bottom, 0px));
+            padding-left: calc(0.75rem + var(--safe-left, 0px));
+        }
+        .login-container,
+        .login-card {
+            min-height: calc(100dvh - 1.5rem - var(--safe-top, 0px) - var(--safe-bottom, 0px));
+            min-height: calc(100vh - 1.5rem - var(--safe-top, 0px) - var(--safe-bottom, 0px));
+        }
+    }
 </style>
 
 <div class="login-container">

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Mental Health Portal') }}</title>
@@ -15,7 +15,9 @@
     <meta name="theme-color" content="#059669">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    {{-- "default" keeps the status bar readable above the light top nav on
+         installed iOS builds; "black-translucent" made white icons invisible. --}}
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="MH Portal">
     <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
 
@@ -41,9 +43,13 @@
         // Inline theme init to prevent flicker
         (function () {
             const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
+            const isDark = savedTheme === 'dark';
+            if (isDark) {
                 document.documentElement.classList.add('dark-mode');
             }
+            // Keep the installed Android status bar in sync with the app theme.
+            const meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', isDark ? '#0f172a' : '#059669');
         })();
     </script>
 
@@ -137,7 +143,7 @@
                 max-width: 100% !important;
                 margin-left: 0 !important;
                 margin-right: 0 !important;
-                padding: calc(60px + 1.25rem) 1.25rem 3.5rem !important;
+                padding: calc(60px + var(--safe-top, 0px) + 1.25rem) calc(1.25rem + var(--safe-right, 0px)) calc(3.5rem + var(--safe-bottom, 0px)) calc(1.25rem + var(--safe-left, 0px)) !important;
                 box-sizing: border-box !important;
             }
             .main-content .container,
@@ -209,7 +215,7 @@
         }
         @media (max-width: 480px) {
             .main-content {
-                padding: calc(60px + 1rem) 0.85rem 2.5rem !important;
+                padding: calc(60px + var(--safe-top, 0px) + 1rem) calc(0.85rem + var(--safe-right, 0px)) calc(2.5rem + var(--safe-bottom, 0px)) calc(0.85rem + var(--safe-left, 0px)) !important;
             }
             .main-content .quick-actions-grid,
             .main-content .stats-grid {
@@ -314,6 +320,8 @@
                     localStorage.setItem('theme', isDark ? 'dark' : 'light');
                     if (themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
                     if (themeLabel) themeLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+                    const meta = document.querySelector('meta[name="theme-color"]');
+                    if (meta) meta.setAttribute('content', isDark ? '#0f172a' : '#059669');
                 });
 
                 // Set initial state

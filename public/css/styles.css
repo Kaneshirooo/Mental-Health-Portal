@@ -1623,3 +1623,113 @@ textarea:focus,
 .btn-confirm-signout:hover {
     background: #b91c1c;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Installed app (PWA / standalone) — safe areas & viewport fit
+   ───────────────────────────────────────────────────────────────
+   When the portal is launched from the home screen on iPhone/iPad
+   (and on Android edge-to-edge devices) the notch, Dynamic Island,
+   rounded corners and home indicator can overlap the fixed top bar
+   and page content. These rules pad the app chrome and content by
+   the real safe-area insets. env() resolves to 0px in a normal
+   browser tab, so the website layout is completely unchanged.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+}
+
+html {
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+/* Desktop / tablet sidebar: keep clear of landscape notches. */
+.sidebar {
+    left: calc(var(--sidebar-gutter) + var(--safe-left));
+    top: calc(var(--sidebar-gutter) + var(--safe-top));
+    height: calc(100vh - (var(--sidebar-gutter) * 2) - var(--safe-top) - var(--safe-bottom));
+    height: calc(100dvh - (var(--sidebar-gutter) * 2) - var(--safe-top) - var(--safe-bottom));
+}
+
+.main-content {
+    margin-left: calc(var(--sidebar-width) + (var(--sidebar-gutter) * 2) + var(--safe-left));
+    width: calc(100% - var(--sidebar-width) - (var(--sidebar-gutter) * 2) - var(--safe-left));
+    padding-right: calc(2rem + var(--safe-right));
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+/* Floating pieces: keep them off the status bar / home indicator. */
+#clinical-toast-container {
+    top: calc(2rem + var(--safe-top));
+    right: calc(2rem + var(--safe-right));
+}
+
+#toast-container {
+    bottom: calc(1.5rem + var(--safe-bottom));
+    right: calc(1.5rem + var(--safe-right));
+}
+
+.scroll-top-btn {
+    bottom: calc(2rem + var(--safe-bottom));
+    right: calc(2rem + var(--safe-right));
+}
+
+@media (max-width: 1024px) {
+    .mobile-nav {
+        height: calc(var(--mobile-nav-height, 60px) + var(--safe-top)) !important;
+        padding-top: var(--safe-top);
+        padding-left: calc(1.15rem + var(--safe-left));
+        padding-right: calc(1.15rem + var(--safe-right));
+        box-sizing: border-box;
+    }
+
+    .sidebar {
+        height: 100vh !important;
+        height: 100dvh !important;
+        padding-top: var(--safe-top);
+        padding-bottom: var(--safe-bottom);
+        box-sizing: border-box;
+    }
+
+    .main-content {
+        padding-top: calc(var(--mobile-nav-height, 60px) + var(--safe-top) + 1.25rem) !important;
+        padding-right: calc(1.25rem + var(--safe-right)) !important;
+        padding-bottom: calc(3.5rem + var(--safe-bottom)) !important;
+        padding-left: calc(1.25rem + var(--safe-left)) !important;
+    }
+
+    .scroll-top-btn {
+        bottom: calc(1.5rem + var(--safe-bottom));
+        right: calc(1rem + var(--safe-right));
+    }
+
+    #clinical-toast-container {
+        top: calc(1rem + var(--safe-top));
+        left: calc(1rem + var(--safe-left));
+        right: calc(1rem + var(--safe-right));
+    }
+
+    .clinical-toast {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding-top: calc(var(--mobile-nav-height, 60px) + var(--safe-top) + 0.85rem) !important;
+        padding-right: calc(0.85rem + var(--safe-right)) !important;
+        padding-bottom: calc(2.5rem + var(--safe-bottom)) !important;
+        padding-left: calc(0.85rem + var(--safe-left)) !important;
+    }
+}
