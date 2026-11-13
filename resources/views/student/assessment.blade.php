@@ -20,7 +20,7 @@
     }
     @media (max-width: 1024px) {
         .assessment-header {
-            top: calc(var(--mobile-nav-height, 60px) + 0.75rem);
+            top: calc(var(--mobile-nav-height, 60px) + var(--safe-top, 0px) + 0.75rem);
             padding: 0.75rem 1.15rem;
             border-radius: 16px;
             margin-bottom: 1.5rem;
@@ -209,15 +209,17 @@
             padding: 1rem 0.75rem;
         }
         .container {
-            padding-left: 1.25rem !important;
-            padding-right: 1.25rem !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: calc(8rem + env(safe-area-inset-bottom, 0px)) !important;
         }
         .assessment-header {
             left: 0;
         }
         .assessment-nav-bar {
             position: fixed !important;
-            bottom: 0.85rem !important;
+            bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px)) !important;
             left: 0.85rem !important;
             right: 0.85rem !important;
             width: calc(100% - 1.7rem) !important;

@@ -178,7 +178,7 @@
 
 @media (max-width: 900px) {
     .video-call-page {
-        height: calc(100vh - 5rem) !important;
+        height: calc(100dvh - calc(var(--mobile-nav-height, 60px) + var(--safe-top, 0px))) !important;
         gap: 0.75rem !important;
     }
     .clinical-header {
@@ -238,8 +238,7 @@
 }
 @media (max-width: 900px) {
     .video-call-page {
-        height: calc(100vh - 5rem) !important;
-        height: calc(100dvh - 5rem) !important;
+        height: calc(100dvh - calc(var(--mobile-nav-height, 60px) + var(--safe-top, 0px))) !important;
         gap: 0.75rem !important;
         overflow-x: hidden !important;
     }
@@ -255,10 +254,16 @@
         font-size: 16px !important;
     }
     #liveSubtitlesOverlay {
-        bottom: 5rem !important;
+        bottom: calc(5rem + env(safe-area-inset-bottom, 0px)) !important;
         max-width: 92% !important;
     }
     .message-wrap { max-width: 92% !important; }
+    .call-controls {
+        bottom: calc(1rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    .local-video-container {
+        bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
 }
 </style>
 

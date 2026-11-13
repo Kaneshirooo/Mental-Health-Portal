@@ -11,7 +11,12 @@
     .creg-card input, .creg-card select { width: 100%; padding: 0.95rem 1.1rem; border-radius: 14px; border: 2px solid var(--border); background: var(--surface-2); font-size: 0.95rem; color: var(--text); font-family: inherit; margin-bottom: 1.1rem; }
     .creg-card input:focus, .creg-card select:focus { border-color: var(--primary); background: var(--surface-solid); outline: none; box-shadow: 0 0 0 5px var(--primary-glow); }
     .creg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    @media (max-width: 640px) { .creg-row { grid-template-columns: 1fr; } .creg-card { padding: 1.75rem 1.25rem; } }
+    @media (max-width: 640px) {
+        .creg-wrap { padding: 1rem 0.85rem 3rem; }
+        .creg-row { grid-template-columns: 1fr; }
+        .creg-card { padding: 1.75rem 1.25rem; border-radius: 20px; }
+        .creg-card input, .creg-card select { font-size: 16px !important; min-height: 48px; }
+    }
     .error-alert { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; padding: 1rem 1.25rem; border-radius: 14px; margin-bottom: 1.5rem; font-weight: 700; }
 </style>
 

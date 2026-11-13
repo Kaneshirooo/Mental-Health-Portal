@@ -145,6 +145,12 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
+        @media (max-width: 768px) {
+            body { padding: 1.25rem 1rem 3rem; }
+            .confidential-stamp { position: static; display: inline-block; margin-bottom: 1rem; transform: none; }
+            .no-print { position: static; width: 100%; margin-bottom: 1rem; min-height: 44px; }
+        }
+
         @media print {
             .no-print { display: none; }
             body { padding: 0; }

@@ -14,9 +14,9 @@
     }
 
     .survey-container {
-        max-width: 850px;
+        max-width: var(--container-max, 850px);
         margin: 0 auto;
-        padding: 4rem 1.5rem;
+        padding: 2rem 1.5rem 4rem;
     }
 
     .glass-card {
@@ -167,18 +167,20 @@
         pointer-events: none;
     }
 
-    @media (max-width: 600px) {
-        .survey-container { padding: 1.25rem 0 2.5rem; }
+    @media (max-width: 768px) {
+        .survey-container { padding: 0.5rem 0 3rem; }
         .survey-header { margin-bottom: 2rem !important; }
-        .survey-header h1 { font-size: 1.9rem !important; }
+        .survey-header h1 { font-size: 1.85rem !important; }
         .survey-header p { font-size: 0.95rem !important; }
-        .glass-card { padding: 1.5rem 1rem; border-radius: 20px; margin-bottom: 1.25rem; }
+        .glass-card { padding: 1.5rem 1rem !important; border-radius: 20px !important; margin-bottom: 1.25rem !important; }
         .section-title { font-size: 1rem; letter-spacing: 0.05em; margin-bottom: 1rem; }
         .question-label { font-size: 0.95rem; }
         .cc-option-content { padding: 1rem; gap: 0.75rem; font-size: 0.88rem; }
         .likert-scale { gap: 0.25rem; }
         .likert-box { height: 44px; font-size: 1rem; border-radius: 8px; }
         .likert-label { font-size: 0.55rem; letter-spacing: -0.02em; }
+        textarea[name="feedback_text"] { font-size: 16px !important; min-height: 100px !important; }
+        button[type="submit"] { width: 100% !important; padding: 1.1rem !important; }
     }
 </style>
 @endpush

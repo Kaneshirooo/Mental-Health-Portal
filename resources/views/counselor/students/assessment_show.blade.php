@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container" style="max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
-    <header class="no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
+<div class="container" style="max-width: var(--container-max, 900px); margin: 0 auto; padding-bottom: 3.5rem;">
+    <header class="no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <a href="{{ route('counselor.students.show', $student->user_id) }}" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text-dim); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">
             <i class="ph ph-arrow-left"></i> Back to Student Profile
         </a>
@@ -59,6 +59,25 @@
 </div>
 
 <style>
+@media (max-width: 768px) {
+    .container { padding: 0 0 3rem !important; }
+    header.no-print {
+        margin-bottom: 1.5rem !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.75rem !important;
+    }
+    header.no-print button {
+        width: 100% !important;
+        justify-content: center !important;
+        min-height: 44px !important;
+    }
+    div[style*="padding: 2.5rem"],
+    div[style*="padding: 2rem"] {
+        padding: 1.25rem 1rem !important;
+        border-radius: 20px !important;
+    }
+}
 @media print {
     .no-print, .sidebar { display: none !important; }
     .main-content { margin-left: 0 !important; }

@@ -145,7 +145,7 @@
 
     @media (max-width: 768px) {
         .logs-content {
-            padding: 0.5rem 0.6rem 4rem !important;
+            padding: 0 0 3rem !important;
         }
         .logs-content header.staggered {
             flex-direction: column !important;
@@ -215,8 +215,8 @@
 <div class="dash-orb dash-orb-1"></div>
 <div class="dash-orb dash-orb-2"></div>
 
-<div class="container logs-content" style="max-width: 1400px; margin: 0 auto; padding: 2rem 2rem 5rem;">
-    <header class="staggered" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+<div class="container logs-content" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
+    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.25rem;">
         <div>
             <div style="font-weight: 900; color: var(--primary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.25em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.6rem;">
                 <i class="ph-bold ph-phone-call" style="font-size: 1.1rem;"></i> Emergency Communication Center

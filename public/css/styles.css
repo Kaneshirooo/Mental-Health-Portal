@@ -49,6 +49,10 @@
     --sidebar-gutter: 1.25rem;
     --mobile-nav-height: 60px;
     --container-max: 1320px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
     --radius: 20px;
     --radius-sm: 12px;
     --radius-lg: 32px;
@@ -1361,6 +1365,11 @@ textarea:focus,
 
     .mobile-nav {
         display: flex !important;
+        height: calc(var(--mobile-nav-height, 60px) + var(--safe-top)) !important;
+        padding-top: var(--safe-top) !important;
+        padding-left: calc(1.15rem + var(--safe-left)) !important;
+        padding-right: calc(1.15rem + var(--safe-right)) !important;
+        box-sizing: border-box !important;
     }
 
     .sidebar {
@@ -1372,9 +1381,13 @@ textarea:focus,
         top: 0 !important;
         height: 100vh !important;
         height: 100dvh !important;
-        width: min(300px, 84vw) !important;
+        width: min(320px, 86vw) !important;
         border-radius: 0 24px 24px 0 !important;
         box-shadow: none;
+        padding-top: var(--safe-top);
+        padding-bottom: var(--safe-bottom);
+        padding-left: var(--safe-left);
+        box-sizing: border-box;
     }
 
     .sidebar.open {
@@ -1386,11 +1399,18 @@ textarea:focus,
         display: flex !important;
     }
 
+    .sidebar-footer {
+        padding-bottom: calc(1rem + var(--safe-bottom)) !important;
+    }
+
     .main-content {
         margin-left: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
-        padding: calc(var(--mobile-nav-height, 60px) + 1.25rem) 1.25rem 3.5rem !important;
+        padding-top: calc(var(--mobile-nav-height, 60px) + var(--safe-top) + 1.25rem) !important;
+        padding-right: calc(1.25rem + var(--safe-right)) !important;
+        padding-bottom: calc(3.5rem + var(--safe-bottom)) !important;
+        padding-left: calc(1.25rem + var(--safe-left)) !important;
         box-sizing: border-box !important;
     }
 
@@ -1684,36 +1704,13 @@ body {
 }
 
 @media (max-width: 1024px) {
-    .mobile-nav {
-        height: calc(var(--mobile-nav-height, 60px) + var(--safe-top)) !important;
-        padding-top: var(--safe-top);
-        padding-left: calc(1.15rem + var(--safe-left));
-        padding-right: calc(1.15rem + var(--safe-right));
-        box-sizing: border-box;
-    }
-
-    .sidebar {
-        height: 100vh !important;
-        height: 100dvh !important;
-        padding-top: var(--safe-top);
-        padding-bottom: var(--safe-bottom);
-        box-sizing: border-box;
-    }
-
-    .main-content {
-        padding-top: calc(var(--mobile-nav-height, 60px) + var(--safe-top) + 1.25rem) !important;
-        padding-right: calc(1.25rem + var(--safe-right)) !important;
-        padding-bottom: calc(3.5rem + var(--safe-bottom)) !important;
-        padding-left: calc(1.25rem + var(--safe-left)) !important;
-    }
-
     .scroll-top-btn {
         bottom: calc(1.5rem + var(--safe-bottom));
         right: calc(1rem + var(--safe-right));
     }
 
     #clinical-toast-container {
-        top: calc(1rem + var(--safe-top));
+        top: calc(var(--mobile-nav-height, 60px) + var(--safe-top) + 0.75rem);
         left: calc(1rem + var(--safe-left));
         right: calc(1rem + var(--safe-right));
     }
@@ -1729,7 +1726,7 @@ body {
     .main-content {
         padding-top: calc(var(--mobile-nav-height, 60px) + var(--safe-top) + 0.85rem) !important;
         padding-right: calc(0.85rem + var(--safe-right)) !important;
-        padding-bottom: calc(2.5rem + var(--safe-bottom)) !important;
+        padding-bottom: calc(3rem + var(--safe-bottom)) !important;
         padding-left: calc(0.85rem + var(--safe-left)) !important;
     }
 }

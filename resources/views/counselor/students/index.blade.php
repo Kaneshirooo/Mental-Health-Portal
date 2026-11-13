@@ -119,6 +119,26 @@
         #studentsTable tbody tr.student-row { border: 1px solid var(--border) !important; border-radius: 18px !important; padding: 1rem !important; margin-bottom: 0.85rem !important; background: var(--surface-solid) !important; }
         #studentsTable tbody tr.student-row td { padding: 0.3rem 0 !important; border: none !important; text-align: left !important; }
         #studentsTable tbody tr.student-row td:last-child > div { display: grid !important; grid-template-columns: 1fr auto auto !important; gap: 0.5rem !important; }
+        #editStudentModal > div,
+        #archiveStudentModal > div {
+            padding: 1.5rem 1.15rem !important;
+            border-radius: 24px !important;
+            max-height: 90dvh !important;
+            overflow-y: auto !important;
+        }
+        #editStudentForm div[style*="grid-template-columns: 1fr 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+        }
+        #editStudentForm > div:last-child {
+            flex-direction: column !important;
+        }
+        #editStudentForm > div:last-child > button,
+        #archiveStudentForm > button {
+            width: 100% !important;
+        }
+        #archiveStudentForm {
+            flex-direction: column !important;
+        }
     }
 </style>
 @endpush

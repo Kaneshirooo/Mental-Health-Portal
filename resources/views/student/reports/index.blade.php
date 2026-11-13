@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-8 max-w-6xl mx-auto">
+<div class="container max-w-6xl mx-auto" style="padding: 0 0 3.5rem;">
 
     <!-- Header -->
-    <header class="mb-12 lg:flex justify-between items-end">
+    <header class="mb-8 lg:flex justify-between items-end">
         <div>
-            <h1 class="vault-title text-6xl font-black tracking-tighter italic uppercase mb-3">My Progress</h1>
+            <h1 class="vault-title text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter italic uppercase mb-2">My Progress</h1>
             <p class="vault-subtitle font-medium">Your check-ins and chat takeaways in one place.</p>
         </div>
-        <div class="mt-8 lg:mt-0">
-            <a href="{{ route('student.assessment') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-black px-10 py-5 rounded-[2rem] shadow-xl transition-all uppercase tracking-widest text-xs inline-flex items-center gap-3">
+        <div class="mt-6 lg:mt-0">
+            <a href="{{ route('student.assessment') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-black px-8 py-4 rounded-2xl shadow-xl transition-all uppercase tracking-widest text-xs inline-flex items-center gap-3">
                 New Assessment
                 <i class="ph ph-arrow-right"></i>
             </a>
@@ -211,6 +211,27 @@
 .dark-mode span[style*="fee2e2"] { background: rgba(239,68,68,0.12) !important; border-color: rgba(239,68,68,0.3) !important; color: #fca5a5 !important; }
 .dark-mode span[style*="fef3c7"] { background: rgba(245,158,11,0.12) !important; border-color: rgba(245,158,11,0.3) !important; color: #fcd34d !important; }
 .dark-mode span[style*="d1fae5"] { background: rgba(16,185,129,0.12) !important; border-color: rgba(16,185,129,0.3) !important; color: #6ee7b7 !important; }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 0 3rem !important;
+    }
+    .vault-title {
+        font-size: 2rem !important;
+    }
+    .vault-card {
+        padding: 1.5rem 1.15rem !important;
+        border-radius: 20px !important;
+    }
+    header.mb-8 {
+        margin-bottom: 1.5rem !important;
+    }
+    header.mb-8 a {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 0.85rem 1.25rem !important;
+    }
+}
 </style>
 
 @if($reports->count() > 1)

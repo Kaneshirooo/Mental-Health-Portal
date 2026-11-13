@@ -68,6 +68,16 @@
             width: 100% !important;
             justify-content: flex-end !important;
         }
+        #addStaffModal {
+            padding: 1rem !important;
+            overflow-y: auto !important;
+        }
+        #addStaffModal > div {
+            padding: 1.75rem 1.15rem !important;
+            border-radius: 24px !important;
+            max-height: 90dvh !important;
+            overflow-y: auto !important;
+        }
     }
 </style>
 @endpush

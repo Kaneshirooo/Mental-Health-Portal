@@ -86,9 +86,16 @@
     }
     @media (max-width: 768px) {
         .container {
-            padding-left: 0.75rem !important;
-            padding-right: 0.75rem !important;
-            padding-top: 0.5rem !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 3rem !important;
+        }
+        .page-header-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1rem !important;
+            margin-bottom: 1.5rem !important;
         }
         .wellness-banner {
             padding: 1.5rem 1.25rem !important;
@@ -171,7 +178,7 @@
 <div class="container" style="max-width: 1320px; margin: 0 auto; padding-bottom: 4rem;">
     
     <!-- Page Header -->
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;" class="staggered">
+    <div class="page-header-row staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <div>
             <div style="font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.5rem;">Student Dashboard</div>
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.25rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em;">Hello, {{ explode(' ', $user->full_name)[0] }}</h1>

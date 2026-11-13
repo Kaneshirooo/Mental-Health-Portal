@@ -3,9 +3,9 @@
 @push('styles')
 <style>
     .reports-container {
-        max-width: 1380px;
+        max-width: var(--container-max, 1320px);
         margin: 0 auto;
-        padding: 2.25rem 1.75rem 6rem;
+        padding: 0 0 3.5rem;
     }
 
     /* ── KPI Cards ── */
@@ -558,12 +558,32 @@
     }
     @media (max-width: 768px) {
         .reports-container { padding-bottom: 3rem !important; }
+        header.staggered {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        header.staggered h1 { font-size: 1.85rem !important; }
         #analyticsMatrix { gap: 1rem !important; }
         .kpi-card-v2 { padding: 1.5rem 1.25rem !important; }
         .drawer-header { padding: 1.5rem 1.25rem 1rem !important; }
         .drawer-body { padding: 1rem 1.25rem 1.5rem !important; }
         .drawer-row { padding: 0.85rem !important; gap: 0.75rem !important; }
         .drawer-row:hover { transform: none !important; }
+        #riskDrillDownModal > div {
+            padding: 1.5rem 1.15rem !important;
+            border-radius: 24px !important;
+            max-height: 90dvh !important;
+            overflow-y: auto !important;
+        }
+        #riskDrillDownModal > div > button {
+            top: 1rem !important;
+            right: 1rem !important;
+        }
+        #modalStudentList {
+            max-height: 55dvh !important;
+        }
     }
 </style>
 @endpush

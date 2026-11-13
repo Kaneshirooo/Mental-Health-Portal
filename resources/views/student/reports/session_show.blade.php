@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-8 max-w-4xl mx-auto">
+<div class="report-page p-8 max-w-4xl mx-auto">
     <!-- Header -->
-    <header class="mb-12 flex justify-between items-center no-print">
+    <header class="report-actions mb-12 flex justify-between items-center no-print">
         <a href="{{ route('student.reports.index') }}" class="flex items-center gap-3 text-gray-500 hover:text-white transition-all font-black uppercase text-[10px] tracking-widest">
             <i class="ph ph-arrow-left"></i>
             Back to My Progress
         </a>
-        <div class="flex items-center gap-3">
+        <div class="report-action-buttons flex items-center gap-3">
             @if(!empty($prevSession))
                 <a href="{{ route('student.reports.session.show', $prevSession->pre_id) }}" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black px-6 py-3 rounded-2xl transition-all uppercase tracking-widest text-[9px] flex items-center gap-2 no-print">
                     <i class="ph ph-arrow-left"></i>
@@ -32,11 +32,11 @@
         </div>
     </header>
 
-    <article class="glass-card p-16 relative overflow-hidden">
+    <article class="report-card glass-card p-16 relative overflow-hidden">
         <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-600/5 blur-[100px] rounded-full -mr-20 -mt-20"></div>
         
         <!-- Metadata -->
-        <div class="flex flex-col md:flex-row justify-between gap-8 mb-20 pb-12 border-b border-white/5">
+        <div class="report-meta flex flex-col md:flex-row justify-between gap-8 mb-20 pb-12 border-b border-white/5">
             <div>
                 <div class="flex items-center gap-3 mb-4">
                     <span class="w-3 h-3 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] animate-pulse"></span>
@@ -60,28 +60,28 @@
         </div>
 
         <!-- Metric Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 mb-20">
-            <div class="bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
+        <div class="report-metrics grid grid-cols-2 md:grid-cols-3 gap-8 mb-20">
+            <div class="report-tile bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
                 <p class="text-[8px] font-black text-emerald-500 uppercase tracking-widest mb-4">Current Mood</p>
                 <p class="text-2xl font-black text-white italic uppercase">{{ $session->ai_report['mood'] ?? 'Stable' }}</p>
             </div>
-            <div class="bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
+            <div class="report-tile bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
                 <p class="text-[8px] font-black text-emerald-500 uppercase tracking-widest mb-4">Sleep Quality</p>
                 <p class="text-2xl font-black text-white italic uppercase">{{ $session->ai_report['sleep'] ?? 'N/A' }}</p>
             </div>
-            <div class="bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
+            <div class="report-tile bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
                 <p class="text-[8px] font-black text-emerald-500 uppercase tracking-widest mb-4">Energy Level</p>
                 <p class="text-2xl font-black text-white italic uppercase">{{ $session->ai_report['energy'] ?? 'N/A' }}</p>
             </div>
-            <div class="bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
+            <div class="report-tile bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
                 <p class="text-[8px] font-black text-emerald-500 uppercase tracking-widest mb-4">Focus</p>
                 <p class="text-2xl font-black text-white italic uppercase">{{ $session->ai_report['focus'] ?? 'N/A' }}</p>
             </div>
-            <div class="bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
+            <div class="report-tile bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
                 <p class="text-[8px] font-black text-emerald-500 uppercase tracking-widest mb-4">Social</p>
                 <p class="text-2xl font-black text-white italic uppercase">{{ $session->ai_report['social'] ?? 'N/A' }}</p>
             </div>
-            <div class="bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
+            <div class="report-tile bg-white/[0.02] border border-white/5 p-8 rounded-3xl text-center">
                 <p class="text-[8px] font-black text-emerald-500 uppercase tracking-widest mb-4">Appetite</p>
                 <p class="text-2xl font-black text-white italic uppercase">{{ $session->ai_report['appetite'] ?? 'N/A' }}</p>
             </div>
@@ -91,7 +91,7 @@
         <section class="space-y-12 mb-20">
             <div>
                 <h3 class="text-xs font-black uppercase tracking-widest text-white mb-6 italic border-l-4 border-emerald-500 pl-6">What's Been on My Mind</h3>
-                <div class="bg-white/[0.02] border border-white/5 p-10 rounded-[3rem]">
+                <div class="report-tile bg-white/[0.02] border border-white/5 p-10 rounded-[3rem]">
                     <p class="text-lg text-gray-300 font-medium leading-relaxed italic">
                         "{!! $session->ai_report['core_concerns'] ?? 'Nothing noted yet.' !!}"
                     </p>
@@ -100,7 +100,7 @@
 
             <div>
                 <h3 class="text-xs font-black uppercase tracking-widest text-white mb-6 italic border-l-4 border-emerald-500 pl-6">What We Noticed Together</h3>
-                <div class="bg-white/[0.02] border border-white/5 p-10 rounded-[3rem]">
+                <div class="report-tile bg-white/[0.02] border border-white/5 p-10 rounded-[3rem]">
                     <p class="text-lg text-gray-300 font-medium leading-relaxed italic">
                         "{!! $session->ai_report['clinical_observations'] ?? 'Nothing noted yet.' !!}"
                     </p>
@@ -109,7 +109,7 @@
         </section>
 
         <!-- Footer -->
-        <div class="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-gray-600 border-t border-white/5 pt-8">
+        <div class="report-footer flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-gray-600 border-t border-white/5 pt-8">
             <span>My Personal Check-In</span>
             <span>Suggested next chat: {{ ($session->ai_report['follow_up_needed'] ?? false) ? 'YES — soon' : 'Whenever you like' }}</span>
         </div>
@@ -134,6 +134,66 @@
     transform: none !important;
     background: rgba(18, 18, 18, 0.9) !important;
     box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5) !important;
+}
+@media (max-width: 768px) {
+    .report-page {
+        padding: 0 0 3rem !important;
+    }
+    .report-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.85rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    .report-action-buttons {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem !important;
+    }
+    .report-action-buttons > a,
+    .report-action-buttons > button {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 0.8rem 0.75rem !important;
+        min-height: 44px !important;
+    }
+    .report-card {
+        padding: 1.5rem 1.15rem !important;
+        border-radius: 28px !important;
+    }
+    .report-meta {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        margin-bottom: 2rem !important;
+        padding-bottom: 1.25rem !important;
+    }
+    .report-meta > div:last-child {
+        text-align: left !important;
+    }
+    .report-meta h1 {
+        font-size: 2rem !important;
+    }
+    .report-metrics {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+        margin-bottom: 2rem !important;
+    }
+    .report-tile {
+        padding: 1.15rem 0.75rem !important;
+        border-radius: 18px !important;
+    }
+    .report-tile p:last-child {
+        font-size: 1.05rem !important;
+    }
+    .report-card section {
+        margin-bottom: 1.75rem !important;
+    }
+    .report-footer {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+    }
 }
 @media print {
     body { background: white !important; color: black !important; }

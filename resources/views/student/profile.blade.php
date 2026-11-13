@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <div class="max-w-3xl mx-auto">
-        <div class="mb-8">
-            <h1 class="profile-title text-3xl font-extrabold flex items-center gap-3">
+<div class="container mx-auto" style="max-width: 800px; padding-bottom: 3.5rem;">
+    <div class="w-full">
+        <div class="mb-6">
+            <h1 class="profile-title text-2xl md:text-3xl font-extrabold flex items-center gap-3">
                 <i class="ph-fill ph-user-circle text-emerald-500"></i>
                 Account Profile
             </h1>
@@ -230,6 +230,26 @@
 .dark-mode .profile-input:focus { border-color: #10b981; background: rgba(15, 23, 42, 0.8); }
 .dark-mode .profile-input.readonly { background: rgba(15, 23, 42, 0.4); color: #94a3b8; border-color: rgba(255,255,255,0.05); }
 
+@media (max-width: 768px) {
+    .container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 3rem !important;
+    }
+    .profile-card {
+        padding: 1.5rem 1.15rem !important;
+        border-radius: 20px !important;
+    }
+    .profile-title {
+        font-size: 1.65rem !important;
+    }
+    .profile-input {
+        font-size: 16px !important; /* Prevents auto zoom on iOS */
+        min-height: 48px !important;
+        padding: 0.75rem 1rem !important;
+    }
+}
 </style>
 @endsection
 

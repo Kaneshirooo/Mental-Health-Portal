@@ -76,7 +76,16 @@
 
     @media (max-width: 768px) {
         .container {
-            padding: 1rem 0.75rem 4rem !important;
+            padding: 0 0 3rem !important;
+        }
+        header.staggered {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        header.staggered h1 {
+            font-size: 1.85rem !important;
         }
         .admin-command-matrix {
             grid-template-columns: repeat(2, 1fr) !important;

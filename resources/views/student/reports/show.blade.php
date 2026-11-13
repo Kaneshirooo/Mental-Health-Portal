@@ -1,14 +1,78 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+    @media (max-width: 768px) {
+        .report-page {
+            padding: 0 0 3rem !important;
+        }
+        .report-actions {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 0.85rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        .report-action-buttons {
+            width: 100% !important;
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0.5rem !important;
+        }
+        .report-action-buttons > a,
+        .report-action-buttons > button {
+            width: 100% !important;
+            justify-content: center !important;
+            padding: 0.8rem 0.75rem !important;
+            min-height: 44px !important;
+        }
+        .report-card {
+            padding: 1.5rem 1.15rem !important;
+            border-radius: 24px !important;
+        }
+        .report-meta {
+            flex-direction: column !important;
+            gap: 1rem !important;
+            margin-bottom: 1.75rem !important;
+            padding-bottom: 1.25rem !important;
+        }
+        .report-meta > div:last-child {
+            text-align: left !important;
+        }
+        .report-metrics {
+            gap: 1rem !important;
+            margin-bottom: 2rem !important;
+        }
+        .report-tile {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+        }
+        .report-card section {
+            margin-bottom: 1.75rem !important;
+        }
+        .report-card h1 {
+            font-size: 2rem !important;
+        }
+        .report-card .text-6xl {
+            font-size: 3rem !important;
+        }
+        .report-counselor-meta {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.4rem !important;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="p-8 max-w-4xl mx-auto">
+<div class="report-page p-8 max-w-4xl mx-auto">
     <!-- Header -->
-    <header class="mb-12 flex justify-between items-center no-print">
+    <header class="report-actions mb-12 flex justify-between items-center no-print">
         <a href="{{ route('student.reports.index') }}" class="back-link flex items-center gap-3 font-black uppercase text-[10px] tracking-widest">
             <i class="ph ph-arrow-left"></i>
             Back to My Progress
         </a>
-        <div class="flex items-center gap-3">
+        <div class="report-action-buttons flex items-center gap-3">
             @isset($prevScore)
                 @if($prevScore)
                     <a href="{{ route('student.reports.show', $prevScore) }}" class="export-btn font-black px-6 py-3 rounded-2xl uppercase tracking-widest text-[9px] flex items-center gap-2 no-print">
@@ -42,10 +106,10 @@
         </div>
     </header>
 
-    <article class="glass-card p-12 md:p-16">
+    <article class="report-card glass-card p-12 md:p-16">
 
         <!-- Metadata -->
-        <div class="flex flex-col md:flex-row justify-between gap-8 mb-16 pb-12 divider-line">
+        <div class="report-meta flex flex-col md:flex-row justify-between gap-8 mb-16 pb-12 divider-line">
             <div>
                 <div class="flex items-center gap-3 mb-3">
                     <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
@@ -72,8 +136,8 @@
         </div>
 
         <!-- Metric Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
-            <div class="metric-box p-10 rounded-[3rem] text-center">
+        <div class="report-metrics grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
+            <div class="report-tile metric-box p-10 rounded-[3rem] text-center">
                 <h3 class="label-text text-[10px] font-black uppercase tracking-widest mb-8">My Feel-Good Score</h3>
                 <div class="relative inline-flex items-center justify-center">
                     <div class="w-32 h-32 rounded-full border-8 ring-border"></div>
@@ -118,7 +182,7 @@
         </section>
 
         <!-- How your score works -->
-        <section class="mb-16 p-8 info-box rounded-[2.5rem]">
+        <section class="report-tile mb-16 p-8 info-box rounded-[2.5rem]">
             <h3 class="section-title text-xs font-black uppercase tracking-widest mb-4 border-l-4 border-blue-600 pl-5">How Your Score Works</h3>
             <p class="body-text text-sm font-medium leading-relaxed">
                 You answered a few short questions (0–3 each). We added them up in 3 groups: low mood, worries, and pressure.
@@ -131,7 +195,7 @@
 
         <!-- Counselor note -->
         @if($counselorNote)
-            <section class="counselor-box border-2 rounded-[3rem] p-12 relative">
+            <section class="report-tile counselor-box border-2 rounded-[3rem] p-12 relative">
                 <div class="absolute top-0 left-12 -translate-y-1/2 bg-blue-600 px-6 py-2 rounded-full">
                     <p class="text-[9px] font-black uppercase tracking-widest text-white">Note From Your Counselor</p>
                 </div>
@@ -144,7 +208,7 @@
                         <p class="section-title font-bold text-sm">{{ $counselorNote->recommendation }}</p>
                     </div>
                 </div>
-                <div class="flex justify-between items-center text-[9px] font-black uppercase tracking-widest label-text border-t pt-6 divider-line">
+                <div class="report-counselor-meta flex justify-between items-center text-[9px] font-black uppercase tracking-widest label-text border-t pt-6 divider-line">
                     <span>Shared by: School Counselor</span>
                     <span>Shared on: {{ $counselorNote->created_at->format('M d, Y') }}</span>
                 </div>

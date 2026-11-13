@@ -145,9 +145,9 @@
         }
         .msg-input {
             padding: 0.65rem 0.75rem !important;
-            font-size: 0.9rem !important;
+            font-size: 16px !important; /* Prevents auto-zoom on iOS */
             border-radius: 16px !important;
-            min-height: 40px !important;
+            min-height: 44px !important;
             max-height: 100px !important;
             flex: 1 1 auto !important;
             width: 100% !important;

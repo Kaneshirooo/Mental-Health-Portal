@@ -118,19 +118,54 @@
             transform: translateY(-2px);
         }
         @media (max-width: 768px) {
+            .container { padding: 0 0 3rem !important; }
             header.staggered {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 1.25rem !important;
                 margin-bottom: 1.5rem !important;
             }
             header.staggered h1 {
                 font-size: 1.85rem !important;
             }
             header.staggered > div:last-child {
-                width: 100%;
-                justify-content: flex-start;
+                width: 100% !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
             }
-            .modal-glass {
-                padding: 1.75rem 1.25rem !important;
+            header.staggered > div:last-child > div:first-child {
+                text-align: left !important;
+                padding-right: 0 !important;
+                border-right: none !important;
+                border-bottom: 1px solid var(--border) !important;
+                padding-bottom: 0.75rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+            header.staggered button {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            div[id^="appt-card-"] {
+                padding: 1.25rem 1rem !important;
                 border-radius: 20px !important;
+            }
+            .modal-glass,
+            #editApptModal > div,
+            #rescheduleModal > div,
+            #qrModal > div {
+                padding: 1.5rem 1.25rem !important;
+                border-radius: 20px !important;
+                width: 92% !important;
+                max-width: 100% !important;
+                max-height: 90dvh !important;
+                overflow-y: auto !important;
+            }
+            #editApptModal input,
+            #editApptModal select,
+            #editApptModal textarea,
+            #rescheduleModal input {
+                font-size: 16px !important;
+                min-height: 44px !important;
             }
         }
     </style>

@@ -87,6 +87,12 @@
         .form-card {
             padding: 1.25rem 1rem !important;
         }
+        .conflict-popup-box {
+            padding: 1.75rem 1.25rem !important;
+            border-radius: 20px !important;
+            max-height: 90dvh !important;
+            overflow-y: auto !important;
+        }
         .timeline-card {
             padding: 1.25rem 1rem !important;
             flex-direction: column !important;

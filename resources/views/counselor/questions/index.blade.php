@@ -33,8 +33,8 @@
 @endpush
 
 @section('content')
-<div class="container questions-page" style="max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
-    <header style="margin-bottom: 2.5rem;">
+<div class="container questions-page" style="max-width: 1100px; margin: 0 auto; padding-bottom: 3.5rem;">
+    <header style="margin-bottom: 2rem;">
         <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">Pre-Assessment Builder</div>
         <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.25rem; font-weight: 900; color: var(--text); margin: 0;">Check-in Questions</h1>
         <p style="color: var(--text-muted); font-size: 1rem; margin-top: 0.5rem;">Add, edit, or remove the questions students answer. Changes apply to the next check-in immediately.</p>

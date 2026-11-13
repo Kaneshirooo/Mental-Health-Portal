@@ -4,28 +4,35 @@
 <style>
 @media (max-width: 768px) {
     .mindfulness-container {
-        padding: 0.75rem !important;
+        padding: 0 0 3rem !important;
     }
     .mindfulness-title {
-        font-size: 2.25rem !important;
-        margin-bottom: 0.5rem !important;
+        font-size: 2rem !important;
+        margin-bottom: 0.35rem !important;
     }
     .glass-card {
-        padding: 1rem !important;
+        padding: 1.5rem 1.25rem !important;
         border-radius: 20px !important;
         margin-bottom: 1.25rem !important;
     }
     #circle {
-        width: 130px !important;
-        height: 130px !important;
+        width: 140px !important;
+        height: 140px !important;
     }
     #statusLabel {
-        font-size: 1.1rem !important;
+        font-size: 1.2rem !important;
     }
     #instruction {
-        font-size: 0.9rem !important;
-        margin-bottom: 1.25rem !important;
+        font-size: 0.95rem !important;
+        margin-bottom: 1.5rem !important;
         height: auto !important;
+    }
+    #startBtn {
+        width: 100% !important;
+        padding: 1rem 2rem !important;
+    }
+    #groundingField {
+        font-size: 16px !important;
     }
 }
 </style>

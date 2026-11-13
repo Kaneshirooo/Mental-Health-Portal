@@ -65,6 +65,62 @@
             print-color-adjust: exact !important;
         }
     }
+    @media (max-width: 768px) {
+        .result-page {
+            padding: 0 0 3rem !important;
+        }
+        #printableCardArea {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+        }
+        .result-header h1 {
+            font-size: 1.5rem !important;
+        }
+        .result-summary {
+            padding: 1.25rem 1rem !important;
+            border-radius: 18px !important;
+            margin-bottom: 1.5rem !important;
+        }
+        .result-main-grid {
+            gap: 1.5rem !important;
+            margin-bottom: 2rem !important;
+        }
+        .result-actions {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0.5rem !important;
+        }
+        .result-actions > button,
+        .result-actions > a {
+            width: 100% !important;
+            justify-content: center !important;
+            min-height: 44px !important;
+        }
+        .result-ai-head {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.75rem !important;
+        }
+        .result-page .dimension-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.25rem !important;
+        }
+        .result-page .compute-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.25rem !important;
+        }
+        .result-cta {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1rem !important;
+        }
+        .result-cta > a {
+            text-align: center !important;
+        }
+        #printableCardArea > div {
+            margin-bottom: 1.75rem !important;
+        }
+    }
     .score-fill {
         background: var(--primary);
         height: 100%;
@@ -91,9 +147,9 @@
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 850px; padding-top: 1.5rem; padding-bottom: 3rem;">
+<div class="container result-page" style="max-width: 850px; padding-top: 1.5rem; padding-bottom: 3rem;">
     
-    <div style="text-align: center; margin-bottom: 2.5rem;" class="no-print">
+    <div class="result-header no-print" style="text-align: center; margin-bottom: 2.5rem;">
         <div style="font-size: 2.5rem; margin-bottom: 1rem;">✨</div>
         <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Here's How You're Doing</h1>
         <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 400;">We looked at your check-in answers. Here's a simple breakdown of what we see.</p>
@@ -160,7 +216,7 @@
         </div>
 
         {{-- Overall Result summary --}}
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: center; background: {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}0D; border: 1px solid {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}33; border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div class="result-summary" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: center; background: {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}0D; border: 1px solid {{ ($risk_colors[$score->risk_level] ?? '#3b82f6') }}33; border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
             <div>
                 <div style="font-size: 0.68rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.5rem;">Overall Result</div>
                 <div style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }}; line-height: 1.15; margin-bottom: 0.5rem;">
@@ -203,7 +259,7 @@
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; margin-bottom: 3rem;">
+        <div class="result-main-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; margin-bottom: 3rem;">
             <div style="text-align: center;">
                 <div style="width: 140px; height: 140px; border-radius: 50%; border: 8px solid #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto; position: relative;">
                     <div style="font-size: 2.25rem; font-weight: 700; color: {{ $risk_colors[$score->risk_level] ?? '#3b82f6' }}; line-height: 1;">{{ $wellness_index }}</div>
@@ -245,7 +301,7 @@
                 <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem;">All Done — Thank You for Sharing</h2>
                 <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; font-weight: 400;">{{ $recommendations[$score->risk_level] ?? '' }}</p>
                 
-                <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;" class="no-print">
+                <div class="result-actions no-print" style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
                     <button onclick="exportPDF()" id="exportResultBtn" class="btn-sm btn-secondary" style="padding: 0.5rem 1rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;"><i class="ph ph-file-pdf"></i> Export PDF</button>
                     <a href="{{ route('student.reports.index') }}" class="btn-sm btn-secondary" style="padding: 0.5rem 1rem; text-decoration: none; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; color: inherit;">View History</a>
                     @if(in_array(strtolower($score->risk_level), ['high', 'critical']))
@@ -258,7 +314,7 @@
         </div>
 
         <div style="border-top: 1px solid var(--border); padding-top: 2rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div class="result-ai-head" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                 <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.6rem;">
                     <span style="font-size: 1.25rem;">💬</span> What This Means for You
                 </h3>
@@ -282,7 +338,7 @@
 
         <div style="border-top: 1px solid var(--border); padding-top: 2.5rem; margin-top: 2.5rem;">
             <h3 style="font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 1.5rem;">Dimension Breakdown</h3>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+            <div class="dimension-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
                 @php
                     $dimConfigs = [
                         ['id' => 'depression', 'label' => 'Low Mood', 'score' => $score->depression_score, 'info' => $dep_info],
@@ -317,7 +373,7 @@
                 <span style="font-size: 1.25rem;">📊</span> How Your Score Was Made
             </h3>
             <div style="background: var(--surface-2); border-radius: var(--radius); padding: 1.5rem; border: 1px solid var(--border);">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="compute-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                     <div>
                         <h4 style="font-size: 0.75rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.75rem;">Your 3 Check-In Areas</h4>
                         <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem;">
@@ -341,7 +397,7 @@
 
         <div style="margin-top: 3rem; padding: 0;" class="no-print">
             @if($score->risk_level === 'Moderate')
-            <div style="display:flex; align-items:center; gap:1.25rem; padding: 1.5rem 2rem; background: linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(99,102,241,0.06) 100%); border: 1.5px solid rgba(13,148,136,0.2); border-radius: var(--radius); border-left: 5px solid var(--primary);">
+            <div class="result-cta" style="display:flex; align-items:center; gap:1.25rem; padding: 1.5rem 2rem; background: linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(99,102,241,0.06) 100%); border: 1.5px solid rgba(13,148,136,0.2); border-radius: var(--radius); border-left: 5px solid var(--primary);">
                 <div style="font-size:2rem; flex-shrink:0;">💬</div>
                 <div style="flex:1;">
                     <h4 style="font-family:'Outfit',sans-serif; font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:0.25rem;">A Gentle Next Step</h4>
@@ -350,7 +406,7 @@
                 <a href="{{ route('student.appointments') }}" class="btn-primary" style="padding:0.65rem 1.5rem; border-radius:var(--radius-sm); font-size:0.85rem; text-decoration:none; box-shadow:0 4px 12px rgba(13,148,136,0.2); white-space:nowrap; flex-shrink:0;">Book Session →</a>
             </div>
             @else
-            <div style="display:flex; align-items:center; gap:1.25rem; padding: 1.5rem 2rem; background: linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(245,158,11,0.06) 100%); border: 1.5px solid rgba(239,68,68,0.25); border-radius: var(--radius); border-left: 5px solid #dc2626;">
+            <div class="result-cta" style="display:flex; align-items:center; gap:1.25rem; padding: 1.5rem 2rem; background: linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(245,158,11,0.06) 100%); border: 1.5px solid rgba(239,68,68,0.25); border-radius: var(--radius); border-left: 5px solid #dc2626;">
                 <div style="font-size:2rem; flex-shrink:0;">🩺</div>
                 <div style="flex:1;">
                     <h4 style="font-family:'Outfit',sans-serif; font-size:1rem; font-weight:800; color:#dc2626; margin-bottom:0.25rem;">We're Here for You</h4>

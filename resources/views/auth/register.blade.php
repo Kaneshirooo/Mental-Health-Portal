@@ -258,9 +258,18 @@
         .register-form-area { padding: 3.5rem 2.5rem; max-height: none; }
         .input-row { grid-template-columns: 1fr; gap: 1rem; }
     }
+    body {
+        padding-top: calc(1.5rem + var(--safe-top, 0px));
+        padding-right: calc(1rem + var(--safe-right, 0px));
+        padding-bottom: calc(1.5rem + var(--safe-bottom, 0px));
+        padding-left: calc(1rem + var(--safe-left, 0px));
+    }
     @media (max-width: 640px) {
         body { 
-            padding: 0.75rem; 
+            padding-top: calc(0.75rem + var(--safe-top, 0px));
+            padding-right: calc(0.75rem + var(--safe-right, 0px));
+            padding-bottom: calc(0.75rem + var(--safe-bottom, 0px));
+            padding-left: calc(0.75rem + var(--safe-left, 0px));
             align-items: center; 
             justify-content: center;
             min-height: 100vh;
@@ -327,7 +336,7 @@
         .form-title { font-size: 1.9rem; }
         .section-label { margin: 1.75rem 0 1rem; font-size: 0.75rem; }
         .input-group label { font-size: 0.8rem; }
-        input, select { padding: 0.95rem 1.1rem; font-size: 0.95rem; border-radius: 14px; }
+        input, select { padding: 0.95rem 1.1rem; font-size: 16px !important; border-radius: 14px; min-height: 48px !important; }
         .btn-register { padding: 1.1rem; font-size: 1rem; border-radius: 14px; margin-top: 1.5rem; }
     }
 

@@ -12,6 +12,41 @@
     .pagination-wrapper .page-item.active .page-link { background: var(--primary); color: white; border-color: var(--primary); }
     .pagination-wrapper .page-item.disabled .page-link { opacity: 0.5; cursor: not-allowed; }
     @media (max-width: 768px) {
+        .container { padding: 0 0 3rem !important; }
+        header.staggered {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1.25rem !important;
+            margin-bottom: 1.75rem !important;
+        }
+        header.staggered h1 {
+            font-size: 1.85rem !important;
+        }
+        header.staggered > div:last-child {
+            text-align: left !important;
+            padding-right: 0 !important;
+            border-right: none !important;
+            border-top: 1px solid var(--border) !important;
+            padding-top: 0.75rem !important;
+        }
+        .archived-actions {
+            flex-direction: column !important;
+            align-items: stretch !important;
+        }
+        .archived-actions form,
+        .archived-actions a {
+            width: 100% !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+        .archived-actions input {
+            font-size: 16px !important;
+            min-height: 48px !important;
+        }
+        .archived-table-card {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+        }
         table.archived-table thead { display: none; }
         table.archived-table, table.archived-table tbody, table.archived-table tr, table.archived-table td { display: block; width: 100%; box-sizing: border-box; }
         table.archived-table tbody tr.student-row { border: 1px solid var(--border); border-radius: 18px; padding: 1rem; margin-bottom: 0.85rem; }
@@ -22,9 +57,9 @@
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 1320px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
+<div class="container" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
 
-    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 1.5rem;">
+    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.5rem;">
         <div>
             <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
                 <i class="ph-bold ph-archive-box" style="font-size: 1.1rem;"></i> Archived Registry
@@ -38,7 +73,7 @@
         </div>
     </header>
 
-    <div class="staggered" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem; flex-wrap: wrap;">
+    <div class="staggered archived-actions" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem; flex-wrap: wrap;">
         <form method="GET" style="display: flex; flex: 1; min-width: 260px; gap: 0.75rem;">
             <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search archived students..." style="width: 100%; padding: 0.85rem 1.25rem; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 0.92rem; font-weight: 500; outline: none;">
         </form>
@@ -52,7 +87,7 @@
             <p style="color: var(--text-dim); font-size: 0.92rem; font-weight: 500;">Students you archive from Student Records will appear here.</p>
         </div>
     @else
-        <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: var(--shadow-md);">
+        <div class="staggered archived-table-card" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: var(--shadow-md);">
             <div style="overflow-x: auto;">
                 <table class="archived-table" style="width: 100%; border-collapse: separate; border-spacing: 0 0.65rem;">
                     <thead>

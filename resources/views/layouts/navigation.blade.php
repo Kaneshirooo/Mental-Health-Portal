@@ -240,6 +240,26 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<style>
+@media (max-width: 640px) {
+    .signout-modal,
+    .no-counselor-modal-card {
+        padding: 1.75rem 1.25rem !important;
+        border-radius: 24px !important;
+        width: 92% !important;
+    }
+    .signout-modal h3,
+    .no-counselor-modal-card h3 {
+        font-size: 1.35rem !important;
+    }
+    .signout-modal p,
+    .no-counselor-modal-card p {
+        font-size: 0.88rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+}
+</style>
+
 <!-- Sign Out Confirmation Modal -->
 <div id="signOutModal" class="signout-modal-overlay" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.45); backdrop-filter:blur(12px); align-items:center; justify-content:center;">
     <div class="signout-modal staggered" style="background:var(--surface-solid); border:1px solid var(--border); border-radius:32px; padding:3rem; max-width:420px; width:90%; text-align:center; box-shadow:0 30px 60px rgba(0,0,0,0.2);">

@@ -2,6 +2,41 @@
 
 @section('title', 'My Profile — Support Portal')
 
+@push('styles')
+<style>
+@media (max-width: 768px) {
+    .profile-container {
+        padding-bottom: 3rem !important;
+    }
+    .profile-header {
+        padding: 1.5rem 1.25rem !important;
+        border-radius: 20px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    .profile-header > div:first-child {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+    }
+    .glass {
+        padding: 1.5rem 1.15rem !important;
+        border-radius: 20px !important;
+    }
+    form input[type="text"],
+    form input[type="password"],
+    form input[type="email"] {
+        font-size: 16px !important;
+        min-height: 48px !important;
+    }
+    form button[type="submit"] {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+</style>
+@endpush
+
 @section('content')
 <div class="profile-container" style="max-width: 1000px; margin: 0 auto; padding-bottom: 3rem;">
     

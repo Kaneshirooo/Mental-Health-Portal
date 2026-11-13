@@ -72,10 +72,10 @@
 @endpush
 
 @section('content')
-<div class="container notes-page" style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
+<div class="container notes-page" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
     
     <!-- Header -->
-    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem;">
+    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.25rem;">
         <div>
             <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
                 <i class="ph-bold ph-note-pencil" style="font-size: 1.1rem;"></i> Private Messages

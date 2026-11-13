@@ -132,6 +132,32 @@
         .page-header-row > div:last-child {
             text-align: left !important;
         }
+        #ariaInsightCard {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1rem !important;
+            padding: 1.25rem 1rem !important;
+        }
+        .mood-sticky-col {
+            padding: 1.25rem 1rem !important;
+        }
+        .entry-card {
+            padding: 1.25rem 1rem !important;
+        }
+        .entry-header {
+            flex-wrap: wrap !important;
+            gap: 0.5rem !important;
+        }
+        #moodForm textarea,
+        #editNote {
+            font-size: 16px !important;
+        }
+        #editMoodModal > div {
+            padding: 1.5rem 1.15rem !important;
+            border-radius: 20px !important;
+            max-height: 90dvh !important;
+            overflow-y: auto !important;
+        }
     }
 </style>
 @endpush

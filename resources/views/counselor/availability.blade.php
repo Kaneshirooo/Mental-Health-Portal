@@ -228,7 +228,7 @@
 @endpush
 
 @section('content')
-<div class="container availability-page" style="max-width: 1240px; margin: 0 auto; padding-bottom: 4rem;">
+<div class="container availability-page" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
     
     <header class="staggered" style="margin-bottom: 2.5rem;">
         <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">

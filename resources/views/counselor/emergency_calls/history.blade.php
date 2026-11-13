@@ -116,7 +116,7 @@
     .filter-tab.active .count-badge { background: rgba(255,255,255,0.25); }
 
     @media (max-width: 768px) {
-        .container.history-content { padding: 0.5rem 0.6rem 4rem !important; }
+        .container.history-content { padding: 0 0 3rem !important; }
         header { flex-direction: column !important; align-items: stretch !important; }
         header h1 { font-size: 1.6rem !important; }
         header > div:last-child { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.6rem !important; width: 100% !important; }
@@ -135,7 +135,7 @@
 <div class="orb-bg orb-1"></div>
 <div class="orb-bg orb-2"></div>
 
-<div class="container history-content" style="max-width: 1020px; margin: 0 auto; padding: 2rem 1.5rem 5rem;">
+<div class="container history-content" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
 
     {{-- ── Header ─────────────────────────────────────────────────────── --}}
     <header style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">

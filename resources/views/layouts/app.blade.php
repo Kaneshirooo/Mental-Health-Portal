@@ -212,10 +212,21 @@
                 border-radius: 20px !important;
                 margin-bottom: 1.5rem !important;
             }
+            #clinical-toast-container {
+                top: calc(var(--mobile-nav-height, 60px) + var(--safe-top, 0px) + 0.75rem) !important;
+                left: calc(1rem + var(--safe-left, 0px)) !important;
+                right: calc(1rem + var(--safe-right, 0px)) !important;
+            }
+            .clinical-toast {
+                min-width: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
         }
         @media (max-width: 480px) {
             .main-content {
-                padding: calc(60px + var(--safe-top, 0px) + 1rem) calc(0.85rem + var(--safe-right, 0px)) calc(2.5rem + var(--safe-bottom, 0px)) calc(0.85rem + var(--safe-left, 0px)) !important;
+                padding: calc(60px + var(--safe-top, 0px) + 0.85rem) calc(0.85rem + var(--safe-right, 0px)) calc(3rem + var(--safe-bottom, 0px)) calc(0.85rem + var(--safe-left, 0px)) !important;
             }
             .main-content .quick-actions-grid,
             .main-content .stats-grid {

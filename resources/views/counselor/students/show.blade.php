@@ -17,20 +17,86 @@
     }
     .note-date { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.75rem; text-transform: uppercase; }
     @media (max-width: 768px) {
-        .container { padding: 0.5rem 0.6rem 4rem !important; }
+        .container { padding: 0 0 3.5rem !important; }
         header.staggered { flex-direction: column !important; align-items: stretch !important; gap: 1.25rem !important; margin-bottom: 1.5rem !important; }
-        header.staggered h1 { font-size: 1.8rem !important; }
+        header.staggered > div:first-child { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
+        header.staggered h1 { font-size: 1.85rem !important; }
         header.staggered > div:last-child { align-items: stretch !important; width: 100% !important; }
         header.staggered > div:last-child > div:first-child { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.6rem !important; width: 100% !important; }
         header.staggered .btn-secondary { justify-content: center !important; width: 100% !important; min-height: 46px !important; }
         div[style*="grid-template-columns: 1.6fr 1fr"] { grid-template-columns: 1fr !important; gap: 1.25rem !important; margin-bottom: 2rem !important; }
         table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        
+        #aiSummaryBox,
+        div[style*="padding: 3.5rem"],
+        div[style*="padding: 3rem"],
+        div[style*="padding: 2.5rem"] {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+            margin-bottom: 2rem !important;
+        }
+        #timelineContainer {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+            margin-bottom: 2rem !important;
+        }
+        #timelineContainer header,
+        div[style*="margin-bottom: 4rem"] {
+            margin-bottom: 1.5rem !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.75rem !important;
+        }
+        #timelineContainer > div {
+            padding-left: 1.5rem !important;
+        }
+        #timelineContainer .staggered-row > div:first-child {
+            left: -1.35rem !important;
+            width: 10px !important;
+            height: 10px !important;
+        }
+        #timelineContainer .staggered-row > div:last-child {
+            padding: 1.25rem 1rem !important;
+            border-radius: 18px !important;
+        }
+        #timelineContainer div[style*="grid-template-columns: 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+        div[style*="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr))"] {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+        #editStudentModal > div,
+        #archiveConfirmModal > div {
+            padding: 1.5rem 1.25rem !important;
+            border-radius: 20px !important;
+            max-width: 95% !important;
+            width: 95% !important;
+            max-height: 90dvh !important;
+            overflow-y: auto !important;
+        }
+        #editStudentModal input,
+        #editStudentModal select,
+        #editStudentModal textarea {
+            font-size: 16px !important;
+            min-height: 44px !important;
+        }
+        #editStudentForm div[style*="grid-template-columns: 1fr 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+        }
+        #editStudentForm > div:last-child {
+            flex-direction: column !important;
+        }
+        #editStudentForm > div:last-child > button {
+            width: 100% !important;
+        }
     }
 </style>
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
+<div class="container" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
     
     <!-- Profile Header -->
     <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem;">

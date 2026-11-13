@@ -54,20 +54,71 @@
         letter-spacing: 0.05em;
         border: 1px solid var(--border);
     }
+
+    @media (max-width: 768px) {
+        .container { padding: 0 0 3rem !important; }
+        header.staggered {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1.25rem !important;
+            margin-bottom: 2rem !important;
+        }
+        header.staggered h1 {
+            font-size: 1.85rem !important;
+        }
+        header.staggered > div:last-child {
+            text-align: left !important;
+            padding-right: 0 !important;
+            border-right: none !important;
+            border-top: 1px solid var(--border) !important;
+            padding-top: 0.75rem !important;
+        }
+        .ledger-filter-card {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+            margin-bottom: 1.5rem !important;
+        }
+        #ledgerFilterForm {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 0.75rem !important;
+        }
+        #ledgerFilterForm > div {
+            width: 100% !important;
+            min-width: 0 !important;
+        }
+        #searchBox, #roleSelect {
+            width: 100% !important;
+            font-size: 16px !important;
+            min-height: 48px !important;
+        }
+        #ledgerFilterForm a {
+            width: 100% !important;
+            justify-content: center !important;
+            text-align: center !important;
+            min-height: 44px !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        .ledger-table-card {
+            padding: 1.25rem 1rem !important;
+            border-radius: 20px !important;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="container" style="max-width: 1320px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
+<div class="container" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
     
     <!-- Ledger Header -->
-    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem;">
+    <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.5rem;">
         <div>
             <div style="font-weight: 800; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
                 <i class="ph-bold ph-receipt" style="font-size: 1.1rem;"></i> Activity Audit
             </div>
-            <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Institutional Ledger</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500; margin-top: 0.5rem;">Historical journal of institutional interactions and clinical session logs.</p>
+            <h1 style="font-family: 'Outfit', sans-serif; font-size: clamp(1.85rem, 3.5vw, 2.75rem); font-weight: 900; color: var(--text); letter-spacing: -0.04em; margin: 0;">Institutional Ledger</h1>
+            <p style="color: var(--text-muted); font-size: 1.05rem; font-weight: 500; margin-top: 0.5rem;">Historical journal of institutional interactions and clinical session logs.</p>
         </div>
         <div style="text-align: right; padding-right: 1.5rem; border-right: 1px solid var(--border);">
             <div style="font-size: 1.65rem; font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif;">{{ count($logs) }}</div>
@@ -76,7 +127,7 @@
     </header>
 
     <!-- Filters -->
-    <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 1.5rem 1.75rem; margin-bottom: 2.5rem; box-shadow: var(--shadow-sm);">
+    <div class="staggered ledger-filter-card" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 28px; padding: 1.5rem 1.75rem; margin-bottom: 2.5rem; box-shadow: var(--shadow-sm);">
         <form id="ledgerFilterForm" style="display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap;" onsubmit="return false;">
             <div style="flex: 1; min-width: 280px; position: relative;">
                 <i class="ph-bold ph-magnifying-glass" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem;"></i>
@@ -101,7 +152,7 @@
     </div>
 
     <!-- Ledger Table -->
-    <div class="staggered" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: var(--shadow-md);">
+    <div class="staggered ledger-table-card" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: var(--shadow-md);">
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: separate; border-spacing: 0 0.65rem;">
                 <thead>

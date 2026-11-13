@@ -58,6 +58,24 @@
         .notes-sticky {
             padding: 1.25rem 1rem !important;
         }
+        #noteForm textarea,
+        .reply-form input {
+            font-size: 16px !important;
+        }
+        #noteForm textarea {
+            min-height: 160px !important;
+        }
+        .history-card {
+            padding: 1.25rem 1rem !important;
+            border-radius: 18px !important;
+        }
+        .history-card > div[style*="justify-content: space-between"] {
+            flex-wrap: wrap !important;
+            gap: 0.5rem !important;
+        }
+        .history-card > div[style*="max-width: 90%"] {
+            max-width: 100% !important;
+        }
     }
     </style>
 
