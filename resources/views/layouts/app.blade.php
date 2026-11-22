@@ -558,6 +558,131 @@
         }
     </script>
 
+    <!--
+      No-reload pagination
+      ─────────────────────
+      Any pagination link (Laravel ->links() or components.simple-pager) inside an
+      element marked with [data-pager-region] is fetched with fetch() instead of
+      causing a full page reload. Only that region's HTML is swapped; the URL is
+      updated via history.pushState so Back/Forward still work.
+
+      Pages can hook post-swap work with:
+          document.addEventListener('pager:swapped', (e) => {
+              // e.detail = { key, url, region }
+          });
+
+      Any failure (network error, session expired, missing region in response)
+      falls back to a normal full-page navigation, so nothing can get stuck.
+    -->
+    <script>
+        (function () {
+            // Matches "page", "notes_page", "messages_page", ... any paginator param
+            const isPageKey = (k) => k === 'page' || k.endsWith('_page');
+
+            const regionSelector = (key) =>
+                '[data-pager-region="' + String(key).replace(/["\\]/g, '\\$&') + '"]';
+
+            async function swapRegion(key, url, push) {
+                const current = document.querySelector(regionSelector(key));
+                if (!current) { window.location.href = url.href; return; }
+
+                // Dim the region while loading so the click feels responsive
+                current.style.transition = 'opacity 0.15s ease';
+                current.style.opacity = '0.45';
+                current.style.pointerEvents = 'none';
+
+                let html;
+                try {
+                    const res = await fetch(url.href, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/html' }
+                    });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    html = await res.text();
+                } catch (err) {
+                    current.style.opacity = '';
+                    current.style.pointerEvents = '';
+                    window.location.href = url.href; // graceful full-load fallback
+                    return;
+                }
+
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const next = doc.querySelector(regionSelector(key));
+                if (!next) {
+                    // Response had no such region (e.g. redirected to login)
+                    window.location.href = url.href;
+                    return;
+                }
+
+                current.replaceWith(next);
+
+                // Fade the new content in
+                next.style.transition = 'opacity 0.15s ease';
+                next.style.opacity = '0.45';
+                requestAnimationFrame(() => { next.style.opacity = '1'; });
+                setTimeout(() => {
+                    next.style.transition = '';
+                    next.style.opacity = '';
+                    next.style.pointerEvents = '';
+                }, 250);
+
+                // Re-run any <script> tags that were inside the swapped region
+                // (most pages keep scripts in @push('scripts'), but just in case)
+                next.querySelectorAll('script').forEach((old) => {
+                    const s = document.createElement('script');
+                    Array.from(old.attributes).forEach((a) => s.setAttribute(a.name, a.value));
+                    s.textContent = old.textContent;
+                    old.replaceWith(s);
+                });
+
+                // Keep the browser URL (and history) in sync
+                if (push) {
+                    if (!history.state || !history.state.pagerKey) {
+                        history.replaceState({ pagerKey: key, pagerUrl: location.href }, '');
+                    }
+                    history.pushState({ pagerKey: key, pagerUrl: url.href }, '', url.href);
+                }
+
+                // Let page scripts re-bind or re-animate if they need to
+                document.dispatchEvent(new CustomEvent('pager:swapped', {
+                    detail: { key: key, url: url.href, region: next }
+                }));
+
+                // Bring the swapped region into view if the user can't see it
+                const rect = next.getBoundingClientRect();
+                if (rect.top < 8 || rect.bottom > window.innerHeight) {
+                    next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            // Intercept pagination link clicks inside marked regions
+            document.addEventListener('click', function (e) {
+                if (e.defaultPrevented || e.button !== 0 ||
+                    e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+                const a = e.target.closest('a[href]');
+                if (!a || a.target === '_blank' || a.hasAttribute('download') ||
+                    a.hasAttribute('data-no-swap')) return;
+                if (a.host !== location.host) return;
+
+                const region = a.closest('[data-pager-region]');
+                if (!region) return;
+
+                const url = new URL(a.href, location.href);
+                if (!Array.from(url.searchParams.keys()).some(isPageKey)) return;
+
+                e.preventDefault();
+                swapRegion(region.getAttribute('data-pager-region'), url, true);
+            });
+
+            // Browser Back / Forward between paged states
+            window.addEventListener('popstate', function (ev) {
+                const key = ev.state && ev.state.pagerKey;
+                if (!key) return;
+                swapRegion(key, new URL(location.href), false);
+            });
+        })();
+    </script>
+
     @stack('scripts')
 </body>
 

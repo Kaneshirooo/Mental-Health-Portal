@@ -486,7 +486,7 @@
     </div>
 
     <!-- ── Triage Priority Queue ── -->
-    <div class="clinical-control-panel staggered" style="margin-bottom: 4rem;">
+    <div class="clinical-control-panel staggered" data-pager-region="dash-priority" style="margin-bottom: 4rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem;">
             <div style="display:flex; align-items:center; gap:1rem;">
                 <div class="section-header-line"></div>
@@ -609,7 +609,7 @@
     </div>
 
     <!-- ── Interaction Network ── -->
-    <div class="staggered">
+    <div class="staggered" data-pager-region="dash-notes">
         <div class="section-label">
             <i class="ph-bold ph-chat-centered-dots" style="color:var(--clinical-amber);"></i>
             Interaction Network

@@ -235,7 +235,7 @@
         </div>
     </header>
 
-    <div class="clinical-control-panel staggered">
+    <div class="clinical-control-panel staggered" data-pager-region="call-logs">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem; flex-wrap: wrap; gap: 1rem;">
             <div style="display:flex; align-items:center; gap:1rem;">
                 <div style="width: 4px; height: 28px; border-radius: 4px; background: linear-gradient(to bottom, #10b981, #6366f1); flex-shrink: 0;"></div>

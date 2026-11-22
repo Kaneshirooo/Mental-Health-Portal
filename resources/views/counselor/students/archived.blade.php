@@ -87,7 +87,7 @@
             <p style="color: var(--text-dim); font-size: 0.92rem; font-weight: 500;">Students you archive from Student Records will appear here.</p>
         </div>
     @else
-        <div class="staggered archived-table-card" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: var(--shadow-md);">
+        <div class="staggered archived-table-card" data-pager-region="archived" style="background: var(--surface-solid); border: 1px solid var(--border); border-radius: 32px; padding: 2.5rem; box-shadow: var(--shadow-md);">
             <div style="overflow-x: auto;">
                 <table class="archived-table" style="width: 100%; border-collapse: separate; border-spacing: 0 0.65rem;">
                     <thead>

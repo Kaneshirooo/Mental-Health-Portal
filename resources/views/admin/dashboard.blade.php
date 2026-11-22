@@ -214,7 +214,7 @@
 
     <div class="admin-main-grid staggered">
         <!-- Priority Oversight -->
-        <div class="ai-system-pulse-container">
+        <div class="ai-system-pulse-container" data-pager-region="admin-priority">
             <div class="pulse-ring"></div>
             <div class="pulse-ring" style="animation-delay: 2s;"></div>
             
@@ -282,7 +282,7 @@
     </div>
 
     <!-- Student Voice Feed -->
-    <div class="staggered" style="margin-top: 4rem;">
+    <div class="staggered" data-pager-region="admin-notes" style="margin-top: 4rem;">
         <header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
                 <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 900; color: var(--text); margin: 0; letter-spacing: -0.04em;">Student Voice</h2>
