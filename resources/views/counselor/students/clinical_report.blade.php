@@ -22,21 +22,92 @@
 
         .header {
             text-align: center;
-            border-bottom: 2px solid var(--primary-black);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            border-bottom: 2px solid #0f2c59;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
+        .lh-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .lh-logo-left, .lh-logo-right {
+            flex-shrink: 0;
+        }
+
+        .lh-logo-left img {
+            width: 76px;
+            height: 76px;
+            object-fit: contain;
+        }
+
+        .lh-logo-right img {
+            width: 80px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .lh-center-text {
+            flex: 1;
+            text-align: center;
+            line-height: 1.25;
+        }
+
+        .lh-republic {
+            font-size: 11px;
+            font-style: italic;
+            color: #334155;
+        }
+
+        .lh-univ {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0f2c59;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
+            margin: 2px 0;
         }
 
-        .header p {
-            margin: 5px 0 0;
-            font-size: 14px;
+        .lh-campus {
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .lh-links {
+            font-size: 9px;
+            color: #0284c7;
+            margin-top: 3px;
+            font-family: Arial, sans-serif;
+        }
+
+        .lh-divider {
+            height: 3px;
+            background: linear-gradient(90deg, #0f2c59 0%, #d97706 50%, #0f2c59 100%);
+            margin-top: 10px;
+            border: none;
+        }
+
+        .doc-title-box {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .doc-title-box h1 {
+            margin: 0;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #0f172a;
+        }
+
+        .doc-title-box p {
+            margin: 4px 0 0;
+            font-size: 13px;
             color: var(--secondary-gray);
         }
 
@@ -165,8 +236,27 @@
     <div class="confidential-stamp">Strictly Confidential</div>
 
     <div class="header">
-        <h1>PSU Mental Health Portal</h1>
-        <p>Student Support Summary & Wellness History</p>
+        <div class="lh-container">
+            <div class="lh-logo-left">
+                <img src="{{ asset('images/letterhead/image3.png') }}" alt="PSU Seal">
+            </div>
+            <div class="lh-center-text">
+                <div class="lh-republic">Republic of the Philippines</div>
+                <div class="lh-univ">Pangasinan State University</div>
+                <div class="lh-campus">Lingayen, Pangasinan</div>
+                <div class="lh-links">
+                    <span>www.psu.edu.ph</span> • <span>president@psu.edu.ph</span> • <span>www.facebook.com/PSUroars</span>
+                </div>
+            </div>
+            <div class="lh-logo-right">
+                <img src="{{ asset('images/letterhead/image6.png') }}" alt="Bagong Pilipinas">
+            </div>
+        </div>
+        <div class="lh-divider"></div>
+        <div class="doc-title-box">
+            <h1>Student Support Summary & Wellness History</h1>
+            <p>PSU Mental Health & Wellness Portal • Confidential Clinical Record</p>
+        </div>
     </div>
 
     <div class="section">
@@ -237,7 +327,12 @@
     </div>
 
     <div class="footer">
-        This document contains sensitive psychiatric and wellness data. Unauthorized disclosure is a violation of the Data Privacy Act of 2012 (RA 10173).
+        <div style="margin-bottom: 12px; border-bottom: 2px solid #0f2c59; padding-bottom: 8px;">
+            <img src="{{ asset('images/letterhead/image7.png') }}" alt="PSU Accreditation Badges" style="max-width: 100%; height: auto; max-height: 28px; display: block; margin: 0 auto;">
+        </div>
+        <div>
+            This document contains sensitive psychiatric and wellness data. Unauthorized disclosure is a violation of the Data Privacy Act of 2012 (RA 10173).
+        </div>
     </div>
 
     <script>

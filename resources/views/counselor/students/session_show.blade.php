@@ -24,6 +24,8 @@
         </div>
     </header>
 
+    @include('partials.print-letterhead')
+
     <article style="background: var(--surface-solid); border: 2px solid var(--border); border-radius: 40px; padding: 4rem; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;">
         <!-- Status Badge -->
         <div class="session-badge-wrap" style="position: absolute; top: 0; right: 0; padding: 2rem;">
@@ -97,6 +99,8 @@
                 Support Chat Summary
             </div>
         </footer>
+
+        @include('partials.print-footer')
     </article>
 </div>
 
@@ -163,8 +167,17 @@
     }
 }
 @media print {
-    .btn-secondary, header { display: none !important; }
-    article { border: 1px solid #ddd !important; box-shadow: none !important; padding: 2rem !important; }
+    @page {
+        size: A4 portrait;
+        margin: 15mm;
+    }
+    html, body {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    .btn-secondary, header.no-print, .sidebar { display: none !important; }
+    .main-content { margin-left: 0 !important; padding: 0 !important; width: 100% !important; }
+    article { border: 1px solid #cbd5e1 !important; box-shadow: none !important; padding: 2rem !important; border-radius: 16px !important; }
     .container { max-width: 100% !important; padding: 0 !important; }
 }
 </style>

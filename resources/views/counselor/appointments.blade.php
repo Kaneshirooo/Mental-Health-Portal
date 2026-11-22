@@ -168,11 +168,46 @@
                 min-height: 44px !important;
             }
         }
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 15mm;
+            }
+            html, body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .sidebar, header.staggered button, #emergencyBtn, .modal-overlay, #qrModal, #editApptModal, #rescheduleModal, footer.footer, .no-print {
+                display: none !important;
+            }
+            header.staggered {
+                margin-bottom: 1rem !important;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            div[id^="appt-card-"] button,
+            #sessionArchiveTable button {
+                display: none !important;
+            }
+            #sessionArchiveTable, div[id^="appt-card-"] {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                page-break-inside: avoid;
+            }
+        }
     </style>
 @endpush
 
 @section('content')
     <div class="container" style="max-width: var(--container-max, 1320px); margin: 0 auto; padding-bottom: 3.5rem;">
+        @include('partials.print-letterhead')
 
         <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.5rem;">
             <div>
@@ -468,6 +503,7 @@
             </div>
         </div>
     </div>
+    @include('partials.print-footer')
     </div>
 
     <footer class="footer">

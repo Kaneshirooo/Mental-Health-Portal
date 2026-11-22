@@ -2,6 +2,8 @@
 
 @section('content')
 <div class="container" style="max-width: var(--container-max, 900px); margin: 0 auto; padding-bottom: 3.5rem;">
+    @include('partials.print-letterhead')
+
     <header class="no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <a href="{{ route('counselor.students.show', $student->user_id) }}" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text-dim); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">
             <i class="ph ph-arrow-left"></i> Back to Student Profile
@@ -53,6 +55,8 @@
         </div>
     @endforelse
 
+    @include('partials.print-footer')
+
     <footer class="footer no-print">
         <p>© {{ date('Y') }} PSU Mental Health Portal</p>
     </footer>
@@ -79,8 +83,24 @@
     }
 }
 @media print {
+    @page {
+        size: A4 portrait;
+        margin: 15mm 15mm 15mm 15mm;
+    }
+    html, body {
+        background: #fff !important;
+        color: #000 !important;
+    }
     .no-print, .sidebar { display: none !important; }
-    .main-content { margin-left: 0 !important; }
+    .main-content { margin-left: 0 !important; padding: 0 !important; width: 100% !important; }
+    .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+    div[style*="border-radius: 28px"],
+    div[style*="border-radius: 24px"] {
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        page-break-inside: avoid;
+    }
 }
 </style>
 @endsection

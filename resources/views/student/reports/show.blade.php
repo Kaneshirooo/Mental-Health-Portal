@@ -61,6 +61,41 @@
             gap: 0.4rem !important;
         }
     }
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 15mm;
+        }
+        html, body {
+            background: #fff !important;
+            color: #000 !important;
+        }
+        .sidebar, .no-print, header.report-actions {
+            display: none !important;
+        }
+        .main-content {
+            margin-left: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+        .report-page {
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .report-card {
+            background: #fff !important;
+            box-shadow: none !important;
+            border: 1px solid #cbd5e1 !important;
+            padding: 2rem !important;
+            border-radius: 16px !important;
+            color: #000 !important;
+        }
+        .report-tile {
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+    }
 </style>
 @endpush
 
@@ -105,6 +140,8 @@
             @endif
         </div>
     </header>
+
+    @include('partials.print-letterhead')
 
     <article class="report-card glass-card p-12 md:p-16">
 
@@ -218,6 +255,8 @@
                 <p class="label-text font-bold uppercase tracking-widest text-[10px]">Your counselor hasn't added a note yet — check back soon</p>
             </section>
         @endif
+
+        @include('partials.print-footer')
     </article>
 
     <footer class="mt-12 text-center no-print">

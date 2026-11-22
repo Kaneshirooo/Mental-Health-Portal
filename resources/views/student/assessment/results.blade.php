@@ -160,10 +160,22 @@
 
         {{-- Score-only sheet: hidden on screen, but the ONLY thing in a print or PDF --}}
         <div id="scoreOnly" class="score-only" style="display:none; background:#ffffff; color:#0f172a;">
-            <div style="border-bottom: 3px solid #0f766e; padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
-                <div style="font-size: 0.62rem; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.16em;">Pangasinan State University</div>
-                <div style="font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 800; color: #0f172a;">Student Mental Health &amp; Wellness Center</div>
-                <div style="font-size: 0.75rem; color: #475569; font-weight: 600;">Assessment Score Report</div>
+            <div style="border-bottom: 3px solid #0f2c59; padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 10px;">
+                    <img src="{{ asset('images/letterhead/image3.png') }}" alt="PSU Seal" style="width: 65px; height: 65px; object-fit: contain;">
+                    <div style="text-align: center; flex: 1; font-family: 'Times New Roman', Times, serif; line-height: 1.2;">
+                        <div style="font-size: 0.75rem; font-style: italic; color: #334155;">Republic of the Philippines</div>
+                        <div style="font-size: 1.15rem; font-weight: 800; color: #0f2c59; text-transform: uppercase; letter-spacing: 0.05em; margin: 2px 0;">Pangasinan State University</div>
+                        <div style="font-size: 0.8rem; font-weight: 600; color: #334155;">Lingayen, Pangasinan</div>
+                        <div style="font-size: 0.65rem; color: #0284c7; font-family: Arial, sans-serif; margin-top: 2px;">www.psu.edu.ph • president@psu.edu.ph • www.facebook.com/PSUroars</div>
+                    </div>
+                    <img src="{{ asset('images/letterhead/image6.png') }}" alt="Bagong Pilipinas" style="width: 70px; height: auto; object-fit: contain;">
+                </div>
+                <div style="height: 2px; background: linear-gradient(90deg, #0f2c59 0%, #d97706 50%, #0f2c59 100%); margin-bottom: 8px;"></div>
+                <div style="text-align: center;">
+                    <div style="font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.08em;">Student Mental Health &amp; Wellness Center</div>
+                    <div style="font-size: 0.75rem; color: #475569; font-weight: 600;">Check-in Assessment Score Report</div>
+                </div>
             </div>
 
             <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: 0.75rem; color: #334155; font-weight: 600; margin-bottom: 1.5rem;">
@@ -210,8 +222,11 @@
                 </tbody>
             </table>
 
-            <div style="font-size: 0.6rem; color: #94a3b8; font-weight: 600; margin-top: 1.25rem; border-top: 1px solid #e2e8f0; padding-top: 0.6rem;">
-                Generated {{ now()->format('F d, Y \a\t g:i A') }} • Pangasinan State University — Student Mental Health &amp; Wellness Center
+            <div style="margin-top: 1.5rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
+                <img src="{{ asset('images/letterhead/image7.png') }}" alt="PSU Accreditation Badges" style="max-width: 100%; height: auto; max-height: 24px; display: block; margin: 0 auto 0.5rem;">
+                <div style="font-size: 0.6rem; color: #94a3b8; font-weight: 600; text-align: center;">
+                    Generated {{ now()->format('F d, Y \a\t g:i A') }} • Pangasinan State University — Student Mental Health &amp; Wellness Center
+                </div>
             </div>
         </div>
 

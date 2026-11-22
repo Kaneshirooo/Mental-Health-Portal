@@ -1,0 +1,314 @@
+﻿USER MANUAL
+ORALTRACK: AN INTEGRATED DENTAL
+CLINIC MANAGEMENT SYSTEM
+Part 1: How to 
+Register 
+Accounts for 
+Patient and Clinic
+Step 1: 
+Go to your web browser, navigate to the system URL, and 
+click Sign in
+             
+Step 2:
+ 
+After clicking 
+Sign In
+, enter the required login credentials. For 
+patients
+, provide your registered 
+Email Address
+ and 
+Password
+. For 
+clinics
+, click 
+Continue with 
+Google
+ to sign in using your registered Google account.
+A
+: 
+This section provides a step-by-step guide on how 
+P
+atients can navigate and use the different features and functionalities available on the Patient Dashboard.
+Step 
+1
+:
+ 
+Review the dashboard to view your account information, available dental services, and upcoming appointments. Navigate through the different sections, such as Home, Appointments, Records, and Profile.
+B
+: 
+Patient Portal
+(
+How to 
+Book an Appointment
+)
+Step 
+1
+:
+ 
+Select the dental clinic where you want to schedule an appointment.
+Step 
+2
+:
+ 
+After selecting your preferred dental clinic, click Book an Appointment to proceed with scheduling your visit.
+Step 
+3
+: 
+Select your preferred dental procedure first, then choose your desired appointment date.
+Step 
+4
+:
+ 
+Select your preferred appointment date and available time slot.
+Step 5: 
+Choose the reason for your dental visit. If applicable, provide additional information about your concern
+.
+Step 
+6
+: 
+Review the appointment details to ensure that all information is correct, then click Submit to send your appointment request.
+Note
+: 
+Wait for the clinic to review and approve your appointment request. Check your appointment status to see whether it is Pending, Approved, or Completed.
+ 
+C
+: 
+How to View and Manage Patient Prescriptions
+Step 
+1
+:
+ 
+View the list of prescriptions issued by your dentist, then click View to see the complete prescription details.
+Step 
+2
+:
+ 
+View the list of prescriptions issued by your dentist.
+D
+: 
+Managing 
+Patient Profile
+Step 1: 
+Ensure that your account details, including your email address, contact number, and home address, are accurate and updated, and keep your login credentials secure.
+Step 2:
+ 
+Open the Notifications section to review unread messages, click each notification to view its details, and regularly check for updates about your dental appointments and clinic activities.
+Part 2
+: 
+Clinic Portal
+Step 
+1
+:
+ 
+Click Continue with Google to proceed
+ 
+with registering your clinic.
+Step 
+2
+:
+ 
+Enter the required clinic information, including the clinic name, email address, phone number, complete address, and number of dentists. Set your clinic&apos;s exact location by selecting the appropriate location on the map.
+Step 
+3
+:
+ 
+Upload the required verification documents, including the Business Permit, Clinic Registration Certificate, and Dentist License.
+Note: Make sure that the uploaded files follow the accepted formats: PDF, JPG, JPEG, or PNG.
+Step 
+4
+:
+ 
+Enter the contact person&apos;s required information, including their full name, phone number, email address, and password, then confirm the password.
+Note: The email address provided will serve as the clinic administrator&apos;s login account.
+Step 
+5
+:
+ 
+Select the Freemium Plan and review its available features and inclusions.
+Step 
+6
+:
+ 
+Wait for clinic verification.
+Note: 
+The System Owner must verify the clinic registration before the clinic can proceed with the applicable account activation and subscription features.
+A
+: 
+Clinic Dashboard
+Step 
+1
+:
+ 
+After logging in, review the clinic dashboard.
+ 
+Review the dashboard for appointments, patient records, billing, daily schedules, and pending activities.
+B
+: 
+Clinic Dashboard
+Step 1:
+ From the clinic dashboard, navigate to the Patients or patient management section.
+Step 
+2
+:
+ 
+Search for the patient using the search function, then select their name to view their profile.
+Step 
+3
+:
+ Review the patient&apos;s personal information, medical history, dental history, and previous treatments.
+C
+: 
+Managing Appointments
+Step 1:
+ Nav
+igate to the Appointments section.
+Step 
+2
+:
+ 
+Select an appointment to view its details.
+Step 
+3
+:
+ 
+Check the patient&apos;s information, requested date, time, dentist, and reason for consultation.
+Step 
+4
+:
+ 
+Approve
+ 
+or manage the appointment request according to the clinic&apos;s schedule.
+D
+: 
+Managing Dental Charts and Treatments
+ 
+Step 
+1
+:
+ 
+Navigate to the patient&apos;s record.
+Step 
+2
+:
+ 
+Open the Dental Chart or 
+Odontogram
+ section and select the appropriate tooth or tooth surface to record.
+Step 
+3
+:
+ 
+Enter the corresponding dental condition or notation.
+Step 
+4
+:
+ 
+Review the patient&apos;s dental chart and treatment history to ensure accuracy, then save the updates. 
+Notes: You may also print the dental records as a PDF.
+E
+: 
+Managing Dental Referrals
+(
+Patient Portal
+)
+Step 
+1
+:
+ 
+From the Patient Dashboard, open the Referrals section and click Create Referral. Navigate through the patient list, select the patient&apos;s dental condition, choose a registered clinic, and search for the preferred specialist to handle the procedure.
+Step 
+2
+:
+ 
+Open the Referrals section, select a referral to review its details, including the reason for referral, recommended dental procedure, receiving clinic information, and current referral status.
+Step 
+3
+:
+ 
+Open the referral details to view the receiving clinic&apos;s information, available dentists, and appointment schedules. Select an available schedule if booking is enabled, then follow the clinic&apos;s instructions for your consultation.
+ 
+You can also print the referral for documentation.
+F
+: 
+Managing Billing and Payments
+Step 
+1
+:
+ 
+Open the Billing section and select the patient whose transaction needs to be recorded.
+Step 
+2
+:
+ 
+Create or review the patient&apos;s invoice, enter the corresponding dental service charges, and check the total amount and any outstanding balance.
+Step 
+3
+:
+ 
+Review the total amount and any existing balance, record the payment received by the clinic, and save the transaction to generate the invoice or receipt. You may also print a copy for documentation.
+G
+: 
+Managing Billing and Payments
+Step 
+1
+: From the Patient Dashboard, open the Dental Services section to browse the services offered by registered clinics and select a service to view its details.
+Step 
+2
+: 
+You can add a new dental service by filling in the required information, including the Service Name, Category, Estimated Duration, Description, and Fee.
+H
+: 
+Viewing Subscription Details
+Step 
+1
+: 
+From the Clinic Dashboard, open the Subscription section to view your current plan, subscription status, included features, start date, and expiration date, if applicable.
+Step 
+2
+: 
+You can pay for your subscription by scanning the available QR code and completing the payment.
+I
+: 
+Accessing the Chatbot
+Step 
+1
+: 
+Click the Chatbot icon at the bottom corner of the website to open the conversation window, then wait for the welcome message to appear.
+OralTrack
+:
+ 
+M
+obile 
+A
+pp
+(
+Patient
+View
+)
+Step 1: 
+Open your web browser, navigate to the system URL, and click Sign In. Choose whether to log in as a Patient or Clinic.
+Step 
+2
+: 
+How to Book an Appointment Using the OralTrack Mobile App
+Step 
+3
+: 
+Y
+ou can submit an appointment request to your preferred dental clinic through the OralTrack mobile app.
+Step 
+4
+: 
+You can also add and record payments for your billing transactions through the OralTrack mobile app.
+Step 
+5
+: 
+You can also view your clinic&apos;s subscription plan and make subscription payments through the 
+OralTrack
+ mobile app using the available QR code.
+Step 
+6
+: 
+You can use the chatbot in the OralTrack mobile app to ask questions and get assistance with basic inquiries about the system.

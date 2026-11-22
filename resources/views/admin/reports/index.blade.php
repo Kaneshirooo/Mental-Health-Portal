@@ -585,11 +585,40 @@
             max-height: 55dvh !important;
         }
     }
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 12mm;
+        }
+        html, body {
+            background: #fff !important;
+            color: #000 !important;
+        }
+        .sidebar, header.staggered > div:last-child, #analyticsFilterForm, #refreshOverlay, .refresh-bar, #kpiDrawer, #kpiDrawerBackdrop, #riskDrillDownModal, .no-print {
+            display: none !important;
+        }
+        .main-content {
+            margin-left: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+        .reports-container {
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .kpi-card-v2, .chart-card {
+            box-shadow: none !important;
+            border: 1px solid #cbd5e1 !important;
+            page-break-inside: avoid;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
 <div class="reports-container">
+    @include('partials.print-letterhead')
     
     <!-- Page Header -->
     <header class="staggered" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.25rem; flex-wrap: wrap; gap: 1.5rem;">
@@ -1289,6 +1318,7 @@
             <!-- Dynamic Content -->
         </div>
     </div>
+    @include('partials.print-footer')
 </div>
 
 <!-- ═══ KPI Detail Drawer ═══ -->

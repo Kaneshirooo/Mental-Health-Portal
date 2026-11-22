@@ -32,6 +32,8 @@
         </div>
     </header>
 
+    @include('partials.print-letterhead')
+
     <article class="report-card glass-card p-16 relative overflow-hidden">
         <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-600/5 blur-[100px] rounded-full -mr-20 -mt-20"></div>
         
@@ -113,6 +115,8 @@
             <span>My Personal Check-In</span>
             <span>Suggested next chat: {{ ($session->ai_report['follow_up_needed'] ?? false) ? 'YES — soon' : 'Whenever you like' }}</span>
         </div>
+
+        @include('partials.print-footer')
     </article>
 
     <footer class="mt-12 text-center no-print">
@@ -196,9 +200,15 @@
     }
 }
 @media print {
+    @page {
+        size: A4 portrait;
+        margin: 15mm;
+    }
     body { background: white !important; color: black !important; }
-    .glass-card { background: white !important; box-shadow: none !important; border: 1px solid #eee !important; color: black !important; }
-    .no-print { display: none !important; }
+    .sidebar, .no-print, header.report-actions { display: none !important; }
+    .main-content { margin-left: 0 !important; padding: 0 !important; width: 100% !important; }
+    .report-page { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+    .glass-card { background: white !important; box-shadow: none !important; border: 1px solid #eee !important; color: black !important; padding: 1.5rem !important; border-radius: 16px !important; }
     .text-gray-500, .text-gray-600 { color: #555 !important; }
     .text-white { color: black !important; }
     .bg-white\/\[0\.02\] { background: #f9f9f9 !important; }
