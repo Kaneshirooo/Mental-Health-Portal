@@ -162,21 +162,34 @@ class AssessmentController extends Controller
                 'hasAiAnalysis' => true,
             ]);
 
-            if ($request->ajax()) {
+            if ($request->ajax() || $request->expectsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Assessment completed successfully.',
+                    'score_id' => $score->score_id,
                     'redirect_url' => route('student.assessment.results', $score->score_id)
                 ]);
             }
 
             return redirect()->route('student.assessment.results', $score->score_id);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
             $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment store failed', [
                 'error' => $e->getMessage(),
             ]);
+
+            // Never let an AJAX submit fall back to `back()`: the browser would
+            // follow it and land on the pre-assessment form again, looking like
+            // a successful submit that did nothing. Report the real failure so
+            // the page can show it.
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to save your assessment. Please try again.',
+                ], 500);
+            }
+
             return back()->with('error', 'Failed to save your assessment. Please check your answers and try again.');
         }
     }

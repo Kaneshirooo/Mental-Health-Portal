@@ -563,44 +563,56 @@ function doSubmit() {
     const form = document.getElementById('assessmentForm');
     const fd   = new FormData(form);
 
-    fetch(form.action, {
-        method: 'POST',
-        body: fd,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
-    })
-    .then(r => {
-        // If server redirects (non-JSON), treat as success
-        const ct = r.headers.get('content-type') || '';
-        if (!ct.includes('application/json')) {
-            App.toast({ type: 'success', title: 'Submitted', message: 'Assessment completed!' });
-            closeConfirmModal();
-            setTimeout(() => { window.location.href = r.url || '{{ route("student.dashboard") }}'; }, 600);
-            return;
-        }
-        return r.json().then(data => {
-            if (data.success) {
-                App.toast({ type: 'success', title: 'Submitted', message: data.message });
-                closeConfirmModal();
-                setTimeout(() => { window.location.href = data.redirect_url; }, 600);
-            } else {
-                App.toast({ type: 'error', title: 'Error', message: data.message || 'Submission failed.' });
-                btn.disabled = false;
-                btn.textContent = 'Yes, Submit \u2192';
-                formSubmitting = false;
-                closeConfirmModal();
-            }
-        });
-    })
-    .catch(() => {
-        App.toast({ type: 'error', title: 'Error', message: 'Failed to connect.' });
+    function fail(message) {
+        App.toast({ type: 'error', title: 'Not submitted', message: message });
         btn.disabled = false;
         btn.textContent = 'Yes, Submit \u2192';
         formSubmitting = false;
         closeConfirmModal();
-    });
+        window.addEventListener('beforeunload', warnBeforeLeave);
+    }
+
+    fetch(form.action, {
+        method: 'POST',
+        body: fd,
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(async r => {
+        const isJson = (r.headers.get('content-type') || '').includes('application/json');
+        const data = isJson ? await r.json().catch(() => null) : null;
+
+        // Preferred: the server tells us where the result page lives.
+        const target = data && data.success && data.redirect_url
+            ? data.redirect_url
+            : (data && data.success && data.score_id
+                ? "{{ url('student/assessment/results') }}/" + data.score_id
+                : null);
+
+        if (target) {
+            App.toast({ type: 'success', title: 'Submitted', message: data.message || 'Assessment completed!' });
+            closeConfirmModal();
+            window.location.href = target;
+            return;
+        }
+
+        // Non-AJAX responses follow the redirect straight to the results page.
+        // Only accept it if the final URL is really a results URL — never use
+        // r.url blindly, because an error/`back()` redirect points back here.
+        if (r.ok && /\/assessment\/results\//.test(r.url)) {
+            closeConfirmModal();
+            window.location.href = r.url;
+            return;
+        }
+
+        fail(data && data.message ? data.message : (r.status === 419
+            ? 'Your session expired. Refresh the page and try again.'
+            : 'Could not save your assessment. Please try again.'));
+    })
+    .catch(() => fail('Could not connect. Please try again.'));
 }
 
 // Close modal on backdrop click
