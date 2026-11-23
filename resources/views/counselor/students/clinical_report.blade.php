@@ -239,7 +239,19 @@
             .no-print-btn { width: 100%; justify-content: center; min-height: 44px; }
         }
 
-        body.pdf-export,
+        .psu-letterhead-header,
+        .psu-letterhead-footer {
+            display: block !important;
+        }
+
+        body.pdf-export {
+            padding: 0 !important;
+            background: #ffffff !important;
+        }
+        body.pdf-export .no-print,
+        body.pdf-export .no-print-bar {
+            display: none !important;
+        }
         @media print {
             .no-print, .no-print-bar { display: none !important; }
             body { padding: 0 !important; background: #ffffff !important; }
@@ -260,23 +272,7 @@
     <div class="confidential-stamp">Strictly Confidential</div>
 
     <div class="header">
-        <div class="lh-container">
-            <div class="lh-logo-left">
-                <img src="{{ asset('images/letterhead/image3.png') }}" alt="PSU Seal">
-            </div>
-            <div class="lh-center-text">
-                <div class="lh-republic">Republic of the Philippines</div>
-                <div class="lh-univ">Pangasinan State University</div>
-                <div class="lh-campus">Lingayen, Pangasinan</div>
-                <div class="lh-links">
-                    <span>www.psu.edu.ph</span> • <span>president@psu.edu.ph</span> • <span>www.facebook.com/PSUroars</span>
-                </div>
-            </div>
-            <div class="lh-logo-right">
-                <img src="{{ asset('images/letterhead/image6.png') }}" alt="Bagong Pilipinas">
-            </div>
-        </div>
-        <div class="lh-divider"></div>
+        @include('partials.print-letterhead')
         <div class="doc-title-box">
             <h1>Student Support Summary & Wellness History</h1>
             <p>PSU Mental Health & Wellness Portal • Confidential Clinical Record</p>
@@ -350,13 +346,9 @@
         </div>
     </div>
 
-    <div class="footer">
-        <div style="margin-bottom: 12px; border-bottom: 2px solid #0f2c59; padding-bottom: 8px;">
-            <img src="{{ asset('images/letterhead/image7.png') }}" alt="PSU Accreditation Badges" style="max-width: 100%; height: auto; max-height: 28px; display: block; margin: 0 auto;">
-        </div>
-        <div>
-            This document contains sensitive psychiatric and wellness data. Unauthorized disclosure is a violation of the Data Privacy Act of 2012 (RA 10173).
-        </div>
+    @include('partials.print-footer')
+    <div style="font-size: 8pt; color: #64748b; text-align: center; margin-top: 6px; font-family: Arial, sans-serif;">
+        This document contains sensitive psychiatric and wellness data. Unauthorized disclosure is a violation of the Data Privacy Act of 2012 (RA 10173).
     </div>
 
     <script>

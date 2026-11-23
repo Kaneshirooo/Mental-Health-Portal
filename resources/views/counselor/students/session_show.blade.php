@@ -169,7 +169,31 @@
         gap: 0.6rem !important;
     }
 }
-body.pdf-export,
+body.pdf-export {
+    background: #fff !important;
+    color: #000 !important;
+}
+body.pdf-export .btn-secondary,
+body.pdf-export header.no-print,
+body.pdf-export .sidebar {
+    display: none !important;
+}
+body.pdf-export .main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+body.pdf-export article {
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    padding: 2rem !important;
+    border-radius: 16px !important;
+}
+body.pdf-export .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+}
+
 @media print {
     @page {
         size: A4 portrait;

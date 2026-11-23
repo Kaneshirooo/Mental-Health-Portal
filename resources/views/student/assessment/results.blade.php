@@ -58,7 +58,9 @@
         }
     }
 
-    body.pdf-export .print-meta-header,
+    body.pdf-export .print-meta-header {
+        display: block !important;
+    }
     @media print {
         .print-meta-header {
             display: block !important;

@@ -61,7 +61,38 @@
             gap: 0.4rem !important;
         }
     }
-    body.pdf-export,
+    body.pdf-export {
+        background: #fff !important;
+        color: #0f172a !important;
+    }
+    body.pdf-export .sidebar,
+    body.pdf-export .no-print,
+    body.pdf-export header.report-actions {
+        display: none !important;
+    }
+    body.pdf-export .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    body.pdf-export .report-page {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    body.pdf-export .report-card {
+        background: #fff !important;
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 2rem !important;
+        border-radius: 16px !important;
+        color: #0f172a !important;
+    }
+    body.pdf-export .report-tile {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
     @media print {
         @page {
             size: A4 portrait;

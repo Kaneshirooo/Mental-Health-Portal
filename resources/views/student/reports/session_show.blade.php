@@ -199,7 +199,47 @@
         gap: 0.5rem !important;
     }
 }
-body.pdf-export,
+body.pdf-export {
+    background: white !important;
+    color: #0f172a !important;
+}
+body.pdf-export .sidebar,
+body.pdf-export .no-print,
+body.pdf-export header.report-actions {
+    display: none !important;
+}
+body.pdf-export .main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+body.pdf-export .report-page {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+body.pdf-export .glass-card {
+    background: white !important;
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+    padding: 2rem !important;
+    border-radius: 16px !important;
+}
+body.pdf-export .text-gray-500,
+body.pdf-export .text-gray-600,
+body.pdf-export .text-slate-400 {
+    color: #475569 !important;
+}
+body.pdf-export .text-white {
+    color: #0f172a !important;
+}
+body.pdf-export .bg-white\/\[0\.02\],
+body.pdf-export .bg-white\/5 {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+}
+
 @media print {
     @page {
         size: A4 portrait;
