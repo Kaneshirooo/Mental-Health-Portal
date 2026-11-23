@@ -61,6 +61,7 @@
             gap: 0.4rem !important;
         }
     }
+    body.pdf-export,
     @media print {
         @page {
             size: A4 portrait;
@@ -68,7 +69,7 @@
         }
         html, body {
             background: #fff !important;
-            color: #000 !important;
+            color: #0f172a !important;
         }
         .sidebar, .no-print, header.report-actions {
             display: none !important;
@@ -89,7 +90,7 @@
             border: 1px solid #cbd5e1 !important;
             padding: 2rem !important;
             border-radius: 16px !important;
-            color: #000 !important;
+            color: #0f172a !important;
         }
         .report-tile {
             background: #f8fafc !important;

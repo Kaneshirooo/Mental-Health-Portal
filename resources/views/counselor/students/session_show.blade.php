@@ -16,6 +16,9 @@
             <button onclick="window.print()" class="btn-secondary" style="padding: 0.75rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem;">
                 <i class="ph ph-printer"></i> Print Report
             </button>
+            <button onclick="exportPDF()" id="exportSessionBtn" class="btn-secondary" style="padding: 0.75rem 1.25rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; background: var(--primary); color: #fff; border-color: var(--primary);">
+                <i class="ph ph-file-pdf"></i> Export PDF
+            </button>
             @if(!empty($nextSession))
                 <a href="{{ route('counselor.students.session.show', [$student->user_id, $nextSession->pre_id]) }}" class="btn-secondary" style="padding: 0.75rem 1rem; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
                     Next <i class="ph ph-arrow-right"></i>
@@ -166,6 +169,7 @@
         gap: 0.6rem !important;
     }
 }
+body.pdf-export,
 @media print {
     @page {
         size: A4 portrait;
@@ -181,4 +185,54 @@
     .container { max-width: 100% !important; padding: 0 !important; }
 }
 </style>
+
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+async function exportPDF() {
+    const btn = document.getElementById('exportSessionBtn');
+    const orig = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Generating...';
+    }
+    document.body.classList.add('pdf-export');
+    document.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+
+    try {
+        const { jsPDF } = window.jspdf;
+        const element = document.querySelector('.container') || document.body;
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const imgH  = (canvas.height * pageW) / canvas.width;
+        let remaining = imgH, yOffset = 0;
+        while (remaining > 0) {
+            pdf.addImage(imgData, 'JPEG', 0, -yOffset, pageW, imgH);
+            remaining -= pageH;
+            yOffset += pageH;
+            if (remaining > 0) pdf.addPage();
+        }
+        pdf.save('PSU_Session_Report_{{ \Illuminate\Support\Str::slug($student->full_name) }}.pdf');
+    } catch (e) {
+        console.error(e);
+        window.print();
+    } finally {
+        document.querySelectorAll('.no-print').forEach(el => el.style.display = '');
+        document.body.classList.remove('pdf-export');
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = orig;
+        }
+    }
+}
+</script>
+@endpush
 @endsection

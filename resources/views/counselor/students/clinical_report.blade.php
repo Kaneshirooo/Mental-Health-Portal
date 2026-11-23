@@ -202,36 +202,60 @@
         }
 
         /* Screen only elements */
-        .no-print {
+        .no-print-bar {
             position: fixed;
             top: 20px;
             left: 20px;
-            padding: 10px 20px;
-            background: #0d9488;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .no-print-btn {
+            padding: 10px 18px;
+            background: #0f2c59;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 13px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .no-print-btn:hover {
+            background: #1e40af;
+            transform: translateY(-1px);
         }
 
         @media (max-width: 768px) {
             body { padding: 1.25rem 1rem 3rem; }
             .confidential-stamp { position: static; display: inline-block; margin-bottom: 1rem; transform: none; }
-            .no-print { position: static; width: 100%; margin-bottom: 1rem; min-height: 44px; }
+            .no-print-bar { position: static; width: 100%; margin-bottom: 1.5rem; flex-direction: column; }
+            .no-print-btn { width: 100%; justify-content: center; min-height: 44px; }
         }
 
+        body.pdf-export,
         @media print {
-            .no-print { display: none; }
-            body { padding: 0; }
-            @page { margin: 2cm; }
+            .no-print, .no-print-bar { display: none !important; }
+            body { padding: 0 !important; background: #ffffff !important; }
+            @page { margin: 15mm; size: A4 portrait; }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <button class="no-print" onclick="window.print()">🖨️ Download / Print Support File</button>
+    <div class="no-print-bar no-print">
+        <button class="no-print-btn" onclick="window.print()">🖨️ Print Clinical File</button>
+        <button class="no-print-btn" id="exportPdfBtn" onclick="exportPDF()" style="background: #0d9488;">📄 Export PDF</button>
+        <a href="javascript:history.back()" class="no-print-btn" style="background: #475569;">← Back</a>
+    </div>
 
     <div class="confidential-stamp">Strictly Confidential</div>
 
@@ -365,6 +389,49 @@
                 }
             });
         });
+
+        async function exportPDF() {
+            const btn = document.getElementById('exportPdfBtn');
+            const orig = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = 'Generating PDF...';
+            }
+            document.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+            document.body.classList.add('pdf-export');
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const canvas = await html2canvas(document.body, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                });
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+                const pageW = pdf.internal.pageSize.getWidth();
+                const pageH = pdf.internal.pageSize.getHeight();
+                const imgH  = (canvas.height * pageW) / canvas.width;
+                let remaining = imgH, yOffset = 0;
+                while (remaining > 0) {
+                    pdf.addImage(imgData, 'JPEG', 0, -yOffset, pageW, imgH);
+                    remaining -= pageH;
+                    yOffset += pageH;
+                    if (remaining > 0) pdf.addPage();
+                }
+                pdf.save('PSU_Clinical_Support_File_{{ \Illuminate\Support\Str::slug($student->full_name) }}.pdf');
+            } catch (e) {
+                console.error(e);
+                window.print();
+            } finally {
+                document.querySelectorAll('.no-print').forEach(el => el.style.display = '');
+                document.body.classList.remove('pdf-export');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = orig;
+                }
+            }
+        }
     </script>
 </body>
 </html>

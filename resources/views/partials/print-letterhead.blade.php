@@ -1,6 +1,6 @@
 {{-- PSU Official Letterhead Header --}}
 {{-- Usage: @include('partials.print-letterhead') --}}
-{{-- Shown in window.print() and in html2canvas PDF exports (body.pdf-export). --}}
+{{-- Automatically revealed in window.print() and in html2canvas PDF exports (body.pdf-export). --}}
 <div class="psu-letterhead-header">
     <div class="psu-letterhead-row">
         <div class="psu-letterhead-logo-left">
@@ -26,7 +26,7 @@
 </div>
 
 <style>
-/* Hidden on screen; revealed by @media print or by body.pdf-export during PDF capture. */
+/* Default on screen: hidden */
 .psu-letterhead-header {
     display: none;
 }
@@ -35,7 +35,7 @@
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    gap: 15px !important;
+    gap: 16px !important;
     width: 100% !important;
 }
 
@@ -108,22 +108,55 @@
     height: 3px !important;
     background: linear-gradient(90deg, #0f2c59 0%, #d97706 50%, #0f2c59 100%) !important;
     margin-top: 10px !important;
+    margin-bottom: 15px !important;
     border: none !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
 }
 
-.pdf-export .psu-letterhead-header {
-    display: block !important;
-    width: 100% !important;
-    margin: 0 0 1.25rem 0 !important;
-    padding: 0 !important;
-    page-break-inside: avoid !important;
-    color: #000 !important;
-    background: transparent !important;
-}
-
+/* Universal Print & PDF-Export Styling (Applies to all printable views) */
+body.pdf-export,
 @media print {
+    /* Ensure clean white paper theme */
+    html, body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        --surface-solid: #ffffff !important;
+        --surface: #ffffff !important;
+        --surface-2: #f8fafc !important;
+        --text: #0f172a !important;
+        --text-muted: #475569 !important;
+        --text-dim: #64748b !important;
+        --border: #e2e8f0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .no-print,
+    .sidebar,
+    .nav-sidebar,
+    header.no-print,
+    .btn-secondary,
+    button.no-print,
+    #activeEmergencyBanner {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .container,
+    .report-page {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
     .psu-letterhead-header {
         display: block !important;
         width: 100% !important;
@@ -132,6 +165,23 @@
         page-break-inside: avoid !important;
         color: #000 !important;
         background: transparent !important;
+    }
+
+    /* Cards should render cleanly with border instead of dark shadows */
+    .glass-card,
+    .report-card,
+    #printableCardArea {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        color: #0f172a !important;
+    }
+}
+
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 12mm 15mm 15mm 15mm;
     }
 }
 </style>
