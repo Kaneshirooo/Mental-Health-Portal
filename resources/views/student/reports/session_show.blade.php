@@ -225,10 +225,12 @@ async function exportPDF() {
     const originalHTML = btn.innerHTML;
     btn.innerHTML = '<i class="ph ph-circle-notch"></i> Generating...';
     btn.disabled = true;
+    // Reveal the shared PSU letterhead/footer for the html2canvas snapshot.
+    document.body.classList.add('pdf-export');
     document.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
     try {
         const { jsPDF } = window.jspdf;
-        const element = document.querySelector('article.glass-card');
+        const element = document.querySelector('.report-page') || document.querySelector('article.glass-card');
         const canvas  = await html2canvas(element, {
             scale: 2, useCORS: true, backgroundColor: '#ffffff',
             windowWidth: element.scrollWidth, windowHeight: element.scrollHeight
@@ -250,6 +252,7 @@ async function exportPDF() {
         alert('PDF generation failed. Please try again.');
     } finally {
         document.querySelectorAll('.no-print').forEach(el => el.style.display = '');
+        document.body.classList.remove('pdf-export');
         btn.innerHTML = originalHTML;
         btn.disabled  = false;
     }

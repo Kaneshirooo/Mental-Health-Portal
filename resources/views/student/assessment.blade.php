@@ -572,9 +572,13 @@ function doSubmit() {
         window.addEventListener('beforeunload', warnBeforeLeave);
     }
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 45000);
+
     fetch(form.action, {
         method: 'POST',
         body: fd,
+        signal: controller.signal,
         headers: {
             'Accept': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
@@ -582,6 +586,7 @@ function doSubmit() {
         }
     })
     .then(async r => {
+        clearTimeout(timeout);
         const isJson = (r.headers.get('content-type') || '').includes('application/json');
         const data = isJson ? await r.json().catch(() => null) : null;
 
@@ -612,7 +617,12 @@ function doSubmit() {
             ? 'Your session expired. Refresh the page and try again.'
             : 'Could not save your assessment. Please try again.'));
     })
-    .catch(() => fail('Could not connect. Please try again.'));
+    .catch((err) => {
+        clearTimeout(timeout);
+        fail(err && err.name === 'AbortError'
+            ? 'The request took too long. Please check your answers and try again.'
+            : 'Could not connect. Please try again.');
+    });
 }
 
 // Close modal on backdrop click

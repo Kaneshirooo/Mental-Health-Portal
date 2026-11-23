@@ -120,7 +120,7 @@
                 <i class="ph ph-printer"></i>
                 Print
             </button>
-            <button onclick="exportPDF()" class="export-btn font-black px-8 py-3 rounded-2xl uppercase tracking-widest text-[9px] flex items-center gap-3">
+            <button id="exportBtn" onclick="exportPDF()" class="export-btn font-black px-8 py-3 rounded-2xl uppercase tracking-widest text-[9px] flex items-center gap-3 no-print">
                 <i class="ph ph-file-pdf"></i>
                 Export PDF
             </button>
@@ -264,6 +264,8 @@
     </footer>
 </div>
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 async function requestEmergencyCall() {
     if (typeof window.gStartCallStudent === 'function') {
@@ -271,6 +273,48 @@ async function requestEmergencyCall() {
     } else {
         // Fallback if navigation script is not loaded
         window.location.href = "{{ route('student.dashboard') }}";
+    }
+}
+
+async function exportPDF() {
+    const btn = document.getElementById('exportBtn');
+    const originalHTML = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.innerHTML = '<i class="ph ph-circle-notch"></i> Generating...';
+        btn.disabled = true;
+    }
+    // Reveal the shared PSU letterhead/footer for the html2canvas snapshot.
+    document.body.classList.add('pdf-export');
+    document.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+    try {
+        const { jsPDF } = window.jspdf;
+        const element = document.querySelector('.report-page') || document.querySelector('article.glass-card');
+        const canvas  = await html2canvas(element, {
+            scale: 2, useCORS: true, backgroundColor: '#ffffff',
+            windowWidth: element.scrollWidth, windowHeight: element.scrollHeight
+        });
+        const imgData = canvas.toDataURL('image/jpeg', 0.92);
+        const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const imgH  = (canvas.height * pageW) / canvas.width;
+        let remaining = imgH, yOffset = 0;
+        while (remaining > 0) {
+            pdf.addImage(imgData, 'JPEG', 0, -yOffset, pageW, imgH);
+            remaining -= pageH; yOffset += pageH;
+            if (remaining > 0) pdf.addPage();
+        }
+        pdf.save('PSU-Assessment-Report.pdf');
+    } catch (err) {
+        console.error(err);
+        alert('PDF generation failed. Please try again.');
+    } finally {
+        document.querySelectorAll('.no-print').forEach(el => el.style.display = '');
+        document.body.classList.remove('pdf-export');
+        if (btn) {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }
     }
 }
 </script>

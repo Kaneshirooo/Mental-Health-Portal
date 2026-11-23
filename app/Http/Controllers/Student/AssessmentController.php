@@ -28,12 +28,16 @@ class AssessmentController extends Controller
         $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment store request started', [
             'questionCount' => $questions->count(),
         ]);
-        
+
         $depressionScore = 0;
         $anxietyScore = 0;
         $stressScore = 0;
         $totalScoreAll = 0;
 
+        // Only the score + answers are critical. Everything else (AI insight,
+        // activity log, counselor email) is deliberately kept OUT of this
+        // transaction so a slow or failing external service can never delay or
+        // cancel the redirect to the results page.
         DB::beginTransaction();
         try {
             $createdResponseIds = [];
@@ -43,7 +47,6 @@ class AssessmentController extends Controller
                     $val = (int)$request->input($key);
                     $totalScoreAll += $val;
 
-                    // Save individual response
                     $resp = StudentResponse::create([
                         'user_id' => $userId,
                         'question_id' => $question->question_id,
@@ -58,12 +61,6 @@ class AssessmentController extends Controller
                     elseif ($cat === 'stress') $stressScore += $val;
                 }
             }
-            $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment answers processed', [
-                'totalScoreAll' => $totalScoreAll,
-                'depressionScore' => $depressionScore,
-                'anxietyScore' => $anxietyScore,
-                'stressScore' => $stressScore,
-            ]);
 
             // Fallback for category mismatch
             if ($depressionScore === 0 && $anxietyScore === 0 && $stressScore === 0 && $totalScoreAll > 0) {
@@ -76,7 +73,8 @@ class AssessmentController extends Controller
             $overallScore = round(($depressionScore + $anxietyScore + $stressScore) / 3);
             $riskLevel = $this->calculateRiskLevel($depressionScore, $anxietyScore, $stressScore);
 
-            // Create the assessment record immediately with placeholder text
+            // "pending" is intentional: the results page polls /assessment/insight
+            // and replaces this with the AI summary once it is ready.
             $score = AssessmentScore::create([
                 'user_id' => $userId,
                 'depression_score' => $depressionScore,
@@ -84,95 +82,22 @@ class AssessmentController extends Controller
                 'stress_score' => $stressScore,
                 'overall_score' => $overallScore,
                 'risk_level' => $riskLevel,
-                'ai_analysis' => "Your summary is getting ready...",
+                'ai_analysis' => "Your friendly summary is pending — it will appear in a moment.",
                 'ai_summary' => "Getting your summary ready...",
                 'assessment_date' => now(),
             ]);
 
-            // Link this check-in's answers to the saved result so counselors
-            // can view exactly what the student answered.
             if (!empty($createdResponseIds)) {
                 StudentResponse::whereIn('response_id', $createdResponseIds)
                     ->update(['score_id' => $score->score_id]);
-            }
-
-            // -- NEW: AI CLINICAL ANALYSIS (JUSTIFYING CAPSTONE TITLE) --
-            // Fetch historical data for Longitudinal Analysis
-            $history = AssessmentScore::where('user_id', $userId)
-                ->latest('assessment_date')
-                ->limit(3)
-                ->get()
-                ->map(fn($s) => [
-                    'date' => $s->assessment_date->format('Y-m-d'),
-                    'risk' => $s->risk_level,
-                    'overall' => $s->overall_score
-                ]);
-            $historyJson = $history->isNotEmpty() ? json_encode($history) : "No previous assessments.";
-
-            // Fast sync AI attempt (short prompt, small token cap) so results page
-            // rarely shows pending. Falls back instantly to rule-based insight.
-        $prompt = "You are a kind friend writing for a student. Check-in scores — low mood {$depressionScore}/27, worries {$anxietyScore}/21, pressure {$stressScore}/21, overall feeling: {$riskLevel}. Past check-ins: {$historyJson}. Write in very simple everyday words, no clinical or doctor words. This must be a LONGER, more detailed insight (not short). Output exactly these 4 sections: 1. ### A gentle next step (3-4 sentences: 2 small doable steps for this week + who to talk to) 2. ### What I see in your answers (4-6 sentences: explain each area — low mood, worries, pressure — plus any shift vs past check-ins and what that may mean day-to-day for sleep, focus, and energy) 3. ### Small habits that can help (4-6 sentences: sleep, breaks, movement, journaling, reaching out — keep each tip tiny and realistic for a student) 4. ### Something to remember (3-4 warm, encouraging sentences). Be specific to their scores, not generic.";
-
-            try {
-                $aiAnalysis = $ai->generateResponse(
-                    [['role' => 'user', 'content' => $prompt]],
-                    '',
-                    800,
-                    0.4,
-                    20
-                );
-                if (empty(trim((string) $aiAnalysis)) || str_contains($aiAnalysis, "trouble connecting")) {
-                    throw new \Exception('AI empty or fallback');
-                }
-                $score->update([
-                    'ai_analysis' => $aiAnalysis,
-                    'ai_summary' => 'Summary ready.',
-                ]);
-            } catch (\Throwable $ae) {
-                \Illuminate\Support\Facades\Log::warning('AI insight fast-path failed, using local fallback: ' . $ae->getMessage());
-                $score->update([
-                    'ai_analysis' => $this->buildLocalInsight($depressionScore, $anxietyScore, $stressScore, $riskLevel),
-                    'ai_summary' => 'Friendly summary ready (made on this device).',
-                ]);
-            }
-
-            // Log activity (following legacy logActivity function)
-            SessionLog::create([
-                'user_id' => $userId,
-                'login_time' => now(),
-                'activity' => 'Completed AI-based assessment with risk: ' . $riskLevel,
-            ]);
-
-            // Email counselors when a student needs attention (High/Critical).
-            if (in_array($riskLevel, ['High', 'Critical'], true)) {
-                $studentName = \App\Models\User::find($userId)?->full_name ?? 'A student';
-                \App\Services\CounselorMailer::send(
-                    \App\Services\CounselorMailer::allStaff(),
-                    "Student needs assessment review ({$riskLevel})",
-                    "{$studentName} completed a check-in with a {$riskLevel} result (low mood {$depressionScore}/27, worries {$anxietyScore}/21, pressure {$stressScore}/21). Please review their record and reach out.",
-                    route('counselor.dashboard'),
-                    'Review Records'
-                );
             }
 
             DB::commit();
             $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment stored successfully', [
                 'overallScore' => $overallScore,
                 'riskLevel' => $riskLevel,
-                'hasAiAnalysis' => true,
+                'scoreId' => $score->score_id,
             ]);
-
-            if ($request->ajax() || $request->expectsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Assessment completed successfully.',
-                    'score_id' => $score->score_id,
-                    'redirect_url' => route('student.assessment.results', $score->score_id)
-                ]);
-            }
-
-            return redirect()->route('student.assessment.results', $score->score_id);
-
         } catch (\Throwable $e) {
             DB::rollBack();
             $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment store failed', [
@@ -181,17 +106,113 @@ class AssessmentController extends Controller
 
             // Never let an AJAX submit fall back to `back()`: the browser would
             // follow it and land on the pre-assessment form again, looking like
-            // a successful submit that did nothing. Report the real failure so
-            // the page can show it.
+            // a successful submit that did nothing.
             if ($request->ajax() || $request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to save your assessment. Please try again.',
+                    'message' => 'Could not save your check-in: ' . $e->getMessage(),
                 ], 500);
             }
 
             return back()->with('error', 'Failed to save your assessment. Please check your answers and try again.');
         }
+
+        // ---- Non-critical work: runs only after the response reaches the ----
+        // ---- browser, so a slow AI provider or mailer cannot keep the   ----
+        // ---- student stuck on the pre-assessment page.                  ----
+        $history = AssessmentScore::where('user_id', $userId)
+            ->latest('assessment_date')
+            ->limit(3)
+            ->get()
+            ->map(fn($s) => [
+                'date' => $s->assessment_date->format('Y-m-d'),
+                'risk' => $s->risk_level,
+                'overall' => $s->overall_score
+            ]);
+        $historyJson = $history->isNotEmpty() ? json_encode($history) : "No previous assessments.";
+
+        $prompt = "You are a kind friend writing for a student. Check-in scores — low mood {$depressionScore}/27, worries {$anxietyScore}/21, pressure {$stressScore}/21, overall feeling: {$riskLevel}. Past check-ins: {$historyJson}. Write in very simple everyday words, no clinical or doctor words. This must be a LONGER, more detailed insight (not short). Output exactly these 4 sections: 1. ### A gentle next step (3-4 sentences: 2 small doable steps for this week + who to talk to) 2. ### What I see in your answers (4-6 sentences: explain each area — low mood, worries, pressure — plus any shift vs past check-ins and what that may mean day-to-day for sleep, focus, and energy) 3. ### Small habits that can help (4-6 sentences: sleep, breaks, movement, journaling, reaching out — keep each tip tiny and realistic for a student) 4. ### Something to remember (3-4 warm, encouraging sentences). Be specific to their scores, not generic.";
+
+        $scoreId = $score->score_id;
+        $fallbackInsight = $this->buildLocalInsight($depressionScore, $anxietyScore, $stressScore, $riskLevel);
+
+        \Illuminate\Support\Facades\App::terminating(function () use (
+            $ai,
+            $prompt,
+            $scoreId,
+            $fallbackInsight,
+            $userId,
+            $riskLevel,
+            $depressionScore,
+            $anxietyScore,
+            $stressScore
+        ) {
+            // AI insight (with a local fallback so the results page is never blank).
+            try {
+                $analysis = $ai->generateResponse(
+                    [['role' => 'user', 'content' => $prompt]],
+                    '',
+                    800,
+                    0.4,
+                    20
+                );
+                if (empty(trim((string) $analysis)) || str_contains($analysis, "trouble connecting")) {
+                    throw new \Exception('AI returned no usable insight');
+                }
+                AssessmentScore::where('score_id', $scoreId)->update([
+                    'ai_analysis' => $analysis,
+                    'ai_summary' => 'Summary ready.',
+                ]);
+            } catch (\Throwable $ae) {
+                \Illuminate\Support\Facades\Log::warning('AI insight failed, using local fallback: ' . $ae->getMessage());
+                try {
+                    AssessmentScore::where('score_id', $scoreId)->update([
+                        'ai_analysis' => $fallbackInsight,
+                        'ai_summary' => 'Friendly summary ready (made on this device).',
+                    ]);
+                } catch (\Throwable $inner) {
+                    \Illuminate\Support\Facades\Log::warning('Could not store local insight: ' . $inner->getMessage());
+                }
+            }
+
+            // Activity log.
+            try {
+                SessionLog::create([
+                    'user_id' => $userId,
+                    'login_time' => now(),
+                    'activity' => 'Completed AI-based assessment with risk: ' . $riskLevel,
+                ]);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Assessment activity log failed: ' . $e->getMessage());
+            }
+
+            // Counselor alert for students who need attention.
+            if (in_array($riskLevel, ['High', 'Critical'], true)) {
+                try {
+                    $studentName = \App\Models\User::find($userId)?->full_name ?? 'A student';
+                    \App\Services\CounselorMailer::send(
+                        \App\Services\CounselorMailer::allStaff(),
+                        "Student needs assessment review ({$riskLevel})",
+                        "{$studentName} completed a check-in with a {$riskLevel} result (low mood {$depressionScore}/27, worries {$anxietyScore}/21, pressure {$stressScore}/21). Please review their record and reach out.",
+                        route('counselor.dashboard'),
+                        'Review Records'
+                    );
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning('Assessment counselor alert failed: ' . $e->getMessage());
+                }
+            }
+        });
+
+        if ($request->ajax() || $request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Assessment completed successfully.',
+                'score_id' => $scoreId,
+                'redirect_url' => route('student.assessment.results', $scoreId)
+            ]);
+        }
+
+        return redirect()->route('student.assessment.results', $scoreId);
     }
 
     public function results($score_id)
