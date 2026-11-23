@@ -551,25 +551,54 @@ function closeConfirmModal() {
     document.getElementById('confirmModal').style.display = 'none';
 }
 
+function safeToast(options) {
+    // The toast helper depends on optional UI scripts. Never let it interrupt
+    // a submit: navigation/error recovery happens regardless.
+    try {
+        if (typeof App !== 'undefined' && App && typeof App.toast === 'function') {
+            App.toast(options);
+        }
+    } catch (e) {
+        console.warn('Toast unavailable:', e);
+    }
+}
+
+function currentOriginPath(url) {
+    // route() may absolute-URL the results page with APP_URL. Keep only the
+    // path so a misconfigured APP_URL cannot send the browser off-site.
+    try {
+        const u = new URL(url, window.location.origin);
+        return u.pathname + u.search + u.hash;
+    } catch (e) {
+        return url;
+    }
+}
+
 function doSubmit() {
     if (formSubmitting) return;
     formSubmitting = true;
     window.removeEventListener('beforeunload', warnBeforeLeave);
 
     const btn = document.querySelector('button[onclick="doSubmit()"]');
-    btn.disabled = true;
-    btn.textContent = 'Submitting\u2026';
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Submitting\u2026';
+    }
 
     const form = document.getElementById('assessmentForm');
     const fd   = new FormData(form);
 
     function fail(message) {
-        App.toast({ type: 'error', title: 'Not submitted', message: message });
-        btn.disabled = false;
-        btn.textContent = 'Yes, Submit \u2192';
+        // Reset the UI FIRST, then show a message. If the message helper fails,
+        // the student can still retry.
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Yes, Submit \u2192';
+        }
         formSubmitting = false;
         closeConfirmModal();
         window.addEventListener('beforeunload', warnBeforeLeave);
+        safeToast({ type: 'error', title: 'Not submitted', message: message });
     }
 
     const controller = new AbortController();
@@ -591,16 +620,18 @@ function doSubmit() {
         const data = isJson ? await r.json().catch(() => null) : null;
 
         // Preferred: the server tells us where the result page lives.
-        const target = data && data.success && data.redirect_url
-            ? data.redirect_url
-            : (data && data.success && data.score_id
-                ? "{{ url('student/assessment/results') }}/" + data.score_id
-                : null);
+        let target = null;
+        if (data && data.success && data.redirect_url) {
+            target = currentOriginPath(data.redirect_url);
+        } else if (data && data.success && data.score_id) {
+            target = "/student/assessment/results/" + encodeURIComponent(data.score_id);
+        }
 
-        if (target) {
-            App.toast({ type: 'success', title: 'Submitted', message: data.message || 'Assessment completed!' });
+        if (target && /\/assessment\/results\//.test(target)) {
             closeConfirmModal();
+            // Navigate FIRST so no UI/animation code can block it.
             window.location.href = target;
+            safeToast({ type: 'success', title: 'Submitted', message: data.message || 'Assessment completed!' });
             return;
         }
 
@@ -609,7 +640,8 @@ function doSubmit() {
         // r.url blindly, because an error/`back()` redirect points back here.
         if (r.ok && /\/assessment\/results\//.test(r.url)) {
             closeConfirmModal();
-            window.location.href = r.url;
+            const finalTarget = currentOriginPath(r.url);
+            window.location.href = finalTarget;
             return;
         }
 
@@ -619,6 +651,8 @@ function doSubmit() {
     })
     .catch((err) => {
         clearTimeout(timeout);
+        // A toast or navigation error must never be reported as a save failure.
+        if (formSubmitting === false) return;
         fail(err && err.name === 'AbortError'
             ? 'The request took too long. Please check your answers and try again.'
             : 'Could not connect. Please try again.');
