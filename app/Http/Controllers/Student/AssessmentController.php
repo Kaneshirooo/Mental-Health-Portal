@@ -29,92 +29,133 @@ class AssessmentController extends Controller
             'questionCount' => $questions->count(),
         ]);
 
-        $depressionScore = 0;
-        $anxietyScore = 0;
-        $stressScore = 0;
-        $totalScoreAll = 0;
+        // Every statement is recorded so a failure can be traced back to the
+        // first thing that actually went wrong instead of the 25P02 cascade it
+        // leaves behind.
+        $executedStatements = [];
+        DB::listen(function ($query) use (&$executedStatements) {
+            $executedStatements[] = $query->sql;
+        });
 
         // Only the score + answers are critical. Everything else (AI insight,
         // activity log, counselor email) is deliberately kept OUT of this
         // transaction so a slow or failing external service can never delay or
         // cancel the redirect to the results page.
-        DB::beginTransaction();
-        try {
+        //
+        // The transaction starts clean and is retried once: if the connection
+        // arrives already aborted, the very first INSERT fails with SQLSTATE
+        // 25P02 and hides the real cause. A clean restart clears it, and a
+        // genuine data error is reported instead of being retried.
+        $attempt = 0;
+        $maxAttempts = 2;
+        $score = null;
+
+        while (true) {
+            $attempt++;
+            $depressionScore = 0;
+            $anxietyScore = 0;
+            $stressScore = 0;
+            $totalScoreAll = 0;
             $createdResponseIds = [];
-            foreach ($questions as $question) {
-                $key = 'q_' . $question->question_id;
-                if ($request->has($key)) {
-                    $val = (int)$request->input($key);
-                    $totalScoreAll += $val;
 
-                    $resp = StudentResponse::create([
-                        'user_id' => $userId,
-                        'question_id' => $question->question_id,
-                        'response_value' => $val,
-                        'assessment_date' => now(),
-                    ]);
-                    $createdResponseIds[] = $resp->response_id;
+            try {
+                $this->beginCleanTransaction();
 
-                    $cat = strtolower(trim($question->category));
-                    if ($cat === 'depression') $depressionScore += $val;
-                    elseif ($cat === 'anxiety') $anxietyScore += $val;
-                    elseif ($cat === 'stress') $stressScore += $val;
+                foreach ($questions as $question) {
+                    $key = 'q_' . $question->question_id;
+                    if ($request->has($key)) {
+                        $val = (int)$request->input($key);
+                        $totalScoreAll += $val;
+
+                        $resp = StudentResponse::create([
+                            'user_id' => $userId,
+                            'question_id' => $question->question_id,
+                            'response_value' => $val,
+                            'assessment_date' => now(),
+                        ]);
+                        $createdResponseIds[] = $resp->response_id;
+
+                        $cat = strtolower(trim($question->category));
+                        if ($cat === 'depression') $depressionScore += $val;
+                        elseif ($cat === 'anxiety') $anxietyScore += $val;
+                        elseif ($cat === 'stress') $stressScore += $val;
+                    }
                 }
+
+                // Fallback for category mismatch
+                if ($depressionScore === 0 && $anxietyScore === 0 && $stressScore === 0 && $totalScoreAll > 0) {
+                    $per = (int)round($totalScoreAll / 3);
+                    $depressionScore = $per;
+                    $anxietyScore = $per;
+                    $stressScore = $totalScoreAll - ($per * 2);
+                }
+
+                $overallScore = round(($depressionScore + $anxietyScore + $stressScore) / 3);
+                $riskLevel = $this->calculateRiskLevel($depressionScore, $anxietyScore, $stressScore);
+
+                // "pending" is intentional: the results page polls /assessment/insight
+                // and replaces this with the AI summary once it is ready.
+                $score = AssessmentScore::create([
+                    'user_id' => $userId,
+                    'depression_score' => $depressionScore,
+                    'anxiety_score' => $anxietyScore,
+                    'stress_score' => $stressScore,
+                    'overall_score' => $overallScore,
+                    'risk_level' => $riskLevel,
+                    'ai_analysis' => "Your friendly summary is pending — it will appear in a moment.",
+                    'ai_summary' => "Getting your summary ready...",
+                    'assessment_date' => now(),
+                ]);
+
+                if (!empty($createdResponseIds)) {
+                    StudentResponse::whereIn('response_id', $createdResponseIds)
+                        ->update(['score_id' => $score->score_id]);
+                }
+
+                DB::commit();
+                $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment stored successfully', [
+                    'overallScore' => $overallScore,
+                    'riskLevel' => $riskLevel,
+                    'scoreId' => $score->score_id,
+                    'attempt' => $attempt,
+                ]);
+                break;
+            } catch (\Throwable $e) {
+                try {
+                    DB::rollBack();
+                } catch (\Throwable $ignore) {
+                    // The transaction was already gone; nothing to undo.
+                }
+
+                $diagnostics = [
+                    'attempt' => $attempt,
+                    'sqlState' => $e->getCode(),
+                    'transactionLevel' => DB::transactionLevel(),
+                    'error' => $e->getMessage(),
+                    'statements' => $executedStatements,
+                ];
+                $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment store failed', $diagnostics);
+                \Illuminate\Support\Facades\Log::error('Assessment store failed', $diagnostics);
+
+                // The 25P02 cascade means the connection arrived already
+                // aborted. One clean restart clears it; anything else is a real
+                // data error and must be reported to the student.
+                if ($attempt < $maxAttempts && $this->isAbortedTransactionCascade($e)) {
+                    continue;
+                }
+
+                // Never let an AJAX submit fall back to `back()`: the browser would
+                // follow it and land on the pre-assessment form again, looking like
+                // a successful submit that did nothing.
+                if ($request->ajax() || $request->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Could not save your check-in: ' . $e->getMessage(),
+                    ], 500);
+                }
+
+                return back()->with('error', 'Failed to save your assessment. Please check your answers and try again.');
             }
-
-            // Fallback for category mismatch
-            if ($depressionScore === 0 && $anxietyScore === 0 && $stressScore === 0 && $totalScoreAll > 0) {
-                $per = (int)round($totalScoreAll / 3);
-                $depressionScore = $per;
-                $anxietyScore = $per;
-                $stressScore = $totalScoreAll - ($per * 2);
-            }
-
-            $overallScore = round(($depressionScore + $anxietyScore + $stressScore) / 3);
-            $riskLevel = $this->calculateRiskLevel($depressionScore, $anxietyScore, $stressScore);
-
-            // "pending" is intentional: the results page polls /assessment/insight
-            // and replaces this with the AI summary once it is ready.
-            $score = AssessmentScore::create([
-                'user_id' => $userId,
-                'depression_score' => $depressionScore,
-                'anxiety_score' => $anxietyScore,
-                'stress_score' => $stressScore,
-                'overall_score' => $overallScore,
-                'risk_level' => $riskLevel,
-                'ai_analysis' => "Your friendly summary is pending — it will appear in a moment.",
-                'ai_summary' => "Getting your summary ready...",
-                'assessment_date' => now(),
-            ]);
-
-            if (!empty($createdResponseIds)) {
-                StudentResponse::whereIn('response_id', $createdResponseIds)
-                    ->update(['score_id' => $score->score_id]);
-            }
-
-            DB::commit();
-            $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment stored successfully', [
-                'overallScore' => $overallScore,
-                'riskLevel' => $riskLevel,
-                'scoreId' => $score->score_id,
-            ]);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            $this->debugLog('H4', 'AssessmentController.php:store', 'Assessment store failed', [
-                'error' => $e->getMessage(),
-            ]);
-
-            // Never let an AJAX submit fall back to `back()`: the browser would
-            // follow it and land on the pre-assessment form again, looking like
-            // a successful submit that did nothing.
-            if ($request->ajax() || $request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Could not save your check-in: ' . $e->getMessage(),
-                ], 500);
-            }
-
-            return back()->with('error', 'Failed to save your assessment. Please check your answers and try again.');
         }
 
         // ---- Non-critical work: runs only after the response reaches the ----
@@ -429,24 +470,5 @@ class AssessmentController extends Controller
         }
 
         return 'Low';
-    }
-
-    private function debugLog(string $hypothesisId, string $location, string $message, array $data = []): void
-    {
-        // #region agent log
-        file_put_contents(
-            storage_path('logs/debug-a97deb.log'),
-            json_encode([
-                'sessionId' => 'a97deb',
-                'runId' => 'initial',
-                'hypothesisId' => $hypothesisId,
-                'location' => $location,
-                'message' => $message,
-                'data' => $data,
-                'timestamp' => (int) round(microtime(true) * 1000),
-            ], JSON_UNESCAPED_SLASHES) . PHP_EOL,
-            FILE_APPEND
-        );
-        // #endregion
     }
 }

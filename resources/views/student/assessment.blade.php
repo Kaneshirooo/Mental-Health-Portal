@@ -453,6 +453,7 @@
 const categories = @json($categories);
 let currentStep = 0;
 let formSubmitting = false;
+let submitStartedAt = 0;
 
 // Warn before leaving
 function warnBeforeLeave(e) {
@@ -574,33 +575,19 @@ function currentOriginPath(url) {
     }
 }
 
-function doSubmit() {
-    if (formSubmitting) return;
-    formSubmitting = true;
-    window.removeEventListener('beforeunload', warnBeforeLeave);
-
-    const btn = document.querySelector('button[onclick="doSubmit()"]');
+function resetSubmitUi(btn) {
     if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Submitting\u2026';
+        btn.disabled = false;
+        btn.textContent = 'Yes, Submit \u2192';
     }
+    formSubmitting = false;
+    submitStartedAt = 0;
+    closeConfirmModal();
+    window.addEventListener('beforeunload', warnBeforeLeave);
+}
 
-    const form = document.getElementById('assessmentForm');
-    const fd   = new FormData(form);
-
-    function fail(message) {
-        // Reset the UI FIRST, then show a message. If the message helper fails,
-        // the student can still retry.
-        if (btn) {
-            btn.disabled = false;
-            btn.textContent = 'Yes, Submit \u2192';
-        }
-        formSubmitting = false;
-        closeConfirmModal();
-        window.addEventListener('beforeunload', warnBeforeLeave);
-        safeToast({ type: 'error', title: 'Not submitted', message: message });
-    }
-
+function submitViaFetch(form, btn) {
+    const fd = new FormData(form);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 45000);
 
@@ -619,7 +606,6 @@ function doSubmit() {
         const isJson = (r.headers.get('content-type') || '').includes('application/json');
         const data = isJson ? await r.json().catch(() => null) : null;
 
-        // Preferred: the server tells us where the result page lives.
         let target = null;
         if (data && data.success && data.redirect_url) {
             target = currentOriginPath(data.redirect_url);
@@ -629,34 +615,66 @@ function doSubmit() {
 
         if (target && /\/assessment\/results\//.test(target)) {
             closeConfirmModal();
-            // Navigate FIRST so no UI/animation code can block it.
             window.location.href = target;
-            safeToast({ type: 'success', title: 'Submitted', message: data.message || 'Assessment completed!' });
             return;
         }
 
-        // Non-AJAX responses follow the redirect straight to the results page.
-        // Only accept it if the final URL is really a results URL — never use
-        // r.url blindly, because an error/`back()` redirect points back here.
         if (r.ok && /\/assessment\/results\//.test(r.url)) {
             closeConfirmModal();
-            const finalTarget = currentOriginPath(r.url);
-            window.location.href = finalTarget;
+            window.location.href = currentOriginPath(r.url);
             return;
         }
 
-        fail(data && data.message ? data.message : (r.status === 419
+        resetSubmitUi(btn);
+        safeToast({ type: 'error', title: 'Not submitted', message: data && data.message ? data.message : (r.status === 419
             ? 'Your session expired. Refresh the page and try again.'
-            : 'Could not save your assessment. Please try again.'));
+            : 'Could not save your assessment. Please try again.') });
     })
     .catch((err) => {
         clearTimeout(timeout);
-        // A toast or navigation error must never be reported as a save failure.
         if (formSubmitting === false) return;
-        fail(err && err.name === 'AbortError'
+        resetSubmitUi(btn);
+        safeToast({ type: 'error', title: 'Not submitted', message: err && err.name === 'AbortError'
             ? 'The request took too long. Please check your answers and try again.'
-            : 'Could not connect. Please try again.');
+            : 'Could not connect. Please try again.' });
     });
+}
+
+function doSubmit() {
+    // A stuck "submitting" flag from an older page version must never block
+    // future attempts. Anything older than a minute is treated as stale.
+    if (formSubmitting) {
+        if (submitStartedAt && Date.now() - submitStartedAt < 60000) return;
+        formSubmitting = false;
+    }
+
+    formSubmitting = true;
+    submitStartedAt = Date.now();
+    window.removeEventListener('beforeunload', warnBeforeLeave);
+
+    const btn = document.querySelector('button[onclick="doSubmit()"]');
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Submitting\u2026';
+    }
+
+    closeConfirmModal();
+
+    const form = document.getElementById('assessmentForm');
+    if (!form) {
+        resetSubmitUi(btn);
+        safeToast({ type: 'error', title: 'Not submitted', message: 'Assessment form not found. Please refresh the page.' });
+        return;
+    }
+
+    // Plain form POST: the server redirects straight to the results page.
+    // This does not depend on optional toast/animation scripts.
+    try {
+        form.submit();
+    } catch (err) {
+        console.error('Native submit failed, falling back to fetch:', err);
+        submitViaFetch(form, btn);
+    }
 }
 
 // Close modal on backdrop click
