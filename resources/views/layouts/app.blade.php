@@ -298,7 +298,7 @@
     @stack('styles')
 </head>
 
-<body class="reveal">
+<body class="">
     {{-- Spatial Background Element --}}
     <div class="spatial-bg no-print"
         style="position:fixed; inset:0; z-index:-1; pointer-events:none; background: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.05) 0%, transparent 50%); opacity: 0.6;">
@@ -312,7 +312,7 @@
             @if(!request()->is('*video-call*'))
                 @include('layouts.psu-header')
             @endif
-            <div id="content-reveal">
+            <div id="content-reveal" class="reveal">
                 @yield('content')
             </div>
 
@@ -652,7 +652,8 @@
                 let html;
                 try {
                     const res = await fetch(url.href, {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/html' }
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/html' },
+                        cache: 'no-cache'
                     });
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     html = await res.text();
@@ -674,8 +675,8 @@
                 current.replaceWith(next);
 
                 // Fade the new content in
-                next.style.transition = 'opacity 0.15s ease';
-                next.style.opacity = '0.45';
+                next.style.transition = 'opacity 0.2s ease';
+                next.style.opacity = '0.3';
                 requestAnimationFrame(() => { next.style.opacity = '1'; });
                 setTimeout(() => {
                     next.style.transition = '';
@@ -705,9 +706,9 @@
                     detail: { key: key, url: url.href, region: next }
                 }));
 
-                // Bring the swapped region into view if the user can't see it
+                // Only smoothly scroll to the top of the region if the user is scrolled past it
                 const rect = next.getBoundingClientRect();
-                if (rect.top < 8 || rect.bottom > window.innerHeight) {
+                if (rect.top < -30) {
                     next.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             }

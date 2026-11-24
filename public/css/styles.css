@@ -1669,14 +1669,42 @@ html {
 body {
     min-height: 100vh;
     min-height: 100dvh;
+    transform: none !important;
+    filter: none !important;
+    perspective: none !important;
 }
 
-/* Desktop / tablet sidebar: keep clear of landscape notches. */
+/* Desktop / tablet sidebar: permanently fixed to viewport so it never scrolls off-screen */
 .sidebar {
     left: calc(var(--sidebar-gutter) + var(--safe-left));
     top: calc(var(--sidebar-gutter) + var(--safe-top));
     height: calc(100vh - (var(--sidebar-gutter) * 2) - var(--safe-top) - var(--safe-bottom));
     height: calc(100dvh - (var(--sidebar-gutter) * 2) - var(--safe-top) - var(--safe-bottom));
+}
+
+@media (min-width: 1025px) {
+    .sidebar,
+    aside.sidebar,
+    #sidebar {
+        position: fixed !important;
+        left: calc(var(--sidebar-gutter) + var(--safe-left)) !important;
+        top: calc(var(--sidebar-gutter) + var(--safe-top)) !important;
+        height: calc(100vh - (var(--sidebar-gutter) * 2) - var(--safe-top) - var(--safe-bottom)) !important;
+        height: calc(100dvh - (var(--sidebar-gutter) * 2) - var(--safe-top) - var(--safe-bottom)) !important;
+        width: var(--sidebar-width) !important;
+        z-index: 1000 !important;
+        transform: none !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+.pager-nav-btn:hover,
+.pager-num-link:hover {
+    background: var(--surface-2) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+    transform: translateY(-1px);
 }
 
 .main-content {
