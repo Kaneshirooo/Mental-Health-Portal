@@ -234,6 +234,64 @@
                 gap: 0.6rem !important;
             }
         }
+
+        /* Universal Print & PDF Export Rules */
+        @media print {
+            .psu-header,
+            .mobile-nav,
+            #mobileNav,
+            .sidebar,
+            .sidebar-overlay,
+            #sidebarOverlay,
+            .scroll-top-btn,
+            #scrollTopBtn,
+            .footer,
+            main > footer,
+            #clinical-toast-container,
+            .spatial-bg,
+            .no-print,
+            #activeEmergencyBanner {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                max-height: 0 !important;
+                overflow: hidden !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .main-content {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            body {
+                background: #ffffff !important;
+                color: #0f172a !important;
+            }
+        }
+        body.pdf-export .psu-header,
+        body.pdf-export .mobile-nav,
+        body.pdf-export #mobileNav,
+        body.pdf-export .sidebar,
+        body.pdf-export .sidebar-overlay,
+        body.pdf-export #sidebarOverlay,
+        body.pdf-export .scroll-top-btn,
+        body.pdf-export #scrollTopBtn,
+        body.pdf-export .footer,
+        body.pdf-export main > footer,
+        body.pdf-export #clinical-toast-container,
+        body.pdf-export .spatial-bg,
+        body.pdf-export .no-print,
+        body.pdf-export #activeEmergencyBanner {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            max-height: 0 !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
     </style>
 
 
@@ -242,11 +300,11 @@
 
 <body class="reveal">
     {{-- Spatial Background Element --}}
-    <div class="spatial-bg"
+    <div class="spatial-bg no-print"
         style="position:fixed; inset:0; z-index:-1; pointer-events:none; background: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.05) 0%, transparent 50%); opacity: 0.6;">
     </div>
 
-    <div id="clinical-toast-container"></div>
+    <div id="clinical-toast-container" class="no-print"></div>
 
     @auth
         @include('layouts.navigation')
@@ -259,7 +317,7 @@
             </div>
 
             @if(!request()->is('*video-call*'))
-                <footer class="footer mt-12 py-8 border-t border-white/5 opacity-50 text-center text-sm">
+                <footer class="footer no-print mt-12 py-8 border-t border-white/5 opacity-50 text-center text-sm">
                     <p>© {{ date('Y') }} Mental Health Pre-Assessment System. All rights reserved.</p>
                 </footer>
             @endif
@@ -271,7 +329,7 @@
     @stack('modals')
 
     <!-- Global Scroll-To-Top Floating Button -->
-    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top" title="Scroll to top">
+    <button id="scrollTopBtn" class="scroll-top-btn no-print" aria-label="Scroll to top" title="Scroll to top">
         <i class="ph-bold ph-caret-up"></i>
     </button>
 

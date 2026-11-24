@@ -315,7 +315,7 @@ class AiChatController extends Controller
         ]);
     }
 
-    private function debugLog(string $hypothesisId, string $location, string $message, array $data = []): void
+    protected function debugLog(string $hypothesisId, string $location, string $message, array $data = []): void
     {
         // #region agent log
         file_put_contents(

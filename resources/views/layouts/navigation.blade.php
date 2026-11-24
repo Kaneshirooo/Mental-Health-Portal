@@ -5,7 +5,7 @@
     $currentRoute = Route::currentRouteName();
 @endphp
 
-<aside class="sidebar glass" id="sidebar">
+<aside class="sidebar glass no-print" id="sidebar">
     <div class="sidebar-header" style="padding: 1.25rem 1.15rem 1rem; display: flex; align-items: center; justify-content: space-between;">
         <div class="sidebar-brand" style="display: flex; align-items: center;">
             <div class="sidebar-logo-container" style="position: relative; cursor: pointer; transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center;">
@@ -184,7 +184,7 @@
 </aside>
 
 <!-- Mobile Top Navigation Bar -->
-<div class="mobile-nav" id="mobileNav">
+<div class="mobile-nav no-print" id="mobileNav">
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" onclick="toggleSidebar()">
         <i class="ph ph-list" id="navToggleIcon"></i>
     </button>
@@ -198,7 +198,7 @@
 </div>
 
 <!-- Mobile Sidebar Backdrop Overlay -->
-<div id="sidebarOverlay" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:1055;" onclick="closeSidebar()"></div>
+<div id="sidebarOverlay" class="no-print" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:1055;" onclick="closeSidebar()"></div>
 
 <script>
 function toggleSidebar() {
@@ -532,3 +532,30 @@ document.addEventListener('DOMContentLoaded', () => {
     <?php endif; ?>
 })();
 </script>
+
+<style>
+@media print {
+    .sidebar,
+    .mobile-nav,
+    #mobileNav,
+    #sidebarOverlay,
+    .emergency-container {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+body.pdf-export .sidebar,
+body.pdf-export .mobile-nav,
+body.pdf-export #mobileNav,
+body.pdf-export #sidebarOverlay,
+body.pdf-export .emergency-container {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+</style>

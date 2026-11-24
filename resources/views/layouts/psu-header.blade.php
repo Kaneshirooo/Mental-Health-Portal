@@ -1,6 +1,6 @@
 {{-- PSU system header: university banner strip shown on authenticated pages.
      Aligned with standard container width to eliminate awkward side whitespace. --}}
-<div class="psu-header">
+<div class="psu-header no-print">
     <svg class="psu-waves" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
         <g fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1.4">
             <path d="M0,95 C200,40 350,110 550,60 C750,10 950,90 1200,45" />
@@ -143,5 +143,21 @@
         .psu-uni { 
             font-size: 1rem; 
         }
+    }
+    @media print {
+        .psu-header {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+    }
+    body.pdf-export .psu-header {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
 </style>
